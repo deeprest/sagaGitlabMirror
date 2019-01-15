@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+  //  public CircleCollider2D circle;
+  //public BoxCollider2D box;
+
   new public SpriteRenderer renderer;
   public SpriteAnimator animator;
   public ParticleSystem dashSmoke;
@@ -13,12 +16,10 @@ public class PlayerController : MonoBehaviour
   public KeyCode LeftKey = KeyCode.S;
   public KeyCode JumpKey = KeyCode.E;
   // settings
-  public float raydowndist = 0.3f;
-  public float floorOffset = 0.27f;
-  public float rayside = 0.3f;
-  public float boxHalfWidth = 0.1f;
-  public float boxHalfHeightHi = 0.1f;
-  public float boxHalfHelghtLo = 0.15f;
+  public float raylength = 0.1f;
+  public Vector2 box = new Vector2( 0.3f, 0.3f );
+  public Vector2 hitOffset = new Vector2( 0.3f, 0.3f );
+
   // velocities
   public float gravity = 16;
   public float moveVel = 2;
@@ -43,45 +44,111 @@ public class PlayerController : MonoBehaviour
   float jumpStart;
   float landStart;
 
+  public bool collideRight = false;
+  public bool collideLeft = false;
+  public bool collideHead = false;
+  public bool collideFeet = false;
+
   void Update()
   {
-    bool collideRight = false;
-    bool collideLeft = false;
-    bool collideHead = false;
-    bool collideFeet = false;
+    if( Global.Paused )
+      return;
+    
+    collideRight = false;
+    collideLeft = false;
+    collideHead = false;
+    collideFeet = false;
 
-    if( facingRight )
+    /*RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, radius, Vector2.down, castDistance, Physics2D.AllLayers );
+    //RaycastHit2D[] hits = Physics2D.BoxCastAll( transform.position, box, 0, velocity, velocity.magnitude * Time.smoothDeltaTime, Physics2D.AllLayers );
+    foreach( var hit in hits )
     {
-      RaycastHit2D hi = Physics2D.Raycast( transform.position + Vector3.up * boxHalfHeightHi, Vector2.right, rayside );
-      RaycastHit2D lo = Physics2D.Raycast( transform.position + Vector3.down * boxHalfHelghtLo, Vector2.right, rayside );
-      if( hi.transform != null || lo.transform != null )
-        collideRight = true;
-    }
-    else
+      if( Mathf.Abs( hit.normal.y ) < wallY )
+      {
+        if( hit.normal.x > 0 )
+          collideLeft = true;
+        else
+          collideRight = true;
+      }
+      else
+      {
+        if( hit.normal.y > 0 )
+        {
+          collideFeet = true;
+          hitFoot = hit;
+        }
+        else
+          collideHead = true;
+      }
+    }*/
+   
+
     {
-      RaycastHit2D hi = Physics2D.Raycast( transform.position + Vector3.up * boxHalfHeightHi, Vector2.left, rayside );
-      RaycastHit2D lo = Physics2D.Raycast( transform.position + Vector3.down * boxHalfHelghtLo, Vector2.left, rayside );
-      if( hi.transform != null || lo.transform != null )
-        collideLeft = true;
+      Vector3 p = transform.position + ( Vector3.right * box.x );
+      RaycastHit2D hitRight = Physics2D.Raycast( p, Vector2.right, raylength );
+      if( hitRight.transform != null )
+      {
+        if( hitRight.normal.x < -0.5f )
+        {
+          dashing = false;
+          collideRight = true;
+          Vector3 adjust = transform.position;
+          if( transform.position.x + box.x > hitRight.point.x )
+            adjust.x = hitRight.point.x - box.x;
+          transform.position = adjust;
+        }
+      }
     }
-    // head raycast
-    RaycastHit2D hitLeftHead = Physics2D.Raycast( transform.position + Vector3.left * boxHalfWidth, Vector2.up, raydowndist );
-    RaycastHit2D hitRightHead = Physics2D.Raycast( transform.position + Vector3.right * boxHalfWidth, Vector2.up, raydowndist );
-    if( ( hitLeftHead.transform != null || hitRightHead.transform != null ) )
-      collideHead = true;
+    {
+      Vector3 p = transform.position + ( Vector3.left * box.x );
+      RaycastHit2D hitLeft = Physics2D.Raycast( p, Vector2.left, raylength );
+      if( hitLeft.transform != null )
+      {
+        if( hitLeft.normal.x > 0.5f )
+        {
+          dashing = false;
+          collideLeft = true;
+          Vector3 adjust = transform.position;
+          if( transform.position.x - box.x < hitLeft.point.x )
+            adjust.x = hitLeft.point.x + box.x;
+          transform.position = adjust;
+        }
+      }
+    }
+      
     // ground raycast
-    RaycastHit2D hitLeftFoot = Physics2D.Raycast( transform.position + Vector3.left * boxHalfWidth, Vector2.down, raydowndist );
-    RaycastHit2D hitRightFoot = Physics2D.Raycast( transform.position + Vector3.right * boxHalfWidth, Vector2.down, raydowndist );
+    RaycastHit2D hitLeftFoot = Physics2D.Raycast( transform.position + Vector3.left * hitOffset.x, Vector2.down, box.y );
+    RaycastHit2D hitRightFoot = Physics2D.Raycast( transform.position + Vector3.right * hitOffset.x, Vector2.down, box.y );
     if( !jumping && ( hitLeftFoot.transform != null || hitRightFoot.transform != null ) )
     {
-      collideFeet = true;
+      RaycastHit2D hitFoot = ( hitLeftFoot.transform != null ) ? hitLeftFoot : hitRightFoot;
+      if( hitFoot.normal.y > 0.5f )
+      {
+        collideFeet = true;
+        Vector3 adjust = transform.position;
+        if( transform.position.y - box.y < hitFoot.point.y )
+          adjust.y = hitFoot.point.y + hitOffset.y;
+        transform.position = adjust;
+      }
     }
 
+    // head raycast 
+    RaycastHit2D hitLeftHead = Physics2D.Raycast( transform.position + Vector3.left * hitOffset.x, Vector2.up, box.y );
+    RaycastHit2D hitRightHead = Physics2D.Raycast( transform.position + Vector3.right * hitOffset.x, Vector2.up, box.y );
+    if( ( hitLeftHead.transform != null || hitRightHead.transform != null ) )
+    {
+      collideHead = true;
+      RaycastHit2D hitHead = ( hitLeftHead.transform != null ) ? hitLeftHead : hitRightHead;
+      Vector3 adjust = transform.position;
+      if( transform.position.y + box.y > hitHead.point.y )
+        adjust.y = hitHead.point.y - hitOffset.y;
+      transform.position = adjust;
+    }
 
     string anim = "idle";
 
     velocity.x = 0;
-    velocity.y += -gravity * Time.smoothDeltaTime;
+    velocity.y += -gravity * Time.deltaTime;
 
     if( facingRight )
       renderer.flipX = false;
@@ -91,10 +158,10 @@ public class PlayerController : MonoBehaviour
     if( Input.GetKey( RightKey ) )
     {
       inputRight = true;
-      velocity += Vector3.right * moveVel;
-      facingRight = true;
-      if( !facingRight )
+      velocity.x = moveVel;
+      if( !facingRight && onGround )
         dashing = false;
+      facingRight = true;
     }
     else
     {
@@ -104,10 +171,10 @@ public class PlayerController : MonoBehaviour
     if( Input.GetKey( LeftKey ) )
     {
       inputLeft = true;
-      velocity += Vector3.left * moveVel;
-      facingRight = false;
-      if( facingRight )
+      velocity.x = -moveVel;
+      if( facingRight && onGround )
         dashing = false;
+      facingRight = false;
     }
     else
     {
@@ -116,7 +183,7 @@ public class PlayerController : MonoBehaviour
 
     if( Input.GetKeyDown( JumpKey ) )
     {
-      if( onGround || collideRight || collideLeft )
+      if( onGround || ( inputRight && collideRight ) || ( inputLeft && collideLeft ) )
       {
         jumping = true;
         jumpStart = Time.time;
@@ -129,51 +196,21 @@ public class PlayerController : MonoBehaviour
       jumping = false;
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
-
-
-    /*
-
+        
     if( Input.GetKeyDown( DashKey ) )
     {
-      if( onGround )
+      if( onGround || collideLeft || collideRight )
       {
         dashing = true;
         dashStart = Time.time;
-        anim = "dash";
       }
     }
     else
     if( Input.GetKeyUp( DashKey ) )
     {
-      dashing = false;
-    }
-
-    if( dashing )
-    {
-      if( facingRight )
-      {
-        velocity += Vector3.right * dashVel;
-        dashSmoke.transform.localPosition = new Vector3( -0.36f, -0.2f, 0 );
-      }
-      else
-      {
-        velocity += Vector3.left * dashVel;
-        dashSmoke.transform.localPosition = new Vector3( 0.36f, -0.2f, 0 );
-      }
-      if( onGround && !dashSmoke.isPlaying )
-        dashSmoke.Play();
-      if( !onGround && dashSmoke.isPlaying )
-        dashSmoke.Stop();
-      
-      if( Time.time - dashStart >= dashDuration )
-      {
+      if( !jumping )
         dashing = false;
-        dashSmoke.Stop();
-      }
     }
-*/
-
-
 
     if( velocity.y < 0 )
       jumping = false;
@@ -184,34 +221,53 @@ public class PlayerController : MonoBehaviour
     if( landing && ( Time.time - landStart >= landDuration ) )
       landing = false;
 
+    if( collideFeet && !onGround )
+    {
+      dashing = false;
+      landing = true;
+      landStart = Time.time;
+      //AnimSequence seq = animator.animLookup[ "land" ];
+      //landDuration = ( 1.0f / seq.fps ) * seq.sprites.Length;
+    }
+
+    if( onGround && ( inputRight || inputLeft ) )
+      anim = "run";
+    
+    if( dashing )
+    {
+      if( onGround )
+      {
+        anim = "dash";
+        if( Time.time - dashStart >= dashDuration )
+        {
+          dashing = false;
+          dashSmoke.Stop();
+        }
+      }
+      if( facingRight )
+      {
+        velocity.x = dashVel;
+        dashSmoke.transform.localPosition = new Vector3( -0.36f, -0.2f, 0 );
+      }
+      else
+      {
+        velocity.x = -dashVel;
+        dashSmoke.transform.localPosition = new Vector3( 0.36f, -0.2f, 0 );
+      }
+    }
+
     if( jumping )
       anim = "jump";
     
-    if( onGround && ( inputRight || inputLeft ) )
-      anim = "run";
-
     if( !onGround && !jumping )
       anim = "fall";
     
-    
-
-    if( collideFeet && !onGround )
-    {
-      landing = true;
-      landStart = Time.time;
-      AnimSequence seq = animator.animLookup[ "land" ];
-      landDuration = ( 1.0f / seq.fps ) * seq.sprites.Length;
+    if( landing )
       anim = "land";
-    }
 
     if( collideFeet )
     {
       onGround = true;
-      RaycastHit2D hitFoot = ( hitLeftFoot.transform != null ) ? hitLeftFoot : hitRightFoot;
-      Vector3 adjust = transform.position;
-      if( transform.position.y - raydowndist < hitFoot.point.y )
-        adjust.y = hitFoot.point.y + floorOffset;
-      transform.position = adjust;
       velocity.y = Mathf.Max( velocity.y, 0 );
     }
     else
@@ -256,10 +312,12 @@ public class PlayerController : MonoBehaviour
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
-    if( anim == "wallslide" )
+
+    if( anim == "wallslide" || anim == "dash" )
       dashSmoke.Play();
     else
       dashSmoke.Stop();
+    
     animator.Play( anim );
     transform.position += velocity * Time.smoothDeltaTime;
   }

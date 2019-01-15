@@ -53,7 +53,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1361865905516568}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.36, y: -0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4857518412556878}
@@ -66,7 +66,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1789244597324514}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.858525, y: -2.6620004, z: -0.11673504}
+  m_LocalPosition: {x: -0.15324141, y: 0.16292034, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4628035983201072}
@@ -116,18 +116,15 @@ MonoBehaviour:
   RightKey: 102
   LeftKey: 115
   JumpKey: 101
-  raydowndist: 0.35
-  floorOffset: 0.27
-  rayside: 0.2
-  boxHalfWidth: 0.1
-  boxHalfHeightHi: 0.1
-  boxHalfHelghtLo: 0.08
+  raylength: 0.1
+  box: {x: 0.1, y: 0.3}
+  hitOffset: {x: 0.1, y: 0.27}
   gravity: 16
   moveVel: 2
   jumpVel: 5
-  dashVel: 5
+  dashVel: 4
   jumpDuration: 0.4
-  dashDuration: 1
+  dashDuration: 0.5
   landDuration: 0.1
   wallSlideFactor: 0.8
   facingRight: 0
@@ -138,6 +135,10 @@ MonoBehaviour:
   landing: 0
   dashing: 0
   velocity: {x: 0, y: 0, z: 0}
+  collideRight: 0
+  collideLeft: 0
+  collideHead: 0
+  collideFeet: 0
 --- !u!198 &198502029244883790
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -3590,9 +3591,9 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300004, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
+  m_Sprite: {fileID: 21300002, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.78125, y: 0.78125}

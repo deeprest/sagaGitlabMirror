@@ -149,7 +149,7 @@ public class SpriteAnimator : MonoBehaviour
         CurrentSequence.sprites.Length > 0 )
     {
       
-      if( CurrentSequence.holdLastFrame )
+      if( !CurrentSequence.loop )
         CurrentFrameIndex = Mathf.Min( Mathf.FloorToInt( Mathf.Max( 0, time - animStart ) * (float)CurrentSequence.fps ), CurrentSequence.sprites.Length - 1 );
       else
       {

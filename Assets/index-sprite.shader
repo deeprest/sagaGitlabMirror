@@ -68,24 +68,10 @@ Shader "Custom/Indexed Sprite"
 
 			sampler2D _MainTex;
 			sampler2D _AlphaTex;
-			float _AlphaSplitEnabled;
-
-
-			fixed4 SampleSpriteTexture (float2 uv)
-			{
-				fixed4 color = tex2D (_MainTex, uv);
-
-#if UNITY_TEXTURE_ALPHASPLIT_ALLOWED
-				if (_AlphaSplitEnabled)
-					color.a = tex2D (_AlphaTex, uv).r;
-#endif //UNITY_TEXTURE_ALPHASPLIT_ALLOWED
-
-				return color;
-			}
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
-				fixed4 c = SampleSpriteTexture (IN.texcoord) * IN.color;
+				fixed4 c = tex2D (_MainTex, IN.texcoord) * IN.color;
 				c.rgb *= c.a;
 
 				int r = (int)(c.r * 255.0);

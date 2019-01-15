@@ -7,7 +7,7 @@ public class AnimSequence : ScriptableObject
 {
   //new public string name;
   public int fps = 16;
-  public bool holdLastFrame = false;
+  public bool loop = true;
   public int loopStartIndex = 0;
   public Sprite[] sprites;
 }
