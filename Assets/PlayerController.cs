@@ -155,7 +155,8 @@ public class PlayerController : MonoBehaviour
     else
       renderer.flipX = true;
       
-    if( Input.GetKey( RightKey ) )
+    const float deadZone = 0.3f;
+    if( Input.GetAxisRaw( Global.instance.axisMap["Horizontal"] ) > deadZone )
     {
       inputRight = true;
       velocity.x = moveVel;
@@ -168,7 +169,7 @@ public class PlayerController : MonoBehaviour
       inputRight = false;
     }
 
-    if( Input.GetKey( LeftKey ) )
+    if( Input.GetAxisRaw( Global.instance.axisMap["Horizontal"] ) < -deadZone )
     {
       inputLeft = true;
       velocity.x = -moveVel;
@@ -181,7 +182,7 @@ public class PlayerController : MonoBehaviour
       inputLeft = false;
     }
 
-    if( Input.GetKeyDown( JumpKey ) )
+    if( Input.GetKeyDown( Global.instance.keyMap["Jump"] ) )
     {
       if( onGround || ( inputRight && collideRight ) || ( inputLeft && collideLeft ) )
       {
@@ -191,7 +192,7 @@ public class PlayerController : MonoBehaviour
       }
     }
     else
-    if( Input.GetKeyUp( JumpKey ) )
+    if( Input.GetKeyUp( Global.instance.keyMap["Jump"] ) )
     {
       jumping = false;
       velocity.y = Mathf.Min( velocity.y, 0 );
