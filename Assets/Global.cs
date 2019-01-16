@@ -15,9 +15,10 @@ public class Global : MonoBehaviour
 
   public static Global instance;
   public static bool Paused = false;
+  public static bool IsQuiting = false;
 
   [Header( "References" )]
-  public Object InitialScene;
+//  public Object InitialScene;
   public string InitialSceneName;
   public CameraController CameraController;
 
@@ -28,7 +29,17 @@ public class Global : MonoBehaviour
   public GameObject CurrentPlayer;
   public RectTransform cursor;
 
-
+  void OnApplicationQuit()
+  {
+    if( !IsQuiting )
+    {
+      Application.CancelQuit();
+      IsQuiting = true;
+      // do pre-quit stuff here
+      //
+      Application.Quit();
+    }
+  }
 
   void Awake()
   {
@@ -64,7 +75,7 @@ public class Global : MonoBehaviour
     GameObject[] spawns = GameObject.FindGameObjectsWithTag( "Respawn" );
     if( spawns.Length > 0 )
     {
-      CurrentPlayer = GameObject.Instantiate( AvatarPrefab, spawns[ Random.Range( 0, spawns.Length ) ].transform.position, Quaternion.identity, null );
+      CurrentPlayer = Spawn( AvatarPrefab, spawns[ Random.Range( 0, spawns.Length ) ].transform.position, Quaternion.identity, null, false );
       //CameraController.LockOn( CurrentPlayer );
       CameraController.LookTarget = CurrentPlayer;
     }
@@ -81,11 +92,13 @@ public class Global : MonoBehaviour
 
   public float cursorOuter = 100;
   public float cursorInner = 50;
-  Vector3 cursorDelta;
+  public Vector3 cursorDelta;
   public float cursorSensitivity = 1;
 
   void Update()
   {
+    Timer.UpdateTimers();
+
     if( Input.GetKeyDown( KeyCode.P ) )
     {
       if( Paused )
@@ -163,8 +176,13 @@ public class Global : MonoBehaviour
     for( int i = 0; i < 20; i++ )
       axes.Add( "Joy0Axis" + i );
 
-    keyMap[ "Jump" ] = KeyCode.JoystickButton10;
-    axisMap[ "Horizontal" ] = "Joy0Axis0";
+    keyMap[ "MoveRight" ] = KeyCode.D;
+    keyMap[ "MoveLeft" ] = KeyCode.A;
+    keyMap[ "Jump" ] = KeyCode.W;
+    keyMap[ "Dash" ] = KeyCode.Space;
+    keyMap[ "Fire" ] = KeyCode.Mouse0;
+    axisMap[ "ShootX" ] = "Joy0Axis2";
+    axisMap[ "ShootY" ] = "Joy0Axis3";
 
     // UI
     controllerRemapScreen.SetActive( false );
@@ -194,38 +212,17 @@ public class Global : MonoBehaviour
 
   List<string> axes = new List<string>();
 
-  KeyCode[] keys = { 
-    KeyCode.JoystickButton0,
-    KeyCode.JoystickButton1,
-    KeyCode.JoystickButton2,
-    KeyCode.JoystickButton3,
-    KeyCode.JoystickButton4,
-    KeyCode.JoystickButton5,
-    KeyCode.JoystickButton6,
-    KeyCode.JoystickButton7,
-    KeyCode.JoystickButton8,
-    KeyCode.JoystickButton9,
-    KeyCode.JoystickButton10,
-    KeyCode.JoystickButton11,
-    KeyCode.JoystickButton12,
-    KeyCode.JoystickButton13,
-    KeyCode.JoystickButton14,
-    KeyCode.JoystickButton15,
-    KeyCode.JoystickButton16,
-    KeyCode.JoystickButton17,
-    KeyCode.JoystickButton18,
-    KeyCode.JoystickButton19
-  };
-
   IEnumerator RemapRoutine()
   {
     bool done = false;
+
+    KeyCode[] allKeys = (KeyCode[])System.Enum.GetValues( typeof(KeyCode) );
+    // remap gamepad input
     Dictionary<string,KeyCode> changeKey = new Dictionary<string, KeyCode>();
     Dictionary<string,KeyCode>.Enumerator enu = keyMap.GetEnumerator();
     while( !done && enu.MoveNext() )
     {
       string key = enu.Current.Key;
-      //pointer
       GameObject go = controllerMapListParent.Find( key ).gameObject;
       Text[] ts = go.GetComponentsInChildren<Text>();
       ts[ 0 ].color = Color.red;
@@ -235,17 +232,14 @@ public class Global : MonoBehaviour
       while( !hit )
       {
         if( Input.GetButtonDown( "Cancel" ) )
-        {
-          done = true;
           break;
-        }
-        for( int i = 0; i < keys.Length; i++ )
+        for( int i = 0; i < allKeys.Length; i++ )
         {
-          if( Input.GetKeyDown( keys[ i ] ) )
+          if( Input.GetKeyDown( allKeys[ i ] ) )
           {
             ts[ 1 ].text = i.ToString();
             hit = true;
-            changeKey[ key ] = keys[ i ];
+            changeKey[ key ] = allKeys[ i ];
             break;
           }
         }
@@ -255,10 +249,9 @@ public class Global : MonoBehaviour
       if( hit )
       {
         ts[ 0 ].color = Color.white;
+        yield return new WaitForSecondsRealtime( 0.1f );
       }
     }
-    foreach( var pair in changeKey )
-      keyMap[ pair.Key ] = pair.Value;
 
 
     Dictionary<string,string> changeAxis = new Dictionary<string, string>();
@@ -276,10 +269,7 @@ public class Global : MonoBehaviour
       while( !hit )
       {
         if( Input.GetButtonDown( "Cancel" ) )
-        {
-          done = true;
           break;
-        }
         foreach( var ax in axes )
         {
           if( Mathf.Abs( Input.GetAxisRaw( ax ) ) > 0.5f )
@@ -289,18 +279,60 @@ public class Global : MonoBehaviour
             break;
           }
         }
-        
+        if( !hit && Input.anyKeyDown )
+        {
+          for( int i = 0; i < allKeys.Length; i++ )
+          {
+            if( Input.GetKeyDown( allKeys[ i ] ) )
+            {
+              ts[ 1 ].text = i.ToString();
+              hit = true;
+              changeKey[ key ] = allKeys[ i ];
+              break;
+            }
+          }
+        }
         yield return null;
       }
 
       if( hit )
       {
         ts[ 0 ].color = Color.white;
+        yield return new WaitForSecondsRealtime( 0.1f );
       }
     }
+
+    foreach( var pair in changeKey )
+      keyMap[ pair.Key ] = pair.Value;
     foreach( var pair in changeAxis )
       axisMap[ pair.Key ] = pair.Value;
+    
     controllerRemapScreen.SetActive( false );
   }
+    
 
+
+  public GameObject Spawn( GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null, bool limit = true, bool initialize = true )
+  {
+    if( limit )
+    {
+      ILimit[] limits = prefab.GetComponentsInChildren<ILimit>();
+      foreach( var cmp in limits )
+      {
+        if( !cmp.IsUnderLimit() )
+          return null;
+      }
+    }
+
+    GameObject go = GameObject.Instantiate( prefab, position, rotation, parent );
+    go.name = prefab.name;
+
+    if( initialize )
+    {
+//      SerializedComponent[] scs = go.GetComponentsInChildren<SerializedComponent>();
+//      foreach( var sc in scs )
+//        sc.AfterDeserialize();
+    }
+    return go;
+  }
 }
