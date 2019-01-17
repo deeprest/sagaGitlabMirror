@@ -5,6 +5,27 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
+
+[CanEditMultipleObjects]
+[CustomEditor( typeof(SpriteAnimator) )]
+public class SpriteAnimationEditor : Editor
+{
+  public override void OnInspectorGUI()
+  {
+    SpriteAnimator sa = target as SpriteAnimator;
+    if( sa.isPlaying )
+    {
+      if( GUI.Button( EditorGUILayout.GetControlRect(), "Stop" ) )
+        sa.Stop();
+    }
+    else
+    {
+      if( GUI.Button( EditorGUILayout.GetControlRect(), "Play" ) )
+        sa.Play( sa.CurrentSequence, true );
+    }
+    DrawDefaultInspector();
+  }
+}
 #endif
 
 
@@ -16,7 +37,7 @@ public class AnimSequence
   public Sprite[] sprites;
 }*/
 
-//[ExecuteInEditMode]
+[ExecuteInEditMode]
 public class SpriteAnimator : MonoBehaviour
 {
   #if USE_SPRITE_RENDERER
@@ -107,6 +128,11 @@ public class SpriteAnimator : MonoBehaviour
     {
       Debug.LogError( "Anim sequence " + animName + " does not exist on animator", gameObject );
     }
+  }
+
+  public void Stop()
+  {
+    isPlaying = false;
   }
 
   void OnEnable()

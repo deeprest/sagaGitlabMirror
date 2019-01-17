@@ -22,18 +22,25 @@ public class Projectile : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    transform.position += velocity * Time.smoothDeltaTime;
+    transform.position += velocity * Time.deltaTime;
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, velocity.magnitude * Time.deltaTime, LayerMask.GetMask( CollideLayers ) );
     if( hit.transform != null )
     {
       //print( "hit " + hit.transform.name );
 
       GameObject go = GameObject.Instantiate( HitEffect, transform.position, Quaternion.identity );
-      ParticleSystem ps = go.GetComponent<ParticleSystem>();
-      Timer t = new Timer( ps.main.duration, null, delegate
+      SpriteAnimator sa = go.GetComponent<SpriteAnimator>();
+      float duration = ( 1.0f / sa.CurrentSequence.fps ) * sa.CurrentSequence.sprites.Length;
+      Timer t = new Timer( duration, null, delegate
       {
         Destroy( go );
       } );
+        
+      /*ParticleSystem ps = go.GetComponent<ParticleSystem>();
+      Timer t = new Timer( ps.main.duration, null, delegate
+      {
+        Destroy( go );
+      } );*/
 
       timeoutTimer.Stop( false );
       Destroy( gameObject );

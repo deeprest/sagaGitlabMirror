@@ -1,4 +1,4 @@
-﻿Shader "Custom/IndexedColor" {
+﻿Shader "Custom/index-sprite-bump" {
 	Properties {
 		_Color ("Multiply Color", Color) = (1,1,1,1)
 		_Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
@@ -7,15 +7,31 @@
 		_BlendAmount("Blend Alpha", Range(0.0, 1.0)) = 0
 
 		_IndexColor ("Index 1", Color) = (1,0,0,1)
+		_IndexColor2 ("Index 2", Color) = (1,0,0,1)
+
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_MetallicTex ("Metallic (RGB)", 2D) = "white" {}
-		_EmissiveTex ("Emissive (RGB)", 2D) = "white" {}
-		_Glossiness ("Smoothness", Range(0.0,1.0)) = 0.5
+		_Glossiness ("Smoothness", Range(0.0,1.0)) = 0.0
 		_Metallic ("Metallic", Range(0,1)) = 0.0
+		_EmissiveTex ("Emissive (RGB)", 2D) = "white" {}
+		_EmissiveAmount ("Amount", Range(0,1)) = 0.0
+
+		_BumpMap ("Normalmap", 2D) = "bump" {}
 	}
 	SubShader {
-		Tags { "Queue"="AlphaTest" "RenderType"="TransparentCutout" }
+		Tags { 
+		//"Queue"="AlphaTest" "RenderType"="TransparentCutout" 
+		"Queue"="Transparent" 
+			"IgnoreProjector"="True" 
+			"RenderType"="Transparent" 
+			"PreviewType"="Plane"
+			"CanUseSpriteAtlas"="True"
+		}
 		LOD 200
+		Cull Off
+		Lighting On
+		ZWrite Off
+		Blend One OneMinusSrcAlpha
 
 		CGPROGRAM
 		// Physically based Standard lighting model, and enable shadows on all light types
@@ -25,17 +41,21 @@
 		#pragma target 3.0
 
 		sampler2D _MainTex;
+		sampler2D _BumpMap;
 		sampler2D _MetallicTex;
 		sampler2D _EmissiveTex;
 
 		struct Input {
 			float2 uv_MainTex;
+			float2 uv_BumpMap;
 		};
 
 		half _Glossiness;
 		half _Metallic;
+		half _EmissiveAmount;
 		fixed4 _Color;
 		fixed4 _IndexColor;
+		fixed4 _IndexColor2;
 
 		fixed4 _BlendColor;
 		half _BlendAmount;
@@ -50,18 +70,20 @@
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
 			float4 c = tex2D (_MainTex, IN.uv_MainTex);
-			o.Albedo = c.rgb * _Color.rgb;
 
 			int r = (int)(c.r * 255.0);
 			if( r==1 )
-				o.Albedo = lerp( _IndexColor.rgb * min(1.0,c.g*2.0), float4(1,1,1,1), (c.g-0.5)*2.0 );
+				c.rgb = lerp( _IndexColor.rgb * min(1.0,c.g*2.0), float4(1,1,1,1), (c.g-0.5)*2.0 );
+			if( r==2 )
+				c.rgb = lerp( _IndexColor2.rgb * min(1.0,c.g*2.0), float4(1,1,1,1), (c.g-0.5)*2.0 );
 
 
-			o.Albedo = lerp( o.Albedo, _BlendColor, _BlendAmount );
+			o.Albedo = lerp( c.rgb, _BlendColor, _BlendAmount );
+			o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
 			o.Metallic = _Metallic * (1.0 - tex2D( _MetallicTex, IN.uv_MainTex ));
 			o.Smoothness = _Glossiness;
 			o.Alpha = c.a;
-			o.Emission = tex2D (_EmissiveTex, IN.uv_MainTex);
+			o.Emission = tex2D (_EmissiveTex, IN.uv_MainTex) * _EmissiveAmount;
 		}
 		ENDCG
 	}

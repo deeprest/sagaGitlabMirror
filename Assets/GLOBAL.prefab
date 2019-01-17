@@ -261,7 +261,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1671587495769190}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.26, y: 0.15, z: -3.72}
+  m_LocalPosition: {x: 0.26, y: 0.15, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4364495294273822}
@@ -285,9 +285,9 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 100
-  field of view: 60
+  field of view: 45
   orthographic: 1
-  orthographic size: 2.09
+  orthographic size: 1.77
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -477,9 +477,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LookTarget: {fileID: 0}
-  zOffset: -3
+  zOffset: -5
   yHalfWidth: 1
-  pos: {x: 0, y: 0, z: 0}
+  pos: {x: 0, y: -1.74, z: 0}
   lerp: {fileID: 114891334979047146}
 --- !u!114 &114279937698075782
 MonoBehaviour:
@@ -510,8 +510,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01c8a48ffc903431bbba0f54487eff92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InitialScene: {fileID: 102900000, guid: e62bf34f053bb4ad29b313a15dac39f1, type: 3}
-  InitialSceneName: scene
+  InitialSceneName: mmx-city
   CameraController: {fileID: 114243473509280006}
   AvatarPrefab: {fileID: 1789244597324514, guid: e30c09e9b626b42f7aaf16c4fd9379ee,
     type: 2}
@@ -519,6 +518,7 @@ MonoBehaviour:
   cursor: {fileID: 224966245658186978}
   cursorOuter: 300
   cursorInner: 20
+  cursorDelta: {x: 0, y: 0, z: 0}
   cursorSensitivity: 10
   cursors:
   - {fileID: 21300000, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
@@ -604,7 +604,7 @@ MonoBehaviour:
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
+  m_ChildControlWidth: 1
   m_ChildControlHeight: 0
 --- !u!114 &114553592955028340
 MonoBehaviour:
@@ -1009,7 +1009,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 50, y: 30}
+  m_SizeDelta: {x: 0, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224345761186257288
 RectTransform:
@@ -1162,5 +1162,5 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 50, y: 30}
+  m_SizeDelta: {x: 0, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}

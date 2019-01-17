@@ -2,10 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public interface IDamage
 {
-  //  public CircleCollider2D circle;
-  //public BoxCollider2D box;
+  void TakeDamage( Damage d );
+}
+
+public class PlayerController : MonoBehaviour, IDamage
+{
+  public void TakeDamage( Damage d )
+  {
+    print( "take damage from "+d.instigator );
+  }
+  public CircleCollider2D circle;
 
   new public SpriteRenderer renderer;
   public SpriteAnimator animator;
@@ -379,4 +387,6 @@ public class PlayerController : MonoBehaviour
     animator.Play( anim );
     transform.position += velocity * Time.smoothDeltaTime;
   }
+
+
 }
