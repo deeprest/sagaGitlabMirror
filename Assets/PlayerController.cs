@@ -11,8 +11,9 @@ public class PlayerController : MonoBehaviour, IDamage
 {
   public void TakeDamage( Damage d )
   {
-    print( "take damage from "+d.instigator );
+    print( "take damage from " + d.instigator );
   }
+
   public CircleCollider2D circle;
 
   new public SpriteRenderer renderer;
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour, IDamage
   public Vector2 hitOffset = new Vector2( 0.3f, 0.3f );
 
   // velocities
+  public float MaxVelocity = 50;
   public float gravity = 16;
   public float moveVel = 2;
   public float jumpVel = 5;
@@ -60,6 +62,7 @@ public class PlayerController : MonoBehaviour, IDamage
   ParticleSystem chargeEffect = null;
   float chargeAmount = 0;
   public float chargeMin = 0.3f;
+  public float armRadius = 0.3f;
 
   void Update()
   {
@@ -97,7 +100,7 @@ public class PlayerController : MonoBehaviour, IDamage
 
     {
       Vector3 p = transform.position + ( Vector3.right * box.x );
-      RaycastHit2D hitRight = Physics2D.Raycast( p, Vector2.right, raylength, LayerMask.GetMask(PlayerCollideLayers) );
+      RaycastHit2D hitRight = Physics2D.Raycast( p, Vector2.right, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
       if( hitRight.transform != null )
       {
         if( hitRight.normal.x < -0.5f )
@@ -113,7 +116,7 @@ public class PlayerController : MonoBehaviour, IDamage
     }
     {
       Vector3 p = transform.position + ( Vector3.left * box.x );
-      RaycastHit2D hitLeft = Physics2D.Raycast( p, Vector2.left, raylength, LayerMask.GetMask(PlayerCollideLayers));
+      RaycastHit2D hitLeft = Physics2D.Raycast( p, Vector2.left, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
       if( hitLeft.transform != null )
       {
         if( hitLeft.normal.x > 0.5f )
@@ -129,8 +132,8 @@ public class PlayerController : MonoBehaviour, IDamage
     }
       
     // ground raycast
-    RaycastHit2D hitLeftFoot = Physics2D.Raycast( transform.position + Vector3.left * hitOffset.x, Vector2.down, box.y, LayerMask.GetMask(PlayerCollideLayers));
-    RaycastHit2D hitRightFoot = Physics2D.Raycast( transform.position + Vector3.right * hitOffset.x, Vector2.down, box.y, LayerMask.GetMask(PlayerCollideLayers) );
+    RaycastHit2D hitLeftFoot = Physics2D.Raycast( transform.position + Vector3.left * hitOffset.x, Vector2.down, box.y, LayerMask.GetMask( PlayerCollideLayers ) );
+    RaycastHit2D hitRightFoot = Physics2D.Raycast( transform.position + Vector3.right * hitOffset.x, Vector2.down, box.y, LayerMask.GetMask( PlayerCollideLayers ) );
     if( !jumping && ( hitLeftFoot.transform != null || hitRightFoot.transform != null ) )
     {
       RaycastHit2D hitFoot = ( hitLeftFoot.transform != null ) ? hitLeftFoot : hitRightFoot;
@@ -145,8 +148,8 @@ public class PlayerController : MonoBehaviour, IDamage
     }
 
     // head raycast 
-    RaycastHit2D hitLeftHead = Physics2D.Raycast( transform.position + Vector3.left * hitOffset.x, Vector2.up, box.y, LayerMask.GetMask(PlayerCollideLayers));
-    RaycastHit2D hitRightHead = Physics2D.Raycast( transform.position + Vector3.right * hitOffset.x, Vector2.up, box.y, LayerMask.GetMask(PlayerCollideLayers) );
+    RaycastHit2D hitLeftHead = Physics2D.Raycast( transform.position + Vector3.left * hitOffset.x, Vector2.up, box.y, LayerMask.GetMask( PlayerCollideLayers ) );
+    RaycastHit2D hitRightHead = Physics2D.Raycast( transform.position + Vector3.right * hitOffset.x, Vector2.up, box.y, LayerMask.GetMask( PlayerCollideLayers ) );
     if( ( hitLeftHead.transform != null || hitRightHead.transform != null ) )
     {
       collideHead = true;
@@ -161,6 +164,7 @@ public class PlayerController : MonoBehaviour, IDamage
 
     velocity.x = 0;
     velocity.y += -gravity * Time.deltaTime;
+    velocity.y = Mathf.Max( velocity.y, -MaxVelocity );
 
     if( facingRight )
       renderer.flipX = false;
@@ -168,32 +172,36 @@ public class PlayerController : MonoBehaviour, IDamage
       renderer.flipX = true;
 
     const float deadZone = 0.3f;
-    Vector3 shoot = new Vector3( Input.GetAxisRaw( Global.instance.axisMap[ "ShootX" ] ), Input.GetAxisRaw( Global.instance.axisMap[ "ShootY" ] ), 0 );
-    if( shoot.sqrMagnitude > deadZone*deadZone )
+
+    if( !Global.instance.UsingKeyboard )
     {
-      if( !shootRepeatTimer.IsActive )
+      Vector3 shoot = new Vector3( Input.GetAxisRaw( Global.instance.icsCurrent.axisMap[ "ShootX" ] ), -Input.GetAxisRaw( Global.instance.icsCurrent.axisMap[ "ShootY" ] ), 0 );
+      if( shoot.sqrMagnitude > deadZone * deadZone )
       {
-        shootRepeatTimer.Start( weapon.shootInterval, null, null );
-        GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab, transform.position, Quaternion.identity );
-        Projectile p = go.GetComponent<Projectile>();
-        p.velocity = shoot.normalized * weapon.speed;
-        Physics2D.IgnoreCollision( p.circle, collider );
+        if( !shootRepeatTimer.IsActive )
+        {
+          shootRepeatTimer.Start( weapon.shootInterval, null, null );
+          GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab, transform.position + shoot.normalized * armRadius, Quaternion.identity );
+          Projectile p = go.GetComponent<Projectile>();
+          p.velocity = shoot.normalized * weapon.speed;
+          Physics2D.IgnoreCollision( p.circle, collider );
+        }
       }
     }
       
-    if( Input.GetKeyDown( Global.instance.keyMap[ "Fire" ] ) )
+    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap[ "Fire" ] ) )
     {
       if( !shootRepeatTimer.IsActive )
       {
         shootRepeatTimer.Start( weapon.shootInterval, null, null );
-        GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab, transform.position, Quaternion.identity );
+        GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab, transform.position + Global.instance.cursorDelta.normalized * armRadius, Quaternion.identity );
         Projectile p = go.GetComponent<Projectile>();
         p.velocity = Global.instance.cursorDelta.normalized * weapon.speed;
         Physics2D.IgnoreCollision( p.circle, collider );
       }
     }
     else
-    if( Input.GetKey( Global.instance.keyMap[ "Fire" ] ) )
+    if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "Fire" ] ) )
     {
       // charge weapon
       if( chargeEffect == null )
@@ -204,24 +212,24 @@ public class PlayerController : MonoBehaviour, IDamage
       chargeAmount += Time.deltaTime;
     }
     else
-    if( Input.GetKeyUp( Global.instance.keyMap[ "Fire" ] ) )
+    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap[ "Fire" ] ) )
     {
       if( chargeEffect != null )
       {
         Destroy( chargeEffect.gameObject );
         if( chargeAmount > chargeMin )
         {
-          GameObject go = GameObject.Instantiate( weapon.ChargedProjectilePrefab, transform.position, Quaternion.identity );
+          GameObject go = GameObject.Instantiate( weapon.ChargedProjectilePrefab, transform.position + Global.instance.cursorDelta.normalized * armRadius, Quaternion.identity );
           Projectile p = go.GetComponent<Projectile>();
           p.velocity = Global.instance.cursorDelta.normalized * weapon.chargedSpeed;
           Physics2D.IgnoreCollision( p.circle, collider );
         }
       }
-          chargeEffect = null;
-          chargeAmount = 0;
+      chargeEffect = null;
+      chargeAmount = 0;
     }
 
-    if( Input.GetKey( Global.instance.keyMap["MoveRight"] ))
+    if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "MoveRight" ] ) )
     {
       inputRight = true;
       velocity.x = moveVel;
@@ -234,7 +242,7 @@ public class PlayerController : MonoBehaviour, IDamage
       inputRight = false;
     }
 
-    if( Input.GetKey( Global.instance.keyMap["MoveLeft"] ))
+    if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "MoveLeft" ] ) )
     {
       inputLeft = true;
       velocity.x = -moveVel;
@@ -247,7 +255,7 @@ public class PlayerController : MonoBehaviour, IDamage
       inputLeft = false;
     }
 
-    if( Input.GetKeyDown( Global.instance.keyMap["Jump"] ) )
+    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap[ "Jump" ] ) )
     {
       if( onGround || ( inputRight && collideRight ) || ( inputLeft && collideLeft ) )
       {
@@ -257,13 +265,13 @@ public class PlayerController : MonoBehaviour, IDamage
       }
     }
     else
-    if( Input.GetKeyUp( Global.instance.keyMap["Jump"] ) )
+    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap[ "Jump" ] ) )
     {
       jumping = false;
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
         
-    if( Input.GetKeyDown( Global.instance.keyMap["Dash"] ) )
+    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap[ "Dash" ] ) )
     {
       if( onGround || collideLeft || collideRight )
       {
@@ -272,7 +280,7 @@ public class PlayerController : MonoBehaviour, IDamage
       }
     }
     else
-      if( Input.GetKeyUp( Global.instance.keyMap["Dash"] ) )
+    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap[ "Dash" ] ) )
     {
       if( !jumping )
         dashing = false;

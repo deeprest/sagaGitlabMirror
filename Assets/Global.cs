@@ -18,7 +18,7 @@ public class Global : MonoBehaviour
   public static bool IsQuiting = false;
 
   [Header( "References" )]
-//  public Object InitialScene;
+  //  public Object InitialScene;
   public string InitialSceneName;
   public CameraController CameraController;
 
@@ -67,24 +67,23 @@ public class Global : MonoBehaviour
     StartCoroutine( InitializeRoutine() );
   }
 
+  Vector3 FindSpawnPoint()
+  {
+    GameObject[] spawns = GameObject.FindGameObjectsWithTag( "Respawn" );
+    if( spawns.Length > 0 )
+      return spawns[ Random.Range( 0, spawns.Length ) ].transform.position;
+    return Vector3.zero;
+  }
+
   IEnumerator InitializeRoutine()
   {
     SceneManager.LoadScene( InitialSceneName, LoadSceneMode.Single );
     yield return null;
 
-    GameObject[] spawns = GameObject.FindGameObjectsWithTag( "Respawn" );
-    if( spawns.Length > 0 )
-    {
-      CurrentPlayer = Spawn( AvatarPrefab, spawns[ Random.Range( 0, spawns.Length ) ].transform.position, Quaternion.identity, null, false );
-      //CameraController.LockOn( CurrentPlayer );
-      CameraController.LookTarget = CurrentPlayer;
-    }
-    else
-    {
-      CurrentPlayer = GameObject.Instantiate( AvatarPrefab, null );
-      CameraController.LookTarget = CurrentPlayer;
-//      CameraController.LockOn( CurrentPlayer );
-    }
+    CurrentPlayer = Spawn( AvatarPrefab, FindSpawnPoint(), Quaternion.identity, null, false );
+    //CameraController.LockOn( CurrentPlayer );
+    CameraController.LookTarget = CurrentPlayer;
+
     yield return new WaitForSecondsRealtime( 0.1f );
     Unpause();
     yield return null;
@@ -99,12 +98,40 @@ public class Global : MonoBehaviour
   {
     Timer.UpdateTimers();
 
+    if( !remappingControls )
+    {
+      if( UsingKeyboard )
+      {
+        for( int i = 0; i < 20; i++ )
+        {
+          if( Input.GetKey( "joystick button " + i ) )
+          {
+            UseGamepad();
+          }
+        }
+      }
+      else
+      {
+        for( int i = 0; i < activateKeyboardKeys.Length; i++ )
+        {
+          if( Input.GetKeyDown( activateKeyboardKeys[ i ] ) )
+          {
+            UseKeyboard();
+          }
+        }
+      }
+    }
+
     if( Input.GetKeyDown( KeyCode.P ) )
     {
       if( Paused )
         Unpause();
       else
         Pause();
+    }
+    if( Input.GetKeyDown( KeyCode.Return ) )
+    {
+      CurrentPlayer.transform.position = FindSpawnPoint();
     }
       
     cursorDelta += new Vector3( Input.GetAxis( "Cursor X" ) * cursorSensitivity, Input.GetAxis( "Cursor Y" ) * cursorSensitivity, 0 );
@@ -163,35 +190,124 @@ public class Global : MonoBehaviour
 
   public float cursorScale = 4;
 
+  public class InputControlScheme
+  {
+    public Dictionary<string,KeyCode> keyMap = new Dictionary<string, KeyCode>();
+    public Dictionary<string,string> axisMap = new Dictionary<string, string>();
+  }
+
+  public InputControlScheme icsCurrent{ get; set; }
+
+  InputControlScheme icsKeyboard = new InputControlScheme();
+  InputControlScheme icsGamepad = new InputControlScheme();
+
+  public bool UsingKeyboard { get { return icsCurrent == icsKeyboard; } }
+
   [Header( "Control Remap" )]
-  public Dictionary<string,KeyCode> keyMap = new Dictionary<string, KeyCode>();
-  public Dictionary<string,string> axisMap = new Dictionary<string, string>();
+  KeyCode[] allKeys;
+  KeyCode[] activateKeyboardKeys;
+  bool remappingControls = false;
+  // UI
   public GameObject controllerRemapScreen;
   public RectTransform controllerMapListParent;
   public GameObject controllerMapListItemTemplate;
   public Text remapInstruction;
+  public Sprite keyboardSprite;
+  public Sprite gamepadSprite;
+  public Image controllerIndicator;
 
+  void UseKeyboard()
+  {
+    print( "using keyboard" );
+    icsCurrent = icsKeyboard;
+    RepopulateControlBindingList();
+    controllerIndicator.sprite = keyboardSprite;
+  }
+
+  void UseGamepad()
+  {
+    print( "using gamepad" );
+    icsCurrent = icsGamepad;
+    RepopulateControlBindingList();
+    controllerIndicator.sprite = gamepadSprite;
+  }
+
+  void RepopulateControlBindingList()
+  {
+    // repopulate controller remap list
+    for( int i = 0; i < controllerMapListParent.childCount; i++ )
+    {
+      Transform tf = controllerMapListParent.GetChild( i );
+      if( tf.gameObject == controllerMapListItemTemplate )
+        continue;
+      Destroy( tf.gameObject );
+    }
+    foreach( var pair in icsCurrent.keyMap )
+      AddControlListItem( pair.Key );
+    foreach( var pair in icsCurrent.axisMap )
+      AddControlListItem( pair.Key );
+  }
+
+  string[] GetAllActions()
+  {
+    List<string> str = new List<string>();
+    foreach( var pair in icsCurrent.keyMap )
+    {
+      if( !str.Contains( pair.Key ) )
+        str.Add( pair.Key );
+    }
+    foreach( var pair in icsCurrent.axisMap )
+    {
+      if( !str.Contains( pair.Key ) )
+        str.Add( pair.Key );
+    }
+    return str.ToArray();
+  }
+
+  void SetDefaultControls()
+  {
+    // keyboard
+    icsKeyboard.keyMap[ "MoveRight" ] = KeyCode.D;
+    icsKeyboard.keyMap[ "MoveLeft" ] = KeyCode.A;
+    icsKeyboard.keyMap[ "Jump" ] = KeyCode.W;
+    //keyMap[ "Crouch" ] = KeyCode.S;
+    icsKeyboard.keyMap[ "Dash" ] = KeyCode.Space;
+    icsKeyboard.keyMap[ "Fire" ] = KeyCode.Mouse0;
+
+    // gamepad
+    icsGamepad.keyMap[ "MoveRight" ] = KeyCode.JoystickButton8;
+    icsGamepad.keyMap[ "MoveLeft" ] = KeyCode.JoystickButton7;
+    icsGamepad.keyMap[ "Jump" ] = KeyCode.JoystickButton14;
+    //keyMap[ "Crouch" ] = KeyCode.JoystickButton5;
+    icsGamepad.keyMap[ "Dash" ] = KeyCode.JoystickButton13;
+    icsGamepad.keyMap[ "Fire" ] = KeyCode.None;
+    icsGamepad.axisMap[ "ShootX" ] = "Joy0Axis2";
+    icsGamepad.axisMap[ "ShootY" ] = "Joy0Axis3";
+
+  }
+
+    
   void InitializeControls()
   {
+    allKeys = (KeyCode[])System.Enum.GetValues( typeof(KeyCode) );
+    List<KeyCode> temp = new List<KeyCode>( allKeys );
+    temp.RemoveAll( x => x >= KeyCode.JoystickButton0 );
+    // Escape is used to access keybind menu. 
+    // This is intended to avoid changing current input scheme before remapping controls
+    temp.RemoveAll( x => x == KeyCode.Escape || ( x >= KeyCode.Mouse0 && x <= KeyCode.Mouse6 ) );
+    activateKeyboardKeys = temp.ToArray();
+
     for( int i = 0; i < 20; i++ )
       axes.Add( "Joy0Axis" + i );
 
-    keyMap[ "MoveRight" ] = KeyCode.D;
-    keyMap[ "MoveLeft" ] = KeyCode.A;
-    keyMap[ "Jump" ] = KeyCode.W;
-    keyMap[ "Dash" ] = KeyCode.Space;
-    keyMap[ "Fire" ] = KeyCode.Mouse0;
-    axisMap[ "ShootX" ] = "Joy0Axis2";
-    axisMap[ "ShootY" ] = "Joy0Axis3";
+    SetDefaultControls();
+    UseKeyboard();
 
     // UI
     controllerRemapScreen.SetActive( false );
     controllerMapListItemTemplate.SetActive( false );
-    //populate controller remap list
-    foreach( var pair in keyMap )
-      AddControlListItem( pair.Key );
-    foreach( var pair in axisMap )
-      AddControlListItem( pair.Key );
+
+
   }
 
   void AddControlListItem( string key )
@@ -214,15 +330,16 @@ public class Global : MonoBehaviour
 
   IEnumerator RemapRoutine()
   {
+    remappingControls = true;
     bool done = false;
 
-    KeyCode[] allKeys = (KeyCode[])System.Enum.GetValues( typeof(KeyCode) );
-    // remap gamepad input
     Dictionary<string,KeyCode> changeKey = new Dictionary<string, KeyCode>();
-    Dictionary<string,KeyCode>.Enumerator enu = keyMap.GetEnumerator();
-    while( !done && enu.MoveNext() )
+    Dictionary<string,string> changeAxis = new Dictionary<string, string>();
+
+    string[] actions = GetAllActions();
+    for( int a = 0; !done && a < actions.Length; a++ )
     {
-      string key = enu.Current.Key;
+      string key = actions[ a ];
       GameObject go = controllerMapListParent.Find( key ).gameObject;
       Text[] ts = go.GetComponentsInChildren<Text>();
       ts[ 0 ].color = Color.red;
@@ -231,6 +348,7 @@ public class Global : MonoBehaviour
       bool hit = false;
       while( !hit )
       {
+        yield return null;
         if( Input.GetButtonDown( "Cancel" ) )
           break;
         for( int i = 0; i < allKeys.Length; i++ )
@@ -243,73 +361,39 @@ public class Global : MonoBehaviour
             break;
           }
         }
-        yield return null;
-      }
-
-      if( hit )
-      {
-        ts[ 0 ].color = Color.white;
-        yield return new WaitForSecondsRealtime( 0.1f );
-      }
-    }
-
-
-    Dictionary<string,string> changeAxis = new Dictionary<string, string>();
-    Dictionary<string,string>.Enumerator axisEnu = axisMap.GetEnumerator();
-    while( !done && axisEnu.MoveNext() )
-    {
-      string key = axisEnu.Current.Key;
-      //pointer
-      GameObject go = controllerMapListParent.Find( key ).gameObject;
-      Text[] ts = go.GetComponentsInChildren<Text>();
-      ts[ 0 ].color = Color.red;
-      remapInstruction.text = "press desired button for action: " + key;
-
-      bool hit = false;
-      while( !hit )
-      {
-        if( Input.GetButtonDown( "Cancel" ) )
-          break;
-        foreach( var ax in axes )
+        if( !hit )
         {
-          if( Mathf.Abs( Input.GetAxisRaw( ax ) ) > 0.5f )
+          foreach( var ax in axes )
           {
-            changeAxis[ key ] = ax;
-            hit = true;
-            break;
-          }
-        }
-        if( !hit && Input.anyKeyDown )
-        {
-          for( int i = 0; i < allKeys.Length; i++ )
-          {
-            if( Input.GetKeyDown( allKeys[ i ] ) )
+            if( Mathf.Abs( Input.GetAxisRaw( ax ) ) > 0.5f )
             {
-              ts[ 1 ].text = i.ToString();
+              changeAxis[ key ] = ax;
               hit = true;
-              changeKey[ key ] = allKeys[ i ];
               break;
             }
           }
         }
-        yield return null;
       }
 
       if( hit )
       {
         ts[ 0 ].color = Color.white;
-        yield return new WaitForSecondsRealtime( 0.1f );
+        Input.ResetInputAxes();
+        yield return new WaitForSecondsRealtime( 0.2f );
       }
     }
 
     foreach( var pair in changeKey )
-      keyMap[ pair.Key ] = pair.Value;
+      icsCurrent.keyMap[ pair.Key ] = pair.Value;
     foreach( var pair in changeAxis )
-      axisMap[ pair.Key ] = pair.Value;
+      icsCurrent.axisMap[ pair.Key ] = pair.Value;
     
     controllerRemapScreen.SetActive( false );
+    Input.ResetInputAxes();
+    yield return null;
+    remappingControls = false;
   }
-    
+
 
 
   public GameObject Spawn( GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null, bool limit = true, bool initialize = true )

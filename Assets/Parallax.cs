@@ -10,10 +10,13 @@ public class Parallax : MonoBehaviour
 
   void Update()
   {
-    if( Camera.current != null )
+    if( Application.isEditor && Application.isPlaying )
     {
-      Vector3 pos = Camera.current.transform.position;
-      transform.position = offset + new Vector3( pos.x * rate.x, pos.y * rate.y, depth );
+      if( Camera.current != null )
+      {
+        Vector3 pos = Camera.current.transform.position;
+        transform.position = offset + new Vector3( pos.x * rate.x, pos.y * rate.y, depth );
+      }
     }
   }
 

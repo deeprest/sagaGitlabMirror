@@ -132,6 +132,7 @@ MonoBehaviour:
   raylength: 0.1
   box: {x: 0.1, y: 0.3}
   hitOffset: {x: 0.1, y: 0.27}
+  MaxVelocity: 20
   gravity: 16
   moveVel: 2
   jumpVel: 5
@@ -155,6 +156,7 @@ MonoBehaviour:
   collider: {fileID: 58788288773554858}
   weapon: {fileID: 11400000, guid: fd374035a3d2a4dfab5b20e9cd75ba10, type: 2}
   chargeMin: 0.5
+  armRadius: 0.3
 --- !u!198 &198502029244883790
 ParticleSystem:
   m_ObjectHideFlags: 1
