@@ -56,13 +56,18 @@ public class PlayerController : MonoBehaviour, IDamage
   public bool collideFeet = false;
 
   string[] PlayerCollideLayers = new string[] { "foreground" };
-  public CircleCollider2D collider;
   public Weapon weapon;
   Timer shootRepeatTimer = new Timer();
   ParticleSystem chargeEffect = null;
   float chargeAmount = 0;
   public float chargeMin = 0.3f;
   public float armRadius = 0.3f;
+  Timer chargePulse = new Timer();
+  Timer chargeStartDelay = new Timer();
+  public float chargeDelay = 0.2f;
+  public bool chargePulseOn = true;
+  public float chargePulseInterval = 0.1f;
+  public Color chargeColor = Color.white;
 
   void Update()
   {
@@ -184,7 +189,7 @@ public class PlayerController : MonoBehaviour, IDamage
           GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab, transform.position + shoot.normalized * armRadius, Quaternion.identity );
           Projectile p = go.GetComponent<Projectile>();
           p.velocity = shoot.normalized * weapon.speed;
-          Physics2D.IgnoreCollision( p.circle, collider );
+          Physics2D.IgnoreCollision( p.circle, circle );
         }
       }
     }
@@ -197,19 +202,26 @@ public class PlayerController : MonoBehaviour, IDamage
         GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab, transform.position + Global.instance.cursorDelta.normalized * armRadius, Quaternion.identity );
         Projectile p = go.GetComponent<Projectile>();
         p.velocity = Global.instance.cursorDelta.normalized * weapon.speed;
-        Physics2D.IgnoreCollision( p.circle, collider );
+        Physics2D.IgnoreCollision( p.circle, circle );
+
+        chargeStartDelay.Start( chargeDelay, null, delegate
+        {
+          renderer.material.SetColor( "_BlendColor", chargeColor );
+          ChargePulseFlip();
+          GameObject geffect = GameObject.Instantiate( weapon.ChargeEffect, transform  );
+          chargeEffect = geffect.GetComponent<ParticleSystem>();
+        } );
       }
     }
     else
     if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "Fire" ] ) )
     {
       // charge weapon
-      if( chargeEffect == null )
+      if( chargeEffect != null )
       {
-        GameObject go = GameObject.Instantiate( weapon.ChargeEffect, transform );
-        chargeEffect = go.GetComponent<ParticleSystem>();
+          chargeAmount += Time.deltaTime;
       }
-      chargeAmount += Time.deltaTime;
+
     }
     else
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap[ "Fire" ] ) )
@@ -222,9 +234,12 @@ public class PlayerController : MonoBehaviour, IDamage
           GameObject go = GameObject.Instantiate( weapon.ChargedProjectilePrefab, transform.position + Global.instance.cursorDelta.normalized * armRadius, Quaternion.identity );
           Projectile p = go.GetComponent<Projectile>();
           p.velocity = Global.instance.cursorDelta.normalized * weapon.chargedSpeed;
-          Physics2D.IgnoreCollision( p.circle, collider );
+          Physics2D.IgnoreCollision( p.circle, circle );
         }
       }
+      chargeStartDelay.Stop( false );
+      chargePulse.Stop( false );
+      renderer.material.SetFloat( "_BlendAmount", 0 );
       chargeEffect = null;
       chargeAmount = 0;
     }
@@ -396,5 +411,16 @@ public class PlayerController : MonoBehaviour, IDamage
     transform.position += velocity * Time.smoothDeltaTime;
   }
 
-
+  void ChargePulseFlip()
+  {
+    chargePulse.Start( chargePulseInterval, null, delegate
+    {
+      chargePulseOn = !chargePulseOn;
+      if( chargePulseOn )
+        renderer.material.SetFloat("_BlendAmount", 0.5f );
+      else
+        renderer.material.SetFloat("_BlendAmount", 0 );
+      ChargePulseFlip();
+    } );
+  }
 }

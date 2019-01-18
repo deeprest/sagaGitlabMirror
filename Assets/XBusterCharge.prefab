@@ -48,7 +48,7 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1114664079986530}
   serializedVersion: 5
-  lengthInSec: 0.0001
+  lengthInSec: 1
   simulationSpeed: 1
   stopAction: 0
   looping: 1
@@ -101,7 +101,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1013296628
+  randomSeed: -2048952927
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -149,7 +149,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: -1
+      scalar: -2
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -566,7 +566,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 0.53758013
+      value: 0.5
       mode: 0
       spread: 0
       speed:
@@ -613,7 +613,7 @@ ParticleSystem:
     arc:
       value: 360
       mode: 0
-      spread: 0
+      spread: 0.05
       speed:
         serializedVersion: 2
         minMaxState: 0
@@ -661,7 +661,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 40
+      scalar: 60
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -1060,8 +1060,8 @@ ParticleSystem:
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
   UVModule:
-    enabled: 0
-    mode: 0
+    enabled: 1
+    mode: 1
     frameOverTime:
       serializedVersion: 2
       minMaxState: 1
@@ -1146,15 +1146,18 @@ ParticleSystem:
         m_RotationOrder: 4
     tilesX: 1
     tilesY: 1
-    animationType: 0
+    animationType: 1
     rowIndex: 0
     cycles: 1
     uvChannelMask: -1
     flipU: 0
     flipV: 0
-    randomRow: 1
+    randomRow: 0
     sprites:
-    - sprite: {fileID: 0}
+    - sprite: {fileID: 21300014, guid: b852c4d2216af4dd48b6e429a2346604, type: 3}
+    - sprite: {fileID: 21300012, guid: b852c4d2216af4dd48b6e429a2346604, type: 3}
+    - sprite: {fileID: 21300010, guid: b852c4d2216af4dd48b6e429a2346604, type: 3}
+    - sprite: {fileID: 21300008, guid: b852c4d2216af4dd48b6e429a2346604, type: 3}
   VelocityModule:
     enabled: 0
     x:
@@ -3417,7 +3420,7 @@ ParticleSystemRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0

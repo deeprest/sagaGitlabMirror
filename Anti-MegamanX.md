@@ -1,4 +1,27 @@
 
+**DEV**
+global instance, hooks, vars
+scene loader
+timers
+limit
+controlled spawning
+# spawn
+- generate new level
+- deserialized
+- spawn point
+- create new character (without spawn point)
+- construction
+- compound object replace (new level or construction)
+- dragndrop in editor
+## spawn variants
+- limited
+- by name, replacement check
+- remove colliding objects
+* fix the name
+
+
+
+**DESIGN**
 # keep
 no momentum to movement
 dash feels good
@@ -28,7 +51,8 @@ Consistent with instruments in the music.
 energy. melody.
 
 
-In my opinion, every game in the franchise suffers from the same problems: small viewing area, can only shoot forward, enemies respawn immediately out of sight, levels are static.
+In my opinion, Megaman X1-X3 suffers from the same problems: small viewing area, can only shoot forward, enemies respawn immediately out of sight, levels are static.
+Megaman X4 is so bad I never played another MMX game again. I've watched gameplay videos to keep up to date with the MMX games, but it seems the franchise never improved.
 
 1. Camera view range.
 Camera can center on an imaginary point around the player, in the aiming direction. Allow for variance in zoom, depending on how cozy the surroundings (raycast in a few directions to determine).
