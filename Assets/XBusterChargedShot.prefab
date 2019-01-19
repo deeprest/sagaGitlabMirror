@@ -135,11 +135,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7fedf88244445a5a27ec563256f57b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 114773479464502754}
   raycastDistance: 0.2
   timeout: 2
   velocity: {x: 0, y: 0, z: 0}
   circle: {fileID: 58790195297255388}
-  HitEffect: {fileID: 1829870167623402, guid: 7e0c0af39b34c4090a110e175854dbe2, type: 2}
+  HitEffect: {fileID: 11400000, guid: 7365b6f3e0fd946c3bc37ea54da874ea, type: 2}
   AlignXToMovementDirection: 1
 --- !u!114 &114773479464502754
 MonoBehaviour:

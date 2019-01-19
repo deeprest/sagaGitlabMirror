@@ -3,13 +3,11 @@ using System.Collections;
 
 public enum DamageType
 {
-  Generic,
-  Fire,
-  Axe
+  Generic
 }
   
-[CreateAssetMenu]
-public class Damage : ScriptableObject
+//[CreateAssetMenu]
+public class Damage// : ScriptableObject
 {
   public Transform instigator;
   public DamageType type = DamageType.Generic;

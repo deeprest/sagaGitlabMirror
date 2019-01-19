@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IDamage
-{
-  void TakeDamage( Damage d );
-}
 
 public class PlayerController : MonoBehaviour, IDamage
 {
@@ -23,7 +19,8 @@ public class PlayerController : MonoBehaviour, IDamage
   // settings
   public float raylength = 0.1f;
   public Vector2 box = new Vector2( 0.3f, 0.3f );
-  public Vector2 hitOffset = new Vector2( 0.3f, 0.3f );
+  //public Vector2 hitOffset = new Vector2( 0.3f, 0.3f );
+  public float contactSeparation = 0.01f;
 
   // velocities
   public float MaxVelocity = 50;
@@ -78,92 +75,50 @@ public class PlayerController : MonoBehaviour, IDamage
     collideLeft = false;
     collideHead = false;
     collideFeet = false;
+    
+    RaycastHit2D[] hits;
+    const float corner = 0.707f;
+    Vector2 adjust = transform.position;
 
-    /*RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, radius, Vector2.down, castDistance, Physics2D.AllLayers );
-    //RaycastHit2D[] hits = Physics2D.BoxCastAll( transform.position, box, 0, velocity, velocity.magnitude * Time.smoothDeltaTime, Physics2D.AllLayers );
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( Mathf.Abs( hit.normal.y ) < wallY )
+      if( hit.normal.y > corner )
       {
-        if( hit.normal.x > 0 )
-          collideLeft = true;
-        else
-          collideRight = true;
-      }
-      else
-      {
-        if( hit.normal.y > 0 )
-        {
-          collideFeet = true;
-          hitFoot = hit;
-        }
-        else
-          collideHead = true;
-      }
-    }*/
-   
-
-    {
-      Vector3 p = transform.position + ( Vector3.right * box.x );
-      RaycastHit2D hitRight = Physics2D.Raycast( p, Vector2.right, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
-      if( hitRight.transform != null )
-      {
-        if( hitRight.normal.x < -0.5f )
-        {
-          dashing = false;
-          collideRight = true;
-          Vector3 adjust = transform.position;
-          if( transform.position.x + box.x > hitRight.point.x )
-            adjust.x = hitRight.point.x - box.x;
-          transform.position = adjust;
-        }
+        collideFeet = true;
+        adjust.y = hit.point.y + box.y + contactSeparation;
       }
     }
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.up, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
+    foreach( var hit in hits )
     {
-      Vector3 p = transform.position + ( Vector3.left * box.x );
-      RaycastHit2D hitLeft = Physics2D.Raycast( p, Vector2.left, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
-      if( hitLeft.transform != null )
+      if( hit.normal.y < -corner )
       {
-        if( hitLeft.normal.x > 0.5f )
-        {
-          dashing = false;
-          collideLeft = true;
-          Vector3 adjust = transform.position;
-          if( transform.position.x - box.x < hitLeft.point.x )
-            adjust.x = hitLeft.point.x + box.x;
-          transform.position = adjust;
-        }
+        collideHead = true;
+        adjust.y = hit.point.y - box.y - contactSeparation;
+      }
+    }
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
+    foreach( var hit in hits )
+    {
+      if( hit.normal.x > corner )
+      {
+        collideLeft = true;
+        adjust.x = hit.point.x + box.x + contactSeparation;
+      }
+    }
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
+    foreach( var hit in hits )
+    {
+      if( hit.normal.x < -corner )
+      {
+        collideRight = true;
+        adjust.x = hit.point.x - box.x - contactSeparation;
       }
     }
       
-    // ground raycast
-    RaycastHit2D hitLeftFoot = Physics2D.Raycast( transform.position + Vector3.left * hitOffset.x, Vector2.down, box.y, LayerMask.GetMask( PlayerCollideLayers ) );
-    RaycastHit2D hitRightFoot = Physics2D.Raycast( transform.position + Vector3.right * hitOffset.x, Vector2.down, box.y, LayerMask.GetMask( PlayerCollideLayers ) );
-    if( !jumping && ( hitLeftFoot.transform != null || hitRightFoot.transform != null ) )
-    {
-      RaycastHit2D hitFoot = ( hitLeftFoot.transform != null ) ? hitLeftFoot : hitRightFoot;
-      if( hitFoot.normal.y > 0.5f )
-      {
-        collideFeet = true;
-        Vector3 adjust = transform.position;
-        if( transform.position.y - box.y < hitFoot.point.y )
-          adjust.y = hitFoot.point.y + hitOffset.y;
-        transform.position = adjust;
-      }
-    }
 
-    // head raycast 
-    RaycastHit2D hitLeftHead = Physics2D.Raycast( transform.position + Vector3.left * hitOffset.x, Vector2.up, box.y, LayerMask.GetMask( PlayerCollideLayers ) );
-    RaycastHit2D hitRightHead = Physics2D.Raycast( transform.position + Vector3.right * hitOffset.x, Vector2.up, box.y, LayerMask.GetMask( PlayerCollideLayers ) );
-    if( ( hitLeftHead.transform != null || hitRightHead.transform != null ) )
-    {
-      collideHead = true;
-      RaycastHit2D hitHead = ( hitLeftHead.transform != null ) ? hitLeftHead : hitRightHead;
-      Vector3 adjust = transform.position;
-      if( transform.position.y + box.y > hitHead.point.y )
-        adjust.y = hitHead.point.y - hitOffset.y;
-      transform.position = adjust;
-    }
+    transform.position = adjust;
 
     string anim = "idle";
 
@@ -208,7 +163,7 @@ public class PlayerController : MonoBehaviour, IDamage
         {
           renderer.material.SetColor( "_BlendColor", chargeColor );
           ChargePulseFlip();
-          GameObject geffect = GameObject.Instantiate( weapon.ChargeEffect, transform  );
+          GameObject geffect = GameObject.Instantiate( weapon.ChargeEffect, transform );
           chargeEffect = geffect.GetComponent<ParticleSystem>();
         } );
       }
@@ -219,7 +174,7 @@ public class PlayerController : MonoBehaviour, IDamage
       // charge weapon
       if( chargeEffect != null )
       {
-          chargeAmount += Time.deltaTime;
+        chargeAmount += Time.deltaTime;
       }
 
     }
@@ -417,9 +372,9 @@ public class PlayerController : MonoBehaviour, IDamage
     {
       chargePulseOn = !chargePulseOn;
       if( chargePulseOn )
-        renderer.material.SetFloat("_BlendAmount", 0.5f );
+        renderer.material.SetFloat( "_BlendAmount", 0.5f );
       else
-        renderer.material.SetFloat("_BlendAmount", 0 );
+        renderer.material.SetFloat( "_BlendAmount", 0 );
       ChargePulseFlip();
     } );
   }

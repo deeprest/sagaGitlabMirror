@@ -8,13 +8,13 @@ public class Parallax : MonoBehaviour
   public float depth = 1;
   public Vector3 offset;
 
-  void Update()
+  void LateUpdate()
   {
-    if( Application.isEditor && Application.isPlaying )
+    //if( Application.isEditor && Application.isPlaying )
     {
-      if( Camera.current != null )
+      if( Camera.main != null )
       {
-        Vector3 pos = Camera.current.transform.position;
+        Vector3 pos = Camera.main.transform.position;
         transform.position = offset + new Vector3( pos.x * rate.x, pos.y * rate.y, depth );
       }
     }

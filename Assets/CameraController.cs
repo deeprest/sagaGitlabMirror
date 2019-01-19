@@ -31,7 +31,7 @@ public class CameraController : MonoBehaviour
     };
   }
 
-  void Update()
+  void LateUpdate()
   {
     if( !lerp.enabled && LookTarget != null )
     {

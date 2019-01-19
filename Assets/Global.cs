@@ -4,18 +4,31 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+public interface IDamage
+{
+  void TakeDamage( Damage d );
+}
+
+public class Character : MonoBehaviour, IDamage
+{
+  public void TakeDamage( Damage d ){}
+}
+
+public class Attack
+{
+  public Transform instigator;
+}
+
 
 public class Global : MonoBehaviour
 {
 
-  //  public void Log(string message, [System.Runtime.CompilerServices.CallerFilePath] string filePath = "", [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
-  //  {
-  //    Debug.Log( lineNumber + " " + message );
-  //  }
-
   public static Global instance;
   public static bool Paused = false;
+  public static bool Slowed = false;
   public static bool IsQuiting = false;
+
+  public GameObject audioOneShotPrefab;
 
   [Header( "References" )]
   //  public Object InitialScene;
@@ -122,6 +135,14 @@ public class Global : MonoBehaviour
       }
     }
 
+    if( Input.GetKeyDown( KeyCode.O ) )
+    {
+      if( Slowed )
+        NoSlow();
+      else
+        Slow();
+    }
+
     if( Input.GetKeyDown( KeyCode.P ) )
     {
       if( Paused )
@@ -133,11 +154,11 @@ public class Global : MonoBehaviour
     {
       CurrentPlayer.transform.position = FindSpawnPoint();
     }
-      
     cursorDelta += new Vector3( Input.GetAxis( "Cursor X" ) * cursorSensitivity, Input.GetAxis( "Cursor Y" ) * cursorSensitivity, 0 );
     if( Input.GetKeyDown( KeyCode.R ) )
       NextCursor();
   }
+
 
   void OnApplicationFocus( bool hasFocus )
   {
@@ -159,6 +180,18 @@ public class Global : MonoBehaviour
       cursorDelta = delta;
       cursor.anchoredPosition = origin + cursorDelta;
     }
+  }
+
+  public static void Slow()
+  {
+    Time.timeScale = 0.1f;
+    Slowed = true;
+  }
+
+  public static void NoSlow()
+  {
+    Time.timeScale = 1;
+    Slowed = false;
   }
 
   public static void Pause()

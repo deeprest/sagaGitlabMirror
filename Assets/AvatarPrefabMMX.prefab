@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 212107818795109166}
   - component: {fileID: 114275203110822438}
   - component: {fileID: 114555753213364338}
-  - component: {fileID: 58788288773554858}
+  - component: {fileID: 61999569739760366}
   m_Layer: 10
   m_Name: AvatarPrefabMMX
   m_TagString: Untagged
@@ -74,8 +74,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &58788288773554858
-CircleCollider2D:
+--- !u!61 &61999569739760366
+BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -87,8 +87,18 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.78125, y: 0.78125}
+    newSize: {x: 0.78125, y: 0.78125}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
   serializedVersion: 2
-  m_Radius: 0.15
+  m_Size: {x: 0.78125, y: 0.78125}
+  m_EdgeRadius: 0
 --- !u!114 &114275203110822438
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -129,9 +139,9 @@ MonoBehaviour:
   renderer: {fileID: 212107818795109166}
   animator: {fileID: 114275203110822438}
   dashSmoke: {fileID: 198502029244883790}
-  raylength: 0.1
+  raylength: 0.003
   box: {x: 0.1, y: 0.3}
-  hitOffset: {x: 0.1, y: 0.27}
+  contactSeparation: 0.003
   MaxVelocity: 20
   gravity: 16
   moveVel: 2

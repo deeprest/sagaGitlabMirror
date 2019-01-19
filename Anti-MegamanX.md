@@ -62,3 +62,11 @@ MegamanX can only shoot forwards, not upwards or even slightly higher. The abili
 
 3. Enemies respawn at logical locations.
 Not arbitrary static points.
+
+
+**stream of conciousness**
+skydrop intro
+land of bystander- squish! => the story begins. The person who died [was important to authority, ]
+dancing randoms
+screw loose; wire crossed; not all there; one X short of a Y;
+thoughts come and go, recirculating weather in a fishbowl; grab an idea out of the air;

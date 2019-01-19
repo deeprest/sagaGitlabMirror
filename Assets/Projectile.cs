@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+  public SpriteAnimator animator;
   public float raycastDistance = 0.2f;
   public float timeout = 2;
   Timer timeoutTimer;
   public Vector3 velocity;
   public CircleCollider2D circle;
   string[] CollideLayers = new string[] { "foreground" };
-  public GameObject HitEffect;
+  public AnimSequence HitEffect;
   public bool AlignXToMovementDirection = false;
 
   void Start()
@@ -31,14 +32,15 @@ public class Projectile : MonoBehaviour
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( CollideLayers ) );
     if( hit.transform != null )
     {
-      //print( "hit " + hit.transform.name );
+      enabled = false;
       transform.position = hit.point;
-      GameObject go = GameObject.Instantiate( HitEffect, transform.position, Quaternion.identity );
-      SpriteAnimator sa = go.GetComponent<SpriteAnimator>();
-      float duration = ( 1.0f / sa.CurrentSequence.fps ) * sa.CurrentSequence.sprites.Length;
-      Timer t = new Timer( duration, null, delegate
+      animator.Play( HitEffect, true );
+      //GameObject go = GameObject.Instantiate( HitEffect, transform.position, Quaternion.identity );
+      //SpriteAnimator sa = go.GetComponent<SpriteAnimator>();
+      float duration = ( 1.0f / animator.CurrentSequence.fps ) * animator.CurrentSequence.sprites.Length;
+      new Timer( duration, null, delegate
       {
-        Destroy( go );
+        Destroy( gameObject );
       } );
         
       /*ParticleSystem ps = go.GetComponent<ParticleSystem>();
@@ -48,7 +50,6 @@ public class Projectile : MonoBehaviour
       } );*/
 
       timeoutTimer.Stop( false );
-      Destroy( gameObject );
     }
   }
 
