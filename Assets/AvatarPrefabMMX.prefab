@@ -40,6 +40,7 @@ GameObject:
   - component: {fileID: 114275203110822438}
   - component: {fileID: 114555753213364338}
   - component: {fileID: 61999569739760366}
+  - component: {fileID: 82117261715149456}
   m_Layer: 10
   m_Name: AvatarPrefabMMX
   m_TagString: Untagged
@@ -99,6 +100,86 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.78125, y: 0.78125}
   m_EdgeRadius: 0
+--- !u!82 &82117261715149456
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1789244597324514}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!114 &114275203110822438
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -172,6 +253,9 @@ MonoBehaviour:
   chargePulseOn: 1
   chargePulseInterval: 0.05
   chargeColor: {r: 0, g: 0.796, b: 1, a: 1}
+  soundXBusterPew: {fileID: 8300000, guid: ffcd75b66a2b740da8af34562fb4544c, type: 3}
+  soundJump: {fileID: 8300000, guid: 0325f40856fc34e279ca72d199d04893, type: 3}
+  soundDash: {fileID: 8300000, guid: 5df04bbdf386048dcb1204260e51e1cc, type: 3}
 --- !u!198 &198502029244883790
 ParticleSystem:
   m_ObjectHideFlags: 1

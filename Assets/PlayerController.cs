@@ -67,9 +67,14 @@ public class PlayerController : MonoBehaviour, IDamage
   public bool chargePulseOn = true;
   public float chargePulseInterval = 0.1f;
   public Color chargeColor = Color.white;
+  AudioSource audio;
+  public AudioClip soundXBusterPew;
+  public AudioClip soundJump;
+  public AudioClip soundDash;
 
   void Awake()
   {
+    audio = GetComponent < AudioSource>();
     collider.size = box * 2;
   }
   void Update()
@@ -179,7 +184,7 @@ public class PlayerController : MonoBehaviour, IDamage
         Projectile p = go.GetComponent<Projectile>();
         p.velocity = Global.instance.cursorDelta.normalized * weapon.speed;
         Physics2D.IgnoreCollision( p.circle, collider );
-
+        audio.PlayOneShot( soundXBusterPew );
         chargeStartDelay.Start( chargeDelay, null, delegate
         {
           renderer.material.SetColor( "_BlendColor", chargeColor );
@@ -253,6 +258,7 @@ public class PlayerController : MonoBehaviour, IDamage
         jumping = true;
         jumpStart = Time.time;
         velocity.y = jumpVel;
+        audio.PlayOneShot( soundJump );
       }
     }
     else
@@ -268,6 +274,7 @@ public class PlayerController : MonoBehaviour, IDamage
       {
         dashing = true;
         dashStart = Time.time;
+        audio.PlayOneShot( soundDash );
       }
     }
     else
