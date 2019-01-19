@@ -28,6 +28,7 @@ dash feels good
 wall jump
 wall slide
 hold button to charge weapon
+---
 safety timer after taking damage
 destroying enemies is satisfying
 

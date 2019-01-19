@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour, IDamage
   public bool inputRight = false;
   public bool inputLeft = false;
   public bool onGround = false;
+  public bool onWallLeft = false;
   public bool jumping = false;
   public bool landing = false;
   public bool dashing = false;
@@ -75,6 +76,7 @@ public class PlayerController : MonoBehaviour, IDamage
     collideLeft = false;
     collideHead = false;
     collideFeet = false;
+    onWallLeft = false;
     
     RaycastHit2D[] hits;
     const float corner = 0.707f;
@@ -105,12 +107,14 @@ public class PlayerController : MonoBehaviour, IDamage
       {
         collideLeft = true;
         adjust.x = hit.point.x + box.x + contactSeparation;
+        if( hit.normal.y >= 0 )
+          onWallLeft = true;
       }
     }
     hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( hit.normal.x < -corner )
+      if( hit.normal.x < -corner && hit.normal.y >= 0 )
       {
         collideRight = true;
         adjust.x = hit.point.x - box.x - contactSeparation;
@@ -339,16 +343,19 @@ public class PlayerController : MonoBehaviour, IDamage
     if( collideLeft )
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
-      if( jumping )
+      if( onWallLeft )
       {
-        anim = "walljump";
-      }
-      else
-      if( inputLeft && !onGround && velocity.y < 0 )
-      {
-        velocity.y *= wallSlideFactor;
-        anim = "wallslide";
-        dashSmoke.transform.localPosition = new Vector3( -0.2f, -0.2f, 0 );
+        if( jumping )
+        {
+          anim = "walljump";
+        }
+        else
+        if( inputLeft && !onGround && velocity.y < 0 )
+        {
+          velocity.y *= wallSlideFactor;
+          anim = "wallslide";
+          dashSmoke.transform.localPosition = new Vector3( -0.2f, -0.2f, 0 );
+        }
       }
     }
 
