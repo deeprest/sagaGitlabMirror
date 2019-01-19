@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour, IDamage
     print( "take damage from " + d.instigator );
   }
 
-  public CircleCollider2D circle;
+  public BoxCollider2D collider;
 
   new public SpriteRenderer renderer;
   public SpriteAnimator animator;
@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour, IDamage
   public bool inputLeft = false;
   public bool onGround = false;
   public bool onWallLeft = false;
+  public bool onWallRight = false;
   public bool jumping = false;
   public bool landing = false;
   public bool dashing = false;
@@ -67,6 +68,10 @@ public class PlayerController : MonoBehaviour, IDamage
   public float chargePulseInterval = 0.1f;
   public Color chargeColor = Color.white;
 
+  void Awake()
+  {
+    collider.size = box * 2;
+  }
   void Update()
   {
     if( Global.Paused )
@@ -77,8 +82,18 @@ public class PlayerController : MonoBehaviour, IDamage
     collideHead = false;
     collideFeet = false;
     onWallLeft = false;
-    
+    onWallRight = false;
+
     RaycastHit2D[] hits;
+
+    hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, raylength, LayerMask.GetMask( "trigger" ) );
+    foreach( var hit in hits )
+    {
+      IDamage dam = hit.transform.GetComponent<IDamage>();
+      if( dam != null )
+        dam.TakeDamage( new Damage( transform, DamageType.Generic, 1 ) );
+    }
+
     const float corner = 0.707f;
     Vector2 adjust = transform.position;
 
@@ -114,10 +129,12 @@ public class PlayerController : MonoBehaviour, IDamage
     hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( hit.normal.x < -corner && hit.normal.y >= 0 )
+      if( hit.normal.x < -corner )
       {
         collideRight = true;
         adjust.x = hit.point.x - box.x - contactSeparation;
+        if( hit.normal.y >= 0 )
+          onWallRight = true;
       }
     }
       
@@ -148,7 +165,7 @@ public class PlayerController : MonoBehaviour, IDamage
           GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab, transform.position + shoot.normalized * armRadius, Quaternion.identity );
           Projectile p = go.GetComponent<Projectile>();
           p.velocity = shoot.normalized * weapon.speed;
-          Physics2D.IgnoreCollision( p.circle, circle );
+          Physics2D.IgnoreCollision( p.circle, collider );
         }
       }
     }
@@ -161,7 +178,7 @@ public class PlayerController : MonoBehaviour, IDamage
         GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab, transform.position + Global.instance.cursorDelta.normalized * armRadius, Quaternion.identity );
         Projectile p = go.GetComponent<Projectile>();
         p.velocity = Global.instance.cursorDelta.normalized * weapon.speed;
-        Physics2D.IgnoreCollision( p.circle, circle );
+        Physics2D.IgnoreCollision( p.circle, collider );
 
         chargeStartDelay.Start( chargeDelay, null, delegate
         {
@@ -193,7 +210,7 @@ public class PlayerController : MonoBehaviour, IDamage
           GameObject go = GameObject.Instantiate( weapon.ChargedProjectilePrefab, transform.position + Global.instance.cursorDelta.normalized * armRadius, Quaternion.identity );
           Projectile p = go.GetComponent<Projectile>();
           p.velocity = Global.instance.cursorDelta.normalized * weapon.chargedSpeed;
-          Physics2D.IgnoreCollision( p.circle, circle );
+          Physics2D.IgnoreCollision( p.circle, collider );
         }
       }
       chargeStartDelay.Stop( false );
@@ -326,18 +343,20 @@ public class PlayerController : MonoBehaviour, IDamage
     if( collideRight )
     {
       velocity.x = Mathf.Min( velocity.x, 0 );
-      if( jumping )
+      if( onWallRight )
       {
-        anim = "walljump";
+        if( jumping )
+        {
+          anim = "walljump";
+        }
+        else
+        if( inputRight && !onGround && velocity.y < 0 )
+        {
+          velocity.y *= wallSlideFactor;
+          anim = "wallslide";
+          dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
+        }
       }
-      else
-      if( inputRight && !onGround && velocity.y < 0 )
-      {
-        velocity.y *= wallSlideFactor;
-        anim = "wallslide";
-        dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
-      }
-
     }
 
     if( collideLeft )

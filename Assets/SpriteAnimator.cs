@@ -70,18 +70,22 @@ public class SpriteAnimator : MonoBehaviour
       sr = GetComponent<SpriteRenderer>();
     #else
     if( mr == null )
-    mr = GetComponent<MeshRenderer>();
+      mr = GetComponent<MeshRenderer>();
     if( mf == null )
-    mf = GetComponent<MeshFilter>();
+      mf = GetComponent<MeshFilter>();
 
     #endif
+  }
+
+  void Start()
+  {
 
     animLookup = new Dictionary<string, AnimSequence>();
     foreach( var a in anims )
       animLookup[ a.name ] = a;
 
     if( playAtAStart )
-      Play( startAnim );
+      Play( startAnim, true );
   }
 
   public void Play( AnimSequence a, bool restart = false )

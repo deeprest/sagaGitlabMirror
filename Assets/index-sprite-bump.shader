@@ -29,9 +29,9 @@
 		}
 		LOD 200
 		Cull Off
-		Lighting On
+		Lighting Off
 		ZWrite Off
-		Blend One OneMinusSrcAlpha
+		//Blend One OneMinusSrcAlpha
 
 		CGPROGRAM
 		// Physically based Standard lighting model, and enable shadows on all light types

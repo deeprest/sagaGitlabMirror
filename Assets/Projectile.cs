@@ -10,7 +10,7 @@ public class Projectile : MonoBehaviour
   Timer timeoutTimer;
   public Vector3 velocity;
   public CircleCollider2D circle;
-  string[] CollideLayers = new string[] { "foreground" };
+  string[] CollideLayers = new string[] { "foreground" ,"character"};
   public AnimSequence HitEffect;
   public bool AlignXToMovementDirection = false;
 
@@ -32,6 +32,10 @@ public class Projectile : MonoBehaviour
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( CollideLayers ) );
     if( hit.transform != null )
     {
+      IDamage dam = hit.transform.GetComponent<IDamage>();
+      if( dam != null )
+        dam.TakeDamage( new Damage( transform, DamageType.Generic, 1 ) );
+      
       enabled = false;
       transform.position = hit.point;
       animator.Play( HitEffect, true );

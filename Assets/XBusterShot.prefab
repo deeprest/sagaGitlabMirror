@@ -66,7 +66,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1227316525270448}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.613, y: -1.668, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4658682313527278}
@@ -97,7 +97,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 1, g: 0.9378579, b: 0.77473485, a: 1}
+  m_Color: {r: 0.972, g: 0.6144693, b: 0.38588408, a: 1}
   m_Intensity: 2
   m_Range: 3
   m_SpotAngle: 30
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 114483893970955476}
   raycastDistance: 0.2
-  timeout: 2
+  timeout: 1
   velocity: {x: 0, y: 0, z: 0}
   circle: {fileID: 58790195297255388}
   HitEffect: {fileID: 11400000, guid: a0e260bc4b26b44d8bcee8c9f4964532, type: 2}
@@ -174,7 +174,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 30ea01067c13e46f4bb4a8c3d70c52a0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
