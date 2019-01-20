@@ -103,13 +103,14 @@ public class PlayerController : MonoBehaviour, IDamage
     const float corner = 0.707f;
     Vector2 adjust = transform.position;
 
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y > corner )
       {
         collideFeet = true;
         adjust.y = hit.point.y + box.y + contactSeparation;
+        break;
       }
     }
     hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.up, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
@@ -119,6 +120,7 @@ public class PlayerController : MonoBehaviour, IDamage
       {
         collideHead = true;
         adjust.y = hit.point.y - box.y - contactSeparation;
+        break;
       }
     }
     hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
@@ -130,6 +132,7 @@ public class PlayerController : MonoBehaviour, IDamage
         adjust.x = hit.point.x + box.x + contactSeparation;
         if( hit.normal.y >= 0 )
           onWallLeft = true;
+        break;
       }
     }
     hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
@@ -141,6 +144,7 @@ public class PlayerController : MonoBehaviour, IDamage
         adjust.x = hit.point.x - box.x - contactSeparation;
         if( hit.normal.y >= 0 )
           onWallRight = true;
+        break;
       }
     }
       
@@ -288,6 +292,8 @@ public class PlayerController : MonoBehaviour, IDamage
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap[ "Down" ] ) )
     {
       hanging = false;
+      // TEMP tunnel test
+      //velocity = Vector2.down * MaxVelocity;
     }
 
     if( velocity.y < 0 )
@@ -405,7 +411,7 @@ public class PlayerController : MonoBehaviour, IDamage
       dashSmoke.Stop();
     
     animator.Play( anim );
-    transform.position += velocity * Time.smoothDeltaTime;
+    transform.position += velocity * Time.deltaTime;
   }
 
   void ChargePulseFlip()

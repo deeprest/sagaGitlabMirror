@@ -112,7 +112,7 @@ public class Global : MonoBehaviour
     if( sp.hang )
     {
       CurrentPlayer.GetComponent<PlayerController>().hanging = true;
-      CameraController.LockOn( CurrentPlayer.gameObject );
+      //CameraController.LockOn( CurrentPlayer.gameObject );
     }
     //CurrentPlayer = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
     CameraController.LookTarget = CurrentPlayer.gameObject;
