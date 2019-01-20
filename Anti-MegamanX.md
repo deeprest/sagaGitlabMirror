@@ -24,11 +24,16 @@ controlled spawning
 - no land anim while moveLeft etc
 - feet no collide when running down slope
 - charge sounds
-
+- hit sounds
+- when wall slide, can shoot through wall
+- onwall without move* held down
+- normal map shows lighting without depth test
+* Spelunky-style random cell generation for city
+* persistence?
 
 **DESIGN**
 # keep
-no momentum to movement
+special case inertia
 dash feels good
 wall jump
 wall slide
@@ -36,6 +41,11 @@ hold button to charge weapon
 ---
 destroying enemies is satisfying
 safety timer after taking damage
+
+# do not keep
+only shoot forward
+teleportation
+
 
 
 ## aesthetics
@@ -67,8 +77,6 @@ MegamanX can only shoot forwards, not upwards or even slightly higher. The abili
 3. Enemies respawn at logical locations.
 Not arbitrary static points.
 
-* Spelunky-style random cell generation for city
-* persistence?
 
 **random**
 skydrop intro

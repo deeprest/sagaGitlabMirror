@@ -46,6 +46,9 @@ public class PlayerController : MonoBehaviour, IDamage
   public bool hanging = false;
 
   public Vector3 velocity = Vector3.zero;
+  public Vector3 inertia = Vector3.zero;
+  public float momentumDecay = 0.5f;
+  public float momentumTest = 2;
   float dashStart;
   float jumpStart;
   float landStart;
@@ -116,7 +119,7 @@ public class PlayerController : MonoBehaviour, IDamage
         break;
       }
     }
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.up, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.up, Mathf.Max( raylength, velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y < -corner )
@@ -126,7 +129,7 @@ public class PlayerController : MonoBehaviour, IDamage
         break;
       }
     }
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x > corner )
@@ -138,7 +141,7 @@ public class PlayerController : MonoBehaviour, IDamage
         break;
       }
     }
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, raylength, LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, Mathf.Max( raylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x < -corner )
@@ -156,14 +159,14 @@ public class PlayerController : MonoBehaviour, IDamage
 
     string anim = "idle";
 
-    velocity.x = 0;
+    if( Input.GetKey( KeyCode.G ) )
+      inertia.x = momentumTest;
+    inertia -= (inertia * momentumDecay) * Time.deltaTime;
+    velocity.x = inertia.x;
     velocity.y += -gravity * Time.deltaTime;
     velocity.y = Mathf.Max( velocity.y, -MaxVelocity );
 
-    if( facingRight )
-      renderer.flipX = false;
-    else
-      renderer.flipX = true;
+
 
     const float deadZone = 0.3f;
 
@@ -236,10 +239,11 @@ public class PlayerController : MonoBehaviour, IDamage
       chargeAmount = 0;
     }
 
+    // INPUT
     if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "MoveRight" ] ) )
     {
       inputRight = true;
-      velocity.x = moveVel;
+      velocity.x += moveVel;
       if( !facingRight && onGround )
         dashing = false;
       facingRight = true;
@@ -252,7 +256,7 @@ public class PlayerController : MonoBehaviour, IDamage
     if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "MoveLeft" ] ) )
     {
       inputLeft = true;
-      velocity.x = -moveVel;
+      velocity.x += -moveVel;
       if( facingRight && onGround )
         dashing = false;
       facingRight = false;
@@ -300,6 +304,8 @@ public class PlayerController : MonoBehaviour, IDamage
       hanging = false;
       // TEMP tunnel test
       //velocity = Vector2.down * MaxVelocity;
+//      if( hangingFromChopper )
+//        momentum.x += chopperSpeed;
     }
 
     if( velocity.y < 0 )
@@ -336,16 +342,24 @@ public class PlayerController : MonoBehaviour, IDamage
       }
       if( facingRight )
       {
-        velocity.x = dashVel;
+        velocity.x += dashVel;
         dashSmoke.transform.localPosition = new Vector3( -0.36f, -0.2f, 0 );
       }
       else
       {
-        velocity.x = -dashVel;
+        velocity.x += -dashVel;
         dashSmoke.transform.localPosition = new Vector3( 0.36f, -0.2f, 0 );
       }
     }
+      
+    if( collideFeet )
+      inertia.x = 0;
 
+    if( facingRight )
+      renderer.flipX = false;
+    else
+      renderer.flipX = true;
+    
     if( jumping )
       anim = "jump";
     
@@ -368,6 +382,7 @@ public class PlayerController : MonoBehaviour, IDamage
     if( collideRight )
     {
       velocity.x = Mathf.Min( velocity.x, 0 );
+      inertia.x = 0;
       if( onWallRight )
       {
         if( jumping )
@@ -387,6 +402,7 @@ public class PlayerController : MonoBehaviour, IDamage
     if( collideLeft )
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
+      inertia.x = 0;
       if( onWallLeft )
       {
         if( jumping )

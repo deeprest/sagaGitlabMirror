@@ -103,19 +103,10 @@ public class Global : MonoBehaviour
     SceneManager.LoadScene( InitialSceneName, LoadSceneMode.Single );
     yield return null;
 
-    SpawnPoint sp = FindSpawnPoint().GetComponent<SpawnPoint>();
-    Transform parent = null;
-    if( sp.hang )
-      parent = sp.transform;
-    GameObject go = Spawn( AvatarPrefab, sp.transform.position, Quaternion.identity, parent, false );
+    GameObject go = Spawn( AvatarPrefab, FindSpawnPoint().transform.position, Quaternion.identity, null, false );
     CurrentPlayer = go.GetComponent<PlayerController>();
-    if( sp.hang )
-    {
-      CurrentPlayer.GetComponent<PlayerController>().hanging = true;
-      //CameraController.LockOn( CurrentPlayer.gameObject );
-    }
-    //CurrentPlayer = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
     CameraController.LookTarget = CurrentPlayer.gameObject;
+
 
     yield return new WaitForSecondsRealtime( 0.1f );
     Unpause();
@@ -128,6 +119,8 @@ public class Global : MonoBehaviour
   public float cursorSensitivity = 1;
 
   [SerializeField] Text debugButtons;
+
+  public Chopper chopper;
 
   void Update()
   {
@@ -189,13 +182,7 @@ public class Global : MonoBehaviour
       GameObject go = FindSpawnPoint();
       if( go != null )
       {
-        SpawnPoint sp = go.GetComponent<SpawnPoint>();
-        CurrentPlayer.transform.position = sp.transform.position;
-        if( sp.hang )
-        {
-          CurrentPlayer.hanging = true;
-          CurrentPlayer.velocity = Vector3.zero;
-        }
+        ChopDrop();
       }
     }
     cursorDelta += new Vector3( Input.GetAxis( "Cursor X" ) * cursorSensitivity, Input.GetAxis( "Cursor Y" ) * cursorSensitivity, 0 );
@@ -203,7 +190,15 @@ public class Global : MonoBehaviour
       NextCursor();
   }
 
-
+  void ChopDrop()
+  {
+    chopper = FindObjectOfType<Chopper>();
+    if( chopper != null )
+    { 
+      chopper.character = CurrentPlayer;
+      chopper.StartDrop();
+    }
+  }
   void OnApplicationFocus( bool hasFocus )
   {
     if( hasFocus )

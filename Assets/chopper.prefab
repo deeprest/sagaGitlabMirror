@@ -11,6 +11,21 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1918067062961258}
   m_IsPrefabParent: 1
+--- !u!1 &1009932445069690
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4066940549659038}
+  m_Layer: 10
+  m_Name: hang
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1918067062961258
 GameObject:
   m_ObjectHideFlags: 0
@@ -22,26 +37,41 @@ GameObject:
   - component: {fileID: 61107250239624328}
   - component: {fileID: 212343005596785154}
   - component: {fileID: 114314405037397694}
-  m_Layer: 12
+  - component: {fileID: 114844931330827930}
+  m_Layer: 10
   m_Name: chopper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!4 &4066940549659038
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1009932445069690}
+  m_LocalRotation: {x: -0, y: -0, z: 0.12486234, w: 0.9921741}
+  m_LocalPosition: {x: 0.493, y: -1.22, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4252371820229170}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 14.346001}
 --- !u!4 &4252371820229170
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1918067062961258}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.086, y: -0.201, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0.12747656, w: 0.9918416}
+  m_LocalPosition: {x: 3.6, y: 42.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4066940549659038}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -14.648001}
 --- !u!61 &61107250239624328
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -84,6 +114,22 @@ MonoBehaviour:
   isPlaying: 1
   playAtAStart: 1
   anims: []
+--- !u!114 &114844931330827930
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1918067062961258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2845862401264fa1ba92b26c549b522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hangPoint: {fileID: 4066940549659038}
+  chopperStartPoint: {fileID: 0}
+  character: {fileID: 0}
+  speed: 5
+  timeUntilDrop: 3
 --- !u!212 &212343005596785154
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -115,9 +161,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingLayerID: 1643776171
+  m_SortingLayer: 1
+  m_SortingOrder: -10
   m_Sprite: {fileID: 21300000, guid: eefa2060554ab451fb52f8390b7c3072, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

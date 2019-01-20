@@ -6,7 +6,6 @@ using System.Collections.Generic;
 //[RequireComponent( typeof(Tags) )]
 public class SpawnPoint : MonoBehaviour //SerializedComponent, IAction, ITeam
 {
-  public bool hang = false;
 
 }
   #if false

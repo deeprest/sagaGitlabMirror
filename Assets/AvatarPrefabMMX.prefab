@@ -108,10 +108,10 @@ AudioSource:
   m_GameObject: {fileID: 1789244597324514}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 1c39f8c58cb83400089739cd8e4d9c58,
+  OutputAudioMixerGroup: {fileID: 243862331985139506, guid: 1c39f8c58cb83400089739cd8e4d9c58,
     type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -246,6 +246,9 @@ MonoBehaviour:
   dashing: 0
   hanging: 0
   velocity: {x: 0, y: 0, z: 0}
+  momentum: {x: 0, y: 0, z: 0}
+  momentumDecay: 0.5
+  momentumTest: 2
   collideRight: 0
   collideLeft: 0
   collideHead: 0
