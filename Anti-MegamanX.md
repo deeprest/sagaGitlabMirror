@@ -57,17 +57,17 @@ Megaman X4 is so bad I never played another MMX game again. I've watched gamepla
 
 1. Camera view range.
 Camera can center on an imaginary point around the player, in the aiming direction. Allow for variance in zoom, depending on how cozy the surroundings (raycast in a few directions to determine).
-
 2. Full range of aim.
 MegamanX can only shoot forwards, not upwards or even slightly higher. The ability to shoot upwards in games like Contra is an improvement. Having weapons that spread out when shot can make this limitation feel less awkward.
-
 3. Enemies respawn at logical locations.
 Not arbitrary static points.
 
+* Spelunky-style random cell generation for city
+* persistence?
 
-**stream of conciousness**
+**random**
 skydrop intro
-land of bystander- squish! => the story begins. The person who died [was important to authority, ]
+land of bystander- squish! => the story begins. The person who died [was important| ]
 dancing randoms
 screw loose; wire crossed; not all there; one X short of a Y;
 thoughts come and go, recirculating weather in a fishbowl; grab an idea out of the air;

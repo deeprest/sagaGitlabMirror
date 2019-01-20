@@ -205,6 +205,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b53a32c2a40b34dcba259b969f22db01, type: 2}
   - {fileID: 11400000, guid: 1754435b122d44de486be2f2d4e9d019, type: 2}
   - {fileID: 11400000, guid: 683a52c627a7046c8a3d5c862fb03801, type: 2}
+  - {fileID: 11400000, guid: fc18f74c566684eadabce8da5353134e, type: 2}
 --- !u!114 &114555753213364338
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -218,6 +219,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collider: {fileID: 61999569739760366}
   renderer: {fileID: 212107818795109166}
+  audio: {fileID: 0}
   animator: {fileID: 114275203110822438}
   dashSmoke: {fileID: 198502029244883790}
   raylength: 0.003
@@ -241,6 +243,7 @@ MonoBehaviour:
   jumping: 0
   landing: 0
   dashing: 0
+  hanging: 0
   velocity: {x: 0, y: 0, z: 0}
   collideRight: 0
   collideLeft: 0
@@ -255,7 +258,7 @@ MonoBehaviour:
   chargeColor: {r: 0, g: 0.796, b: 1, a: 1}
   soundXBusterPew: {fileID: 8300000, guid: ffcd75b66a2b740da8af34562fb4544c, type: 3}
   soundJump: {fileID: 8300000, guid: 0325f40856fc34e279ca72d199d04893, type: 3}
-  soundDash: {fileID: 8300000, guid: 5df04bbdf386048dcb1204260e51e1cc, type: 3}
+  soundDash: {fileID: 8300000, guid: 88dafb17b637841ffbf61ae1ef19ac09, type: 3}
 --- !u!198 &198502029244883790
 ParticleSystem:
   m_ObjectHideFlags: 1

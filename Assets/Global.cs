@@ -11,7 +11,9 @@ public interface IDamage
 
 public class Character : MonoBehaviour, IDamage
 {
-  public void TakeDamage( Damage d ){}
+  public void TakeDamage( Damage d )
+  {
+  }
 }
 
 public class Attack
@@ -39,7 +41,7 @@ public class Global : MonoBehaviour
   public GameObject AvatarPrefab;
 
   [Header( "Runtime Objects" )]
-  public GameObject CurrentPlayer;
+  public PlayerController CurrentPlayer;
   public RectTransform cursor;
 
   void OnApplicationQuit()
@@ -80,22 +82,40 @@ public class Global : MonoBehaviour
     StartCoroutine( InitializeRoutine() );
   }
 
-  Vector3 FindSpawnPoint()
+  GameObject FindSpawnPoint()
   {
     GameObject[] spawns = GameObject.FindGameObjectsWithTag( "Respawn" );
     if( spawns.Length > 0 )
-      return spawns[ Random.Range( 0, spawns.Length ) ].transform.position;
-    return Vector3.zero;
+      return spawns[ Random.Range( 0, spawns.Length ) ];
+    return null;
   }
 
+  Vector3 FindSpawnPosition()
+  {
+    GameObject go = FindSpawnPoint();
+    if( go != null )
+      return go.transform.position;
+    return Vector3.zero;
+  }
+    
   IEnumerator InitializeRoutine()
   {
     SceneManager.LoadScene( InitialSceneName, LoadSceneMode.Single );
     yield return null;
 
-    CurrentPlayer = Spawn( AvatarPrefab, FindSpawnPoint(), Quaternion.identity, null, false );
-    //CameraController.LockOn( CurrentPlayer );
-    CameraController.LookTarget = CurrentPlayer;
+    SpawnPoint sp = FindSpawnPoint().GetComponent<SpawnPoint>();
+    Transform parent = null;
+    if( sp.hang )
+      parent = sp.transform;
+    GameObject go = Spawn( AvatarPrefab, sp.transform.position, Quaternion.identity, parent, false );
+    CurrentPlayer = go.GetComponent<PlayerController>();
+    if( sp.hang )
+    {
+      CurrentPlayer.GetComponent<PlayerController>().hanging = true;
+      CameraController.LockOn( CurrentPlayer.gameObject );
+    }
+    //CurrentPlayer = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
+    CameraController.LookTarget = CurrentPlayer.gameObject;
 
     yield return new WaitForSecondsRealtime( 0.1f );
     Unpause();
@@ -107,9 +127,18 @@ public class Global : MonoBehaviour
   public Vector3 cursorDelta;
   public float cursorSensitivity = 1;
 
+  [SerializeField] Text debugButtons;
+
   void Update()
   {
     Timer.UpdateTimers();
+
+    debugButtons.text = "";
+    for( int i = 0; i < 20; i++ )
+    {
+      if( Input.GetKey( "joystick button " + i ) )
+        debugButtons.text += "Button " + i + "=" + Input.GetKey( "joystick button " + i ) + "| ";
+    }
 
     if( !remappingControls )
     {
@@ -135,6 +164,11 @@ public class Global : MonoBehaviour
       }
     }
 
+    if( Mathf.Abs( Input.GetAxis( "Zoom" ) ) > 0 )
+    {
+      Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
+    }
+
     if( Input.GetKeyDown( KeyCode.O ) )
     {
       if( Slowed )
@@ -152,7 +186,17 @@ public class Global : MonoBehaviour
     }
     if( Input.GetKeyDown( KeyCode.Return ) )
     {
-      CurrentPlayer.transform.position = FindSpawnPoint();
+      GameObject go = FindSpawnPoint();
+      if( go != null )
+      {
+        SpawnPoint sp = go.GetComponent<SpawnPoint>();
+        CurrentPlayer.transform.position = sp.transform.position;
+        if( sp.hang )
+        {
+          CurrentPlayer.hanging = true;
+          CurrentPlayer.velocity = Vector3.zero;
+        }
+      }
     }
     cursorDelta += new Vector3( Input.GetAxis( "Cursor X" ) * cursorSensitivity, Input.GetAxis( "Cursor Y" ) * cursorSensitivity, 0 );
     if( Input.GetKeyDown( KeyCode.R ) )
@@ -303,7 +347,7 @@ public class Global : MonoBehaviour
     icsKeyboard.keyMap[ "MoveRight" ] = KeyCode.D;
     icsKeyboard.keyMap[ "MoveLeft" ] = KeyCode.A;
     icsKeyboard.keyMap[ "Jump" ] = KeyCode.W;
-    //keyMap[ "Crouch" ] = KeyCode.S;
+    icsKeyboard.keyMap[ "Down" ] = KeyCode.S;
     icsKeyboard.keyMap[ "Dash" ] = KeyCode.Space;
     icsKeyboard.keyMap[ "Fire" ] = KeyCode.Mouse0;
 
@@ -311,7 +355,7 @@ public class Global : MonoBehaviour
     icsGamepad.keyMap[ "MoveRight" ] = KeyCode.JoystickButton8;
     icsGamepad.keyMap[ "MoveLeft" ] = KeyCode.JoystickButton7;
     icsGamepad.keyMap[ "Jump" ] = KeyCode.JoystickButton14;
-    //keyMap[ "Crouch" ] = KeyCode.JoystickButton5;
+    icsGamepad.keyMap[ "Down" ] = KeyCode.JoystickButton0;
     icsGamepad.keyMap[ "Dash" ] = KeyCode.JoystickButton13;
     icsGamepad.keyMap[ "Fire" ] = KeyCode.None;
     icsGamepad.axisMap[ "ShootX" ] = "Joy0Axis2";

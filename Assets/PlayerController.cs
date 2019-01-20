@@ -10,9 +10,9 @@ public class PlayerController : MonoBehaviour, IDamage
     print( "take damage from " + d.instigator );
   }
 
-  public BoxCollider2D collider;
-
+  new public BoxCollider2D collider;
   new public SpriteRenderer renderer;
+  new public AudioSource audio;
   public SpriteAnimator animator;
   public ParticleSystem dashSmoke;
 
@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour, IDamage
   public bool jumping = false;
   public bool landing = false;
   public bool dashing = false;
+  public bool hanging = false;
 
   public Vector3 velocity = Vector3.zero;
   float dashStart;
@@ -67,7 +68,6 @@ public class PlayerController : MonoBehaviour, IDamage
   public bool chargePulseOn = true;
   public float chargePulseInterval = 0.1f;
   public Color chargeColor = Color.white;
-  AudioSource audio;
   public AudioClip soundXBusterPew;
   public AudioClip soundJump;
   public AudioClip soundDash;
@@ -77,6 +77,7 @@ public class PlayerController : MonoBehaviour, IDamage
     audio = GetComponent < AudioSource>();
     collider.size = box * 2;
   }
+
   void Update()
   {
     if( Global.Paused )
@@ -284,6 +285,11 @@ public class PlayerController : MonoBehaviour, IDamage
         dashing = false;
     }
 
+    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap[ "Down" ] ) )
+    {
+      hanging = false;
+    }
+
     if( velocity.y < 0 )
       jumping = false;
 
@@ -389,6 +395,9 @@ public class PlayerController : MonoBehaviour, IDamage
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
+
+    if( hanging )
+      velocity = Vector3.zero;
 
     if( anim == "wallslide" || anim == "dash" )
       dashSmoke.Play();

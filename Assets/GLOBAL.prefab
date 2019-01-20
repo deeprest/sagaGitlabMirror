@@ -98,6 +98,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1346222789494882
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 224593500964597282}
+  - component: {fileID: 222798786173575256}
+  - component: {fileID: 114179508180371490}
+  m_Layer: 5
+  m_Name: dialogue shadow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
 --- !u!1 &1457160841907272
 GameObject:
   m_ObjectHideFlags: 1
@@ -124,13 +141,12 @@ GameObject:
   m_Component:
   - component: {fileID: 4364495294273822}
   - component: {fileID: 114329875613515752}
-  - component: {fileID: 114216386566005706}
   m_Layer: 0
   m_Name: GLOBAL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &1659088562058756
 GameObject:
@@ -143,7 +159,7 @@ GameObject:
   - component: {fileID: 222608278885061346}
   - component: {fileID: 114441466528811452}
   m_Layer: 5
-  m_Name: Text
+  m_Name: debug
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -187,6 +203,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1834678231551270
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 224750432115470910}
+  - component: {fileID: 222909822555055052}
+  - component: {fileID: 114144552201676406}
+  m_Layer: 5
+  m_Name: dialogue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
 --- !u!1 &1894163567719544
 GameObject:
   m_ObjectHideFlags: 1
@@ -270,7 +303,7 @@ Camera:
   far clip plane: 100
   field of view: 57
   orthographic: 1
-  orthographic size: 1.77
+  orthographic size: 2
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -355,6 +388,39 @@ MonoBehaviour:
   m_Text: 'instruction
 
 '
+--- !u!114 &114144552201676406
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1834678231551270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 197eacf5c22d14d05b9f34cf21fd96f2, type: 3}
+    m_FontSize: 32
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 3
+    m_MaxSize: 50
+    m_Alignment: 1
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Yes indeed.
 --- !u!114 &114148924226556974
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -382,6 +448,39 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114179508180371490
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1346222789494882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.153, g: 0.153, b: 0.153, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 197eacf5c22d14d05b9f34cf21fd96f2, type: 3}
+    m_FontSize: 32
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 3
+    m_MaxSize: 50
+    m_Alignment: 1
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Yes indeed.
 --- !u!114 &114186313160120282
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -436,18 +535,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114216386566005706
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1563210130524808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96f5af12bc45845b89fd08c9087b29bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  t: {fileID: 114441466528811452}
 --- !u!114 &114243473509280006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -461,7 +548,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LookTarget: {fileID: 0}
   zOffset: -5
-  yHalfWidth: 1
+  yHalfWidth: 0.5
   pos: {x: 0, y: -1.74, z: 0}
   lerp: {fileID: 114891334979047146}
 --- !u!114 &114279937698075782
@@ -493,6 +580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01c8a48ffc903431bbba0f54487eff92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioOneShotPrefab: {fileID: 0}
   InitialSceneName: mmx-city
   CameraController: {fileID: 114243473509280006}
   AvatarPrefab: {fileID: 1789244597324514, guid: e30c09e9b626b42f7aaf16c4fd9379ee,
@@ -503,6 +591,7 @@ MonoBehaviour:
   cursorInner: 20
   cursorDelta: {x: 0, y: 0, z: 0}
   cursorSensitivity: 10
+  debugButtons: {fileID: 114441466528811452}
   cursors:
   - {fileID: 21300000, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
   - {fileID: 21300002, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
@@ -883,6 +972,18 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1092717609044192}
+--- !u!222 &222798786173575256
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1346222789494882}
+--- !u!222 &222909822555055052
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1834678231551270}
 --- !u!223 &223120959931665832
 Canvas:
   m_ObjectHideFlags: 1
@@ -978,6 +1079,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!224 &224593500964597282
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1346222789494882}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 224632352466825066}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 1.6, y: -30.87}
+  m_SizeDelta: {x: 1280, y: 800}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!224 &224596314402241600
 RectTransform:
   m_ObjectHideFlags: 1
@@ -1012,6 +1131,8 @@ RectTransform:
   - {fileID: 224847895877099490}
   - {fileID: 224948723217772680}
   - {fileID: 224345761186257288}
+  - {fileID: 224593500964597282}
+  - {fileID: 224750432115470910}
   m_Father: {fileID: 4364495294273822}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1020,6 +1141,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!224 &224750432115470910
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1834678231551270}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 224632352466825066}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -30}
+  m_SizeDelta: {x: 1280, y: 800}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!224 &224847895877099490
 RectTransform:
   m_ObjectHideFlags: 1
