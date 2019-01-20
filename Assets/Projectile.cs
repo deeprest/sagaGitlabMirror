@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+  public GameObject instigator;
   public SpriteAnimator animator;
   public float raycastDistance = 0.2f;
   public float timeout = 2;
@@ -32,6 +33,9 @@ public class Projectile : MonoBehaviour
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( CollideLayers ) );
     if( hit.transform != null )
     {
+      if( hit.transform.gameObject == instigator )
+        return;
+      
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
         dam.TakeDamage( new Damage( transform, DamageType.Generic, 1 ) );

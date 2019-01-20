@@ -226,9 +226,10 @@ public class Global : MonoBehaviour
     }
   }
 
+  public float slowtime = 0.2f;
   public static void Slow()
   {
-    Time.timeScale = 0.1f;
+    Time.timeScale = Global.instance.slowtime;
     Slowed = true;
   }
 

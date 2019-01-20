@@ -21,6 +21,11 @@ controlled spawning
 
 
 
+- no land anim while moveLeft etc
+- feet no collide when running down slope
+- charge sounds
+
+
 **DESIGN**
 # keep
 no momentum to movement

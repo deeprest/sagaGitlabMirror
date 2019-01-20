@@ -108,7 +108,8 @@ AudioSource:
   m_GameObject: {fileID: 1789244597324514}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 1c39f8c58cb83400089739cd8e4d9c58,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -256,9 +257,27 @@ MonoBehaviour:
   chargePulseOn: 1
   chargePulseInterval: 0.05
   chargeColor: {r: 0, g: 0.796, b: 1, a: 1}
-  soundXBusterPew: {fileID: 8300000, guid: ffcd75b66a2b740da8af34562fb4544c, type: 3}
-  soundJump: {fileID: 8300000, guid: 0325f40856fc34e279ca72d199d04893, type: 3}
-  soundDash: {fileID: 8300000, guid: 88dafb17b637841ffbf61ae1ef19ac09, type: 3}
+  soundXBusterPew: {fileID: 8300000, guid: 1c1f59a9693c44e518b4ee356051971f, type: 3}
+  soundJump: {fileID: 8300000, guid: 3634bba7cfee0409cb0ba088753bc669, type: 3}
+  soundDash: {fileID: 8300000, guid: fa292f5f0979c4ce49e47c2a103a585b, type: 3}
+  audioTimescaleFactor:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!198 &198502029244883790
 ParticleSystem:
   m_ObjectHideFlags: 1

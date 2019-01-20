@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour, IDamage
   public AudioClip soundXBusterPew;
   public AudioClip soundJump;
   public AudioClip soundDash;
+  public AnimationCurve audioTimescaleFactor;
 
   void Awake()
   {
@@ -82,6 +83,8 @@ public class PlayerController : MonoBehaviour, IDamage
   {
     if( Global.Paused )
       return;
+
+    audio.pitch = audioTimescaleFactor.Evaluate( Time.timeScale );
     
     collideRight = false;
     collideLeft = false;
@@ -174,6 +177,7 @@ public class PlayerController : MonoBehaviour, IDamage
           shootRepeatTimer.Start( weapon.shootInterval, null, null );
           GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab, transform.position + shoot.normalized * armRadius, Quaternion.identity );
           Projectile p = go.GetComponent<Projectile>();
+          p.instigator = gameObject;
           p.velocity = shoot.normalized * weapon.speed;
           Physics2D.IgnoreCollision( p.circle, collider );
         }
@@ -187,6 +191,7 @@ public class PlayerController : MonoBehaviour, IDamage
         shootRepeatTimer.Start( weapon.shootInterval, null, null );
         GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab, transform.position + Global.instance.cursorDelta.normalized * armRadius, Quaternion.identity );
         Projectile p = go.GetComponent<Projectile>();
+        p.instigator = gameObject;
         p.velocity = Global.instance.cursorDelta.normalized * weapon.speed;
         Physics2D.IgnoreCollision( p.circle, collider );
         audio.PlayOneShot( soundXBusterPew );
@@ -219,6 +224,7 @@ public class PlayerController : MonoBehaviour, IDamage
         {
           GameObject go = GameObject.Instantiate( weapon.ChargedProjectilePrefab, transform.position + Global.instance.cursorDelta.normalized * armRadius, Quaternion.identity );
           Projectile p = go.GetComponent<Projectile>();
+          p.instigator = gameObject;
           p.velocity = Global.instance.cursorDelta.normalized * weapon.chargedSpeed;
           Physics2D.IgnoreCollision( p.circle, collider );
         }
