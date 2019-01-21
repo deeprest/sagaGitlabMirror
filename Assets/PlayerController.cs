@@ -374,21 +374,13 @@ public class PlayerController : MonoBehaviour, IDamage
       renderer.flipX = true;
 
     string anim = "idle";
+
     if( jumping )
       anim = "jump";
-    
-    if( !onGround && !jumping )
-      anim = "fall";
-    
-    if( landing )
-      anim = "land";
-
-    if( onGround && ( inputRight || inputLeft ) )
-      anim = "run";
-
-    if( dashing )
+    else
+    if( onGround )
     {
-      if( onGround )
+      if( dashing )
       {
         anim = "dash";
         if( Time.time - dashStart >= dashDuration )
@@ -397,7 +389,16 @@ public class PlayerController : MonoBehaviour, IDamage
           dashSmoke.Stop();
         }
       }
+      else
+      if( inputRight || inputLeft )
+        anim = "run";
+      else
+      if( landing )
+        anim = "land";
     }
+    else
+    if( !jumping )
+      anim = "fall";
       
     if( collideFeet )
     {
