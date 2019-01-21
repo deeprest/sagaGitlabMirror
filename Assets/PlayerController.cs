@@ -13,18 +13,16 @@ public class PlayerController : MonoBehaviour, IDamage
   new public BoxCollider2D collider;
   new public SpriteRenderer renderer;
   new public AudioSource audio;
+  public AudioSource audio2;
   public SpriteAnimator animator;
   public ParticleSystem dashSmoke;
 
   // settings
   public float raylength = 0.1f;
   public Vector2 box = new Vector2( 0.3f, 0.3f );
-  //public Vector2 hitOffset = new Vector2( 0.3f, 0.3f );
   public float contactSeparation = 0.01f;
 
   // velocities
-  public float MaxVelocity = 50;
-  public float gravity = 16;
   public float moveVel = 2;
   public float jumpVel = 5;
   public float dashVel = 5;
@@ -45,18 +43,20 @@ public class PlayerController : MonoBehaviour, IDamage
 
   public Vector3 velocity = Vector3.zero;
   public Vector3 inertia = Vector3.zero;
-  public float momentumDecay = 0.5f;
+  public float inertiaDecay = 0.5f;
   public float momentumTest = 2;
   float dashStart;
   float jumpStart;
   float landStart;
 
+  string[] PlayerCollideLayers = new string[] { "foreground" };
   public bool collideRight = false;
   public bool collideLeft = false;
   public bool collideHead = false;
   public bool collideFeet = false;
+  RaycastHit2D hitRight;
+  RaycastHit2D hitLeft;
 
-  string[] PlayerCollideLayers = new string[] { "foreground" };
   public Weapon weapon;
   Timer shootRepeatTimer = new Timer();
   ParticleSystem chargeEffect = null;
@@ -65,11 +65,12 @@ public class PlayerController : MonoBehaviour, IDamage
   public float armRadius = 0.3f;
   Timer chargePulse = new Timer();
   Timer chargeStartDelay = new Timer();
+  Timer chargeSoundLoopDelay = new Timer();
   public float chargeDelay = 0.2f;
   public bool chargePulseOn = true;
   public float chargePulseInterval = 0.1f;
   public Color chargeColor = Color.white;
-  public AudioClip soundXBusterPew;
+
   public AudioClip soundJump;
   public AudioClip soundDash;
 
@@ -79,16 +80,9 @@ public class PlayerController : MonoBehaviour, IDamage
     collider.size = box * 2;
   }
 
-  RaycastHit2D hitRight;
-  RaycastHit2D hitLeft;
-  //RaycastHit2D hitTop;
-  //RaycastHit2D hitBottom;
 
-  void Update()
+  void UpdateCollision()
   {
-    if( Global.Paused )
-      return;
-    
     collideRight = false;
     collideLeft = false;
     collideHead = false;
@@ -152,10 +146,19 @@ public class PlayerController : MonoBehaviour, IDamage
     }
 
     transform.position = adjust;
+  }
 
 
-    velocity.x = inertia.x;
-    velocity.y += -gravity * Time.deltaTime;
+  void Update()
+  {
+    if( Global.Paused )
+      return;
+    
+    UpdateCollision();
+
+
+    velocity.x = 0;
+    velocity.y += -Global.Gravity * Time.deltaTime;
 
     if( Input.GetKey( KeyCode.G ) )
       inertia.x = momentumTest;
@@ -170,11 +173,17 @@ public class PlayerController : MonoBehaviour, IDamage
         if( !shootRepeatTimer.IsActive )
         {
           shootRepeatTimer.Start( weapon.shootInterval, null, null );
-          GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab.gameObject, transform.position + shoot.normalized * armRadius, Quaternion.identity );
-          Projectile p = go.GetComponent<Projectile>();
-          p.instigator = gameObject;
-          p.velocity = shoot.normalized * weapon.speed;
-          Physics2D.IgnoreCollision( p.circle, collider );
+          Vector3 pos = transform.position + shoot.normalized * armRadius;
+          Collider2D col = Physics2D.OverlapCircle( pos, weapon.ProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
+          if( col == null )
+          {
+            GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab.gameObject, pos, Quaternion.identity );
+            Projectile p = go.GetComponent<Projectile>();
+            p.instigator = gameObject;
+            p.velocity = shoot.normalized * weapon.speed;
+            Physics2D.IgnoreCollision( p.circle, collider );
+            audio.PlayOneShot( weapon.soundXBusterPew );
+          }
         }
       }
     }
@@ -184,9 +193,8 @@ public class PlayerController : MonoBehaviour, IDamage
       if( !shootRepeatTimer.IsActive )
       {
         shootRepeatTimer.Start( weapon.shootInterval, null, null );
-
         Vector3 pos = transform.position + Global.instance.cursorDelta.normalized * armRadius;
-        Collider2D col = Physics2D.OverlapCircle( pos, weapon.ProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers) );
+        Collider2D col = Physics2D.OverlapCircle( pos, weapon.ProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
         if( col == null )
         {
           GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab.gameObject, pos, Quaternion.identity );
@@ -194,15 +202,26 @@ public class PlayerController : MonoBehaviour, IDamage
           p.instigator = gameObject;
           p.velocity = Global.instance.cursorDelta.normalized * weapon.speed;
           Physics2D.IgnoreCollision( p.circle, collider );
-          audio.PlayOneShot( soundXBusterPew );
-          chargeStartDelay.Start( chargeDelay, null, delegate
-          {
-            renderer.material.SetColor( "_BlendColor", chargeColor );
-            ChargePulseFlip();
-            GameObject geffect = GameObject.Instantiate( weapon.ChargeEffect, transform );
-            chargeEffect = geffect.GetComponent<ParticleSystem>();
-          } );
+          audio.PlayOneShot( weapon.soundXBusterPew );
         }
+
+        chargeStartDelay.Start( chargeDelay, null, delegate
+        {
+          audio.PlayOneShot( weapon.soundCharge );
+          audio2.clip = weapon.soundChargeLoop;
+          audio2.loop = true;
+          audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
+//          chargeSoundLoopDelay.Start( weapon.soundCharge.length - 0.01f, null, delegate {
+//            audio.clip = weapon.soundChargeLoop;
+//            audio.loop = true;
+//            audio.Play();
+//          }); 
+
+          renderer.material.SetColor( "_BlendColor", chargeColor );
+          ChargePulseFlip();
+          GameObject geffect = GameObject.Instantiate( weapon.ChargeEffect, transform );
+          chargeEffect = geffect.GetComponent<ParticleSystem>();
+        } );
       }
     }
     else
@@ -212,22 +231,37 @@ public class PlayerController : MonoBehaviour, IDamage
       if( chargeEffect != null )
       {
         chargeAmount += Time.deltaTime;
+//        if( !audio.isPlaying )
+//        {
+//          audio.clip = weapon.soundChargeLoop;
+//          audio.loop = true;
+//          audio.Play();
+//        }
       }
-
     }
     else
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap[ "Fire" ] ) )
     {
       if( chargeEffect != null )
       {
+        //chargeSoundLoopDelay.Stop(false);
+        audio.Stop();
+        audio.PlayOneShot( weapon.soundChargeShot );
+        audio2.Stop();
+
         Destroy( chargeEffect.gameObject );
         if( chargeAmount > chargeMin )
         {
-          GameObject go = GameObject.Instantiate( weapon.ChargedProjectilePrefab.gameObject, transform.position + Global.instance.cursorDelta.normalized * armRadius, Quaternion.identity );
-          Projectile p = go.GetComponent<Projectile>();
-          p.instigator = gameObject;
-          p.velocity = Global.instance.cursorDelta.normalized * weapon.chargedSpeed;
-          Physics2D.IgnoreCollision( p.circle, collider );
+          Vector3 pos = transform.position + Global.instance.cursorDelta.normalized * armRadius;
+          Collider2D col = Physics2D.OverlapCircle( pos, weapon.ProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
+          if( col == null )
+          {
+            GameObject go = GameObject.Instantiate( weapon.ChargedProjectilePrefab.gameObject, pos, Quaternion.identity );
+            Projectile p = go.GetComponent<Projectile>();
+            p.instigator = gameObject;
+            p.velocity = Global.instance.cursorDelta.normalized * weapon.chargedSpeed;
+            Physics2D.IgnoreCollision( p.circle, collider );
+          }
         }
       }
       chargeStartDelay.Stop( false );
@@ -302,8 +336,6 @@ public class PlayerController : MonoBehaviour, IDamage
       hanging = false;
       // TEMP tunnel test
       //velocity = Vector2.down * MaxVelocity;
-//      if( hangingFromChopper )
-//        momentum.x += chopperSpeed;
     }
 
     if( velocity.y < 0 )
@@ -320,8 +352,6 @@ public class PlayerController : MonoBehaviour, IDamage
       dashing = false;
       landing = true;
       landStart = Time.time;
-      //AnimSequence seq = animator.animLookup[ "land" ];
-      //landDuration = ( 1.0f / seq.fps ) * seq.sprites.Length;
     }
 
 
@@ -376,11 +406,11 @@ public class PlayerController : MonoBehaviour, IDamage
       onGround = true;
       velocity.y = Mathf.Max( velocity.y, 0 );
       // high friction
-      inertia.x = 0;
+      //inertia.x = 0;
     }
     else
     {
-      inertia -= (inertia * momentumDecay) * Time.deltaTime;
+      //inertia -= (inertia * momentumDecay) * Time.deltaTime;
       onGround = false;
     }
 
@@ -397,7 +427,7 @@ public class PlayerController : MonoBehaviour, IDamage
         else
         if( inputRight && !onGround && velocity.y < 0 )
         {
-          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
+          velocity.y += ( -velocity.y * wallSlideFactor ) * Time.deltaTime;
           anim = "wallslide";
           dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
         }
@@ -417,7 +447,7 @@ public class PlayerController : MonoBehaviour, IDamage
         else
         if( inputLeft && !onGround && velocity.y < 0 )
         {
-          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
+          velocity.y += ( -velocity.y * wallSlideFactor ) * Time.deltaTime;
           anim = "wallslide";
           dashSmoke.transform.localPosition = new Vector3( -0.2f, -0.2f, 0 );
         }
@@ -439,8 +469,8 @@ public class PlayerController : MonoBehaviour, IDamage
     
     animator.Play( anim );
 
-    velocity.y = Mathf.Max( velocity.y, -MaxVelocity );
-    transform.position += velocity * Time.deltaTime;
+    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
+    transform.position += ( inertia + velocity ) * Time.deltaTime;
    
   }
 

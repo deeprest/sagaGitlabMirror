@@ -39,7 +39,7 @@ public class Projectile : MonoBehaviour
       
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
-        dam.TakeDamage( new Damage( transform, DamageType.Generic, 1 ) );
+        dam.TakeDamage( new Damage( transform, DamageType.Generic, 1, hit.point ) );
       
       enabled = false;
       transform.position = hit.point;

@@ -41,6 +41,7 @@ GameObject:
   - component: {fileID: 114555753213364338}
   - component: {fileID: 61999569739760366}
   - component: {fileID: 82117261715149456}
+  - component: {fileID: 82627251547920718}
   m_Layer: 10
   m_Name: AvatarPrefabMMX
   m_TagString: Untagged
@@ -181,6 +182,87 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!82 &82627251547920718
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1789244597324514}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 243862331985139506, guid: 1c39f8c58cb83400089739cd8e4d9c58,
+    type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!114 &114275203110822438
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -220,14 +302,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collider: {fileID: 61999569739760366}
   renderer: {fileID: 212107818795109166}
-  audio: {fileID: 0}
+  audio: {fileID: 82117261715149456}
+  audio2: {fileID: 82627251547920718}
   animator: {fileID: 114275203110822438}
   dashSmoke: {fileID: 198502029244883790}
   raylength: 0.01
   box: {x: 0.1, y: 0.3}
   contactSeparation: 0.01
-  MaxVelocity: 64
-  gravity: 16
   moveVel: 1.5
   jumpVel: 5
   dashVel: 3
@@ -245,7 +326,7 @@ MonoBehaviour:
   hanging: 0
   velocity: {x: 0, y: 0, z: 0}
   inertia: {x: 0, y: 0, z: 0}
-  momentumDecay: 0.5
+  inertiaDecay: 0.5
   momentumTest: 2
   collideRight: 0
   collideLeft: 0
@@ -258,7 +339,6 @@ MonoBehaviour:
   chargePulseOn: 1
   chargePulseInterval: 0.05
   chargeColor: {r: 0, g: 0.796, b: 1, a: 1}
-  soundXBusterPew: {fileID: 8300000, guid: 1c1f59a9693c44e518b4ee356051971f, type: 3}
   soundJump: {fileID: 8300000, guid: 3634bba7cfee0409cb0ba088753bc669, type: 3}
   soundDash: {fileID: 8300000, guid: fa292f5f0979c4ce49e47c2a103a585b, type: 3}
 --- !u!198 &198502029244883790

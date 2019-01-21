@@ -29,7 +29,8 @@ public class Global : MonoBehaviour
   public static bool Paused = false;
   public static bool Slowed = false;
   public static bool IsQuiting = false;
-
+  public static float Gravity = 16;
+  public static float MaxVelocity = 50;
   public GameObject audioOneShotPrefab;
 
   [Header( "References" )]
