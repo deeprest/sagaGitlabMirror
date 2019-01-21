@@ -223,9 +223,9 @@ MonoBehaviour:
   audio: {fileID: 0}
   animator: {fileID: 114275203110822438}
   dashSmoke: {fileID: 198502029244883790}
-  raylength: 0.003
+  raylength: 0.01
   box: {x: 0.1, y: 0.3}
-  contactSeparation: 0.003
+  contactSeparation: 0.01
   MaxVelocity: 64
   gravity: 16
   moveVel: 1.5
@@ -234,7 +234,7 @@ MonoBehaviour:
   jumpDuration: 0.4
   dashDuration: 0.5
   landDuration: 0.1
-  wallSlideFactor: 0.8
+  wallSlideFactor: 4
   facingRight: 0
   inputRight: 0
   inputLeft: 0
