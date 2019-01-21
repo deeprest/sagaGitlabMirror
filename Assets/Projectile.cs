@@ -11,7 +11,8 @@ public class Projectile : MonoBehaviour
   Timer timeoutTimer;
   public Vector3 velocity;
   public CircleCollider2D circle;
-  string[] CollideLayers = new string[] { "foreground" ,"character"};
+  public static string[] CollideLayers = new string[] { "foreground" ,"character"};
+  public static string[] NoShootLayers = new string[] { "foreground" };
   public AnimSequence HitEffect;
   public bool AlignXToMovementDirection = false;
 

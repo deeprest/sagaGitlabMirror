@@ -21,9 +21,9 @@ controlled spawning
 
 
 + feet no collide when running down slope (steep slope still has this problem)
+- when wall slide, can shoot through wall
 - charge sounds
 - hit sounds
-- when wall slide, can shoot through wall
 - onwall without move* held down
 - normal map shows lighting without depth test
 * Spelunky-style random cell generation for city

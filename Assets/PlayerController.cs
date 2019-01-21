@@ -81,82 +81,16 @@ public class PlayerController : MonoBehaviour, IDamage
 
   RaycastHit2D hitRight;
   RaycastHit2D hitLeft;
+  RaycastHit2D hitTop;
+  RaycastHit2D hitBottom;
 
   void Update()
   {
     if( Global.Paused )
       return;
 
-    transform.position += velocity * Time.deltaTime;
     inertia -= (inertia * momentumDecay) * Time.deltaTime;
     velocity.x = inertia.x;
-    velocity.y += -gravity * Time.deltaTime;
-    velocity.y = Mathf.Max( velocity.y, -MaxVelocity );
-
-    collideRight = false;
-    collideLeft = false;
-    collideHead = false;
-    collideFeet = false;
-
-    RaycastHit2D[] hits;
-
-    hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, raylength, LayerMask.GetMask( "trigger" ) );
-    foreach( var hit in hits )
-    {
-      IDamage dam = hit.transform.GetComponent<IDamage>();
-      if( dam != null )
-        dam.TakeDamage( new Damage( transform, DamageType.Generic, 1 ) );
-    }
-
-    const float corner = 0.707f;
-    Vector2 adjust = transform.position;
-
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
-    foreach( var hit in hits )
-    {
-      if( hit.normal.y > corner )
-      {
-        collideFeet = true;
-        adjust.y = hit.point.y + box.y + contactSeparation;
-        break;
-      }
-    }
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.up, Mathf.Max( raylength, velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
-    foreach( var hit in hits )
-    {
-      if( hit.normal.y < -corner )
-      {
-        collideHead = true;
-        adjust.y = hit.point.y - box.y - contactSeparation;
-        break;
-      }
-    }
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
-    foreach( var hit in hits )
-    {
-      if( hit.normal.x > corner )
-      {
-        collideLeft = true;
-        hitLeft = hit;
-        adjust.x = hit.point.x + box.x + contactSeparation;
-        break;
-      }
-    }
-
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, Mathf.Max( raylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
-    foreach( var hit in hits )
-    {
-      if( hit.normal.x < -corner )
-      {
-        collideRight = true;
-        hitRight = hit;
-        adjust.x = hit.point.x - box.x - contactSeparation;
-        break;
-      }
-    }
-
-    transform.position = adjust;
-
 
     const float deadZone = 0.3f;
 
@@ -168,7 +102,7 @@ public class PlayerController : MonoBehaviour, IDamage
         if( !shootRepeatTimer.IsActive )
         {
           shootRepeatTimer.Start( weapon.shootInterval, null, null );
-          GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab, transform.position + shoot.normalized * armRadius, Quaternion.identity );
+          GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab.gameObject, transform.position + shoot.normalized * armRadius, Quaternion.identity );
           Projectile p = go.GetComponent<Projectile>();
           p.instigator = gameObject;
           p.velocity = shoot.normalized * weapon.speed;
@@ -182,19 +116,25 @@ public class PlayerController : MonoBehaviour, IDamage
       if( !shootRepeatTimer.IsActive )
       {
         shootRepeatTimer.Start( weapon.shootInterval, null, null );
-        GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab, transform.position + Global.instance.cursorDelta.normalized * armRadius, Quaternion.identity );
-        Projectile p = go.GetComponent<Projectile>();
-        p.instigator = gameObject;
-        p.velocity = Global.instance.cursorDelta.normalized * weapon.speed;
-        Physics2D.IgnoreCollision( p.circle, collider );
-        audio.PlayOneShot( soundXBusterPew );
-        chargeStartDelay.Start( chargeDelay, null, delegate
+
+        Vector3 pos = transform.position + Global.instance.cursorDelta.normalized * armRadius;
+        Collider2D col = Physics2D.OverlapCircle( pos, weapon.ProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers) );
+        if( col == null )
         {
-          renderer.material.SetColor( "_BlendColor", chargeColor );
-          ChargePulseFlip();
-          GameObject geffect = GameObject.Instantiate( weapon.ChargeEffect, transform );
-          chargeEffect = geffect.GetComponent<ParticleSystem>();
-        } );
+          GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab.gameObject, pos, Quaternion.identity );
+          Projectile p = go.GetComponent<Projectile>();
+          p.instigator = gameObject;
+          p.velocity = Global.instance.cursorDelta.normalized * weapon.speed;
+          Physics2D.IgnoreCollision( p.circle, collider );
+          audio.PlayOneShot( soundXBusterPew );
+          chargeStartDelay.Start( chargeDelay, null, delegate
+          {
+            renderer.material.SetColor( "_BlendColor", chargeColor );
+            ChargePulseFlip();
+            GameObject geffect = GameObject.Instantiate( weapon.ChargeEffect, transform );
+            chargeEffect = geffect.GetComponent<ParticleSystem>();
+          } );
+        }
       }
     }
     else
@@ -215,7 +155,7 @@ public class PlayerController : MonoBehaviour, IDamage
         Destroy( chargeEffect.gameObject );
         if( chargeAmount > chargeMin )
         {
-          GameObject go = GameObject.Instantiate( weapon.ChargedProjectilePrefab, transform.position + Global.instance.cursorDelta.normalized * armRadius, Quaternion.identity );
+          GameObject go = GameObject.Instantiate( weapon.ChargedProjectilePrefab.gameObject, transform.position + Global.instance.cursorDelta.normalized * armRadius, Quaternion.identity );
           Projectile p = go.GetComponent<Projectile>();
           p.instigator = gameObject;
           p.velocity = Global.instance.cursorDelta.normalized * weapon.chargedSpeed;
@@ -312,11 +252,8 @@ public class PlayerController : MonoBehaviour, IDamage
       dashing = false;
       landing = true;
       landStart = Time.time;
-      //AnimSequence seq = animator.animLookup[ "land" ];
-      //landDuration = ( 1.0f / seq.fps ) * seq.sprites.Length;
     }
-
-
+      
     if( dashing )
     {
       if( facingRight )
@@ -365,11 +302,15 @@ public class PlayerController : MonoBehaviour, IDamage
       }
     }
 
+    if( !hanging )
+    {
+      velocity.y += -gravity * Time.deltaTime;
+      velocity.y = Mathf.Max( velocity.y, -MaxVelocity );
+    }
+
     if( Input.GetKey( KeyCode.G ) )
       inertia.x = momentumTest;
-    
-
-
+     
     if( collideFeet )
     {
       onGround = true;
@@ -424,16 +365,82 @@ public class PlayerController : MonoBehaviour, IDamage
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
-
-    if( hanging )
-      velocity = Vector3.zero;
-
+     
+   
     if( anim == "wallslide" || anim == "dash" )
       dashSmoke.Play();
     else
       dashSmoke.Stop();
     
     animator.Play( anim );
+
+    transform.position += velocity * Time.deltaTime;
+
+    collideRight = false;
+    collideLeft = false;
+    collideHead = false;
+    collideFeet = false;
+
+    RaycastHit2D[] hits;
+
+    hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, raylength, LayerMask.GetMask( "trigger" ) );
+    foreach( var hit in hits )
+    {
+      IDamage dam = hit.transform.GetComponent<IDamage>();
+      if( dam != null )
+        dam.TakeDamage( new Damage( transform, DamageType.Generic, 1 ) );
+    }
+
+    const float corner = 0.707f;
+    Vector2 adjust = transform.position;
+
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    foreach( var hit in hits )
+    {
+      if( hit.normal.y > corner )
+      {
+        collideFeet = true;
+        hitBottom = hit;
+        adjust.y = hit.point.y + box.y + contactSeparation;
+        break;
+      }
+    }
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.up, Mathf.Max( raylength, velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    foreach( var hit in hits )
+    {
+      if( hit.normal.y < -corner )
+      {
+        collideHead = true;
+        hitTop = hit;
+        adjust.y = hit.point.y - box.y - contactSeparation;
+        break;
+      }
+    }
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    foreach( var hit in hits )
+    {
+      if( hit.normal.x > corner )
+      {
+        collideLeft = true;
+        hitLeft = hit;
+        adjust.x = hit.point.x + box.x + contactSeparation;
+        break;
+      }
+    }
+
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, Mathf.Max( raylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    foreach( var hit in hits )
+    {
+      if( hit.normal.x < -corner )
+      {
+        collideRight = true;
+        hitRight = hit;
+        adjust.x = hit.point.x - box.x - contactSeparation;
+        break;
+      }
+    }
+
+    transform.position = adjust;
   }
 
   void ChargePulseFlip()
