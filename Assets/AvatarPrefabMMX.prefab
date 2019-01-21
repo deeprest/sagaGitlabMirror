@@ -223,14 +223,14 @@ MonoBehaviour:
   audio: {fileID: 0}
   animator: {fileID: 114275203110822438}
   dashSmoke: {fileID: 198502029244883790}
-  raylength: 0.003
+  raylength: 0.01
   box: {x: 0.1, y: 0.3}
-  contactSeparation: 0.003
+  contactSeparation: 0.01
   MaxVelocity: 64
   gravity: 16
-  moveVel: 2
+  moveVel: 1.5
   jumpVel: 5
-  dashVel: 4
+  dashVel: 3
   jumpDuration: 0.4
   dashDuration: 0.5
   landDuration: 0.1
@@ -239,14 +239,12 @@ MonoBehaviour:
   inputRight: 0
   inputLeft: 0
   onGround: 0
-  onWallLeft: 0
-  onWallRight: 0
   jumping: 0
   landing: 0
   dashing: 0
   hanging: 0
   velocity: {x: 0, y: 0, z: 0}
-  momentum: {x: 0, y: 0, z: 0}
+  inertia: {x: 0, y: 0, z: 0}
   momentumDecay: 0.5
   momentumTest: 2
   collideRight: 0
@@ -263,24 +261,6 @@ MonoBehaviour:
   soundXBusterPew: {fileID: 8300000, guid: 1c1f59a9693c44e518b4ee356051971f, type: 3}
   soundJump: {fileID: 8300000, guid: 3634bba7cfee0409cb0ba088753bc669, type: 3}
   soundDash: {fileID: 8300000, guid: fa292f5f0979c4ce49e47c2a103a585b, type: 3}
-  audioTimescaleFactor:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
 --- !u!198 &198502029244883790
 ParticleSystem:
   m_ObjectHideFlags: 1

@@ -20,9 +20,7 @@ controlled spawning
 * fix the name
 
 
-
-- no land anim while moveLeft etc
-- feet no collide when running down slope
++ feet no collide when running down slope (steep slope still has this problem)
 - charge sounds
 - hit sounds
 - when wall slide, can shoot through wall

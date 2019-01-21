@@ -44,6 +44,15 @@ public class Global : MonoBehaviour
   public PlayerController CurrentPlayer;
   public RectTransform cursor;
 
+  public float cursorOuter = 100;
+  public float cursorInner = 50;
+  public Vector3 cursorDelta;
+  public float cursorSensitivity = 1;
+
+  [SerializeField] Text debugButtons;
+
+  public Chopper chopper;
+
   void OnApplicationQuit()
   {
     if( !IsQuiting )
@@ -112,15 +121,6 @@ public class Global : MonoBehaviour
     Unpause();
     yield return null;
   }
-
-  public float cursorOuter = 100;
-  public float cursorInner = 50;
-  public Vector3 cursorDelta;
-  public float cursorSensitivity = 1;
-
-  [SerializeField] Text debugButtons;
-
-  public Chopper chopper;
 
   void Update()
   {

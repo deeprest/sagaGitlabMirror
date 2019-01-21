@@ -72,7 +72,6 @@ public class PlayerController : MonoBehaviour, IDamage
   public AudioClip soundXBusterPew;
   public AudioClip soundJump;
   public AudioClip soundDash;
-  public AnimationCurve audioTimescaleFactor;
 
   void Awake()
   {
@@ -88,8 +87,12 @@ public class PlayerController : MonoBehaviour, IDamage
     if( Global.Paused )
       return;
 
-    audio.pitch = audioTimescaleFactor.Evaluate( Time.timeScale );
-    
+    transform.position += velocity * Time.deltaTime;
+    inertia -= (inertia * momentumDecay) * Time.deltaTime;
+    velocity.x = inertia.x;
+    velocity.y += -gravity * Time.deltaTime;
+    velocity.y = Mathf.Max( velocity.y, -MaxVelocity );
+
     collideRight = false;
     collideLeft = false;
     collideHead = false;
@@ -431,12 +434,6 @@ public class PlayerController : MonoBehaviour, IDamage
       dashSmoke.Stop();
     
     animator.Play( anim );
-    transform.position += velocity * Time.deltaTime;
-
-    inertia -= (inertia * momentumDecay) * Time.deltaTime;
-    velocity.x = inertia.x;
-    velocity.y += -gravity * Time.deltaTime;
-    velocity.y = Mathf.Max( velocity.y, -MaxVelocity );
   }
 
   void ChargePulseFlip()
