@@ -38,8 +38,6 @@ public class PlayerController : MonoBehaviour, IDamage
   public bool inputRight = false;
   public bool inputLeft = false;
   public bool onGround = false;
-  public bool onWallLeft = false;
-  public bool onWallRight = false;
   public bool jumping = false;
   public bool landing = false;
   public bool dashing = false;
@@ -82,6 +80,9 @@ public class PlayerController : MonoBehaviour, IDamage
     collider.size = box * 2;
   }
 
+  RaycastHit2D hitRight;
+  RaycastHit2D hitLeft;
+
   void Update()
   {
     if( Global.Paused )
@@ -93,8 +94,6 @@ public class PlayerController : MonoBehaviour, IDamage
     collideLeft = false;
     collideHead = false;
     collideFeet = false;
-    onWallLeft = false;
-    onWallRight = false;
 
     RaycastHit2D[] hits;
 
@@ -135,37 +134,25 @@ public class PlayerController : MonoBehaviour, IDamage
       if( hit.normal.x > corner )
       {
         collideLeft = true;
+        hitLeft = hit;
         adjust.x = hit.point.x + box.x + contactSeparation;
-        if( hit.normal.y >= 0 )
-          onWallLeft = true;
         break;
       }
     }
+
     hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, Mathf.Max( raylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x < -corner )
       {
         collideRight = true;
+        hitRight = hit;
         adjust.x = hit.point.x - box.x - contactSeparation;
-        if( hit.normal.y >= 0 )
-          onWallRight = true;
         break;
       }
     }
-      
 
     transform.position = adjust;
-
-    string anim = "idle";
-
-    if( Input.GetKey( KeyCode.G ) )
-      inertia.x = momentumTest;
-    inertia -= (inertia * momentumDecay) * Time.deltaTime;
-    velocity.x = inertia.x;
-    velocity.y += -gravity * Time.deltaTime;
-    velocity.y = Mathf.Max( velocity.y, -MaxVelocity );
-
 
 
     const float deadZone = 0.3f;
@@ -243,7 +230,7 @@ public class PlayerController : MonoBehaviour, IDamage
     if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "MoveRight" ] ) )
     {
       inputRight = true;
-      velocity.x += moveVel;
+      velocity.x = moveVel;
       if( !facingRight && onGround )
         dashing = false;
       facingRight = true;
@@ -256,7 +243,7 @@ public class PlayerController : MonoBehaviour, IDamage
     if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "MoveLeft" ] ) )
     {
       inputLeft = true;
-      velocity.x += -moveVel;
+      velocity.x = -moveVel;
       if( facingRight && onGround )
         dashing = false;
       facingRight = false;
@@ -326,28 +313,17 @@ public class PlayerController : MonoBehaviour, IDamage
       //landDuration = ( 1.0f / seq.fps ) * seq.sprites.Length;
     }
 
-    if( onGround && ( inputRight || inputLeft ) )
-      anim = "run";
-    
+
     if( dashing )
     {
-      if( onGround )
-      {
-        anim = "dash";
-        if( Time.time - dashStart >= dashDuration )
-        {
-          dashing = false;
-          dashSmoke.Stop();
-        }
-      }
       if( facingRight )
       {
-        velocity.x += dashVel;
+        velocity.x = dashVel;
         dashSmoke.transform.localPosition = new Vector3( -0.36f, -0.2f, 0 );
       }
       else
       {
-        velocity.x += -dashVel;
+        velocity.x = -dashVel;
         dashSmoke.transform.localPosition = new Vector3( 0.36f, -0.2f, 0 );
       }
     }
@@ -359,7 +335,8 @@ public class PlayerController : MonoBehaviour, IDamage
       renderer.flipX = false;
     else
       renderer.flipX = true;
-    
+
+    string anim = "idle";
     if( jumping )
       anim = "jump";
     
@@ -368,6 +345,27 @@ public class PlayerController : MonoBehaviour, IDamage
     
     if( landing )
       anim = "land";
+
+    if( onGround && ( inputRight || inputLeft ) )
+      anim = "run";
+
+    if( dashing )
+    {
+      if( onGround )
+      {
+        anim = "dash";
+        if( Time.time - dashStart >= dashDuration )
+        {
+          dashing = false;
+          dashSmoke.Stop();
+        }
+      }
+    }
+
+    if( Input.GetKey( KeyCode.G ) )
+      inertia.x = momentumTest;
+    
+
 
     if( collideFeet )
     {
@@ -383,7 +381,7 @@ public class PlayerController : MonoBehaviour, IDamage
     {
       velocity.x = Mathf.Min( velocity.x, 0 );
       inertia.x = 0;
-      if( onWallRight )
+      if( inputRight && hitRight.normal.y >= 0 )
       {
         if( jumping )
         {
@@ -403,7 +401,7 @@ public class PlayerController : MonoBehaviour, IDamage
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
       inertia.x = 0;
-      if( onWallLeft )
+      if( inputLeft && hitLeft.normal.y >= 0 )
       {
         if( jumping )
         {
@@ -434,6 +432,11 @@ public class PlayerController : MonoBehaviour, IDamage
     
     animator.Play( anim );
     transform.position += velocity * Time.deltaTime;
+
+    inertia -= (inertia * momentumDecay) * Time.deltaTime;
+    velocity.x = inertia.x;
+    velocity.y += -gravity * Time.deltaTime;
+    velocity.y = Mathf.Max( velocity.y, -MaxVelocity );
   }
 
   void ChargePulseFlip()
