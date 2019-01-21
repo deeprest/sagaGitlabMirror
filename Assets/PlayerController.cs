@@ -18,9 +18,9 @@ public class PlayerController : MonoBehaviour, IDamage
   public ParticleSystem dashSmoke;
 
   // settings
-  public float raylength = 0.1f;
-  public Vector2 box = new Vector2( 0.3f, 0.3f );
+  public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
+  public Vector2 box = new Vector2( 0.3f, 0.3f );
 
   // velocities
   public float moveVel = 2;
@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour, IDamage
   RaycastHit2D hitRight;
   RaycastHit2D hitLeft;
 
+  public Damage ContactDamage;
   public Weapon weapon;
   Timer shootRepeatTimer = new Timer();
   ParticleSystem chargeEffect = null;
@@ -74,12 +75,12 @@ public class PlayerController : MonoBehaviour, IDamage
   public AudioClip soundJump;
   public AudioClip soundDash;
 
+
   void Awake()
   {
     audio = GetComponent < AudioSource>();
     collider.size = box * 2;
   }
-
 
   void UpdateCollision()
   {
@@ -95,7 +96,16 @@ public class PlayerController : MonoBehaviour, IDamage
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
-        dam.TakeDamage( new Damage( transform, DamageType.Generic, 1 ) );
+      {
+        // maybe only damage other if charging weapon or has active powerup?
+        if( ContactDamage != null )
+        {
+          Damage dmg = ScriptableObject.Instantiate<Damage>( ContactDamage );
+          dmg.instigator = transform;
+          dmg.point = hit.point;
+          dam.TakeDamage( dmg );
+        }
+      }
     }
 
     const float corner = 0.707f;

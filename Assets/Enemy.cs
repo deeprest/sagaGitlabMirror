@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour , IDamage
 {
-  [SerializeField] AudioSource audio;
-
   public Vector3 velocity = Vector3.zero;
   public Vector3 inertia = Vector3.zero;
   public float friction = 0.5f;
@@ -22,16 +20,19 @@ public class Enemy : MonoBehaviour , IDamage
 
   [SerializeField] new SpriteRenderer renderer;
   public SpriteAnimator animator;
-  string anim = "idle";
+  public AnimSequence idle;
 
   public int health = 5;
   public GameObject explosion;
   public AudioClip soundHit;
   public float hitPush = 4;
+  Timer flashTimer = new Timer();
   public float flashInterval = 0.1f;
   public int flashCount = 5;
   bool flip = false;
   public float emissive = 0.5f;
+
+  public Damage ContactDamage;
 
   void Start()
   {
@@ -53,7 +54,12 @@ public class Enemy : MonoBehaviour , IDamage
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
-        dam.TakeDamage( new Damage( transform, DamageType.Generic, 1 ) );
+      {
+        Damage dmg = ScriptableObject.Instantiate<Damage>( ContactDamage );
+        dmg.instigator = transform;
+        dmg.point = hit.point;
+        dam.TakeDamage( dmg );
+      }
     }
 
     const float corner = 0.707f;
@@ -120,7 +126,7 @@ public class Enemy : MonoBehaviour , IDamage
       velocity.x = Mathf.Max( velocity.x, 0 );
     }
 
-    animator.Play( anim );
+    animator.Play( idle );
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     transform.position += velocity * Time.deltaTime;
@@ -134,18 +140,18 @@ public class Enemy : MonoBehaviour , IDamage
     velocity += ( transform.position - d.point ) * hitPush;
     if( health <= 0 )
     {
+      flashTimer.Stop( false );
       GameObject.Instantiate( explosion, transform.position, Quaternion.identity );
       Destroy( gameObject );
     }
     else
     {
-      // hit sound
-      audio.PlayOneShot( soundHit );
+      Global.instance.AudioOneShot( soundHit, transform.position );
 
       // color pulse
       flip = false;
       renderer.material.SetFloat( "_EmissiveAmount", emissive );
-      new Timer( flashCount * 2, flashInterval, delegate(Timer t )
+      flashTimer.Start( flashCount * 2, flashInterval, delegate(Timer t )
       {
         flip = !flip;
         if( flip )

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
   public GameObject instigator;
+  public Damage ContactDamage;
   public SpriteAnimator animator;
   public float raycastDistance = 0.2f;
   public float timeout = 2;
@@ -36,8 +37,12 @@ public class Projectile : MonoBehaviour
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
-        dam.TakeDamage( new Damage( transform, DamageType.Generic, 1, hit.point ) );
-      
+      {
+        Damage dmg = ScriptableObject.Instantiate<Damage>( ContactDamage );
+        dmg.instigator = transform;
+        dmg.point = hit.point;
+        dam.TakeDamage( dmg );
+      }
       enabled = false;
       transform.position = hit.point;
       animator.Play( HitEffect, true );

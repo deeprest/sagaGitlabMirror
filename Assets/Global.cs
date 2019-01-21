@@ -31,7 +31,6 @@ public class Global : MonoBehaviour
   public static bool IsQuiting = false;
   public static float Gravity = 16;
   public static float MaxVelocity = 50;
-  public GameObject audioOneShotPrefab;
 
   [Header( "References" )]
   //  public Object InitialScene;
@@ -39,6 +38,7 @@ public class Global : MonoBehaviour
   public CameraController CameraController;
 
   [Header( "Prefabs" )]
+  public GameObject audioOneShotPrefab;
   public GameObject AvatarPrefab;
 
   [Header( "Runtime Objects" )]
@@ -492,5 +492,17 @@ public class Global : MonoBehaviour
 //        sc.AfterDeserialize();
     }
     return go;
+  }
+
+  public void AudioOneShot( AudioClip clip, Vector3 position )
+  {
+    // independent, temporary positional sound object
+    GameObject go = GameObject.Instantiate( audioOneShotPrefab, position, Quaternion.identity );
+    AudioSource source = go.GetComponent<AudioSource>();
+    source.PlayOneShot( clip );
+    new Timer( clip.length, null, delegate
+    {
+      Destroy( go );
+    } );
   }
 }

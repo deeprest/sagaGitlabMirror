@@ -6,12 +6,14 @@ public enum DamageType
   Generic
 }
   
-//[CreateAssetMenu]
-public class Damage// : ScriptableObject
+[CreateAssetMenu]
+public class Damage : ScriptableObject
 {
-  public Transform instigator;
   public DamageType type = DamageType.Generic;
   public int amount = 1;
+  [HideInInspector]
+  public Transform instigator;
+  [HideInInspector]
   public Vector3 point;
 
   public Damage( Transform instigator, DamageType type, int amount )
