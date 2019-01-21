@@ -187,7 +187,7 @@ public class PlayerController : MonoBehaviour, IDamage
         }
       }
     }
-      
+     
     if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap[ "Fire" ] ) )
     {
       if( !shootRepeatTimer.IsActive )
@@ -211,11 +211,6 @@ public class PlayerController : MonoBehaviour, IDamage
           audio2.clip = weapon.soundChargeLoop;
           audio2.loop = true;
           audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
-//          chargeSoundLoopDelay.Start( weapon.soundCharge.length - 0.01f, null, delegate {
-//            audio.clip = weapon.soundChargeLoop;
-//            audio.loop = true;
-//            audio.Play();
-//          }); 
 
           renderer.material.SetColor( "_BlendColor", chargeColor );
           ChargePulseFlip();
@@ -231,12 +226,6 @@ public class PlayerController : MonoBehaviour, IDamage
       if( chargeEffect != null )
       {
         chargeAmount += Time.deltaTime;
-//        if( !audio.isPlaying )
-//        {
-//          audio.clip = weapon.soundChargeLoop;
-//          audio.loop = true;
-//          audio.Play();
-//        }
       }
     }
     else
@@ -244,7 +233,6 @@ public class PlayerController : MonoBehaviour, IDamage
     {
       if( chargeEffect != null )
       {
-        //chargeSoundLoopDelay.Stop(false);
         audio.Stop();
         audio.PlayOneShot( weapon.soundChargeShot );
         audio2.Stop();

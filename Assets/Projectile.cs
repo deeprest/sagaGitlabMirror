@@ -12,7 +12,8 @@ public class Projectile : MonoBehaviour
   public Vector3 velocity;
   public CircleCollider2D circle;
   public static string[] CollideLayers = new string[] { "foreground" ,"character"};
-  public static string[] NoShootLayers = new string[] { "foreground" };
+  // check first before spawning to avoid colliding with these layers on the first frame
+  public static string[] NoShootLayers = new string[] { "foreground"};
   public AnimSequence HitEffect;
   public bool AlignXToMovementDirection = false;
 
@@ -30,13 +31,9 @@ public class Projectile : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    transform.position += velocity * Time.deltaTime;
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( CollideLayers ) );
-    if( hit.transform != null )
+    if( hit.transform != null && hit.transform.gameObject != instigator )
     {
-      if( hit.transform.gameObject == instigator )
-        return;
-      
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
         dam.TakeDamage( new Damage( transform, DamageType.Generic, 1, hit.point ) );
@@ -60,6 +57,7 @@ public class Projectile : MonoBehaviour
 
       timeoutTimer.Stop( false );
     }
+    transform.position += velocity * Time.deltaTime;
   }
 
 

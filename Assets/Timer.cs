@@ -7,10 +7,10 @@ public class Timer
   // New timers are held until the next frame, so that adding timers within the callback
   // of another timer does not modify the ActiveTimers collection while iterating.
   public static List<Timer> NewTimers = new List<Timer>();
-//  public static List<Timer> InactiveTimers = new List<Timer>();
+  //  public static List<Timer> InactiveTimers = new List<Timer>();
   public static List<Timer> ActiveTimers = new List<Timer>();
   public static List<Timer> RemoveTimers = new List<Timer>();
-
+    
 
   public static void UpdateTimers()
   {
@@ -34,16 +34,24 @@ public class Timer
   public Timer()
   {
     active = false;
+    repeat = false;
 //    InactiveTimers.Add( this );
   }
+
   public Timer( float duration, System.Action<Timer> UpdateDelegate, System.Action CompleteDelegate )
   {
     active = true;
     NewTimers.Add( this );
     StartTime = Time.time;
     Duration = duration;
+    repeat = false;
     OnUpdate = UpdateDelegate;
     OnComplete = CompleteDelegate;
+  }
+
+  public Timer( int loops, float interval, System.Action<Timer> IntervalDelegate, System.Action CompleteDelegate )
+  {
+    Start( loops, interval, IntervalDelegate, CompleteDelegate );
   }
 
   public void Start( float duration, System.Action<Timer> UpdateDelegate, System.Action CompleteDelegate )
@@ -52,7 +60,22 @@ public class Timer
     NewTimers.Add( this );
     StartTime = Time.time;
     Duration = duration;
+    repeat = false;
     OnUpdate = UpdateDelegate;
+    OnComplete = CompleteDelegate;
+  }
+
+  public void Start( int loops, float interval, System.Action<Timer> IntervalDelegate, System.Action CompleteDelegate )
+  {
+    active = true;
+    NewTimers.Add( this );
+    StartTime = Time.time;
+    Interval = interval;
+    IntervalStartTime = StartTime;
+    Duration = interval * loops;
+    repeat = true;
+    OnInterval = IntervalDelegate;
+    // OnUpdate
     OnComplete = CompleteDelegate;
   }
 
@@ -67,11 +90,23 @@ public class Timer
   {
     if( active )
     {
+
       if( Time.time - StartTime > Duration )
       {
         active = false;
         if( OnComplete != null )
           OnComplete();
+      }
+      else if( repeat )
+      {
+        if( Time.time - IntervalStartTime > Interval )
+        {
+          IntervalStartTime = Time.time;
+          if( OnInterval != null )
+            OnInterval( this );
+        }
+        if( OnUpdate != null )
+          OnUpdate( this );
       }
       else
       {
@@ -95,6 +130,10 @@ public class Timer
   bool active;
   float StartTime;
   float Duration;
+  float Interval;
+  float IntervalStartTime;
+  bool repeat;
   System.Action<Timer> OnUpdate;
+  System.Action<Timer> OnInterval;
   System.Action OnComplete;
 }

@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour , IDamage
 {
+  [SerializeField] AudioSource audio;
+
   public Vector3 velocity = Vector3.zero;
   public Vector3 inertia = Vector3.zero;
   public float friction = 0.5f;
-  public float raylength = 0.1f;
-  public Vector2 box = new Vector2( 0.3f, 0.3f );
+  public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
+  public Vector2 box = new Vector2( 0.3f, 0.3f );
   string[] CollideLayers = new string[] { "foreground" };
   public bool collideRight = false;
   public bool collideLeft = false;
@@ -18,12 +20,24 @@ public class Enemy : MonoBehaviour , IDamage
   RaycastHit2D hitRight;
   RaycastHit2D hitLeft;
 
+  [SerializeField] new SpriteRenderer renderer;
   public SpriteAnimator animator;
   string anim = "idle";
 
-  int health = 5;
+  public int health = 5;
   public GameObject explosion;
+  public AudioClip soundHit;
   public float hitPush = 4;
+  public float flashInterval = 0.1f;
+  public int flashCount = 5;
+  bool flip = false;
+  public float emissive = 0.5f;
+
+  void Start()
+  {
+    renderer.material.SetTexture( "_EmissiveTex", null );
+    renderer.material.SetFloat( "_EmissiveAmount", 0 );
+  }
 
   void Update()
   {
@@ -94,7 +108,7 @@ public class Enemy : MonoBehaviour , IDamage
 
     if( collideFeet )
     {
-      velocity.x -= (velocity.x * friction) * Time.deltaTime;
+      velocity.x -= ( velocity.x * friction ) * Time.deltaTime;
       velocity.y = Mathf.Max( velocity.y, 0 );
     }
     if( collideRight )
@@ -118,8 +132,33 @@ public class Enemy : MonoBehaviour , IDamage
   {
     health -= d.amount;
     velocity += ( transform.position - d.point ) * hitPush;
-    GameObject.Instantiate( explosion, transform.position, Quaternion.identity );
     if( health <= 0 )
+    {
+      GameObject.Instantiate( explosion, transform.position, Quaternion.identity );
       Destroy( gameObject );
+    }
+    else
+    {
+      // hit sound
+      audio.PlayOneShot( soundHit );
+
+      // color pulse
+      flip = false;
+      renderer.material.SetFloat( "_EmissiveAmount", emissive );
+      new Timer( flashCount * 2, flashInterval, delegate(Timer t )
+      {
+        flip = !flip;
+        if( flip )
+          renderer.material.SetFloat( "_EmissiveAmount", emissive );
+        else
+          renderer.material.SetFloat( "_EmissiveAmount", 0 );
+      }, delegate
+      {
+        renderer.material.SetFloat( "_EmissiveAmount", 0 );
+      } );
+      
+    }
   }
+
+
 }
