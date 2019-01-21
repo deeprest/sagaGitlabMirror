@@ -62,7 +62,10 @@ public class Projectile : MonoBehaviour
 
       timeoutTimer.Stop( false );
     }
-    transform.position += velocity * Time.deltaTime;
+    else
+    {
+      transform.position += velocity * Time.deltaTime;
+    }
   }
 
 

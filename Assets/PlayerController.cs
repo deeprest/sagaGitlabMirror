@@ -400,7 +400,7 @@ public class PlayerController : MonoBehaviour, IDamage
     if( !jumping )
       anim = "fall";
       
-    if( collideFeet )
+    if( collideFeet || (collideLeft&&collideRight) )
     {
       onGround = true;
       velocity.y = Mathf.Max( velocity.y, 0 );

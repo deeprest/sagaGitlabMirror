@@ -44,6 +44,7 @@ public class Global : MonoBehaviour
   [Header( "Runtime Objects" )]
   public PlayerController CurrentPlayer;
   public RectTransform cursor;
+  public Chopper chopper;
 
   public float cursorOuter = 100;
   public float cursorInner = 50;
@@ -52,7 +53,6 @@ public class Global : MonoBehaviour
 
   [SerializeField] Text debugButtons;
 
-  public Chopper chopper;
 
   void OnApplicationQuit()
   {
@@ -166,9 +166,9 @@ public class Global : MonoBehaviour
     if( Input.GetKeyDown( KeyCode.O ) )
     {
       if( Slowed )
-        NoSlow();
+        Global.instance.NoSlow();
       else
-        Slow();
+        Global.instance.Slow();
     }
 
     if( Input.GetKeyDown( KeyCode.P ) )
@@ -223,16 +223,37 @@ public class Global : MonoBehaviour
   }
 
   public float slowtime = 0.2f;
-  public static void Slow()
+
+  [Header( "Audio" )]
+  public UnityEngine.Audio.AudioMixer mixer;
+  public UnityEngine.Audio.AudioMixerSnapshot snapSlowmo;
+  public UnityEngine.Audio.AudioMixerSnapshot snapNormal;
+  public float AudioFadeDuration = 0.1f;
+
+  public void Slow()
   {
     Time.timeScale = Global.instance.slowtime;
     Slowed = true;
+    mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
+      snapNormal,
+      snapSlowmo
+    }, new float[] {
+      0,
+      1
+    }, AudioFadeDuration );
   }
 
-  public static void NoSlow()
+  public void NoSlow()
   {
     Time.timeScale = 1;
     Slowed = false;
+    Global.instance.mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
+      Global.instance.snapNormal,
+      Global.instance.snapSlowmo
+    }, new float[] {
+      1,
+      0
+    }, AudioFadeDuration );
   }
 
   public static void Pause()

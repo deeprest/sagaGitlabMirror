@@ -170,7 +170,7 @@ Prefab:
     - target: {fileID: 224239634301653134, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 224239634301653134, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 2}
@@ -195,7 +195,7 @@ Prefab:
     - target: {fileID: 224981624136305544, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 224981624136305544, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 2}
@@ -220,7 +220,7 @@ Prefab:
     - target: {fileID: 224596314402241600, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 224596314402241600, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 2}
@@ -230,8 +230,31 @@ Prefab:
     - target: {fileID: 224596314402241600, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 2}
       propertyPath: m_SizeDelta.y
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 82808988760972972, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 2}
+      propertyPath: m_PlayOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114329875613515752, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 2}
+      propertyPath: mixer
+      value: 
+      objectReference: {fileID: 24100000, guid: 1c39f8c58cb83400089739cd8e4d9c58,
+        type: 2}
+    - target: {fileID: 114329875613515752, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 2}
+      propertyPath: snapSlowmo
+      value: 
+      objectReference: {fileID: 245016920106228552, guid: 1c39f8c58cb83400089739cd8e4d9c58,
+        type: 2}
+    - target: {fileID: 114329875613515752, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 2}
+      propertyPath: snapNormal
+      value: 
+      objectReference: {fileID: 24500006, guid: 1c39f8c58cb83400089739cd8e4d9c58,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 2}
   m_IsPrefabParent: 0

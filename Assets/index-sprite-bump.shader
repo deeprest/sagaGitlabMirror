@@ -20,10 +20,9 @@
 	}
 	SubShader {
 		Tags { 
-		//"Queue"="AlphaTest" "RenderType"="TransparentCutout" 
 		"Queue"="Transparent" 
 			"IgnoreProjector"="True" 
-			"RenderType"="Transparent" 
+			"RenderType"="TransparentCutout" 
 			"PreviewType"="Plane"
 			"CanUseSpriteAtlas"="True"
 		}
