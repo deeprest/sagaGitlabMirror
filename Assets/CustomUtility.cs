@@ -198,6 +198,7 @@ public class CustomUtility : EditorWindow
     }
     GUILayout.Label( "Character", EditorStyles.boldLabel );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Select Player Character" ) )
+    if( Application.isPlaying )
       Selection.activeGameObject = Global.instance.CurrentPlayer.gameObject;
 
     if( Selection.activeGameObject != null )

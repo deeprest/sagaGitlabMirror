@@ -19,13 +19,13 @@ controlled spawning
 - remove colliding objects
 * fix the name
 
-
 + feet no collide when running down slope (steep slope still has this problem)
-- when wall slide, can shoot through wall
-- charge sounds
++ when wall slide, can shoot through wall
++ charge sounds
 - hit sounds
-- onwall without move* held down
-- normal map shows lighting without depth test
++ onwall without move* held down
++ [Sprite layer order] normal map shows lighting without depth test
+
 * Spelunky-style random cell generation for city
 * persistence?
 

@@ -171,13 +171,13 @@ public class Global : MonoBehaviour
         Global.instance.Slow();
     }
 
-    if( Input.GetKeyDown( KeyCode.P ) )
+    /*if( Input.GetKeyDown( KeyCode.P ) )
     {
       if( Paused )
         Unpause();
       else
         Pause();
-    }
+    }*/
     if( Input.GetKeyDown( KeyCode.Return ) )
     {
       GameObject go = FindSpawnPoint();
