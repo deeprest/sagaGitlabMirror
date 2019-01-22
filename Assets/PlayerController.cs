@@ -18,8 +18,15 @@ public class PlayerController : MonoBehaviour, IDamage
   public ParticleSystem dashSmoke;
 
   // settings
-  public float raylength = 0.01f;
-  public float contactSeparation = 0.01f;
+  public float raylength = 0.3f;
+  public float contactSeparation = 0.0f;
+  public float sideraylength = 0.01f;
+  public float sidecontactSeparation = 0.01f;
+
+  public float verticalOffset = 0.01f;
+  public float downslopefudge = 0f;
+  public float restingDownwardVelocity = 0f;
+  const float corner = 0.707f;
   public Vector2 box = new Vector2( 0.3f, 0.3f );
 
   // velocities
@@ -56,6 +63,8 @@ public class PlayerController : MonoBehaviour, IDamage
   public bool collideFeet = false;
   RaycastHit2D hitRight;
   RaycastHit2D hitLeft;
+ 
+  Vector3 hitBottomNormal;
 
   public Damage ContactDamage;
   public Weapon weapon;
@@ -82,6 +91,9 @@ public class PlayerController : MonoBehaviour, IDamage
     collider.size = box * 2;
   }
 
+  public Vector2 rightFoot;
+  public Vector2 leftFoot;
+
   void UpdateCollision()
   {
     collideRight = false;
@@ -107,9 +119,43 @@ public class PlayerController : MonoBehaviour, IDamage
         }
       }
     }
-
-    const float corner = 0.707f;
+      
     Vector2 adjust = transform.position;
+    /*
+    // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground bug by 'sampling' the ground at multiple points
+    RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    RaycastHit2D left = Physics2D.Raycast( adjust + Vector2.left * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    if( right.transform != null )
+      rightFoot = right.point;
+    else
+      rightFoot = adjust + ( Vector2.right * box.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * Time.deltaTime ) );
+    if( left.transform != null )
+      leftFoot = left.point;
+    else
+      leftFoot = adjust + ( Vector2.left * box.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * Time.deltaTime ) );
+
+    if( right.transform != null || left.transform != null )
+    {
+      Vector2 across = rightFoot - leftFoot;
+      Vector3 sloped = Vector3.Cross( across.normalized, Vector3.back );
+      if( sloped.y > corner )
+      {
+        collideFeet = true;
+        adjust.y = ( leftFoot + across * 0.5f ).y + contactSeparation + verticalOffset;
+        hitBottomNormal = sloped;
+      }
+    }
+
+    if( left.transform != null )
+      Debug.DrawLine( adjust + Vector2.left * box.x, leftFoot, Color.green );
+    else
+      Debug.DrawLine( adjust + Vector2.left * box.x, leftFoot, Color.grey );
+    if( right.transform != null )
+      Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.green );
+    else
+      Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.grey );
+
+    */
 
     hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
@@ -118,9 +164,11 @@ public class PlayerController : MonoBehaviour, IDamage
       {
         collideFeet = true;
         adjust.y = hit.point.y + box.y + contactSeparation;
+        hitBottomNormal = hit.normal;
         break;
       }
     }
+
     hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.up, Mathf.Max( raylength, velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
@@ -131,31 +179,32 @@ public class PlayerController : MonoBehaviour, IDamage
         break;
       }
     }
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, Mathf.Max( sideraylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x > corner )
       {
         collideLeft = true;
         hitLeft = hit;
-        adjust.x = hit.point.x + box.x + contactSeparation;
+        adjust.x = hit.point.x + box.x + sidecontactSeparation;
         break;
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, Mathf.Max( raylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, Mathf.Max( sideraylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x < -corner )
       {
         collideRight = true;
         hitRight = hit;
-        adjust.x = hit.point.x - box.x - contactSeparation;
+        adjust.x = hit.point.x - box.x - sidecontactSeparation;
         break;
       }
     }
 
     transform.position = adjust;
+
   }
 
 
@@ -172,6 +221,28 @@ public class PlayerController : MonoBehaviour, IDamage
 
     if( Input.GetKey( KeyCode.G ) )
       inertia.x = momentumTest;
+
+    if( collideFeet && !onGround )
+    {
+      dashing = false;
+      landing = true;
+      landStart = Time.time;
+    }
+
+    if( collideFeet || ( collideLeft && collideRight ) )
+    {
+      onGround = true;
+      velocity.y = Mathf.Max( velocity.y, restingDownwardVelocity );
+      // high friction
+      //inertia.x = 0;
+    }
+    else
+    {
+      //inertia -= (inertia * momentumDecay) * Time.deltaTime;
+      onGround = false;
+    }
+
+
     
     const float deadZone = 0.3f;
 
@@ -273,7 +344,13 @@ public class PlayerController : MonoBehaviour, IDamage
     if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "MoveRight" ] ) )
     {
       inputRight = true;
-      velocity.x = moveVel;
+      // move along floor if angled downwards
+      Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.forward );
+      if( onGround && hitnormalCross.y < 0 )
+        // add a small downward vector for curved surfaces
+        velocity = hitnormalCross * moveVel + Vector3.down * downslopefudge;
+      else
+        velocity.x = moveVel;
       if( !facingRight && onGround )
         dashing = false;
       facingRight = true;
@@ -286,7 +363,13 @@ public class PlayerController : MonoBehaviour, IDamage
     if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "MoveLeft" ] ) )
     {
       inputLeft = true;
-      velocity.x = -moveVel;
+      // move along floor if angled downwards
+      Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.back );
+      if( onGround && hitnormalCross.y < 0 )
+        // add a small downward vector for curved surfaces
+        velocity = hitnormalCross * moveVel + Vector3.down * downslopefudge;
+      else
+        velocity.x = -moveVel;
       if( facingRight && onGround )
         dashing = false;
       facingRight = false;
@@ -345,25 +428,24 @@ public class PlayerController : MonoBehaviour, IDamage
     if( landing && ( Time.time - landStart >= landDuration ) )
       landing = false;
 
-    if( collideFeet && !onGround )
-    {
-      dashing = false;
-      landing = true;
-      landStart = Time.time;
-    }
+
 
 
     if( dashing )
     {
       if( facingRight )
       {
-        velocity.x = dashVel;
-        dashSmoke.transform.localPosition = new Vector3( -0.36f, -0.2f, 0 );
+        if( onGround || inputRight )
+          velocity.x = dashVel;
+        if( onGround )
+          dashSmoke.transform.localPosition = new Vector3( -0.36f, -0.2f, 0 );
       }
       else
       {
-        velocity.x = -dashVel;
-        dashSmoke.transform.localPosition = new Vector3( 0.36f, -0.2f, 0 );
+        if( onGround || inputLeft )
+          velocity.x = -dashVel;
+        if( onGround )
+          dashSmoke.transform.localPosition = new Vector3( 0.36f, -0.2f, 0 );
       }
     }
       
@@ -400,18 +482,7 @@ public class PlayerController : MonoBehaviour, IDamage
     if( !jumping )
       anim = "fall";
       
-    if( collideFeet || (collideLeft&&collideRight) )
-    {
-      onGround = true;
-      velocity.y = Mathf.Max( velocity.y, 0 );
-      // high friction
-      //inertia.x = 0;
-    }
-    else
-    {
-      //inertia -= (inertia * momentumDecay) * Time.deltaTime;
-      onGround = false;
-    }
+
 
     if( collideRight )
     {

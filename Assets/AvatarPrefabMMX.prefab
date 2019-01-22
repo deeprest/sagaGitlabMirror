@@ -308,6 +308,11 @@ MonoBehaviour:
   dashSmoke: {fileID: 198502029244883790}
   raylength: 0.01
   contactSeparation: 0.01
+  sideraylength: 0.01
+  sidecontactSeparation: 0.01
+  verticalOffset: 0.2
+  downslopefudge: 0.2
+  restingDownwardVelocity: 0
   box: {x: 0.1, y: 0.3}
   moveVel: 1.5
   jumpVel: 5
@@ -342,6 +347,8 @@ MonoBehaviour:
   chargeColor: {r: 0, g: 0.796, b: 1, a: 1}
   soundJump: {fileID: 8300000, guid: 3634bba7cfee0409cb0ba088753bc669, type: 3}
   soundDash: {fileID: 8300000, guid: fa292f5f0979c4ce49e47c2a103a585b, type: 3}
+  rightFoot: {x: 0, y: 0}
+  leftFoot: {x: 0, y: 0}
 --- !u!198 &198502029244883790
 ParticleSystem:
   m_ObjectHideFlags: 1

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour , IDamage
 {
+  public bool UseGravity = true;
   public Vector3 velocity = Vector3.zero;
   public Vector3 inertia = Vector3.zero;
   public float friction = 0.5f;
@@ -110,7 +111,8 @@ public class Enemy : MonoBehaviour , IDamage
     }
     transform.position = adjust;
 
-    velocity.y += -Global.Gravity * Time.deltaTime;
+    if( UseGravity )
+      velocity.y += -Global.Gravity * Time.deltaTime;
 
     if( collideFeet )
     {
