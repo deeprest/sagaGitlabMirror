@@ -47,7 +47,7 @@ public class CustomUtility : EditorWindow
   List<AudioSource> auds;
   List<string> scenes;
   List<GameObject> gameobjects;
-
+  List<AnimSequence> ans;
   int layer;
 
   void StartJob( string message, int count, System.Action update, System.Action done )
@@ -196,6 +196,31 @@ public class CustomUtility : EditorWindow
       for( int i = 0; i < Selection.assetGUIDs.Length; i++ )
         Debug.Log( Selection.objects[ i ].GetType().ToString() + " " + Selection.objects[ i ].name + " " + Selection.assetGUIDs[ i ] );
     }
+
+    /*GUILayout.Label( "AnimFix", EditorStyles.boldLabel );
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Apply" ) )
+    {
+      ans = new List<AnimSequence>();
+      string[] guids = AssetDatabase.FindAssets( "t:AnimSequence" );
+      foreach( string guid in guids )
+      {
+        AnimSequence seq = AssetDatabase.LoadAssetAtPath<AnimSequence>( AssetDatabase.GUIDToAssetPath( guid ) );
+        ans.Add( seq );
+      }
+      StartJob( "Applying...", ans.Count, delegate()
+      {
+        AnimSequence seq = ans[ index ];
+        Debug.Log( "modified: " + seq.name + " " + index, seq );
+        seq.frames = new AnimFrame[seq.frames.Length];
+        for( int i = 0; i < seq.frames.Length; i++ )
+        {
+          seq.frames[ i ].sprite = seq.frames[i];
+        }
+
+      }, null );
+    }*/
+
+
     GUILayout.Label( "Character", EditorStyles.boldLabel );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Select Player Character" ) )
     if( Application.isPlaying )
@@ -203,11 +228,11 @@ public class CustomUtility : EditorWindow
 
     if( Selection.activeGameObject != null )
     {
-      Character selected = Selection.activeGameObject.GetComponent<Character>();
-      if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Dance, monkey, dance!" ) )
-      {
-        // there are no monkeys
-      }
+//      Character selected = Selection.activeGameObject.GetComponent<Character>();
+//      if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Dance, monkey, dance!" ) )
+//      {
+//        // there are no monkeys
+//      }
     }
   }
 

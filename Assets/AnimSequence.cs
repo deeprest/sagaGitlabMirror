@@ -2,18 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class AnimPoint
-{
-  public string name;
-  public Vector2Int pos;
-}
 
 [System.Serializable]
-public class AnimFrame
+public struct AnimFrame
 {
   public Sprite sprite;
-  public AnimPoint[] point;
+
+  public string[] mountName;
+  public Vector2[] point;
 }
 
 [CreateAssetMenu]
@@ -24,5 +20,14 @@ public class AnimSequence : ScriptableObject
   public int loopStartIndex = 0;
   public Sprite[] sprites;
 
+  public bool UseFrames = false;
   public AnimFrame[] frames;
+
+  public float GetDuration()
+  {
+    if( UseFrames )
+      return ( 1.0f / fps ) * frames.Length;
+    else
+      return ( 1.0f / fps ) * sprites.Length;
+  }
 }

@@ -26,6 +26,7 @@ controlled spawning
 + onwall without move* held down
 + [Sprite layer order] normal map shows lighting without depth test
 
+* Boss
 * Spelunky-style random cell generation for city
 * persistence?
 

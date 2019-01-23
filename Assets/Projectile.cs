@@ -12,7 +12,7 @@ public class Projectile : MonoBehaviour
   Timer timeoutTimer;
   public Vector3 velocity;
   public CircleCollider2D circle;
-  public static string[] CollideLayers = new string[] { "foreground" ,"character"};
+  public static string[] CollideLayers = new string[] { "foreground" ,"character", "triggerAndCollision" };
   // check first before spawning to avoid colliding with these layers on the first frame
   public static string[] NoShootLayers = new string[] { "foreground"};
   public AnimSequence HitEffect;
@@ -45,10 +45,10 @@ public class Projectile : MonoBehaviour
       }
       enabled = false;
       transform.position = hit.point;
-      animator.Play( HitEffect, true );
+      animator.Play( HitEffect );
       //GameObject go = GameObject.Instantiate( HitEffect, transform.position, Quaternion.identity );
       //SpriteAnimator sa = go.GetComponent<SpriteAnimator>();
-      float duration = ( 1.0f / animator.CurrentSequence.fps ) * animator.CurrentSequence.sprites.Length;
+      float duration = animator.CurrentSequence.GetDuration();
       new Timer( duration, null, delegate
       {
         Destroy( gameObject );

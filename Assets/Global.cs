@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+public interface ITrigger
+{
+  void Trigger( Transform instigator );
+}
 public interface IDamage
 {
   void TakeDamage( Damage d );
@@ -87,38 +91,22 @@ public class Global : MonoBehaviour
 
     InitializeControls();
 
-
-
     StartCoroutine( InitializeRoutine() );
-  }
-
-  GameObject FindSpawnPoint()
-  {
-    GameObject[] spawns = GameObject.FindGameObjectsWithTag( "Respawn" );
-    if( spawns.Length > 0 )
-      return spawns[ Random.Range( 0, spawns.Length ) ];
-    return null;
-  }
-
-  Vector3 FindSpawnPosition()
-  {
-    GameObject go = FindSpawnPoint();
-    if( go != null )
-      return go.transform.position;
-    return Vector3.zero;
   }
     
   IEnumerator InitializeRoutine()
   {
-    SceneManager.LoadScene( InitialSceneName, LoadSceneMode.Single );
-    yield return null;
-
+    if( !Application.isEditor )
+    {
+      SceneManager.LoadScene( InitialSceneName, LoadSceneMode.Single );
+      yield return null;
+    }
     GameObject go = Spawn( AvatarPrefab, FindSpawnPoint().transform.position, Quaternion.identity, null, false );
     CurrentPlayer = go.GetComponent<PlayerController>();
     CameraController.LookTarget = CurrentPlayer.gameObject;
 
 
-    yield return new WaitForSecondsRealtime( 0.1f );
+    yield return new WaitForSecondsRealtime( 1f );
     Unpause();
     yield return null;
   }
@@ -190,16 +178,7 @@ public class Global : MonoBehaviour
     if( Input.GetKeyDown( KeyCode.R ) )
       NextCursor();
   }
-
-  void ChopDrop()
-  {
-    chopper = FindObjectOfType<Chopper>();
-    if( chopper != null )
-    { 
-      chopper.character = CurrentPlayer;
-      chopper.StartDrop();
-    }
-  }
+    
   void OnApplicationFocus( bool hasFocus )
   {
     if( hasFocus )
@@ -213,13 +192,29 @@ public class Global : MonoBehaviour
 
     if( CurrentPlayer != null )
     {
-      Vector3 origin = Camera.main.WorldToScreenPoint( CurrentPlayer.transform.position );
+      Vector3 origin = Camera.main.WorldToScreenPoint( CurrentPlayer.arm.position );
       Vector3 delta = cursorDelta;
       float mag = Mathf.Max( Mathf.Min( delta.magnitude, cursorOuter ), cursorInner );
       delta = delta.normalized * mag;
       cursorDelta = delta;
       cursor.anchoredPosition = origin + cursorDelta;
     }
+  }
+
+  GameObject FindSpawnPoint()
+  {
+    GameObject[] spawns = GameObject.FindGameObjectsWithTag( "Respawn" );
+    if( spawns.Length > 0 )
+      return spawns[ Random.Range( 0, spawns.Length ) ];
+    return null;
+  }
+
+  Vector3 FindSpawnPosition()
+  {
+    GameObject go = FindSpawnPoint();
+    if( go != null )
+      return go.transform.position;
+    return Vector3.zero;
   }
 
   public float slowtime = 0.2f;
@@ -526,4 +521,16 @@ public class Global : MonoBehaviour
       Destroy( go );
     } );
   }
+
+
+  void ChopDrop()
+  {
+    chopper = FindObjectOfType<Chopper>();
+    if( chopper != null )
+    { 
+      chopper.character = CurrentPlayer;
+      chopper.StartDrop();
+    }
+  }
+
 }

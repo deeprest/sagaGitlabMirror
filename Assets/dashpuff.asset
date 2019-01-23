@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Name: dashpuff
   m_EditorClassIdentifier: 
   fps: 20
-  holdLastFrame: 0
+  loop: 1
   loopStartIndex: 0
   sprites:
-  - {fileID: 21300052, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
+  - {fileID: 0}
   - {fileID: 21300054, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
   - {fileID: 21300056, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
   - {fileID: 21300058, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
+  UseFrames: 0
+  frames: []

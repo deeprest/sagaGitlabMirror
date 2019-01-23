@@ -20,16 +20,13 @@
 	}
 	SubShader {
 		Tags { 
-		"Queue"="Transparent" 
-			"IgnoreProjector"="True" 
-			"RenderType"="TransparentCutout" 
-			"PreviewType"="Plane"
-			"CanUseSpriteAtlas"="True"
+			"Queue"="Transparent" 
+			"RenderType"="Transparent" 
 		}
 		LOD 200
 		Cull Off
-		Lighting Off
-		ZWrite Off
+		//Lighting Off
+		//ZWrite Off
 		//Blend One OneMinusSrcAlpha
 
 		CGPROGRAM

@@ -19,14 +19,14 @@ public class PlayerController : MonoBehaviour, IDamage
   public Transform arm;
 
   // settings
-  public float raylength = 0.3f;
-  public float contactSeparation = 0.0f;
+  public float raydown = 0.2f;
+  public float downOffset = 0.16f;
+  public float raylength = 0.01f;
+  public float contactSeparation = 0.01f;
   public float sideraylength = 0.01f;
   public float sidecontactSeparation = 0.01f;
 
-  public float verticalOffset = 0.01f;
   public float downslopefudge = 0f;
-  public float restingDownwardVelocity = 0f;
   const float corner = 0.707f;
   public Vector2 box = new Vector2( 0.3f, 0.3f );
 
@@ -61,7 +61,8 @@ public class PlayerController : MonoBehaviour, IDamage
   float jumpStart;
   float landStart;
 
-  string[] PlayerCollideLayers = new string[] { "foreground" };
+  string[] PlayerCollideLayers = new string[] { "foreground", "triggerAndCollision" };
+  string[] TriggerLayers = new string[] { "trigger", "triggerAndCollision" };
   public bool collideRight = false;
   public bool collideLeft = false;
   public bool collideHead = false;
@@ -89,15 +90,8 @@ public class PlayerController : MonoBehaviour, IDamage
   public AudioClip soundJump;
   public AudioClip soundDash;
 
-
-  void Awake()
-  {
-    audio = GetComponent < AudioSource>();
-    collider.size = box * 2;
-  }
-
-  public Vector2 rightFoot;
-  public Vector2 leftFoot;
+//  public Vector2 rightFoot;
+//  public Vector2 leftFoot;
 
   void UpdateCollision()
   {
@@ -108,9 +102,14 @@ public class PlayerController : MonoBehaviour, IDamage
 
     RaycastHit2D[] hits;
 
-    hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, raylength, LayerMask.GetMask( "trigger" ) );
+    hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, Mathf.Max( raylength, velocity.magnitude * Time.deltaTime ), LayerMask.GetMask( TriggerLayers ) );
     foreach( var hit in hits )
     {
+      ITrigger tri = hit.transform.GetComponent<ITrigger>();
+      if( tri != null )
+      {
+        tri.Trigger( transform );
+      }
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
@@ -162,13 +161,13 @@ public class PlayerController : MonoBehaviour, IDamage
 
     */
 
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, Mathf.Max( raydown, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y > corner )
       {
         collideFeet = true;
-        adjust.y = hit.point.y + box.y + contactSeparation;
+        adjust.y = hit.point.y + box.y + downOffset;
         hitBottomNormal = hit.normal;
         break;
       }
@@ -378,7 +377,7 @@ public class PlayerController : MonoBehaviour, IDamage
     if( collideFeet || ( collideLeft && collideRight ) )
     {
       onGround = true;
-      velocity.y = Mathf.Max( velocity.y, restingDownwardVelocity );
+      velocity.y = Mathf.Max( velocity.y, 0 );
       // high friction
       //inertia.x = 0;
     }
@@ -423,7 +422,8 @@ public class PlayerController : MonoBehaviour, IDamage
       {
         dashing = true;
         dashStart = Time.time;
-        audio.PlayOneShot( soundDash );
+        if( onGround )
+          audio.PlayOneShot( soundDash, 0.5f );
       }
     }
     inputDashStart = false;
@@ -573,8 +573,9 @@ public class PlayerController : MonoBehaviour, IDamage
       dashSmoke.Play();
     else
       dashSmoke.Stop();
-    
-    animator.Play( anim );
+
+    if( anim != animator.CurrentSequence.name )
+      animator.Play( anim );
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     transform.position += ( inertia + velocity ) * Time.deltaTime;
