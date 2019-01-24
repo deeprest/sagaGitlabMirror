@@ -112,12 +112,14 @@ public class SpriteAnimator : MonoBehaviour
       }
       else
       {
+        #if UNITY_EDITOR
         animStart = (float)EditorApplication.timeSinceStartup;
         originalSharedMesh = mf.sharedMesh;
         mf.sharedMesh = Instantiate<Mesh>( mf.sharedMesh );
         originalMaterial = mr.sharedMaterial;
         mr.sharedMaterial = Instantiate<Material>( mr.sharedMaterial );
         mr.sharedMaterial.mainTexture = CurrentSequence.sprites[ 0 ].texture;
+        #endif
       }
     }
   }
@@ -135,22 +137,21 @@ public class SpriteAnimator : MonoBehaviour
   public void Stop()
   {
     isPlaying = false;
-    if( Application.isEditor )
+    #if UNITY_EDITOR
+    if( !UseSpriteRenderer )
     {
-      if( !UseSpriteRenderer )
+      if( mf.sharedMesh.GetInstanceID() != originalSharedMesh.GetInstanceID() )
       {
-        if( mf.sharedMesh.GetInstanceID() != originalSharedMesh.GetInstanceID() )
-        {
-          DestroyImmediate( mf.sharedMesh );
-          mf.sharedMesh = originalSharedMesh;
-        }
-        if( mr.sharedMaterial.GetInstanceID() != originalMaterial.GetInstanceID() )
-        {
-          DestroyImmediate( mr.sharedMaterial );
-          mr.sharedMaterial = originalMaterial;
-        }
+        DestroyImmediate( mf.sharedMesh );
+        mf.sharedMesh = originalSharedMesh;
+      }
+      if( mr.sharedMaterial.GetInstanceID() != originalMaterial.GetInstanceID() )
+      {
+        DestroyImmediate( mr.sharedMaterial );
+        mr.sharedMaterial = originalMaterial;
       }
     }
+    #endif
   }
 
   void AdvanceFrame( float time )
@@ -227,6 +228,7 @@ public class SpriteAnimator : MonoBehaviour
           mf.mesh.vertices = v;
           mf.mesh.uv = uvs;
         }
+        #if UNITY_EDITOR
         else
         {
           Vector3[] v = mf.sharedMesh.vertices;
@@ -237,6 +239,7 @@ public class SpriteAnimator : MonoBehaviour
           mf.sharedMesh.vertices = v;
           mf.sharedMesh.uv = uvs;
         }
+        #endif
       }
     }
   }
@@ -254,11 +257,13 @@ public class SpriteAnimator : MonoBehaviour
         UpdateFrame();
       }
     }
+    #if UNITY_EDITOR
     else
     {
       if( isPlaying )
         AdvanceFrame( (float)EditorApplication.timeSinceStartup );
       UpdateFrame();
     }
+    #endif
   }
 }

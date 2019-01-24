@@ -24,11 +24,9 @@ controlled spawning
 + charge sounds
 - hit sounds
 + onwall without move* held down
-+ [Sprite layer order] normal map shows lighting without depth test
 
 * Boss
-* Spelunky-style random cell generation for city
-* persistence?
+* Spelunky cell generation for city
 
 **DESIGN**
 # keep

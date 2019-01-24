@@ -37,6 +37,7 @@ public class Enemy : MonoBehaviour , IDamage
 
   void Start()
   {
+    animator.Play( idle );
     renderer.material.SetTexture( "_EmissiveTex", null );
     renderer.material.SetFloat( "_EmissiveAmount", 0 );
   }
@@ -127,9 +128,7 @@ public class Enemy : MonoBehaviour , IDamage
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
     }
-
-    animator.Play( idle );
-
+      
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     transform.position += velocity * Time.deltaTime;
   }
