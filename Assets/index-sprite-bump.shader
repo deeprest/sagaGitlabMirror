@@ -17,6 +17,8 @@
 		_EmissiveAmount ("Amount", Range(0,1)) = 0.0
 
 		_BumpMap ("Normalmap", 2D) = "bump" {}
+        
+        _FlipX ("FlipX", int) = 0 
 	}
 	SubShader {
 		Tags { 
@@ -55,6 +57,8 @@
 
 		fixed4 _BlendColor;
 		half _BlendAmount;
+        
+        int _FlipX;
 
 		// Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
 		// See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -75,7 +79,10 @@
 
 
 			o.Albedo = lerp( c.rgb, _BlendColor, _BlendAmount );
-			o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+            float3 norm = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+            if( _FlipX )
+                norm.x = -norm.x;
+            o.Normal = norm;
 			o.Metallic = _Metallic * (1.0 - tex2D( _MetallicTex, IN.uv_MainTex ));
 			o.Smoothness = _Glossiness;
 			o.Alpha = c.a;

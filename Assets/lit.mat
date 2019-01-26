@@ -4,8 +4,9 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: lit
   m_Shader: {fileID: 4800000, guid: 35356541c0ab54e2f9c3425f8121ddec, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA _GLOSSYREFLECTIONS_OFF _METALLICGLOSSMAP _NORMALMAP
@@ -70,6 +71,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EmissiveAmount: 0
+    - _FlipX: 0
     - _GlossMapScale: 0.181
     - _Glossiness: 0
     - _GlossyReflections: 0

@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour, IDamage
   }
 
   new public BoxCollider2D collider;
-  new public SpriteRenderer renderer;
   new public AudioSource audio;
   public AudioSource audio2;
   public SpriteAnimator animator;
@@ -161,7 +160,8 @@ public class PlayerController : MonoBehaviour, IDamage
 
     */
 
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, Mathf.Max( raydown, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    float down = jumping ? raydown - downOffset : raydown;
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, Mathf.Max( down, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y > corner )
@@ -183,6 +183,7 @@ public class PlayerController : MonoBehaviour, IDamage
         break;
       }
     }
+
     hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, Mathf.Max( sideraylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
@@ -207,7 +208,7 @@ public class PlayerController : MonoBehaviour, IDamage
       }
     }
 
-    transform.position = adjust;
+    transform.position = new Vector3( adjust.x, adjust.y, transform.position.z );
 
   }
 
@@ -219,7 +220,9 @@ public class PlayerController : MonoBehaviour, IDamage
 
     const float deadZone = 0.3f;
 
-    arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, Global.instance.cursorDelta ) );
+    Vector3 cursorDelta = Camera.main.ScreenToWorldPoint (Global.instance.cursor.anchoredPosition) - arm.position;
+    cursorDelta.z = 0;
+    arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );
 
     if( !Global.instance.UsingKeyboard )
     {
@@ -233,7 +236,7 @@ public class PlayerController : MonoBehaviour, IDamage
           Collider2D col = Physics2D.OverlapCircle( pos, weapon.ProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
           if( col == null )
           {
-            GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab.gameObject, pos, Quaternion.identity );
+            GameObject go = Instantiate( weapon.ProjectilePrefab.gameObject, pos, Quaternion.identity );
             Projectile p = go.GetComponent<Projectile>();
             p.instigator = gameObject;
             p.velocity = shoot.normalized * weapon.speed;
@@ -249,14 +252,14 @@ public class PlayerController : MonoBehaviour, IDamage
       if( !shootRepeatTimer.IsActive )
       {
         shootRepeatTimer.Start( weapon.shootInterval, null, null );
-        Vector3 pos = arm.position + Global.instance.cursorDelta.normalized * armRadius;
+        Vector3 pos = arm.position + cursorDelta.normalized * armRadius;
         Collider2D col = Physics2D.OverlapCircle( pos, weapon.ProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
         if( col == null )
         {
-          GameObject go = GameObject.Instantiate( weapon.ProjectilePrefab.gameObject, pos, Quaternion.identity );
+          GameObject go = Instantiate( weapon.ProjectilePrefab.gameObject, pos, Quaternion.identity );
           Projectile p = go.GetComponent<Projectile>();
           p.instigator = gameObject;
-          p.velocity = Global.instance.cursorDelta.normalized * weapon.speed;
+          p.velocity = cursorDelta.normalized * weapon.speed;
           Physics2D.IgnoreCollision( p.circle, collider );
           audio.PlayOneShot( weapon.soundXBusterPew );
         }
@@ -268,9 +271,9 @@ public class PlayerController : MonoBehaviour, IDamage
           audio2.loop = true;
           audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
 
-          renderer.material.SetColor( "_BlendColor", chargeColor );
+          animator.material.SetColor( "_BlendColor", chargeColor );
           ChargePulseFlip();
-          GameObject geffect = GameObject.Instantiate( weapon.ChargeEffect, transform );
+          GameObject geffect = Instantiate( weapon.ChargeEffect, transform );
           chargeEffect = geffect.GetComponent<ParticleSystem>();
         } );
       }
@@ -296,21 +299,21 @@ public class PlayerController : MonoBehaviour, IDamage
         Destroy( chargeEffect.gameObject );
         if( chargeAmount > chargeMin )
         {
-          Vector3 pos = arm.position + Global.instance.cursorDelta.normalized * armRadius;
+          Vector3 pos = arm.position + cursorDelta.normalized * armRadius;
           Collider2D col = Physics2D.OverlapCircle( pos, weapon.ProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
           if( col == null )
           {
-            GameObject go = GameObject.Instantiate( weapon.ChargedProjectilePrefab.gameObject, pos, Quaternion.identity );
+            GameObject go = Instantiate( weapon.ChargedProjectilePrefab.gameObject, pos, Quaternion.identity );
             Projectile p = go.GetComponent<Projectile>();
             p.instigator = gameObject;
-            p.velocity = Global.instance.cursorDelta.normalized * weapon.chargedSpeed;
+            p.velocity = cursorDelta.normalized * weapon.chargedSpeed;
             Physics2D.IgnoreCollision( p.circle, collider );
           }
         }
       }
       chargeStartDelay.Stop( false );
       chargePulse.Stop( false );
-      renderer.material.SetFloat( "_BlendAmount", 0 );
+      animator.material.SetFloat( "_BlendAmount", 0 );
       chargeEffect = null;
       chargeAmount = 0;
     }
@@ -342,7 +345,7 @@ public class PlayerController : MonoBehaviour, IDamage
     else
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap[ "Jump" ] ) )
     {
-      inputJumpStart = false;
+      inputJumpEnd = true;
     }
         
     if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap[ "Dash" ] ) )
@@ -472,6 +475,7 @@ public class PlayerController : MonoBehaviour, IDamage
     }
     inputJumpEnd = false;
 
+
     if( velocity.y < 0 )
       jumping = false;
 
@@ -483,13 +487,11 @@ public class PlayerController : MonoBehaviour, IDamage
 
     if( facingRight )
     {
-      renderer.flipX = false;
-      arm.localPosition = new Vector3( 0.06f, 0.05f, 0 );
+      animator.flipX = false;
     }
     else
     {
-      renderer.flipX = true;
-      arm.localPosition = new Vector3( -0.06f, 0.05f, 0 );
+      animator.flipX = true;
     }
 
     string anim = "idle";
@@ -588,9 +590,9 @@ public class PlayerController : MonoBehaviour, IDamage
     {
       chargePulseOn = !chargePulseOn;
       if( chargePulseOn )
-        renderer.material.SetFloat( "_BlendAmount", 0.5f );
+        animator.material.SetFloat( "_BlendAmount", 0.5f );
       else
-        renderer.material.SetFloat( "_BlendAmount", 0 );
+        animator.material.SetFloat( "_BlendAmount", 0 );
       ChargePulseFlip();
     } );
   }

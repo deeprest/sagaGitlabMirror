@@ -4,8 +4,9 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: mmx-bumped
   m_Shader: {fileID: 4800000, guid: 35356541c0ab54e2f9c3425f8121ddec, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA _NORMALMAP
@@ -68,11 +69,12 @@ Material:
     - _Cutoff: 0.421
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _EmissiveAmount: 1
+    - _EmissiveAmount: 0
+    - _FlipX: 0
     - _GlossMapScale: 0.464
     - _Glossiness: 1
     - _GlossyReflections: 1
-    - _Metallic: 0
+    - _Metallic: 0.525
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02

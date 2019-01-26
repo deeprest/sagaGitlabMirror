@@ -24,6 +24,12 @@ controlled spawning
 + charge sounds
 - hit sounds
 + onwall without move* held down
++ door sounds
+
+~ screen relative aim position
+- arm pos per frame (use "frames")
+- smoke: dash, wall slide
+- chopper normals
 
 * Boss
 * Spelunky cell generation for city

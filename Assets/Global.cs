@@ -58,19 +58,20 @@ public class Global : MonoBehaviour
   [SerializeField] Text debugButtons;
 
 
-  void OnApplicationQuit()
-  {
-    if( !IsQuiting )
+    [RuntimeInitializeOnLoadMethod]
+    static void RunOnStart()
     {
-      Application.CancelQuit();
-      IsQuiting = true;
-      // do pre-quit stuff here
-      //
-      Application.Quit();
+        Application.wantsToQuit += WantsToQuit;
     }
-  }
 
-  void Awake()
+    static bool WantsToQuit()
+    {
+        IsQuiting = true;
+        // do pre-quit stuff here
+        return true;
+    }
+
+    void Awake()
   {
     if( instance != null )
     {
@@ -82,11 +83,11 @@ public class Global : MonoBehaviour
     Pause();
     SceneManager.sceneLoaded += delegate(Scene arg0, LoadSceneMode arg1 )
     {
-      Debug.Log( "scene loaded" );
+      //Debug.Log( "scene loaded" );
     };
     SceneManager.activeSceneChanged += delegate(Scene arg0, Scene arg1 )
     {
-      Debug.Log( "active scene changed" );
+      //Debug.Log( "active scene changed" );
     };
 
     InitializeControls();
@@ -101,7 +102,7 @@ public class Global : MonoBehaviour
       SceneManager.LoadScene( InitialSceneName, LoadSceneMode.Single );
       yield return null;
     }
-    GameObject go = Spawn( AvatarPrefab, FindSpawnPoint().transform.position, Quaternion.identity, null, false );
+    GameObject go = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
     CurrentPlayer = go.GetComponent<PlayerController>();
     CameraController.LookTarget = CurrentPlayer.gameObject;
 
@@ -187,17 +188,25 @@ public class Global : MonoBehaviour
       Cursor.lockState = CursorLockMode.None;
   }
 
+  public bool CursorPlayerRelative = true;
   void LateUpdate()
   {
 
     if( CurrentPlayer != null )
     {
-      Vector3 origin = Camera.main.WorldToScreenPoint( CurrentPlayer.arm.position );
-      Vector3 delta = cursorDelta;
-      float mag = Mathf.Max( Mathf.Min( delta.magnitude, cursorOuter ), cursorInner );
-      delta = delta.normalized * mag;
-      cursorDelta = delta;
-      cursor.anchoredPosition = origin + cursorDelta;
+
+        Vector3 delta = cursorDelta;
+        float mag = Mathf.Max (Mathf.Min (delta.magnitude, cursorOuter), cursorInner);
+        delta = delta.normalized * mag;
+        cursorDelta = delta;
+        Vector3 origin;
+      if (CursorPlayerRelative)
+        origin = CurrentPlayer.arm.position;
+      else
+        origin = Camera.main.transform.position;
+      origin.z = 0;
+        cursor.anchoredPosition = Camera.main.WorldToScreenPoint (origin) + cursorDelta;
+
     }
   }
 
@@ -312,6 +321,7 @@ public class Global : MonoBehaviour
     icsCurrent = icsKeyboard;
     RepopulateControlBindingList();
     controllerIndicator.sprite = keyboardSprite;
+    CursorPlayerRelative = false;
   }
 
   void UseGamepad()
@@ -320,6 +330,7 @@ public class Global : MonoBehaviour
     icsCurrent = icsGamepad;
     RepopulateControlBindingList();
     controllerIndicator.sprite = gamepadSprite;
+    CursorPlayerRelative = true;
   }
 
   void RepopulateControlBindingList()

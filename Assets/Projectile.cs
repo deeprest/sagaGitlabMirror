@@ -29,7 +29,7 @@ public class Projectile : MonoBehaviour
     if( AlignXToMovementDirection )
       transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( velocity.normalized.y, velocity.normalized.x ) ) );
   }
-  // Update is called once per frame
+
   void Update()
   {
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( CollideLayers ) );

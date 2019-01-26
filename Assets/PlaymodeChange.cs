@@ -1,4 +1,6 @@
-﻿#if UNITY_EDITOR
+﻿#if SPRITE_MESH_RENDERER
+
+#if UNITY_EDITOR
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,5 +46,5 @@ public static class PlayModeStateChangedExample
     }
   }
 }
-
+#endif
 #endif

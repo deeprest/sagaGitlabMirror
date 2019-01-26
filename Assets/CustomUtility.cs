@@ -90,7 +90,7 @@ public class CustomUtility : EditorWindow
     {
       if( BuildPipeline.isBuildingPlayer )
         return;
-      BuildPlayerOptions bpo;
+      BuildPlayerOptions bpo = new BuildPlayerOptions ();
       bpo.target = BuildTarget.StandaloneOSX;
       bpo.scenes = new string[]{ "Assets/zero.unity", "Assets/mmx-city.unity" };
       bpo.options = BuildOptions.CompressWithLz4; //BuildOptions.AutoRunPlayer;
