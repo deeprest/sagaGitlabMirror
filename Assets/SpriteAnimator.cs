@@ -132,7 +132,10 @@ public class SpriteAnimator : MonoBehaviour
     CurrentFrameIndex = 0;
 
 #if UNITY_EDITOR
-    animStart = (float)EditorApplication.timeSinceStartup;
+    if( Application.isPlaying )
+      animStart = Time.time;
+    else
+      animStart = (float)EditorApplication.timeSinceStartup;
 #else
     if( Application.isPlaying )
     animStart = Time.time;
@@ -357,7 +360,10 @@ public class SpriteAnimator : MonoBehaviour
     if( isPlaying )
     {
 #if UNITY_EDITOR
-      AdvanceFrame( (float)EditorApplication.timeSinceStartup );
+      if( Application.isPlaying )
+        AdvanceFrame( Time.time );
+      else
+        AdvanceFrame( (float)EditorApplication.timeSinceStartup );
 #else
       AdvanceFrame( Time.time );
 #endif
