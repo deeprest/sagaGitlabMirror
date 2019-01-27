@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour, IDamage
   public float flashInterval = 0.1f;
   public int flashCount = 5;
   bool flip = false;
-  const float flashOn = 1f;
+  readonly float flashOn = 1f;
 
   public Damage ContactDamage;
 

@@ -31,6 +31,16 @@ public class SpriteAnimationEditor : Editor
     {
       sa.CurrentFrameIndex = frame;
       sa.UpdateFrame();
+      // avoid creating keyframes while scrubbing
+      foreach( var sac in sa.sac )
+        sac.ResetPosition();
+    }
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "Delete Frame" ) )
+    {
+      sa.CurrentSequence.DeleteFrame( sa.CurrentFrameIndex );
+      sa.UpdateFrame();
+      foreach( var sac in sa.sac )
+        sac.ResetPosition();
     }
     DrawDefaultInspector();
   }
@@ -181,7 +191,7 @@ public class SpriteAnimator : MonoBehaviour
 
     if( CurrentSequence.UseFrames )
     {
-      AnimFrame af = CurrentSequence.frames[CurrentFrameIndex];
+      AnimFrame af = CurrentSequence.GetKeyFrame (CurrentFrameIndex);
       foreach( var afp in af.point )
       {
         Transform child = transform.Find( afp.name );
