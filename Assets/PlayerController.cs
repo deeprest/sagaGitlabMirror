@@ -218,7 +218,7 @@ public class PlayerController : MonoBehaviour, IDamage
     if( Global.Paused )
       return;
 
-    const float deadZone = 0.3f;
+
 
     Vector3 cursorDelta = Camera.main.ScreenToWorldPoint (Global.instance.cursor.anchoredPosition) - arm.position;
     cursorDelta.z = 0;
@@ -227,7 +227,7 @@ public class PlayerController : MonoBehaviour, IDamage
     if( !Global.instance.UsingKeyboard )
     {
       Vector3 shoot = new Vector3( Input.GetAxisRaw( Global.instance.icsCurrent.axisMap[ "ShootX" ] ), -Input.GetAxisRaw( Global.instance.icsCurrent.axisMap[ "ShootY" ] ), 0 );
-      if( shoot.sqrMagnitude > deadZone * deadZone )
+      if( shoot.sqrMagnitude > Global.deadZone * Global.deadZone )
       {
         if( !shootRepeatTimer.IsActive )
         {
@@ -244,6 +244,10 @@ public class PlayerController : MonoBehaviour, IDamage
             audio.PlayOneShot( weapon.soundXBusterPew );
           }
         }
+      }
+      else
+      {
+        // todo change arm sprite
       }
     }
      

@@ -82,7 +82,6 @@ public class SpriteAnimator : MonoBehaviour
   }
   public bool flipX = false;
   public AnimSequence CurrentSequence;
-  public AnimSequence startAnim;
 
   public bool isPlaying = false;
   public bool playAtAStart = true;
@@ -119,7 +118,7 @@ public class SpriteAnimator : MonoBehaviour
       animLookup[a.name] = a;
 
     if( playAtAStart )
-      Play( startAnim );
+      Play( CurrentSequence );
   }
 
   public void Play( AnimSequence a )

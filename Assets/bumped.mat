@@ -4,8 +4,9 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: bumped
   m_Shader: {fileID: 4800000, guid: 35356541c0ab54e2f9c3425f8121ddec, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA _GLOSSYREFLECTIONS_OFF _METALLICGLOSSMAP _NORMALMAP
@@ -19,7 +20,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 1f850c360b3814f098efbff4163f27c6, type: 3}
+        m_Texture: {fileID: 2800000, guid: 8f778ba19477348a1aa7dfc87385ed82, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissiveTex:
@@ -38,6 +39,7 @@ Material:
     - _BlendAmount: 0
     - _Cutoff: 0.5
     - _EmissiveAmount: 0
+    - _FlipX: 0
     - _Glossiness: 0
     - _Metallic: 0
     m_Colors:

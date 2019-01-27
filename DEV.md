@@ -19,20 +19,19 @@ controlled spawning
 - remove colliding objects
 * fix the name
 
-+ feet no collide when running down slope (steep slope still has this problem)
-+ when wall slide, can shoot through wall
-+ charge sounds
 - hit sounds
-+ onwall without move* held down
-+ door sounds
-
-~ screen relative aim position
-- arm pos per frame (use "frames")
+- raycast from center to arm pos to avoid shooting through doors while adjacent
 - smoke: dash, wall slide
-- chopper normals
+- arm normals, pulse while charging
+- player take damage
+- health on HUD
+- death, respawn
+
 
 * Boss
-* Spelunky cell generation for city
+- borrow camera ramp from Flatlander
+- find ideal camera distance(s)
+* upgrade to new input system
 
 **DESIGN**
 # keep

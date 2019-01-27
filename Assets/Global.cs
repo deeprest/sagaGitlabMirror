@@ -25,6 +25,7 @@ public class Attack
   public Transform instigator;
 }
 
+// TODO upgrade to new input system
 
 public class Global : MonoBehaviour
 {
@@ -33,11 +34,13 @@ public class Global : MonoBehaviour
   public static bool Paused = false;
   public static bool Slowed = false;
   public static bool IsQuiting = false;
+
+  // settings
   public static float Gravity = 16;
   public static float MaxVelocity = 50;
+  public const float deadZone = 0.3f;
 
   [Header( "References" )]
-  //  public Object InitialScene;
   public string InitialSceneName;
   public CameraController CameraController;
 
@@ -54,24 +57,28 @@ public class Global : MonoBehaviour
   public float cursorInner = 50;
   public Vector3 cursorDelta;
   public float cursorSensitivity = 1;
+  public bool CursorPlayerRelative = true;
+  public Sprite[] cursors;
+  int cursorIndex = 0;
 
+  public float slowtime = 0.2f;
   [SerializeField] Text debugButtons;
 
 
-    [RuntimeInitializeOnLoadMethod]
-    static void RunOnStart()
-    {
-        Application.wantsToQuit += WantsToQuit;
-    }
+  [RuntimeInitializeOnLoadMethod]
+  static void RunOnStart()
+  {
+    Application.wantsToQuit += WantsToQuit;
+  }
 
-    static bool WantsToQuit()
-    {
-        IsQuiting = true;
-        // do pre-quit stuff here
-        return true;
-    }
+  static bool WantsToQuit()
+  {
+    IsQuiting = true;
+    // do pre-quit stuff here
+    return true;
+  }
 
-    void Awake()
+  void Awake()
   {
     if( instance != null )
     {
@@ -81,11 +88,11 @@ public class Global : MonoBehaviour
     instance = this;
     DontDestroyOnLoad( gameObject );
     Pause();
-    SceneManager.sceneLoaded += delegate(Scene arg0, LoadSceneMode arg1 )
+    SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
     {
       //Debug.Log( "scene loaded" );
     };
-    SceneManager.activeSceneChanged += delegate(Scene arg0, Scene arg1 )
+    SceneManager.activeSceneChanged += delegate ( Scene arg0, Scene arg1 )
     {
       //Debug.Log( "active scene changed" );
     };
@@ -94,7 +101,7 @@ public class Global : MonoBehaviour
 
     StartCoroutine( InitializeRoutine() );
   }
-    
+
   IEnumerator InitializeRoutine()
   {
     if( !Application.isEditor )
@@ -139,7 +146,7 @@ public class Global : MonoBehaviour
       {
         for( int i = 0; i < activateKeyboardKeys.Length; i++ )
         {
-          if( Input.GetKeyDown( activateKeyboardKeys[ i ] ) )
+          if( Input.GetKeyDown( activateKeyboardKeys[i] ) )
           {
             UseKeyboard();
           }
@@ -175,11 +182,16 @@ public class Global : MonoBehaviour
         ChopDrop();
       }
     }
-    cursorDelta += new Vector3( Input.GetAxis( "Cursor X" ) * cursorSensitivity, Input.GetAxis( "Cursor Y" ) * cursorSensitivity, 0 );
+
+    if( UsingKeyboard )
+      cursorDelta += new Vector3( Input.GetAxis( "Cursor X" ) * cursorSensitivity, Input.GetAxis( "Cursor Y" ) * cursorSensitivity, 0 );
+    else
+      cursorDelta = new Vector3( Input.GetAxisRaw( icsCurrent.axisMap["ShootX"] ), -Input.GetAxisRaw( icsCurrent.axisMap["ShootY"] ), 0 );
+
     if( Input.GetKeyDown( KeyCode.R ) )
       NextCursor();
   }
-    
+
   void OnApplicationFocus( bool hasFocus )
   {
     if( hasFocus )
@@ -188,25 +200,34 @@ public class Global : MonoBehaviour
       Cursor.lockState = CursorLockMode.None;
   }
 
-  public bool CursorPlayerRelative = true;
   void LateUpdate()
   {
-
     if( CurrentPlayer != null )
     {
+      if( UsingKeyboard )
+      {
+        cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, cursorOuter ), cursorInner );
+      }
+      else
+      {
+        if( cursorDelta.sqrMagnitude > deadZone * deadZone )
+        {
+          cursor.gameObject.SetActive( true );
+          cursorDelta = cursorDelta.normalized * cursorOuter;
+        }
+        else
+        { 
+          cursor.gameObject.SetActive( false );
+        }
+      }
 
-        Vector3 delta = cursorDelta;
-        float mag = Mathf.Max (Mathf.Min (delta.magnitude, cursorOuter), cursorInner);
-        delta = delta.normalized * mag;
-        cursorDelta = delta;
-        Vector3 origin;
-      if (CursorPlayerRelative)
+      Vector3 origin;
+      if( CursorPlayerRelative )
         origin = CurrentPlayer.arm.position;
       else
         origin = Camera.main.transform.position;
       origin.z = 0;
-        cursor.anchoredPosition = Camera.main.WorldToScreenPoint (origin) + cursorDelta;
-
+      cursor.anchoredPosition = Camera.main.WorldToScreenPoint( origin ) + cursorDelta;
     }
   }
 
@@ -214,7 +235,7 @@ public class Global : MonoBehaviour
   {
     GameObject[] spawns = GameObject.FindGameObjectsWithTag( "Respawn" );
     if( spawns.Length > 0 )
-      return spawns[ Random.Range( 0, spawns.Length ) ];
+      return spawns[Random.Range( 0, spawns.Length )];
     return null;
   }
 
@@ -222,11 +243,14 @@ public class Global : MonoBehaviour
   {
     GameObject go = FindSpawnPoint();
     if( go != null )
-      return go.transform.position;
+    {
+      Vector3 pos = go.transform.position; 
+      pos.z = 0;
+      return pos;
+    }
     return Vector3.zero;
   }
 
-  public float slowtime = 0.2f;
 
   [Header( "Audio" )]
   public UnityEngine.Audio.AudioMixer mixer;
@@ -272,13 +296,12 @@ public class Global : MonoBehaviour
     Paused = false;
   }
 
-  public Sprite[] cursors;
-  int cursorIndex = 0;
+
 
   void NextCursor()
   {
-    cursorIndex = ++cursorIndex % ( cursors.Length - 1 );
-    SetCursor( cursors[ cursorIndex ] );
+    cursorIndex = ++cursorIndex % (cursors.Length - 1);
+    SetCursor( cursors[cursorIndex] );
   }
 
   void SetCursor( Sprite spr )
@@ -291,11 +314,11 @@ public class Global : MonoBehaviour
 
   public class InputControlScheme
   {
-    public Dictionary<string,KeyCode> keyMap = new Dictionary<string, KeyCode>();
-    public Dictionary<string,string> axisMap = new Dictionary<string, string>();
+    public Dictionary<string, KeyCode> keyMap = new Dictionary<string, KeyCode>();
+    public Dictionary<string, string> axisMap = new Dictionary<string, string>();
   }
 
-  public InputControlScheme icsCurrent{ get; set; }
+  public InputControlScheme icsCurrent { get; set; }
 
   InputControlScheme icsKeyboard = new InputControlScheme();
   InputControlScheme icsGamepad = new InputControlScheme();
@@ -368,34 +391,34 @@ public class Global : MonoBehaviour
   void SetDefaultControls()
   {
     // keyboard
-    icsKeyboard.keyMap[ "MoveRight" ] = KeyCode.D;
-    icsKeyboard.keyMap[ "MoveLeft" ] = KeyCode.A;
-    icsKeyboard.keyMap[ "Jump" ] = KeyCode.W;
-    icsKeyboard.keyMap[ "Down" ] = KeyCode.S;
-    icsKeyboard.keyMap[ "Dash" ] = KeyCode.Space;
-    icsKeyboard.keyMap[ "Fire" ] = KeyCode.Mouse0;
+    icsKeyboard.keyMap["MoveRight"] = KeyCode.D;
+    icsKeyboard.keyMap["MoveLeft"] = KeyCode.A;
+    icsKeyboard.keyMap["Jump"] = KeyCode.W;
+    icsKeyboard.keyMap["Down"] = KeyCode.S;
+    icsKeyboard.keyMap["Dash"] = KeyCode.Space;
+    icsKeyboard.keyMap["Fire"] = KeyCode.Mouse0;
 
     // gamepad
-    icsGamepad.keyMap[ "MoveRight" ] = KeyCode.JoystickButton8;
-    icsGamepad.keyMap[ "MoveLeft" ] = KeyCode.JoystickButton7;
-    icsGamepad.keyMap[ "Jump" ] = KeyCode.JoystickButton14;
-    icsGamepad.keyMap[ "Down" ] = KeyCode.JoystickButton0;
-    icsGamepad.keyMap[ "Dash" ] = KeyCode.JoystickButton13;
-    icsGamepad.keyMap[ "Fire" ] = KeyCode.None;
-    icsGamepad.axisMap[ "ShootX" ] = "Joy0Axis2";
-    icsGamepad.axisMap[ "ShootY" ] = "Joy0Axis3";
+    icsGamepad.keyMap["MoveRight"] = KeyCode.JoystickButton8;
+    icsGamepad.keyMap["MoveLeft"] = KeyCode.JoystickButton7;
+    icsGamepad.keyMap["Jump"] = KeyCode.JoystickButton14;
+    icsGamepad.keyMap["Down"] = KeyCode.JoystickButton0;
+    icsGamepad.keyMap["Dash"] = KeyCode.JoystickButton13;
+    icsGamepad.keyMap["Fire"] = KeyCode.None;
+    icsGamepad.axisMap["ShootX"] = "Joy0Axis2";
+    icsGamepad.axisMap["ShootY"] = "Joy0Axis3";
 
   }
 
-    
+
   void InitializeControls()
   {
-    allKeys = (KeyCode[])System.Enum.GetValues( typeof(KeyCode) );
+    allKeys = (KeyCode[])System.Enum.GetValues( typeof( KeyCode ) );
     List<KeyCode> temp = new List<KeyCode>( allKeys );
     temp.RemoveAll( x => x >= KeyCode.JoystickButton0 );
     // Escape is used to access keybind menu. 
     // This is intended to avoid changing current input scheme before remapping controls
-    temp.RemoveAll( x => x == KeyCode.Escape || ( x >= KeyCode.Mouse0 && x <= KeyCode.Mouse6 ) );
+    temp.RemoveAll( x => x == KeyCode.Escape || (x >= KeyCode.Mouse0 && x <= KeyCode.Mouse6) );
     activateKeyboardKeys = temp.ToArray();
 
     for( int i = 0; i < 20; i++ )
@@ -417,7 +440,7 @@ public class Global : MonoBehaviour
     go.SetActive( true );
     go.name = key;
     Text[] ts = go.GetComponentsInChildren<Text>();
-    ts[ 0 ].text = key;
+    ts[0].text = key;
   }
 
   public void InitiateRemap()
@@ -434,16 +457,16 @@ public class Global : MonoBehaviour
     remappingControls = true;
     bool done = false;
 
-    Dictionary<string,KeyCode> changeKey = new Dictionary<string, KeyCode>();
-    Dictionary<string,string> changeAxis = new Dictionary<string, string>();
+    Dictionary<string, KeyCode> changeKey = new Dictionary<string, KeyCode>();
+    Dictionary<string, string> changeAxis = new Dictionary<string, string>();
 
     string[] actions = GetAllActions();
     for( int a = 0; !done && a < actions.Length; a++ )
     {
-      string key = actions[ a ];
+      string key = actions[a];
       GameObject go = controllerMapListParent.Find( key ).gameObject;
       Text[] ts = go.GetComponentsInChildren<Text>();
-      ts[ 0 ].color = Color.red;
+      ts[0].color = Color.red;
       remapInstruction.text = "press desired button for action: " + key;
 
       bool hit = false;
@@ -454,11 +477,11 @@ public class Global : MonoBehaviour
           break;
         for( int i = 0; i < allKeys.Length; i++ )
         {
-          if( Input.GetKeyDown( allKeys[ i ] ) )
+          if( Input.GetKeyDown( allKeys[i] ) )
           {
-            ts[ 1 ].text = i.ToString();
+            ts[1].text = i.ToString();
             hit = true;
-            changeKey[ key ] = allKeys[ i ];
+            changeKey[key] = allKeys[i];
             break;
           }
         }
@@ -468,7 +491,7 @@ public class Global : MonoBehaviour
           {
             if( Mathf.Abs( Input.GetAxisRaw( ax ) ) > 0.5f )
             {
-              changeAxis[ key ] = ax;
+              changeAxis[key] = ax;
               hit = true;
               break;
             }
@@ -478,17 +501,17 @@ public class Global : MonoBehaviour
 
       if( hit )
       {
-        ts[ 0 ].color = Color.white;
+        ts[0].color = Color.white;
         Input.ResetInputAxes();
         yield return new WaitForSecondsRealtime( 0.2f );
       }
     }
 
     foreach( var pair in changeKey )
-      icsCurrent.keyMap[ pair.Key ] = pair.Value;
+      icsCurrent.keyMap[pair.Key] = pair.Value;
     foreach( var pair in changeAxis )
-      icsCurrent.axisMap[ pair.Key ] = pair.Value;
-    
+      icsCurrent.axisMap[pair.Key] = pair.Value;
+
     controllerRemapScreen.SetActive( false );
     Input.ResetInputAxes();
     yield return null;
@@ -514,9 +537,9 @@ public class Global : MonoBehaviour
 
     if( initialize )
     {
-//      SerializedComponent[] scs = go.GetComponentsInChildren<SerializedComponent>();
-//      foreach( var sc in scs )
-//        sc.AfterDeserialize();
+      //      SerializedComponent[] scs = go.GetComponentsInChildren<SerializedComponent>();
+      //      foreach( var sc in scs )
+      //        sc.AfterDeserialize();
     }
     return go;
   }
@@ -538,7 +561,7 @@ public class Global : MonoBehaviour
   {
     chopper = FindObjectOfType<Chopper>();
     if( chopper != null )
-    { 
+    {
       chopper.character = CurrentPlayer;
       chopper.StartDrop();
     }
