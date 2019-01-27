@@ -19,6 +19,9 @@ controlled spawning
 - remove colliding objects
 * fix the name
 
+
+- child sprite disconnect bug
+
 - hit sounds
 - raycast from center to arm pos to avoid shooting through doors while adjacent
 - smoke: dash, wall slide
@@ -32,7 +35,7 @@ controlled spawning
 - blinking lights
 
 * Boss
-- borrow camera ramp from Flatlander
+- borrow camera dolly/ramp from Flatlander
 - find ideal camera distance(s)
 * upgrade to new input system
 
@@ -42,7 +45,9 @@ special case inertia
 dash feels good
 wall jump
 wall slide
-hold button to charge weapon
+charge weapon
+bosses
+collect weapons from defeated bosses
 ---
 destroying enemies is satisfying
 safety timer after taking damage
@@ -51,7 +56,15 @@ safety timer after taking damage
 only shoot forward
 teleportation
 
-
+# add
+aiming
+projectiles hit everything
+camera zoomed out a bit
+lighting
+normal mapped sprites
+rapidfire
+shield?
+...powerups?
 
 ## aesthetics
 1. the sprite

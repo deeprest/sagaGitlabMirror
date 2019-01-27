@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour , IDamage
+public class Enemy : MonoBehaviour, IDamage
 {
   public bool UseGravity = true;
   public Vector3 velocity = Vector3.zero;
@@ -14,8 +14,8 @@ public class Enemy : MonoBehaviour , IDamage
   string[] CollideLayers = new string[] { "foreground" };
   public bool collideRight = false;
   public bool collideLeft = false;
-  public bool collideHead = false;
-  public bool collideFeet = false;
+  public bool collideTop = false;
+  public bool collideBottom = false;
   RaycastHit2D hitRight;
   RaycastHit2D hitLeft;
 
@@ -31,23 +31,22 @@ public class Enemy : MonoBehaviour , IDamage
   public float flashInterval = 0.1f;
   public int flashCount = 5;
   bool flip = false;
-  public float emissive = 0.5f;
+  const float flashOn = 1f;
 
   public Damage ContactDamage;
 
   void Start()
   {
     animator.Play( idle );
-    renderer.material.SetTexture( "_EmissiveTex", null );
-    renderer.material.SetFloat( "_EmissiveAmount", 0 );
+    //renderer.material.SetFloat( "_FlashAmount", 0 );
   }
 
   void Update()
   {
     collideRight = false;
     collideLeft = false;
-    collideHead = false;
-    collideFeet = false;
+    collideTop = false;
+    collideBottom = false;
 
     RaycastHit2D[] hits;
 
@@ -72,7 +71,7 @@ public class Enemy : MonoBehaviour , IDamage
     {
       if( hit.normal.y > corner )
       {
-        collideFeet = true;
+        collideBottom = true;
         adjust.y = hit.point.y + box.y + contactSeparation;
         break;
       }
@@ -82,7 +81,7 @@ public class Enemy : MonoBehaviour , IDamage
     {
       if( hit.normal.y < -corner )
       {
-        collideHead = true;
+        collideTop = true;
         adjust.y = hit.point.y - box.y - contactSeparation;
         break;
       }
@@ -115,9 +114,13 @@ public class Enemy : MonoBehaviour , IDamage
     if( UseGravity )
       velocity.y += -Global.Gravity * Time.deltaTime;
 
-    if( collideFeet )
+    if( collideTop )
     {
-      velocity.x -= ( velocity.x * friction ) * Time.deltaTime;
+      velocity.y = Mathf.Min( velocity.y, 0 );
+    }
+    if( collideBottom )
+    {
+      velocity.x -= (velocity.x * friction) * Time.deltaTime;
       velocity.y = Mathf.Max( velocity.y, 0 );
     }
     if( collideRight )
@@ -126,9 +129,9 @@ public class Enemy : MonoBehaviour , IDamage
     }
     if( collideLeft )
     {
-      velocity.x = Mathf.Max( velocity.x, 0 );
+      velocity.x = Mathf.Max( velocity.x, 0 ); 
     }
-      
+
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     transform.position += velocity * Time.deltaTime;
   }
@@ -138,7 +141,7 @@ public class Enemy : MonoBehaviour , IDamage
   public void TakeDamage( Damage d )
   {
     health -= d.amount;
-    velocity += ( transform.position - d.point ) * hitPush;
+    velocity += (transform.position - d.point) * hitPush;
     if( health <= 0 )
     {
       flashTimer.Stop( false );
@@ -151,19 +154,19 @@ public class Enemy : MonoBehaviour , IDamage
 
       // color pulse
       flip = false;
-      renderer.material.SetFloat( "_EmissiveAmount", emissive );
-      flashTimer.Start( flashCount * 2, flashInterval, delegate(Timer t )
+      renderer.material.SetFloat( "_FlashAmount", flashOn );
+      flashTimer.Start( flashCount * 2, flashInterval, delegate ( Timer t )
       {
         flip = !flip;
         if( flip )
-          renderer.material.SetFloat( "_EmissiveAmount", emissive );
+          renderer.material.SetFloat( "_FlashAmount", flashOn );
         else
-          renderer.material.SetFloat( "_EmissiveAmount", 0 );
+          renderer.material.SetFloat( "_FlashAmount", 0 );
       }, delegate
       {
-        renderer.material.SetFloat( "_EmissiveAmount", 0 );
+        renderer.material.SetFloat( "_FlashAmount", 0 );
       } );
-      
+
     }
   }
 

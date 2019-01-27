@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+  [SerializeField] Camera cam;
   public GameObject LookTarget;
+
+  public bool UseVerticalRange = true;
+  public bool CursorInfluence = false;
+  [SerializeField] RectTransform cursor;
+  public float cursorAlpha = 0;
+  public float lerpAlpha = 50;
+  Vector3 WithinRectPos;
   public float zOffset;
   public float yHalfWidth = 2;
-  public Vector3 pos;
   public LerpToTarget lerp;
 
   public void LerpTo( GameObject go )
@@ -31,17 +38,34 @@ public class CameraController : MonoBehaviour
     };
   }
 
-  void LateUpdate()
+  public void CameraLateUpdate()
   {
     if( !lerp.enabled && LookTarget != null )
     {
-      if( LookTarget.transform.position.y > transform.position.y + yHalfWidth )
-        pos.y = LookTarget.transform.position.y - yHalfWidth;
-      if( LookTarget.transform.position.y < transform.position.y - yHalfWidth )
-        pos.y = LookTarget.transform.position.y + yHalfWidth;
-      pos.x = LookTarget.transform.position.x;
-      pos.z = zOffset;
-      transform.position = pos;
+      if( UseVerticalRange )
+      {
+        if( LookTarget.transform.position.y > WithinRectPos.y + yHalfWidth )
+          WithinRectPos.y = LookTarget.transform.position.y - yHalfWidth;
+        if( LookTarget.transform.position.y < WithinRectPos.y - yHalfWidth )
+          WithinRectPos.y = LookTarget.transform.position.y + yHalfWidth;
+      }
+      else
+        WithinRectPos.y = LookTarget.transform.position.y;
+
+      WithinRectPos.x = LookTarget.transform.position.x;
+
+      Vector3 final = WithinRectPos;
+      if( CursorInfluence )
+        final = Vector3.Lerp( WithinRectPos, cam.ScreenToWorldPoint( cursor.anchoredPosition ), cursorAlpha );
+
+      final.z = zOffset;
+
+      if( lerpAlpha > 0 )
+        transform.localPosition = Vector3.Lerp( transform.position, final, Mathf.Clamp01( lerpAlpha * Time.deltaTime) );
+        //transform.position = Vector3.MoveTowards( transform.position, final, SmoothSpeed * Time.deltaTime );
+      else
+        transform.position = final;
     }
   }
+
 }

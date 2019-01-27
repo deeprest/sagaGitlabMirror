@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour, IDamage
   public bool collideFeet = false;
   RaycastHit2D hitRight;
   RaycastHit2D hitLeft;
- 
+
   Vector3 hitBottomNormal;
 
   public Damage ContactDamage;
@@ -89,8 +89,8 @@ public class PlayerController : MonoBehaviour, IDamage
   public AudioClip soundJump;
   public AudioClip soundDash;
 
-//  public Vector2 rightFoot;
-//  public Vector2 leftFoot;
+  //  public Vector2 rightFoot;
+  //  public Vector2 leftFoot;
 
   void UpdateCollision()
   {
@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour, IDamage
         }
       }
     }
-      
+
     Vector2 adjust = transform.position;
     /*
     // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground bug by 'sampling' the ground at multiple points
@@ -220,13 +220,13 @@ public class PlayerController : MonoBehaviour, IDamage
 
 
 
-    Vector3 cursorDelta = Camera.main.ScreenToWorldPoint (Global.instance.cursor.anchoredPosition) - arm.position;
+    Vector3 cursorDelta = Camera.main.ScreenToWorldPoint( Global.instance.cursor.anchoredPosition ) - arm.position;
     cursorDelta.z = 0;
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );
 
     if( !Global.instance.UsingKeyboard )
     {
-      Vector3 shoot = new Vector3( Input.GetAxisRaw( Global.instance.icsCurrent.axisMap[ "ShootX" ] ), -Input.GetAxisRaw( Global.instance.icsCurrent.axisMap[ "ShootY" ] ), 0 );
+      Vector3 shoot = new Vector3( Input.GetAxisRaw( Global.instance.icsCurrent.axisMap["ShootX"] ), -Input.GetAxisRaw( Global.instance.icsCurrent.axisMap["ShootY"] ), 0 );
       if( shoot.sqrMagnitude > Global.deadZone * Global.deadZone )
       {
         if( !shootRepeatTimer.IsActive )
@@ -250,8 +250,8 @@ public class PlayerController : MonoBehaviour, IDamage
         // todo change arm sprite
       }
     }
-     
-    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap[ "Fire" ] ) )
+
+    if( Input.GetKey( Global.instance.icsCurrent.keyMap["Fire"] ) )
     {
       if( !shootRepeatTimer.IsActive )
       {
@@ -268,22 +268,38 @@ public class PlayerController : MonoBehaviour, IDamage
           audio.PlayOneShot( weapon.soundXBusterPew );
         }
 
-        chargeStartDelay.Start( chargeDelay, null, delegate
+        /*chargeStartDelay.Start( chargeDelay, null, delegate
         {
           audio.PlayOneShot( weapon.soundCharge );
           audio2.clip = weapon.soundChargeLoop;
           audio2.loop = true;
           audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
-
+          `x
           animator.material.SetColor( "_BlendColor", chargeColor );
           ChargePulseFlip();
           GameObject geffect = Instantiate( weapon.ChargeEffect, transform );
           chargeEffect = geffect.GetComponent<ParticleSystem>();
-        } );
+        } );*/
       }
     }
+
+    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Charge"] ) )
+    {
+      chargeStartDelay.Start( chargeDelay, null, delegate
+      {
+        audio.PlayOneShot( weapon.soundCharge );
+        audio2.clip = weapon.soundChargeLoop;
+        audio2.loop = true;
+        audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
+
+        animator.material.SetColor( "_BlendColor", chargeColor );
+        ChargePulseFlip();
+        GameObject geffect = Instantiate( weapon.ChargeEffect, transform );
+        chargeEffect = geffect.GetComponent<ParticleSystem>();
+      } );
+    }
     else
-    if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "Fire" ] ) )
+    if( Input.GetKey( Global.instance.icsCurrent.keyMap["Charge"] ) )
     {
       // charge weapon
       if( chargeEffect != null )
@@ -292,7 +308,7 @@ public class PlayerController : MonoBehaviour, IDamage
       }
     }
     else
-    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap[ "Fire" ] ) )
+    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Charge"] ) )
     {
       if( chargeEffect != null )
       {
@@ -323,17 +339,17 @@ public class PlayerController : MonoBehaviour, IDamage
     }
 
     // INPUT
-    if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "MoveRight" ] ) )
+    if( Input.GetKey( Global.instance.icsCurrent.keyMap["MoveRight"] ) )
     {
       inputRight = true;
-     
+
     }
     else
     {
       inputRight = false;
     }
 
-    if( Input.GetKey( Global.instance.icsCurrent.keyMap[ "MoveLeft" ] ) )
+    if( Input.GetKey( Global.instance.icsCurrent.keyMap["MoveLeft"] ) )
     {
       inputLeft = true;
     }
@@ -342,27 +358,27 @@ public class PlayerController : MonoBehaviour, IDamage
       inputLeft = false;
     }
 
-    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap[ "Jump" ] ) )
+    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Jump"] ) )
     {
       inputJumpStart = true;
     }
     else
-    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap[ "Jump" ] ) )
+    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Jump"] ) )
     {
       inputJumpEnd = true;
     }
-        
-    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap[ "Dash" ] ) )
+
+    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Dash"] ) )
     {
       inputDashStart = true;
     }
     else
-    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap[ "Dash" ] ) )
+    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Dash"] ) )
     {
       inputDashEnd = true;
     }
 
-    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap[ "Down" ] ) )
+    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Down"] ) )
     {
       hanging = false;
       // TEMP tunnel test
@@ -381,7 +397,7 @@ public class PlayerController : MonoBehaviour, IDamage
       landStart = Time.time;
     }
 
-    if( collideFeet || ( collideLeft && collideRight ) )
+    if( collideFeet || (collideLeft && collideRight) )
     {
       onGround = true;
       velocity.y = Mathf.Max( velocity.y, 0 );
@@ -462,7 +478,7 @@ public class PlayerController : MonoBehaviour, IDamage
 
     if( inputJumpStart )
     {
-      if( onGround || ( inputRight && collideRight ) || ( inputLeft && collideLeft ) )
+      if( onGround || (inputRight && collideRight) || (inputLeft && collideLeft) )
       {
         jumping = true;
         jumpStart = Time.time;
@@ -483,10 +499,10 @@ public class PlayerController : MonoBehaviour, IDamage
     if( velocity.y < 0 )
       jumping = false;
 
-    if( jumping && ( Time.time - jumpStart >= jumpDuration ) )
+    if( jumping && (Time.time - jumpStart >= jumpDuration) )
       jumping = false;
 
-    if( landing && ( Time.time - landStart >= landDuration ) )
+    if( landing && (Time.time - landStart >= landDuration) )
       landing = false;
 
     if( facingRight )
@@ -524,7 +540,7 @@ public class PlayerController : MonoBehaviour, IDamage
     else
     if( !jumping )
       anim = "fall";
-      
+
 
 
     if( collideRight )
@@ -540,7 +556,7 @@ public class PlayerController : MonoBehaviour, IDamage
         else
         if( inputRight && !onGround && velocity.y < 0 )
         {
-          velocity.y += ( -velocity.y * wallSlideFactor ) * Time.deltaTime;
+          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           anim = "wallslide";
           dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
         }
@@ -560,7 +576,7 @@ public class PlayerController : MonoBehaviour, IDamage
         else
         if( inputLeft && !onGround && velocity.y < 0 )
         {
-          velocity.y += ( -velocity.y * wallSlideFactor ) * Time.deltaTime;
+          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           anim = "wallslide";
           dashSmoke.transform.localPosition = new Vector3( -0.2f, -0.2f, 0 );
         }
@@ -571,9 +587,7 @@ public class PlayerController : MonoBehaviour, IDamage
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
-      
-    if( hanging )
-      velocity = Vector3.zero;
+
 
     if( anim == "wallslide" || anim == "dash" )
       dashSmoke.Play();
@@ -583,8 +597,12 @@ public class PlayerController : MonoBehaviour, IDamage
     if( anim != animator.CurrentSequence.name )
       animator.Play( anim );
 
-    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    transform.position += ( inertia + velocity ) * Time.deltaTime;
+    if( hanging )
+      velocity = Vector3.zero;
+    else
+      velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
+
+    transform.position += (inertia + velocity) * Time.deltaTime;
     UpdateCollision();
   }
 

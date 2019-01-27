@@ -392,7 +392,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 647.7, y: 415.36}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 40, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &222660899127489568
@@ -423,7 +423,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300012, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
+  m_Sprite: {fileID: 21300006, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -645,18 +645,11 @@ MonoBehaviour:
   CurrentPlayer: {fileID: 0}
   cursor: {fileID: 224966245658186978}
   chopper: {fileID: 0}
-  cursorOuter: 400
+  cursorOuter: 300
   cursorInner: 20
   cursorDelta: {x: 0, y: 0, z: 0}
   cursorSensitivity: 10
-  debugButtons: {fileID: 114441466528811452}
   CursorPlayerRelative: 1
-  slowtime: 0.2
-  mixer: {fileID: 24100000, guid: 1c39f8c58cb83400089739cd8e4d9c58, type: 2}
-  snapSlowmo: {fileID: 245016920106228552, guid: 1c39f8c58cb83400089739cd8e4d9c58,
-    type: 2}
-  snapNormal: {fileID: 24500006, guid: 1c39f8c58cb83400089739cd8e4d9c58, type: 2}
-  AudioFadeDuration: 0.1
   cursors:
   - {fileID: 21300000, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
   - {fileID: 21300002, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
@@ -669,6 +662,13 @@ MonoBehaviour:
   - {fileID: 21300016, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
   - {fileID: 21300018, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
   - {fileID: 21300020, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
+  slowtime: 0.2
+  debugButtons: {fileID: 114441466528811452}
+  mixer: {fileID: 24100000, guid: 1c39f8c58cb83400089739cd8e4d9c58, type: 2}
+  snapSlowmo: {fileID: 245016920106228552, guid: 1c39f8c58cb83400089739cd8e4d9c58,
+    type: 2}
+  snapNormal: {fileID: 24500006, guid: 1c39f8c58cb83400089739cd8e4d9c58, type: 2}
+  AudioFadeDuration: 0.1
   cursorScale: 4
   controllerRemapScreen: {fileID: 1227062034072626}
   controllerMapListParent: {fileID: 224088324097435472}
@@ -870,7 +870,6 @@ MonoBehaviour:
   sr: {fileID: 212366419804025974}
   flipX: 0
   CurrentSequence: {fileID: 11400000, guid: 23a6895dd3ade45e99eb7ec4c0f9bd9b, type: 2}
-  startAnim: {fileID: 0}
   isPlaying: 1
   playAtAStart: 0
   anims: []
@@ -966,7 +965,6 @@ GameObject:
   - component: {fileID: 124936734783114314}
   - component: {fileID: 81930027804374776}
   - component: {fileID: 114243473509280006}
-  - component: {fileID: 45700375896086136}
   - component: {fileID: 114891334979047146}
   m_Layer: 0
   m_Name: Camera
@@ -999,7 +997,7 @@ Camera:
   m_GameObject: {fileID: 1671587495769190}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215688, g: 0.18823531, b: 0.25882354, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
@@ -1012,8 +1010,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0
-  far clip plane: 10
+  near clip plane: 1
+  far clip plane: 20
   field of view: 57
   orthographic: 1
   orthographic size: 2.5
@@ -1060,20 +1058,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f9d20445a9ff42ebb7b43a53824a212, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 20156906755533366}
   LookTarget: {fileID: 0}
+  UseVerticalRange: 1
+  CursorInfluence: 1
+  cursor: {fileID: 224966245658186978}
+  cursorAlpha: 0.5
+  lerpAlpha: 50
   zOffset: -5
   yHalfWidth: 0.5
-  pos: {x: 0, y: -1.74, z: 0}
   lerp: {fileID: 114891334979047146}
---- !u!45 &45700375896086136
-Skybox:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1671587495769190}
-  m_Enabled: 0
-  m_CustomSkybox: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &114891334979047146
 MonoBehaviour:
   m_ObjectHideFlags: 0

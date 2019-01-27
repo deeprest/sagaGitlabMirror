@@ -37,7 +37,7 @@ public class Global : MonoBehaviour
 
   // settings
   public static float Gravity = 16;
-  public static float MaxVelocity = 50;
+  public const float MaxVelocity = 50;
   public const float deadZone = 0.3f;
 
   [Header( "References" )]
@@ -112,7 +112,6 @@ public class Global : MonoBehaviour
     GameObject go = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
     CurrentPlayer = go.GetComponent<PlayerController>();
     CameraController.LookTarget = CurrentPlayer.gameObject;
-
 
     yield return new WaitForSecondsRealtime( 1f );
     Unpause();
@@ -229,6 +228,8 @@ public class Global : MonoBehaviour
       origin.z = 0;
       cursor.anchoredPosition = Camera.main.WorldToScreenPoint( origin ) + cursorDelta;
     }
+
+    CameraController.CameraLateUpdate();
   }
 
   GameObject FindSpawnPoint()
@@ -398,6 +399,8 @@ public class Global : MonoBehaviour
     icsKeyboard.keyMap["Dash"] = KeyCode.Space;
     icsKeyboard.keyMap["Fire"] = KeyCode.Mouse0;
 
+    icsKeyboard.keyMap["Charge"] = KeyCode.Mouse0;
+
     // gamepad
     icsGamepad.keyMap["MoveRight"] = KeyCode.JoystickButton8;
     icsGamepad.keyMap["MoveLeft"] = KeyCode.JoystickButton7;
@@ -405,6 +408,7 @@ public class Global : MonoBehaviour
     icsGamepad.keyMap["Down"] = KeyCode.JoystickButton0;
     icsGamepad.keyMap["Dash"] = KeyCode.JoystickButton13;
     icsGamepad.keyMap["Fire"] = KeyCode.None;
+    icsGamepad.keyMap["Charge"] = KeyCode.None;
     icsGamepad.axisMap["ShootX"] = "Joy0Axis2";
     icsGamepad.axisMap["ShootY"] = "Joy0Axis3";
 
