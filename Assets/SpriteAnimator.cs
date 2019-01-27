@@ -1,5 +1,4 @@
-﻿//#define USE_SPRITE_RENDERER
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -52,32 +51,13 @@ public class SpriteAnimator : MonoBehaviour
   public int CurrentFrameIndex = 0;
   public SpriteAnimationChild[] sac;
 
-#if SPRITE_MESH_RENDERER
-  [Header( "Mesh Renderer" )]
-  [SerializeField] MeshRenderer mr;
-  [SerializeField] MeshFilter mf;
-  Vector2[] uvs = new Vector2[4];
-#if UNITY_EDITOR
-  [SerializeField] Mesh originalSharedMesh;
-  [SerializeField] Material originalMaterial;
-#endif
-  public float depthIncrement = 0.01f;
-  public int spriteLayer = 0;
-#else
-  [HideInInspector] bool UseSpriteRenderer = true;
-#endif
-  [Header( "Sprite Renderer" )]
   [SerializeField] SpriteRenderer sr;
 
   public Material material
   {
     get
     {
-#if SPRITE_MESH_RENDERER
-  if( UseSpriteRenderer ) return sr.material; else return mr.material;  
-#else
       return sr.material;
-#endif
     }
   }
   public bool flipX = false;
@@ -93,20 +73,10 @@ public class SpriteAnimator : MonoBehaviour
 
   void Awake()
   {
-    if( UseSpriteRenderer )
-    {
-      if( sr == null )
-        sr = GetComponent<SpriteRenderer>();
-    }
-#if SPRITE_MESH_RENDERER
-    else
-    {
-      if( mr == null )
-        mr = GetComponent<MeshRenderer>();
-      if( mf == null )
-        mf = GetComponent<MeshFilter>();
-    }
-#endif
+
+    if( sr == null )
+      sr = GetComponent<SpriteRenderer>();
+
   }
 
   void Start()
@@ -140,32 +110,11 @@ public class SpriteAnimator : MonoBehaviour
     animStart = Time.time;
 #endif
 
-    if( UseSpriteRenderer )
-    {
-      if( !sr.enabled )
-        sr.enabled = true;
-    }
-    else
-    {
-#if SPRITE_MESH_RENDERER
-      if( !mr.enabled )
-        mr.enabled = true;
-      if( Application.isPlaying )
-      {
-        mr.material.mainTexture = CurrentSequence.sprites[0].texture;
-      }
-      else
-      {
-#if UNITY_EDITOR
-        originalSharedMesh = mf.sharedMesh;
-        mf.sharedMesh = Instantiate<Mesh>( mf.sharedMesh );
-        originalMaterial = mr.sharedMaterial;
-        mr.sharedMaterial = Instantiate<Material>( mr.sharedMaterial );
-        mr.sharedMaterial.mainTexture = CurrentSequence.sprites[0].texture;
-#endif
-      }
-#endif
-    }
+
+    if( !sr.enabled )
+      sr.enabled = true;
+
+
   }
 
   public void Play( string animName )
@@ -181,23 +130,6 @@ public class SpriteAnimator : MonoBehaviour
   public void Stop()
   {
     isPlaying = false;
-#if UNITY_EDITOR
-#if SPRITE_MESH_RENDERER
-    if( !UseSpriteRenderer )
-    {
-      if( mf.sharedMesh.GetInstanceID() != originalSharedMesh.GetInstanceID() )
-      {
-        DestroyImmediate( mf.sharedMesh );
-        mf.sharedMesh = originalSharedMesh;
-      }
-      if( mr.sharedMaterial.GetInstanceID() != originalMaterial.GetInstanceID() )
-      {
-        DestroyImmediate( mr.sharedMaterial );
-        mr.sharedMaterial = originalMaterial;
-      }
-    }
-#endif
-#endif
   }
 
   void AdvanceFrame( float time )
@@ -238,117 +170,35 @@ public class SpriteAnimator : MonoBehaviour
       sprite = CurrentSequence.sprites[CurrentFrameIndex];
     }
 
-    if( UseSpriteRenderer )
-    {
-      sr.sprite = sprite;
-      sr.flipX = flipX;
 
-      if( Application.isPlaying )
-        sr.material.SetInt( "_FlipX", flipX ? 1 : 0 );
-      else
-        sr.sharedMaterial.SetInt( "_FlipX", flipX ? 1 : 0 );
-      /*Vector3 angles = transform.localRotation.eulerAngles;
-      angles.y = Util.NormalizeAngle( flipX? 180 : 0 );
-      transform.localRotation = Quaternion.Euler( angles );*/
+    sr.sprite = sprite;
+    sr.flipX = flipX;
 
-
-      if( CurrentSequence.UseFrames )
-      {
-        AnimFrame af = CurrentSequence.frames[CurrentFrameIndex];
-        foreach( var afp in af.point )
-        {
-          Transform child = transform.Find( afp.name );
-          if( child != null )
-          {
-            if( flipX )
-            {
-              Vector3 lpos = afp.point;
-              lpos.x = -lpos.x;
-              child.localPosition = lpos;
-            }
-            else
-              child.localPosition = afp.point;
-          }
-        }
-      }
-
-    }
-#if SPRITE_MESH_RENDERER
+    if( Application.isPlaying )
+      sr.material.SetInt( "_FlipX", flipX ? 1 : 0 );
     else
+      sr.sharedMaterial.SetInt( "_FlipX", flipX ? 1 : 0 );
+
+    if( CurrentSequence.UseFrames )
     {
-      if( sprite == null )
+      AnimFrame af = CurrentSequence.frames[CurrentFrameIndex];
+      foreach( var afp in af.point )
       {
-        Debug.LogWarning( "null sprite", this );
-        return;
-      }
-
-      if( CurrentSequence.UseFrames )
-      {
-        //update this
-      }
-
-      // higher sprite layer equals more negative z
-      Vector3 pos = transform.position;
-      pos.z = depthIncrement * -spriteLayer;
-      transform.position = pos;
-
-      if( mr.sharedMaterial.mainTexture != null )
-      {
-        float w = sprite.texture.width;
-        float h = sprite.texture.height;
-        frame = new Rect( sprite.rect.x, sprite.rect.y + sprite.rect.height, sprite.rect.width, sprite.rect.height );
-        uvs[0].x = frame.x / w;
-        uvs[0].y = frame.y / h;
-        uvs[1].x = (frame.x + frame.width) / w;
-        uvs[1].y = frame.y / h;
-        uvs[2].x = frame.x / w;
-        uvs[2].y = (frame.y - frame.height) / h;
-        uvs[3].x = (frame.x + frame.width) / w;
-        uvs[3].y = (frame.y - frame.height) / h;
-
-        float sw = 1f / sprite.pixelsPerUnit;
-
-        mr.sharedMaterial.SetInt( "_FlipX", flipX ? 1 : 0 );
-        int a, b, c, d;
-        if( flipX )
+        Transform child = transform.Find( afp.name );
+        if( child != null )
         {
-          a = 1;
-          b = 0;
-          c = 3;
-          d = 2;
+          if( flipX )
+          {
+            Vector3 lpos = afp.point;
+            lpos.x = -lpos.x;
+            child.localPosition = lpos;
+          }
+          else
+            child.localPosition = afp.point;
         }
-        else
-        {
-          a = 0;
-          b = 1;
-          c = 2;
-          d = 3;
-        }
-        if( Application.isPlaying )
-        {
-          Vector3[] v = mf.mesh.vertices;
-          v[a] = (new Vector3( -sprite.pivot.x, sprite.rect.height - sprite.pivot.y, 0 )) * sw;
-          v[b] = (new Vector3( sprite.rect.width - sprite.pivot.x, sprite.rect.height - sprite.pivot.y, 0 )) * sw;
-          v[c] = (new Vector3( -sprite.pivot.x, -sprite.pivot.y, 0 )) * sw;
-          v[d] = (new Vector3( sprite.rect.width - sprite.pivot.x, -sprite.pivot.y, 0 )) * sw;
-          mf.mesh.vertices = v;
-          mf.mesh.uv = uvs;
-        }
-#if UNITY_EDITOR
-        else
-        {
-          Vector3[] v = mf.sharedMesh.vertices;
-          v[a] = (new Vector3( -sprite.pivot.x, sprite.rect.height - sprite.pivot.y, 0 )) * sw;
-          v[b] = (new Vector3( sprite.rect.width - sprite.pivot.x, sprite.rect.height - sprite.pivot.y, 0 )) * sw;
-          v[c] = (new Vector3( -sprite.pivot.x, -sprite.pivot.y, 0 )) * sw;
-          v[d] = (new Vector3( sprite.rect.width - sprite.pivot.x, -sprite.pivot.y, 0 )) * sw;
-          mf.sharedMesh.vertices = v;
-          mf.sharedMesh.uv = uvs;
-        }
-#endif
       }
     }
-#endif
+
   }
 
   void Update()

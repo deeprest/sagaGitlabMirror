@@ -27,6 +27,9 @@ controlled spawning
 - health on HUD
 - death, respawn
 
+- camera shake
+- rain/dust flying around
+- blinking lights
 
 * Boss
 - borrow camera ramp from Flatlander
