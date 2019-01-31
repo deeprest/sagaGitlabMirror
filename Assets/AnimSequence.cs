@@ -48,7 +48,6 @@ public class AnimFrame
 {
   // if this reference is null, then this is a keyframe
   public AnimFrame keyFrame;
-  public int keyFrameIndexDebug;
   public Sprite sprite;
   public List<AnimFramePoint> point;
 }

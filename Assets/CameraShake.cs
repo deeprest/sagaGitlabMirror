@@ -12,13 +12,11 @@ public class CameraShake : MonoBehaviour
 
   Vector3 localStart;
   float startTime;
-  Vector3 localShakeOffset;
 
   void OnEnable()
   {
     localStart = target.localPosition;
     startTime = Time.time;
-    localShakeOffset = Random.onUnitSphere;
   }
   void OnDisable()
   {
@@ -29,9 +27,9 @@ public class CameraShake : MonoBehaviour
   {
     float localTime = ( Time.time - startTime );
     Vector3 pos = Vector3.zero;
-    pos.x = localShakeAmount.x * Mathf.Sin( localShakeOffset.x + localTime * rate ) * intensityCurve.Evaluate( (localShakeOffset.x + localTime) / duration );
-    pos.y = localShakeAmount.y * Mathf.Sin( localShakeOffset.y + localTime * rate ) * intensityCurve.Evaluate( (localShakeOffset.y + localTime) / duration );
-    pos.z = localShakeAmount.z * Mathf.Sin( localShakeOffset.z + localTime * rate ) * intensityCurve.Evaluate( (localShakeOffset.z + localTime) / duration );
+    pos.x = localShakeAmount.x * Mathf.Sin( localTime * rate ) * intensityCurve.Evaluate( localTime / duration );
+    pos.y = localShakeAmount.y * Mathf.Cos( localTime * rate ) * intensityCurve.Evaluate( localTime / duration );
+    pos.z = 0;
     target.localPosition = localStart + (pos * amplitude); 
     if( localTime > duration )
       enabled = false;

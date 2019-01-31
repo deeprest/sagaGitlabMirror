@@ -50,8 +50,9 @@ public class CameraController : MonoBehaviour
           WithinRectPos.y = LookTarget.transform.position.y + yHalfWidth;
       }
       else
+      {
         WithinRectPos.y = LookTarget.transform.position.y;
-
+      }
       WithinRectPos.x = LookTarget.transform.position.x;
 
       Vector3 final = WithinRectPos;
@@ -61,8 +62,8 @@ public class CameraController : MonoBehaviour
       final.z = zOffset;
 
       if( lerpAlpha > 0 )
-        transform.localPosition = Vector3.Lerp( transform.position, final, Mathf.Clamp01( lerpAlpha * Time.deltaTime) );
-        //transform.position = Vector3.MoveTowards( transform.position, final, SmoothSpeed * Time.deltaTime );
+        transform.localPosition = Vector3.Lerp( transform.position, final, Mathf.Clamp01( lerpAlpha * Time.deltaTime ) );
+      //transform.position = Vector3.MoveTowards( transform.position, final, SmoothSpeed * Time.deltaTime );
       else
         transform.position = final;
     }

@@ -3,14 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class PlayerController : MonoBehaviour, IDamage
+public class PlayerController : Character, IDamage
 {
-  public void TakeDamage( Damage d )
-  {
-    print( "take damage from " + d.instigator );
-  }
-
-  new public BoxCollider2D collider;
   new public AudioSource audio;
   public AudioSource audio2;
   public SpriteAnimator animator;
@@ -60,7 +54,7 @@ public class PlayerController : MonoBehaviour, IDamage
   float jumpStart;
   float landStart;
 
-  string[] PlayerCollideLayers = new string[] { "foreground", "triggerAndCollision" };
+  string[] PlayerCollideLayers = new string[] { "Default", "triggerAndCollision" };
   string[] TriggerLayers = new string[] { "trigger", "triggerAndCollision" };
   public bool collideRight = false;
   public bool collideLeft = false;
@@ -209,7 +203,6 @@ public class PlayerController : MonoBehaviour, IDamage
     }
 
     transform.position = new Vector3( adjust.x, adjust.y, transform.position.z );
-
   }
 
 
@@ -218,31 +211,25 @@ public class PlayerController : MonoBehaviour, IDamage
     if( Global.Paused )
       return;
 
-
-
     Vector3 cursorDelta = Camera.main.ScreenToWorldPoint( Global.instance.cursor.anchoredPosition ) - arm.position;
     cursorDelta.z = 0;
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );
-
-    if( !Global.instance.UsingKeyboard )
+    Vector3 shoot;
+    if( Global.instance.UsingKeyboard )
     {
-      Vector3 shoot = new Vector3( Input.GetAxisRaw( Global.instance.icsCurrent.axisMap["ShootX"] ), -Input.GetAxisRaw( Global.instance.icsCurrent.axisMap["ShootY"] ), 0 );
+      shoot = cursorDelta;
+    }
+    else
+    {
+      shoot = new Vector3( Input.GetAxisRaw( Global.instance.icsCurrent.axisMap["ShootX"] ), -Input.GetAxisRaw( Global.instance.icsCurrent.axisMap["ShootY"] ), 0 );
       if( shoot.sqrMagnitude > Global.deadZone * Global.deadZone )
       {
         if( !shootRepeatTimer.IsActive )
         {
           shootRepeatTimer.Start( weapon.shootInterval, null, null );
           Vector3 pos = arm.position + shoot.normalized * armRadius;
-          Collider2D col = Physics2D.OverlapCircle( pos, weapon.ProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
-          if( col == null )
-          {
-            GameObject go = Instantiate( weapon.ProjectilePrefab.gameObject, pos, Quaternion.identity );
-            Projectile p = go.GetComponent<Projectile>();
-            p.instigator = gameObject;
-            p.velocity = shoot.normalized * weapon.speed;
-            Physics2D.IgnoreCollision( p.circle, collider );
-            audio.PlayOneShot( weapon.soundXBusterPew );
-          }
+          if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+            weapon.FireWeapon( this, pos, shoot );
         }
       }
       else
@@ -256,30 +243,9 @@ public class PlayerController : MonoBehaviour, IDamage
       if( !shootRepeatTimer.IsActive )
       {
         shootRepeatTimer.Start( weapon.shootInterval, null, null );
-        Vector3 pos = arm.position + cursorDelta.normalized * armRadius;
-        Collider2D col = Physics2D.OverlapCircle( pos, weapon.ProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
-        if( col == null )
-        {
-          GameObject go = Instantiate( weapon.ProjectilePrefab.gameObject, pos, Quaternion.identity );
-          Projectile p = go.GetComponent<Projectile>();
-          p.instigator = gameObject;
-          p.velocity = cursorDelta.normalized * weapon.speed;
-          Physics2D.IgnoreCollision( p.circle, collider );
-          audio.PlayOneShot( weapon.soundXBusterPew );
-        }
-
-        /*chargeStartDelay.Start( chargeDelay, null, delegate
-        {
-          audio.PlayOneShot( weapon.soundCharge );
-          audio2.clip = weapon.soundChargeLoop;
-          audio2.loop = true;
-          audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
-          `x
-          animator.material.SetColor( "_BlendColor", chargeColor );
-          ChargePulseFlip();
-          GameObject geffect = Instantiate( weapon.ChargeEffect, transform );
-          chargeEffect = geffect.GetComponent<ParticleSystem>();
-        } );*/
+        Vector3 pos = arm.position + shoot.normalized * armRadius;
+        if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+          weapon.FireWeapon( this, pos, shoot );
       }
     }
 
@@ -320,15 +286,8 @@ public class PlayerController : MonoBehaviour, IDamage
         if( chargeAmount > chargeMin )
         {
           Vector3 pos = arm.position + cursorDelta.normalized * armRadius;
-          Collider2D col = Physics2D.OverlapCircle( pos, weapon.ProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
-          if( col == null )
-          {
-            GameObject go = Instantiate( weapon.ChargedProjectilePrefab.gameObject, pos, Quaternion.identity );
-            Projectile p = go.GetComponent<Projectile>();
-            p.instigator = gameObject;
-            p.velocity = cursorDelta.normalized * weapon.chargedSpeed;
-            Physics2D.IgnoreCollision( p.circle, collider );
-          }
+          if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+            weapon.FireWeaponCharged( this, pos, shoot );
         }
       }
       chargeStartDelay.Stop( false );
@@ -392,7 +351,7 @@ public class PlayerController : MonoBehaviour, IDamage
 
     if( collideFeet && !onGround )
     {
-      dashing = false;
+      StopDash();
       landing = true;
       landStart = Time.time;
     }
@@ -421,7 +380,7 @@ public class PlayerController : MonoBehaviour, IDamage
       else
         velocity.x = moveVel;
       if( !facingRight && onGround )
-        dashing = false;
+        StopDash();
       facingRight = true;
     }
 
@@ -435,7 +394,7 @@ public class PlayerController : MonoBehaviour, IDamage
       else
         velocity.x = -moveVel;
       if( facingRight && onGround )
-        dashing = false;
+        StopDash();
       facingRight = false;
     }
 
@@ -443,10 +402,7 @@ public class PlayerController : MonoBehaviour, IDamage
     {
       if( onGround || collideLeft || collideRight )
       {
-        dashing = true;
-        dashStart = Time.time;
-        if( onGround )
-          audio.PlayOneShot( soundDash, 0.5f );
+        StartDash();
       }
     }
     inputDashStart = false;
@@ -454,7 +410,7 @@ public class PlayerController : MonoBehaviour, IDamage
     if( inputDashEnd )
     {
       if( !jumping )
-        dashing = false;
+        StopDash();
     }
     inputDashEnd = false;
 
@@ -465,14 +421,20 @@ public class PlayerController : MonoBehaviour, IDamage
         if( onGround || inputRight )
           velocity.x = dashVel;
         if( onGround )
-          dashSmoke.transform.localPosition = new Vector3( -0.36f, -0.2f, 0 );
+        {
+          if( Time.time - dashStart >= dashDuration )
+            StopDash();
+        }
       }
       else
       {
         if( onGround || inputLeft )
           velocity.x = -dashVel;
         if( onGround )
-          dashSmoke.transform.localPosition = new Vector3( 0.36f, -0.2f, 0 );
+        {
+          if( Time.time - dashStart >= dashDuration )
+            StopDash();
+        }
       }
     }
 
@@ -484,6 +446,7 @@ public class PlayerController : MonoBehaviour, IDamage
         jumpStart = Time.time;
         velocity.y = jumpVel;
         audio.PlayOneShot( soundJump );
+        dashSmoke.Stop();
       }
     }
     inputJumpStart = false;
@@ -522,14 +485,7 @@ public class PlayerController : MonoBehaviour, IDamage
     if( onGround )
     {
       if( dashing )
-      {
         anim = "dash";
-        if( Time.time - dashStart >= dashDuration )
-        {
-          dashing = false;
-          dashSmoke.Stop();
-        }
-      }
       else
       if( inputRight || inputLeft )
         anim = "run";
@@ -540,8 +496,6 @@ public class PlayerController : MonoBehaviour, IDamage
     else
     if( !jumping )
       anim = "fall";
-
-
 
     if( collideRight )
     {
@@ -589,10 +543,6 @@ public class PlayerController : MonoBehaviour, IDamage
     }
 
 
-    if( anim == "wallslide" || anim == "dash" )
-      dashSmoke.Play();
-    else
-      dashSmoke.Stop();
 
     if( anim != animator.CurrentSequence.name )
       animator.Play( anim );
@@ -604,6 +554,28 @@ public class PlayerController : MonoBehaviour, IDamage
 
     transform.position += (inertia + velocity) * Time.deltaTime;
     UpdateCollision();
+  }
+
+  void StartDash()
+  {
+    if( !dashing )
+    {
+      dashing = true;
+      dashStart = Time.time;
+      if( onGround )
+        audio.PlayOneShot( soundDash, 0.5f );
+      if( facingRight )
+        dashSmoke.transform.localPosition = new Vector3( -0.36f, -0.2f, 0 );
+      else
+        dashSmoke.transform.localPosition = new Vector3( 0.36f, -0.2f, 0 );
+      dashSmoke.Play();
+    }
+  }
+
+  void StopDash()
+  {
+    dashing = false;
+    dashSmoke.Stop();
   }
 
   void ChargePulseFlip()
@@ -618,4 +590,11 @@ public class PlayerController : MonoBehaviour, IDamage
       ChargePulseFlip();
     } );
   }
+
+  public void TakeDamage( Damage d )
+  {
+    print( "take damage from " + d.instigator.name );
+    Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
+  }
+
 }

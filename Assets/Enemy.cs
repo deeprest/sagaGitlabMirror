@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IDamage
+public class Enemy : Character, IDamage
 {
   public bool UseGravity = true;
   public Vector3 velocity = Vector3.zero;
@@ -11,7 +11,8 @@ public class Enemy : MonoBehaviour, IDamage
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
   public Vector2 box = new Vector2( 0.3f, 0.3f );
-  string[] CollideLayers = new string[] { "foreground" };
+  static string[] CollideLayers = { "Default" };
+  static string [] DamageLayers = { "character" };
   public bool collideRight = false;
   public bool collideLeft = false;
   public bool collideTop = false;
@@ -50,7 +51,7 @@ public class Enemy : MonoBehaviour, IDamage
 
     RaycastHit2D[] hits;
 
-    hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, raylength, LayerMask.GetMask( "trigger" ) );
+    hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, raylength, LayerMask.GetMask( DamageLayers ) );
     foreach( var hit in hits )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();

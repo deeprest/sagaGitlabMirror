@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1268720782321642}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.163, y: -0.738, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -97,7 +97,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300002, guid: 210c1d3f2ad87405ca865e5e26d27ff5, type: 3}
+  m_Sprite: {fileID: 21300004, guid: 210c1d3f2ad87405ca865e5e26d27ff5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 1
+  CurrentFrameIndex: 2
   sac: []
   sr: {fileID: 212979940915122146}
   flipX: 0
@@ -141,6 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79c614eee54494bb2bc12100fa003eab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   UseGravity: 1
   velocity: {x: 0, y: 0, z: 0}
   inertia: {x: 0, y: 0, z: 0}

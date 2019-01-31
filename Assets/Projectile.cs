@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-  public GameObject instigator;
+  public Transform instigator;
   public Damage ContactDamage;
   public SpriteAnimator animator;
   public float raycastDistance = 0.2f;
@@ -12,9 +12,9 @@ public class Projectile : MonoBehaviour
   Timer timeoutTimer;
   public Vector3 velocity;
   public CircleCollider2D circle;
-  public static string[] CollideLayers = new string[] { "foreground" ,"character", "triggerAndCollision" };
+  public static string[] CollideLayers = { "Default" ,"character", "triggerAndCollision", "enemy" };
   // check first before spawning to avoid colliding with these layers on the first frame
-  public static string[] NoShootLayers = new string[] { "foreground"};
+  public static string[] NoShootLayers = { "Default"};
   public AnimSequence HitEffect;
   public bool AlignXToMovementDirection = false;
 
@@ -33,7 +33,7 @@ public class Projectile : MonoBehaviour
   void Update()
   {
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( CollideLayers ) );
-    if( hit.transform != null && hit.transform.gameObject != instigator )
+    if( hit.transform != null && hit.transform != instigator.transform )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )

@@ -48,6 +48,6 @@ public class SpriteAnimationChild : MonoBehaviour
     }
 
   }
-}
 #endif
+}
 

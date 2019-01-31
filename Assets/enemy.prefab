@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 212949075796312028}
   - component: {fileID: 114662965209565708}
   - component: {fileID: 114874151398945132}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 210c1d3f2ad87405ca865e5e26d27ff5, type: 3}
+  m_Sprite: {fileID: 21300002, guid: 210c1d3f2ad87405ca865e5e26d27ff5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 0
+  CurrentFrameIndex: 1
   sac: []
   sr: {fileID: 212949075796312028}
   flipX: 0
@@ -150,8 +150,8 @@ MonoBehaviour:
   box: {x: 0.3, y: 0.3}
   collideRight: 0
   collideLeft: 0
-  collideHead: 0
-  collideFeet: 0
+  collideTop: 0
+  collideBottom: 0
   renderer: {fileID: 212949075796312028}
   animator: {fileID: 114662965209565708}
   idle: {fileID: 11400000, guid: 0c0ca858bef164a6fb22b29d25fa42c2, type: 2}
@@ -161,5 +161,4 @@ MonoBehaviour:
   hitPush: 4
   flashInterval: 0.05
   flashCount: 1
-  emissive: 0.5
   ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}

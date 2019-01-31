@@ -1,43 +1,18 @@
-
-**DEV**
-global instance, hooks, vars
-scene loader
-timers
-limit
-controlled spawning
-# spawn
-- generate new level
-- deserialized
-- spawn point
-- create new character (without spawn point)
-- construction
-- compound object replace (new level or construction)
-- dragndrop in editor
-## spawn variants
-- limited
-- by name, replacement check
-- remove colliding objects
-* fix the name
++ raycast from center to arm pos to avoid shooting through doors while adjacent
++ camera shake
 
 
-- child sprite disconnect bug
-
-- hit sounds
-- raycast from center to arm pos to avoid shooting through doors while adjacent
 - smoke: dash, wall slide
-- arm normals, pulse while charging
 - player take damage
+- arm normals, pulse while charging
 - health on HUD
 - death, respawn
 
-- camera shake
-- rain/dust flying around
-- blinking lights
 
 * Boss
-- borrow camera dolly/ramp from Flatlander
-- find ideal camera distance(s)
+- borrow camera dolly/ramp from Flatlander, find ideal camera distance(s)
 * upgrade to new input system
+- atmosphere: rain/dust flying around, blinking lights
 
 **DESIGN**
 # keep
@@ -58,16 +33,14 @@ teleportation
 
 # add
 aiming
-projectiles hit everything
-camera zoomed out a bit
-lighting
-normal mapped sprites
-rapidfire
-shield?
-...powerups?
+camera view size
+camera movement follows aiming?
+projectiles collide with everything
+lighting, normal mapped sprites
+weapons like Raiden
 
 ## aesthetics
-1. the sprite
+1. animation
 - idle
 - run cycle
 - jump, fall
@@ -76,7 +49,8 @@ shield?
 - weapon charge
 - take damage
 - low health
-- ...
+
+1. atmosphere
 
 2. sounds
 Consistent with instruments in the music.
@@ -98,7 +72,6 @@ Not arbitrary static points.
 
 **random**
 skydrop intro
-land of bystander- squish! => the story begins. The person who died [was important| ]
+land of bystander- squish! => the story begins. The person who died [was important|has vengeful friends]
 dancing randoms
-screw loose; wire crossed; not all there; one X short of a Y;
 thoughts come and go, recirculating weather in a fishbowl; grab an idea out of the air;

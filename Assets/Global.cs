@@ -13,11 +13,10 @@ public interface IDamage
   void TakeDamage( Damage d );
 }
 
-public class Character : MonoBehaviour, IDamage
+public class Character : MonoBehaviour
 {
-  public void TakeDamage( Damage d )
-  {
-  }
+  new public BoxCollider2D collider;
+
 }
 
 public class Attack
@@ -37,7 +36,7 @@ public class Global : MonoBehaviour
 
   // settings
   public static float Gravity = 16;
-  public const float MaxVelocity = 50;
+  public const float MaxVelocity = 60;
   public const float deadZone = 0.3f;
 
   [Header( "References" )]
@@ -112,6 +111,7 @@ public class Global : MonoBehaviour
     GameObject go = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
     CurrentPlayer = go.GetComponent<PlayerController>();
     CameraController.LookTarget = CurrentPlayer.gameObject;
+    CameraController.transform.position = CurrentPlayer.transform.position;
 
     yield return new WaitForSecondsRealtime( 1f );
     Unpause();
