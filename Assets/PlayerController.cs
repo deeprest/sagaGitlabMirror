@@ -86,7 +86,7 @@ public class PlayerController : Character, IDamage
   //  public Vector2 rightFoot;
   //  public Vector2 leftFoot;
 
-  void UpdateCollision()
+  void UpdateCollision( float dT )
   {
     collideRight = false;
     collideLeft = false;
@@ -95,7 +95,7 @@ public class PlayerController : Character, IDamage
 
     RaycastHit2D[] hits;
 
-    hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, Mathf.Max( raylength, velocity.magnitude * Time.deltaTime ), LayerMask.GetMask( TriggerLayers ) );
+    hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( TriggerLayers ) );
     foreach( var hit in hits )
     {
       ITrigger tri = hit.transform.GetComponent<ITrigger>();
@@ -155,7 +155,7 @@ public class PlayerController : Character, IDamage
     */
 
     float down = jumping ? raydown - downOffset : raydown;
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, Mathf.Max( down, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y > corner )
@@ -167,7 +167,7 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.up, Mathf.Max( raylength, velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y < -corner )
@@ -178,7 +178,7 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, Mathf.Max( sideraylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, Mathf.Max( sideraylength, -velocity.x * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x > corner )
@@ -190,7 +190,7 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, Mathf.Max( sideraylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, Mathf.Max( sideraylength, velocity.x * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x < -corner )
@@ -513,7 +513,13 @@ public class PlayerController : Character, IDamage
           velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           anim = "wallslide";
           dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
+          if( !dashSmoke.isPlaying ) 
+            dashSmoke.Play();
         }
+      }
+      else
+      {
+        dashSmoke.Stop();
       }
     }
 
@@ -533,7 +539,13 @@ public class PlayerController : Character, IDamage
           velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           anim = "wallslide";
           dashSmoke.transform.localPosition = new Vector3( -0.2f, -0.2f, 0 );
+          if( !dashSmoke.isPlaying ) 
+            dashSmoke.Play();
         }
+      }
+      else
+      {
+        dashSmoke.Stop();
       }
     }
 
@@ -553,7 +565,8 @@ public class PlayerController : Character, IDamage
       velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
 
     transform.position += (inertia + velocity) * Time.deltaTime;
-    UpdateCollision();
+
+    UpdateCollision( Mathf.Min( Time.deltaTime, 0.2f ) );
   }
 
   void StartDash()
