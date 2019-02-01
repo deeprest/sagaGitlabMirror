@@ -1,9 +1,15 @@
 + raycast from center to arm pos to avoid shooting through doors while adjacent
 + camera shake
++ smoke: dash, wall slide
 
 
-- smoke: dash, wall slide
 - player take damage
+temp no input
+face direction
+inertia up and away
+after damage anim, non-damage blinking duration
+if charged, fire charged weapon
+
 - arm normals, pulse while charging
 - health on HUD
 - death, respawn

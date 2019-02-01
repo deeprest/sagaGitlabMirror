@@ -16,7 +16,6 @@ public class Chopper : MonoBehaviour {
     transform.position = chopperStartPoint.position;
     character.hanging = true;
     character.velocity = Vector3.zero;
-    character.inertia = Vector3.zero;
     character.transform.parent = hangPoint;
     character.transform.localPosition = Vector3.zero;
 
@@ -34,7 +33,7 @@ public class Chopper : MonoBehaviour {
       {
         character.transform.parent = null;
         character.hanging = false;
-        character.inertia.x = speed;
+        character.push.x = speed;
         character = null;
       }
     }

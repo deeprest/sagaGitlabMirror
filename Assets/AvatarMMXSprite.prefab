@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1361239658353872}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.053, y: 0.044, z: 0}
+  m_LocalPosition: {x: 0.056, y: 0.009, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4857518412556878}
@@ -4869,7 +4869,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: 10
-  m_Sprite: {fileID: 21300044, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
+  m_Sprite: {fileID: 21300004, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4892,12 +4892,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 5
+  CurrentFrameIndex: 2
   sac:
   - {fileID: 1614270579113136216}
   sr: {fileID: 212107818795109166}
   flipX: 0
-  CurrentSequence: {fileID: 11400000, guid: ef484192eaacd44c5959cf8fcb67ebdc, type: 2}
+  CurrentSequence: {fileID: 11400000, guid: 3e4d5aa22a05c405fb81a2d9667479f0, type: 2}
   isPlaying: 1
   playAtAStart: 1
   anims:
@@ -4910,6 +4910,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1754435b122d44de486be2f2d4e9d019, type: 2}
   - {fileID: 11400000, guid: 683a52c627a7046c8a3d5c862fb03801, type: 2}
   - {fileID: 11400000, guid: fc18f74c566684eadabce8da5353134e, type: 2}
+  - {fileID: 11400000, guid: 9a754c7c476e84e41950794f69e377a5, type: 2}
 --- !u!114 &114555753213364338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4956,8 +4957,8 @@ MonoBehaviour:
   dashing: 0
   hanging: 0
   velocity: {x: 0, y: 0, z: 0}
-  inertia: {x: 0, y: 0, z: 0}
-  inertiaDecay: 0.5
+  push: {x: 0, y: 0, z: 0}
+  friction: 8
   momentumTest: 2
   collideRight: 0
   collideLeft: 0
@@ -4973,6 +4974,11 @@ MonoBehaviour:
   chargeColor: {r: 0, g: 0.796, b: 1, a: 1}
   soundJump: {fileID: 8300000, guid: 3634bba7cfee0409cb0ba088753bc669, type: 3}
   soundDash: {fileID: 8300000, guid: fa292f5f0979c4ce49e47c2a103a585b, type: 3}
+  damagePulseColor: {r: 1, g: 1, b: 1, a: 1}
+  damagePulseInterval: 0.1
+  damageBlinkDuration: 1
+  damageLift: 2
+  damagePush: 1
 --- !u!61 &61999569739760366
 BoxCollider2D:
   m_ObjectHideFlags: 0

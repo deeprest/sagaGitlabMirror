@@ -47,8 +47,8 @@ public class PlayerController : Character, IDamage
   public bool hanging = false;
 
   public Vector3 velocity = Vector3.zero;
-  public Vector3 inertia = Vector3.zero;
-  public float inertiaDecay = 0.5f;
+  public Vector3 push = Vector3.zero;
+  public float friction = 1f;
   public float momentumTest = 2;
   float dashStart;
   float jumpStart;
@@ -301,7 +301,6 @@ public class PlayerController : Character, IDamage
     if( Input.GetKey( Global.instance.icsCurrent.keyMap["MoveRight"] ) )
     {
       inputRight = true;
-
     }
     else
     {
@@ -340,14 +339,9 @@ public class PlayerController : Character, IDamage
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Down"] ) )
     {
       hanging = false;
-      // TEMP tunnel test
-      //velocity = Vector2.down * MaxVelocity;
     }
 
-
-
     velocity.x = 0;
-    velocity.y += -Global.Gravity * Time.deltaTime;
 
     if( collideFeet && !onGround )
     {
@@ -357,17 +351,9 @@ public class PlayerController : Character, IDamage
     }
 
     if( collideFeet || (collideLeft && collideRight) )
-    {
       onGround = true;
-      velocity.y = Mathf.Max( velocity.y, 0 );
-      // high friction
-      //inertia.x = 0;
-    }
     else
-    {
-      //inertia -= (inertia * momentumDecay) * Time.deltaTime;
       onGround = false;
-    }
 
 
     if( inputRight )
@@ -420,21 +406,15 @@ public class PlayerController : Character, IDamage
       {
         if( onGround || inputRight )
           velocity.x = dashVel;
-        if( onGround )
-        {
-          if( Time.time - dashStart >= dashDuration )
-            StopDash();
-        }
+        if( onGround && Time.time - dashStart >= dashDuration )
+          StopDash();
       }
       else
       {
         if( onGround || inputLeft )
           velocity.x = -dashVel;
-        if( onGround )
-        {
-          if( Time.time - dashStart >= dashDuration )
-            StopDash();
-        }
+        if( onGround && Time.time - dashStart >= dashDuration )
+          StopDash();
       }
     }
 
@@ -468,14 +448,7 @@ public class PlayerController : Character, IDamage
     if( landing && (Time.time - landStart >= landDuration) )
       landing = false;
 
-    if( facingRight )
-    {
-      animator.flipX = false;
-    }
-    else
-    {
-      animator.flipX = true;
-    }
+    animator.flipX = !facingRight;
 
     string anim = "idle";
 
@@ -499,8 +472,6 @@ public class PlayerController : Character, IDamage
 
     if( collideRight )
     {
-      velocity.x = Mathf.Min( velocity.x, 0 );
-      inertia.x = Mathf.Min( inertia.x, 0 );
       if( inputRight && hitRight.normal.y >= 0 )
       {
         if( jumping )
@@ -513,7 +484,7 @@ public class PlayerController : Character, IDamage
           velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           anim = "wallslide";
           dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
-          if( !dashSmoke.isPlaying ) 
+          if( !dashSmoke.isPlaying )
             dashSmoke.Play();
         }
       }
@@ -525,8 +496,6 @@ public class PlayerController : Character, IDamage
 
     if( collideLeft )
     {
-      velocity.x = Mathf.Max( velocity.x, 0 );
-      inertia.x = Mathf.Max( inertia.x, 0 );
       if( inputLeft && hitLeft.normal.y >= 0 )
       {
         if( jumping )
@@ -539,7 +508,7 @@ public class PlayerController : Character, IDamage
           velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           anim = "wallslide";
           dashSmoke.transform.localPosition = new Vector3( -0.2f, -0.2f, 0 );
-          if( !dashSmoke.isPlaying ) 
+          if( !dashSmoke.isPlaying )
             dashSmoke.Play();
         }
       }
@@ -549,24 +518,44 @@ public class PlayerController : Character, IDamage
       }
     }
 
+    velocity += push;
+    push.y = 0;
+    velocity.y -= Global.Gravity * Time.deltaTime;
+
+    if( collideRight )
+    {
+      velocity.x = Mathf.Min( velocity.x, 0 );
+      push.x = Mathf.Min( push.x, 0 );
+    }
+    if( collideLeft )
+    {
+      velocity.x = Mathf.Max( velocity.x, 0 );
+      push.x = Mathf.Max( push.x, 0 );
+    }
+    if( onGround )
+    {
+      velocity.y = Mathf.Max( velocity.y, 0 );
+      push.x -= (push.x * friction) * Time.deltaTime;
+    }
     if( collideHead )
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
 
+    if( takingDamage )
+    {
+      anim = "damage";
+    }
 
+    if( hanging )
+      velocity = Vector3.zero;
 
     if( anim != animator.CurrentSequence.name )
       animator.Play( anim );
 
-    if( hanging )
-      velocity = Vector3.zero;
-    else
-      velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-
-    transform.position += (inertia + velocity) * Time.deltaTime;
-
-    UpdateCollision( Mathf.Min( Time.deltaTime, 0.2f ) );
+    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
+    transform.position += velocity * Time.deltaTime;
+    UpdateCollision( Time.deltaTime );
   }
 
   void StartDash()
@@ -604,10 +593,65 @@ public class PlayerController : Character, IDamage
     } );
   }
 
+
+  [Header( "Damage" )]
+  bool takingDamage;
+  bool invulnerable;
+  Timer damageTimer = new Timer();
+  public Color damagePulseColor = Color.white;
+  bool damagePulseOn;
+  Timer damagePulseTimer = new Timer();
+  public float damagePulseInterval = .1f;
+  public float damageBlinkDuration = 1f;
+  public float damageLift = 1f;
+  public float damagePush = 1f;
+
+  void DamagePulseFlip()
+  {
+    damagePulseTimer.Start( damagePulseInterval, null, delegate
+    {
+      damagePulseOn = !damagePulseOn;
+      if( damagePulseOn )
+        animator.material.SetFloat( "_BlendAmount", 0.5f );
+      else
+        animator.material.SetFloat( "_BlendAmount", 0 );
+      DamagePulseFlip();
+    } );
+  }
+
   public void TakeDamage( Damage d )
   {
-    print( "take damage from " + d.instigator.name );
-    Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
+    if( invulnerable )
+      return;
+    //print( "take damage from " + d.instigator.name );
+    //Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
+
+    float sign = Mathf.Sign( d.instigator.position.x - transform.position.x );
+    facingRight = sign > 0;
+    push.y = damageLift;
+    velocity.y = 0;
+
+    takingDamage = true;
+    invulnerable = true;
+    animator.Play( "damage" );
+    damageTimer.Start( animator.CurrentSequence.GetDuration(), delegate ( Timer t )
+    {
+      push.x = -sign * damagePush;
+
+    }, delegate ()
+    {
+      takingDamage = false;
+      animator.material.SetFloat( "_BlendAmount", 0 );
+      animator.material.SetColor( "_BlendColor", damagePulseColor );
+      DamagePulseFlip();
+      damageTimer.Start( damageBlinkDuration, null, delegate ()
+      {
+        animator.material.SetFloat( "_BlendAmount", 0 );
+        invulnerable = false;
+        damagePulseTimer.Stop( false );
+      } );
+    } );
+
   }
 
 }
