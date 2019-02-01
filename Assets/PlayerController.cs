@@ -38,8 +38,6 @@ public class PlayerController : Character, IDamage
   public bool inputLeft = false;
   public bool inputJumpStart = false;
   public bool inputJumpEnd = false;
-  public bool inputDashStart = false;
-  public bool inputDashEnd = false;
   public bool onGround = false;
   public bool jumping = false;
   public bool landing = false;
@@ -109,7 +107,7 @@ public class PlayerController : Character, IDamage
         // maybe only damage other if charging weapon or has active powerup?
         if( ContactDamage != null )
         {
-          Damage dmg = ScriptableObject.Instantiate<Damage>( ContactDamage );
+          Damage dmg = Instantiate<Damage>( ContactDamage );
           dmg.instigator = transform;
           dmg.point = hit.point;
           dam.TakeDamage( dmg );
@@ -298,64 +296,11 @@ public class PlayerController : Character, IDamage
     }
 
     // INPUT
-    if( Input.GetKey( Global.instance.icsCurrent.keyMap["MoveRight"] ) )
-    {
-      inputRight = true;
-    }
-    else
-    {
-      inputRight = false;
-    }
-
-    if( Input.GetKey( Global.instance.icsCurrent.keyMap["MoveLeft"] ) )
-    {
-      inputLeft = true;
-    }
-    else
-    {
-      inputLeft = false;
-    }
-
-    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Jump"] ) )
-    {
-      inputJumpStart = true;
-    }
-    else
-    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Jump"] ) )
-    {
-      inputJumpEnd = true;
-    }
-
-    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Dash"] ) )
-    {
-      inputDashStart = true;
-    }
-    else
-    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Dash"] ) )
-    {
-      inputDashEnd = true;
-    }
 
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Down"] ) )
-    {
       hanging = false;
-    }
 
-    velocity.x = 0;
-
-    if( collideFeet && !onGround )
-    {
-      StopDash();
-      landing = true;
-      landStart = Time.time;
-    }
-
-    if( collideFeet || (collideLeft && collideRight) )
-      onGround = true;
-    else
-      onGround = false;
-
-
+    inputRight = Input.GetKey( Global.instance.icsCurrent.keyMap["MoveRight"] );
     if( inputRight )
     {
       // move along floor if angled downwards
@@ -370,6 +315,7 @@ public class PlayerController : Character, IDamage
       facingRight = true;
     }
 
+    inputLeft = Input.GetKey( Global.instance.icsCurrent.keyMap["MoveLeft"] );
     if( inputLeft )
     {
       // move along floor if angled downwards
@@ -384,21 +330,19 @@ public class PlayerController : Character, IDamage
       facingRight = false;
     }
 
-    if( inputDashStart )
+
+    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Dash"] ) )
     {
       if( onGround || collideLeft || collideRight )
       {
         StartDash();
       }
     }
-    inputDashStart = false;
-
-    if( inputDashEnd )
+    else if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Dash"] ) )
     {
       if( !jumping )
         StopDash();
     }
-    inputDashEnd = false;
 
     if( dashing )
     {
@@ -418,7 +362,7 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    if( inputJumpStart )
+    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Jump"] ) )
     {
       if( onGround || (inputRight && collideRight) || (inputLeft && collideLeft) )
       {
@@ -429,14 +373,12 @@ public class PlayerController : Character, IDamage
         dashSmoke.Stop();
       }
     }
-    inputJumpStart = false;
-
-    if( inputJumpEnd )
+    else
+    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Jump"] ) )
     {
       jumping = false;
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
-    inputJumpEnd = false;
 
 
     if( velocity.y < 0 )
@@ -469,6 +411,7 @@ public class PlayerController : Character, IDamage
     else
     if( !jumping )
       anim = "fall";
+
 
     if( collideRight )
     {
@@ -518,10 +461,17 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    velocity += push;
-    push.y = 0;
-    velocity.y -= Global.Gravity * Time.deltaTime;
+    if( takingDamage )
+    {
+      anim = "damage";
+    }
 
+    velocity += push;
+    // vertically push is one-time instantaneous only
+    push.y = 0;
+    // add gravity before velocity limits
+    velocity.y -= Global.Gravity * Time.deltaTime;
+    // limit velocity before adding to position
     if( collideRight )
     {
       velocity.x = Mathf.Min( velocity.x, 0 );
@@ -532,6 +482,7 @@ public class PlayerController : Character, IDamage
       velocity.x = Mathf.Max( velocity.x, 0 );
       push.x = Mathf.Max( push.x, 0 );
     }
+    // "onGround" is not the same as "collideFeet"
     if( onGround )
     {
       velocity.y = Mathf.Max( velocity.y, 0 );
@@ -542,11 +493,6 @@ public class PlayerController : Character, IDamage
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
 
-    if( takingDamage )
-    {
-      anim = "damage";
-    }
-
     if( hanging )
       velocity = Vector3.zero;
 
@@ -555,7 +501,20 @@ public class PlayerController : Character, IDamage
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     transform.position += velocity * Time.deltaTime;
+    // must hold button to move horizontally, so allow no persistent horizontal velocity
+    velocity.x = 0;
+    // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
+
+    bool oldGround = onGround;
+    onGround = collideFeet || (collideLeft && collideRight);
+    if( onGround && !oldGround )
+    {
+      StopDash();
+      landing = true;
+      landStart = Time.time;
+    }
+
   }
 
   void StartDash()
@@ -646,10 +605,10 @@ public class PlayerController : Character, IDamage
       DamagePulseFlip();
       damageTimer.Start( damageBlinkDuration, null, delegate ()
       {
-        animator.material.SetFloat( "_BlendAmount", 0 );
-        invulnerable = false;
-        damagePulseTimer.Stop( false );
-      } );
+      animator.material.SetFloat( "_BlendAmount", 0 );
+      invulnerable = false;
+      damagePulseTimer.Stop( false );
+    } );
     } );
 
   }

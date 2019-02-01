@@ -4,11 +4,13 @@
 
 
 - player take damage
-temp no input
-face direction
-inertia up and away
-after damage anim, non-damage blinking duration
-if charged, fire charged weapon
+  temp no input
+  face direction
+  inertia up and away
+  after damage anim, non-damage blinking duration
+  if charged, fire charged weapon
+  emissive flash
+  hide arm  
 
 - arm normals, pulse while charging
 - health on HUD
