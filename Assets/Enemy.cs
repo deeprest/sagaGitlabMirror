@@ -8,6 +8,7 @@ public class Enemy : Character, IDamage
   public Vector3 velocity = Vector3.zero;
   public Vector3 inertia = Vector3.zero;
   public float friction = 0.5f;
+  public float airFriction = 0.5f;
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
   public Vector2 box = new Vector2( 0.3f, 0.3f );
@@ -134,6 +135,7 @@ public class Enemy : Character, IDamage
     }
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
+    velocity -= (velocity * airFriction) * Time.deltaTime;
     transform.position += velocity * Time.deltaTime;
   }
 

@@ -526,9 +526,9 @@ public class PlayerController : Character, IDamage
       if( onGround )
         audio.PlayOneShot( soundDash, 0.5f );
       if( facingRight )
-        dashSmoke.transform.localPosition = new Vector3( -0.36f, -0.2f, 0 );
+        dashSmoke.transform.localPosition = new Vector3( -0.38f, -0.22f, 0 );
       else
-        dashSmoke.transform.localPosition = new Vector3( 0.36f, -0.2f, 0 );
+        dashSmoke.transform.localPosition = new Vector3( 0.38f, -0.22f, 0 );
       dashSmoke.Play();
     }
   }

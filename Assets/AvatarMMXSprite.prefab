@@ -439,7 +439,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.23
+      scalar: 0.1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -761,7 +761,7 @@ ParticleSystem:
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: -0.2
+      scalar: -0.05
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -1020,7 +1020,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 15
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -4869,7 +4869,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: 10
-  m_Sprite: {fileID: 21300004, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
+  m_Sprite: {fileID: 21300002, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4892,7 +4892,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 2
+  CurrentFrameIndex: 4
   sac:
   - {fileID: 1614270579113136216}
   sr: {fileID: 212107818795109166}
@@ -4949,8 +4949,6 @@ MonoBehaviour:
   inputLeft: 0
   inputJumpStart: 0
   inputJumpEnd: 0
-  inputDashStart: 0
-  inputDashEnd: 0
   onGround: 0
   jumping: 0
   landing: 0

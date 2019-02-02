@@ -51,7 +51,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6a2648f69ce4948a9852f1ae71e1bd17, type: 2}
+  - {fileID: 2100000, guid: edb8b045dedda4260b0d6a4e74fb7207, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -68,10 +68,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1643776171
-  m_SortingLayer: 1
-  m_SortingOrder: 10
-  m_Sprite: {fileID: 21300000, guid: 60bccb3909d8e459bad41f2ec2bc83f9, type: 3}
+  m_SortingLayerID: 1445702261
+  m_SortingLayer: 2
+  m_SortingOrder: 1
+  m_Sprite: {fileID: 21300012, guid: 60bccb3909d8e459bad41f2ec2bc83f9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -94,19 +94,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseSpriteRenderer: 1
+  CurrentFrameIndex: 6
+  sac: []
   sr: {fileID: 212038896940401040}
-  mr: {fileID: 0}
-  mf: {fileID: 0}
+  flipX: 0
   CurrentSequence: {fileID: 11400000, guid: 8af8502f7021344e5a71c5bd0c45f487, type: 2}
-  startAnim: {fileID: 11400000, guid: 8af8502f7021344e5a71c5bd0c45f487, type: 2}
-  isPlaying: 0
+  isPlaying: 1
   playAtAStart: 1
   anims:
   - {fileID: 11400000, guid: 8af8502f7021344e5a71c5bd0c45f487, type: 2}
-  CurrentFrameIndex: 0
-  originalSharedMesh: {fileID: 0}
-  originalMaterial: {fileID: 0}
 --- !u!114 &114920460158742564
 MonoBehaviour:
   m_ObjectHideFlags: 0
