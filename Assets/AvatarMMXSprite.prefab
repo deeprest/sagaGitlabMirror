@@ -162,7 +162,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1820418687
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -4892,7 +4892,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 4
+  CurrentFrameIndex: 3
   sac:
   - {fileID: 1614270579113136216}
   sr: {fileID: 212107818795109166}
@@ -4973,8 +4973,8 @@ MonoBehaviour:
   soundJump: {fileID: 8300000, guid: 3634bba7cfee0409cb0ba088753bc669, type: 3}
   soundDash: {fileID: 8300000, guid: fa292f5f0979c4ce49e47c2a103a585b, type: 3}
   damagePulseColor: {r: 1, g: 1, b: 1, a: 1}
-  damagePulseInterval: 0.1
-  damageBlinkDuration: 1
+  damagePulseInterval: 0.0167
+  damageBlinkDuration: 1.5
   damageLift: 2
   damagePush: 1
 --- !u!61 &61999569739760366

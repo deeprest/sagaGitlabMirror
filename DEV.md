@@ -11,7 +11,7 @@
   if charged, fire charged weapon
   emissive flash
   hide arm  
-
+- fix arm anim positions
 - arm normals, pulse while charging
 - health on HUD
 - death, respawn

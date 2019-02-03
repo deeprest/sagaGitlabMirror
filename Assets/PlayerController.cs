@@ -204,11 +204,8 @@ public class PlayerController : Character, IDamage
   }
 
 
-  void Update()
+  void UpdateInput()
   {
-    if( Global.Paused )
-      return;
-
     Vector3 cursorDelta = Camera.main.ScreenToWorldPoint( Global.instance.cursor.anchoredPosition ) - arm.position;
     cursorDelta.z = 0;
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );
@@ -379,7 +376,15 @@ public class PlayerController : Character, IDamage
       jumping = false;
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
+  }
 
+  void Update()
+  {
+    if( Global.Paused )
+      return;
+
+    if( !takingDamage )
+      UpdateInput();
 
     if( velocity.y < 0 )
       jumping = false;
@@ -571,9 +576,11 @@ public class PlayerController : Character, IDamage
     {
       damagePulseOn = !damagePulseOn;
       if( damagePulseOn )
-        animator.material.SetFloat( "_BlendAmount", 0.5f );
+        GetComponent<SpriteRenderer>().enabled = true;
+      //animator.material.SetFloat( "_BlendAmount", 0.5f );
       else
-        animator.material.SetFloat( "_BlendAmount", 0 );
+        GetComponent<SpriteRenderer>().enabled = false;
+      //animator.material.SetFloat( "_BlendAmount", 0 );
       DamagePulseFlip();
     } );
   }
@@ -583,7 +590,7 @@ public class PlayerController : Character, IDamage
     if( invulnerable )
       return;
     //print( "take damage from " + d.instigator.name );
-    //Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
+    Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
 
     float sign = Mathf.Sign( d.instigator.position.x - transform.position.x );
     facingRight = sign > 0;
@@ -600,13 +607,14 @@ public class PlayerController : Character, IDamage
     }, delegate ()
     {
       takingDamage = false;
-      animator.material.SetFloat( "_BlendAmount", 0 );
-      animator.material.SetColor( "_BlendColor", damagePulseColor );
+      //animator.material.SetFloat( "_BlendAmount", 0 );
+      //animator.material.SetColor( "_BlendColor", damagePulseColor );
       DamagePulseFlip();
       damageTimer.Start( damageBlinkDuration, null, delegate ()
       {
-      animator.material.SetFloat( "_BlendAmount", 0 );
-      invulnerable = false;
+        //animator.material.SetFloat( "_BlendAmount", 0 );
+        GetComponent<SpriteRenderer>().enabled = true;
+        invulnerable = false;
       damagePulseTimer.Stop( false );
     } );
     } );
