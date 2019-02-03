@@ -63,13 +63,13 @@ public class SpriteAnimator : MonoBehaviour
 
   [SerializeField] SpriteRenderer sr;
 
-  public Material material
-  {
-    get
-    {
-      return sr.material;
-    }
-  }
+  //public Material material
+  //{
+  //  get
+  //  {
+  //    return sr.material;
+  //  }
+  //}
   public bool flipX = false;
   public AnimSequence CurrentSequence;
 

@@ -11,6 +11,7 @@
   if charged, fire charged weapon
   emissive flash
   hide arm  
+  
 - fix arm anim positions
 - arm normals, pulse while charging
 - health on HUD
@@ -45,7 +46,7 @@ camera view size
 camera movement follows aiming?
 projectiles collide with everything
 lighting, normal mapped sprites
-weapons like Raiden
+weapons like Raiden, Contra
 
 ## aesthetics
 1. animation

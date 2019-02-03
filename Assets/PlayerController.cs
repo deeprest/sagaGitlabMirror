@@ -84,6 +84,25 @@ public class PlayerController : Character, IDamage
   //  public Vector2 rightFoot;
   //  public Vector2 leftFoot;
 
+  SpriteRenderer[] spriteRenderers;
+
+  [Header( "Damage" )]
+  bool takingDamage;
+  bool invulnerable;
+  Timer damageTimer = new Timer();
+  public Color damagePulseColor = Color.white;
+  bool damagePulseOn;
+  Timer damagePulseTimer = new Timer();
+  public float damagePulseInterval = .1f;
+  public float damageBlinkDuration = 1f;
+  public float damageLift = 1f;
+  public float damagePush = 1f;
+
+  void Start()
+  {
+    spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+  }
+
   void UpdateCollision( float dT )
   {
     collideRight = false;
@@ -252,8 +271,8 @@ public class PlayerController : Character, IDamage
         audio2.clip = weapon.soundChargeLoop;
         audio2.loop = true;
         audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
-
-        animator.material.SetColor( "_BlendColor", chargeColor );
+        foreach( var sr in spriteRenderers )
+          sr.material.SetColor( "_BlendColor", chargeColor );
         ChargePulseFlip();
         GameObject geffect = Instantiate( weapon.ChargeEffect, transform );
         chargeEffect = geffect.GetComponent<ParticleSystem>();
@@ -287,7 +306,8 @@ public class PlayerController : Character, IDamage
       }
       chargeStartDelay.Stop( false );
       chargePulse.Stop( false );
-      animator.material.SetFloat( "_BlendAmount", 0 );
+      foreach( var sr in spriteRenderers )
+        sr.material.SetFloat( "_BlendAmount", 0 );
       chargeEffect = null;
       chargeAmount = 0;
     }
@@ -550,25 +570,15 @@ public class PlayerController : Character, IDamage
     {
       chargePulseOn = !chargePulseOn;
       if( chargePulseOn )
-        animator.material.SetFloat( "_BlendAmount", 0.5f );
+        foreach( var sr in spriteRenderers )
+          sr.material.SetFloat( "_BlendAmount", 0.5f );
       else
-        animator.material.SetFloat( "_BlendAmount", 0 );
+        foreach( var sr in spriteRenderers )
+          sr.material.SetFloat( "_BlendAmount", 0 );
       ChargePulseFlip();
     } );
   }
 
-
-  [Header( "Damage" )]
-  bool takingDamage;
-  bool invulnerable;
-  Timer damageTimer = new Timer();
-  public Color damagePulseColor = Color.white;
-  bool damagePulseOn;
-  Timer damagePulseTimer = new Timer();
-  public float damagePulseInterval = .1f;
-  public float damageBlinkDuration = 1f;
-  public float damageLift = 1f;
-  public float damagePush = 1f;
 
   void DamagePulseFlip()
   {
@@ -576,10 +586,12 @@ public class PlayerController : Character, IDamage
     {
       damagePulseOn = !damagePulseOn;
       if( damagePulseOn )
-        GetComponent<SpriteRenderer>().enabled = true;
+        foreach( var sr in spriteRenderers )
+          sr.enabled = true;
       //animator.material.SetFloat( "_BlendAmount", 0.5f );
       else
-        GetComponent<SpriteRenderer>().enabled = false;
+        foreach( var sr in spriteRenderers )
+          sr.enabled = false;
       //animator.material.SetFloat( "_BlendAmount", 0 );
       DamagePulseFlip();
     } );
@@ -590,13 +602,13 @@ public class PlayerController : Character, IDamage
     if( invulnerable )
       return;
     //print( "take damage from " + d.instigator.name );
-    Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
+    //Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
 
     float sign = Mathf.Sign( d.instigator.position.x - transform.position.x );
     facingRight = sign > 0;
     push.y = damageLift;
     velocity.y = 0;
-
+    arm.gameObject.SetActive( false );
     takingDamage = true;
     invulnerable = true;
     animator.Play( "damage" );
@@ -607,16 +619,18 @@ public class PlayerController : Character, IDamage
     }, delegate ()
     {
       takingDamage = false;
+      arm.gameObject.SetActive( true );
       //animator.material.SetFloat( "_BlendAmount", 0 );
       //animator.material.SetColor( "_BlendColor", damagePulseColor );
       DamagePulseFlip();
       damageTimer.Start( damageBlinkDuration, null, delegate ()
       {
         //animator.material.SetFloat( "_BlendAmount", 0 );
-        GetComponent<SpriteRenderer>().enabled = true;
+        foreach( var sr in spriteRenderers )
+          sr.enabled = true;
         invulnerable = false;
-      damagePulseTimer.Stop( false );
-    } );
+        damagePulseTimer.Stop( false );
+      } );
     } );
 
   }
