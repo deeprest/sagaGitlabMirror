@@ -7,13 +7,13 @@ public class Enemy : Character, IDamage
   public bool UseGravity = true;
   public Vector3 velocity = Vector3.zero;
   public Vector3 inertia = Vector3.zero;
-  public float friction = 0.5f;
-  public float airFriction = 0.5f;
+  public float friction = 0.05f;
+  public float airFriction = 0.05f;
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
   public Vector2 box = new Vector2( 0.3f, 0.3f );
   static string[] CollideLayers = { "Default" };
-  static string [] DamageLayers = { "character" };
+  static string[] DamageLayers = { "character" };
   public bool collideRight = false;
   public bool collideLeft = false;
   public bool collideTop = false;
@@ -37,13 +37,51 @@ public class Enemy : Character, IDamage
 
   public Damage ContactDamage;
 
+  public string enemyType = "wheel";
+  System.Action UpdateDelegate;
+
   void Start()
   {
     animator.Play( idle );
     //renderer.material.SetFloat( "_FlashAmount", 0 );
+    switch( enemyType )
+    {
+      case "wheel":
+        {
+          UpdateDelegate = UpdateWheel;
+          velocity.x = wheelVelocity;
+          animator.enabled = false;
+        }
+        break;
+
+    }
+  }
+
+  const float wheelAnimRate = 0.0167f;
+  public float wheelVelocity = 1;
+  float wheelTime = 0;
+
+  void UpdateWheel()
+  {
+    if( collideLeft )
+      velocity.x = wheelVelocity;
+    if( collideRight )
+      velocity.x = -wheelVelocity;
+    wheelVelocity = Mathf.Abs( velocity.x );
+    animator.flipX = velocity.x > 0;
+    wheelTime += Mathf.Abs( velocity.x ) * wheelAnimRate * Time.timeScale;
+    animator.AdvanceFrame( wheelTime  );
+    animator.UpdateFrame();
   }
 
   void Update()
+  {
+    if( UpdateDelegate != null )
+      UpdateDelegate();
+    UpdateCollision();
+  }
+
+  void UpdateCollision()
   {
     collideRight = false;
     collideLeft = false;
@@ -58,7 +96,7 @@ public class Enemy : Character, IDamage
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
-        Damage dmg = ScriptableObject.Instantiate<Damage>( ContactDamage );
+        Damage dmg = Instantiate( ContactDamage );
         dmg.instigator = transform;
         dmg.point = hit.point;
         dam.TakeDamage( dmg );
@@ -131,7 +169,7 @@ public class Enemy : Character, IDamage
     }
     if( collideLeft )
     {
-      velocity.x = Mathf.Max( velocity.x, 0 ); 
+      velocity.x = Mathf.Max( velocity.x, 0 );
     }
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
@@ -148,7 +186,7 @@ public class Enemy : Character, IDamage
     if( health <= 0 )
     {
       flashTimer.Stop( false );
-      GameObject.Instantiate( explosion, transform.position, Quaternion.identity );
+      Instantiate( explosion, transform.position, Quaternion.identity );
       Destroy( gameObject );
     }
     else

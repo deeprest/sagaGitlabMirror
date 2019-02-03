@@ -142,7 +142,7 @@ public class SpriteAnimator : MonoBehaviour
     isPlaying = false;
   }
 
-  void AdvanceFrame( float time )
+  public void AdvanceFrame( float time )
   {
     int length = CurrentSequence.sprites.Length;
     if( CurrentSequence.UseFrames )
