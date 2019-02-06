@@ -47,13 +47,12 @@ public class Enemy : Character, IDamage
     switch( enemyType )
     {
       case "wheel":
-        {
-          UpdateDelegate = UpdateWheel;
-          velocity.x = wheelVelocity;
-          animator.enabled = false;
-        }
-        break;
+      UpdateDelegate = UpdateWheel;
+      velocity.x = wheelVelocity;
+      animator.enabled = false;
+      break;
 
+      case "airbot": break;
     }
   }
 
@@ -70,7 +69,7 @@ public class Enemy : Character, IDamage
     wheelVelocity = Mathf.Abs( velocity.x );
     animator.flipX = velocity.x > 0;
     wheelTime += Mathf.Abs( velocity.x ) * wheelAnimRate * Time.timeScale;
-    animator.AdvanceFrame( wheelTime  );
+    animator.AdvanceFrame( wheelTime );
     animator.UpdateFrame();
   }
 
@@ -176,7 +175,6 @@ public class Enemy : Character, IDamage
     velocity -= (velocity * airFriction) * Time.deltaTime;
     transform.position += velocity * Time.deltaTime;
   }
-
 
 
   public void TakeDamage( Damage d )

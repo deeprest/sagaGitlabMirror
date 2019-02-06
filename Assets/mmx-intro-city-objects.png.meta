@@ -2,13 +2,15 @@ fileFormatVersion: 2
 guid: e56faac4f118f4e0c89054865072c480
 TextureImporter:
   fileIDToRecycleName:
-    21300000: mmx-intro-city-objects_0
+    21300000: lamppost-1
     21300002: mmx-intro-city-objects_1
-    21300004: mmx-intro-city-objects_2
+    21300004: lampost-2
     21300006: mmx-intro-city-objects_4
-    21300008: mmx-intro-city-objects_3
+    21300008: pillar-top-1
     21300010: mmx-intro-city-objects_5
-    21300012: mmx-intro-city-objects_6
+    21300012: car
+    21300014: pillar-top-2
+    21300016: truck
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -113,7 +115,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: mmx-intro-city-objects_0
+      name: lamppost-1
       rect:
         serializedVersion: 2
         x: 0
@@ -142,7 +144,7 @@ TextureImporter:
         height: 64
       alignment: 2
       pivot: {x: 0.5, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 0, y: 0, z: 0, w: 17}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -153,15 +155,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mmx-intro-city-objects_2
+      name: lampost-2
       rect:
         serializedVersion: 2
         x: 168
         y: 160
         width: 16
         height: 86
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -193,7 +195,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mmx-intro-city-objects_3
+      name: pillar-top-1
       rect:
         serializedVersion: 2
         x: 128
@@ -202,7 +204,7 @@ TextureImporter:
         height: 114
       alignment: 2
       pivot: {x: 0.5, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 0, y: 0, z: 0, w: 17}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -233,7 +235,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mmx-intro-city-objects_6
+      name: car
       rect:
         serializedVersion: 2
         x: 304
@@ -241,7 +243,7 @@ TextureImporter:
         width: 78
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -252,10 +254,50 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: pillar-top-2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 142
+        width: 32
+        height: 85
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acc28f790e993461c906995fbd81c366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: truck
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 198
+        width: 96
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96bddf9bcd5b546a5b5aa28f068e630f
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: aa494004620104c11bf2ddf0331dc55b
     vertices: []
     indices: 
     edges: []

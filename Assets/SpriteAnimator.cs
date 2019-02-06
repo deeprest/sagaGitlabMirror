@@ -63,13 +63,6 @@ public class SpriteAnimator : MonoBehaviour
 
   [SerializeField] SpriteRenderer sr;
 
-  //public Material material
-  //{
-  //  get
-  //  {
-  //    return sr.material;
-  //  }
-  //}
   public bool flipX = false;
   public AnimSequence CurrentSequence;
 
@@ -93,9 +86,13 @@ public class SpriteAnimator : MonoBehaviour
   {
     sac = GetComponentsInChildren<SpriteAnimationChild>();
 
-    animLookup = new Dictionary<string, AnimSequence>();
-    foreach( var a in anims )
-      animLookup[a.name] = a;
+    if( anims.Length > 0 )
+    {
+      animLookup = new Dictionary<string, AnimSequence>();
+      foreach( var a in anims )
+        if( a != null )
+          animLookup[a.name] = a;
+    }
 
     if( playAtAStart )
       Play( CurrentSequence );
@@ -120,21 +117,16 @@ public class SpriteAnimator : MonoBehaviour
     animStart = Time.time;
 #endif
 
-
     if( !sr.enabled )
       sr.enabled = true;
-
-
   }
 
   public void Play( string animName )
   {
-    if( animLookup.ContainsKey( animName ) )
+    if( animLookup != null && animLookup.Count > 0 && animLookup.ContainsKey( animName ) )
       Play( animLookup[animName] );
     else
-    {
-      Debug.LogError( "Anim sequence " + animName + " does not exist on animator", gameObject );
-    }
+      Debug.LogWarning( "Anim sequence " + animName + " does not exist on animator", gameObject );
   }
 
   public void Stop()
@@ -191,7 +183,7 @@ public class SpriteAnimator : MonoBehaviour
 
     if( CurrentSequence.UseFrames )
     {
-      AnimFrame af = CurrentSequence.GetKeyFrame (CurrentFrameIndex);
+      AnimFrame af = CurrentSequence.GetKeyFrame( CurrentFrameIndex );
       foreach( var afp in af.point )
       {
         Transform child = transform.Find( afp.name );

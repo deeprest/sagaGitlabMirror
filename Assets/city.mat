@@ -28,11 +28,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 91a725274dbdd41dc8e0a10d3830c72d, type: 3}
+        m_Texture: {fileID: 2800000, guid: e56faac4f118f4e0c89054865072c480, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: e56faac4f118f4e0c89054865072c480, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -41,10 +41,10 @@ Material:
     - _EmissiveAmount: 0
     - _FlashAmount: 0
     - _FlipX: 0
-    - _Glossiness: 0
-    - _Metallic: 0
+    - _Glossiness: 0.5
+    - _Metallic: 0.5
     m_Colors:
-    - _BlendColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BlendColor: {r: 0.5441177, g: 0.5441177, b: 0.5441177, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _FlashColor: {r: 1, g: 1, b: 1, a: 1}
     - _IndexColor: {r: 1, g: 0, b: 0, a: 1}

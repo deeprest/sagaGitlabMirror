@@ -15,7 +15,7 @@ public interface IDamage
 
 public class Character : MonoBehaviour
 {
-  new public BoxCollider2D collider;
+  new public Collider2D collider;
 
 }
 
@@ -37,7 +37,7 @@ public class Global : MonoBehaviour
   // settings
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
-  public const float deadZone = 0.3f;
+  public float deadZone = 0.3f;
 
   [Header( "References" )]
   public string InitialSceneName;
@@ -183,9 +183,17 @@ public class Global : MonoBehaviour
     }
 
     if( UsingKeyboard )
-      cursorDelta += new Vector3( Input.GetAxis( "Cursor X" ) * cursorSensitivity, Input.GetAxis( "Cursor Y" ) * cursorSensitivity, 0 );
+    {
+      cursorDelta += new Vector3( Input.GetAxis( "Cursor X" ), Input.GetAxis( "Cursor Y" ), 0 ) * cursorSensitivity;
+    }
     else
-      cursorDelta = new Vector3( Input.GetAxisRaw( icsCurrent.axisMap["ShootX"] ), -Input.GetAxisRaw( icsCurrent.axisMap["ShootY"] ), 0 );
+    {
+      Vector3 raw = new Vector3( Input.GetAxisRaw( icsCurrent.axisMap["ShootX"] ), -Input.GetAxisRaw( icsCurrent.axisMap["ShootY"] ), 0 );
+      if( raw.sqrMagnitude > deadZone * deadZone )
+        aimRaw = raw;
+      else
+        aimRaw = Vector3.zero;
+    }
 
     if( Input.GetKeyDown( KeyCode.R ) )
       NextCursor();
@@ -199,6 +207,11 @@ public class Global : MonoBehaviour
       Cursor.lockState = CursorLockMode.None;
   }
 
+  Vector3 aimRaw;
+  public float cursorLerp = 10;
+  public bool positionalCursor = true;
+  public float cursorSpeed = 30;
+
   void LateUpdate()
   {
     if( CurrentPlayer != null )
@@ -207,18 +220,17 @@ public class Global : MonoBehaviour
       {
         cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, cursorOuter ), cursorInner );
       }
+      else if( positionalCursor )
+      {
+        cursorDelta += aimRaw * cursorSpeed;
+        cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, cursorOuter ), cursorInner );
+      }
       else
       {
-        if( cursorDelta.sqrMagnitude > deadZone * deadZone )
-        {
-          cursor.gameObject.SetActive( true );
-          cursorDelta = cursorDelta.normalized * cursorOuter;
-        }
-        else
-        { 
-          cursor.gameObject.SetActive( false );
-        }
+        cursorDelta = Vector3.Lerp( cursorDelta, aimRaw * cursorOuter, Mathf.Clamp01( cursorLerp * Time.deltaTime ) );
       }
+
+      cursor.gameObject.SetActive( cursorDelta.sqrMagnitude > cursorInner * cursorInner );
 
       Vector3 origin;
       if( CursorPlayerRelative )
@@ -245,7 +257,7 @@ public class Global : MonoBehaviour
     GameObject go = FindSpawnPoint();
     if( go != null )
     {
-      Vector3 pos = go.transform.position; 
+      Vector3 pos = go.transform.position;
       pos.z = 0;
       return pos;
     }

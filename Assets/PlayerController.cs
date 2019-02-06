@@ -229,7 +229,10 @@ public class PlayerController : Character, IDamage
     cursorDelta.z = 0;
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );
     Vector3 shoot;
-    if( Global.instance.UsingKeyboard )
+
+    shoot = cursorDelta;
+
+    /*if( Global.instance.UsingKeyboard )
     {
       shoot = cursorDelta;
     }
@@ -250,7 +253,7 @@ public class PlayerController : Character, IDamage
       {
         // todo change arm sprite
       }
-    }
+    }*/
 
     if( Input.GetKey( Global.instance.icsCurrent.keyMap["Fire"] ) )
     {

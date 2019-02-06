@@ -11,17 +11,24 @@
   if charged, fire charged weapon
   emissive flash
   hide arm  
-  
+
 - fix arm anim positions
 - arm normals, pulse while charging
 - health on HUD
 - death, respawn
+
+- hornet
+  forward/back tilt
+  guns
+  missiles
+  drop enemies (wheels instead of walkers)
 
 
 * Boss
 - borrow camera dolly/ramp from Flatlander, find ideal camera distance(s)
 * upgrade to new input system
 - atmosphere: rain/dust flying around, blinking lights
+- 2x requested grappling hook
 
 **DESIGN**
 # keep
@@ -32,21 +39,20 @@ wall slide
 charge weapon
 bosses
 collect weapons from defeated bosses
----
 destroying enemies is satisfying
 safety timer after taking damage
 
-# do not keep
-only shoot forward
-teleportation
-
-# add
-aiming
-camera view size
-camera movement follows aiming?
+# changes
+only shoot forward -> aiming
+teleportation -> airdrop from chopper
+character/robot styles
+camera view size changes (1.5,2.5,3.5,4+)
+camera movement follows aiming
 projectiles collide with everything
-lighting, normal mapped sprites
+lighting, normal mapped sprites, emissive
+---
 weapons like Raiden, Contra
+grappling hook
 
 ## aesthetics
 1. animation
@@ -77,10 +83,3 @@ Camera can center on an imaginary point around the player, in the aiming directi
 MegamanX can only shoot forwards, not upwards or even slightly higher. The ability to shoot upwards in games like Contra is an improvement. Having weapons that spread out when shot can make this limitation feel less awkward.
 3. Enemies respawn at logical locations.
 Not arbitrary static points.
-
-
-**random**
-skydrop intro
-land of bystander- squish! => the story begins. The person who died [was important|has vengeful friends]
-dancing randoms
-thoughts come and go, recirculating weather in a fishbowl; grab an idea out of the air;
