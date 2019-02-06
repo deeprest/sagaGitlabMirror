@@ -4,19 +4,16 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class Rain : MonoBehaviour
 {
-  public Transform follow; 
+  public Transform follow;
   public Vector3 offset;
+  public float ratio = 1;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+  void Update()
+  {
+    if( follow != null )
+      transform.position = follow.position + offset * Camera.main.orthographicSize;
+    var sm = GetComponent<ParticleSystem>().shape;
+    sm.radius = Camera.main.orthographicSize * ratio;
 
-    // Update is called once per frame
-    void Update()
-    {
-    if( follow !=null )
-      transform.position = follow.position + offset;
-    }
+  }
 }

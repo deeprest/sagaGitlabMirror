@@ -1,9 +1,8 @@
 + raycast from center to arm pos to avoid shooting through doors while adjacent
 + camera shake
 + smoke: dash, wall slide
-
-
-- player take damage
++ arm normals, pulse while charging
++ player take damage
   temp no input
   face direction
   inertia up and away
@@ -13,21 +12,23 @@
   hide arm  
 
 - fix arm anim positions
-- arm normals, pulse while charging
 - health on HUD
-- death, respawn
+
+- avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
+
+- borrow camera dolly/ramp from Flatlander, find ideal camera distance(s)
+- camera bounds
 
 - hornet
   forward/back tilt
   guns
   missiles
   drop enemies (wheels instead of walkers)
-
-
-* Boss
-- borrow camera dolly/ramp from Flatlander, find ideal camera distance(s)
-* upgrade to new input system
+* death, respawn
+* boss
 - atmosphere: rain/dust flying around, blinking lights
+* upgrade to new input system
+- Menu with control options (and remap)
 - 2x requested grappling hook
 
 **DESIGN**
@@ -46,7 +47,7 @@ safety timer after taking damage
 only shoot forward -> aiming
 teleportation -> airdrop from chopper
 character/robot styles
-camera view size changes (1.5,2.5,3.5,4+)
+camera view size changes (1.5,2.5,3.5)
 camera movement follows aiming
 projectiles collide with everything
 lighting, normal mapped sprites, emissive
