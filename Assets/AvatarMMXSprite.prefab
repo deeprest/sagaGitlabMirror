@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1361239658353872}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.056, y: 0.009, z: 0}
+  m_LocalPosition: {x: 0.093, y: 0.089, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4857518412556878}
@@ -143,7 +143,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1688da361ba1f4014aa2b7f8b5579ed5, type: 2}
+  - {fileID: 2100000, guid: 30ea01067c13e46f4bb4a8c3d70c52a0, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -4869,7 +4869,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: 10
-  m_Sprite: {fileID: 21300002, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
+  m_Sprite: {fileID: 21300018, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4892,13 +4892,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 3
+  CurrentFrameIndex: 0
   sac:
   - {fileID: 1614270579113136216}
   sr: {fileID: 212107818795109166}
   flipX: 0
-  CurrentSequence: {fileID: 11400000, guid: 3e4d5aa22a05c405fb81a2d9667479f0, type: 2}
-  isPlaying: 1
+  CurrentSequence: {fileID: 11400000, guid: fc18f74c566684eadabce8da5353134e, type: 2}
+  isPlaying: 0
   playAtAStart: 1
   anims:
   - {fileID: 11400000, guid: 3e4d5aa22a05c405fb81a2d9667479f0, type: 2}
