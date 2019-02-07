@@ -1,10 +1,10 @@
 ﻿Shader "Custom/index-sprite-bump" {
  Properties {
    _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
-
-   _BlendColor ("Blend Color", Color) = (1,1,1,1)
-   _BlendAmount("Blend Alpha", Range(0.0, 1.0)) = 0
-
+   
+   _Tint ("Tint", Color) = (1,1,1,1)
+   _TintAmount ("Tint Amount", Range(0,1)) = 0.0
+   
    _IndexColor ("Index 1", Color) = (1,0,0,1)
    _IndexColor2 ("Index 2", Color) = (1,0,0,1)
 
@@ -27,7 +27,6 @@
      "Queue"="Transparent" 
      "RenderType"="Transparent" 
    }
-   LOD 200
    Cull Off
    //Lighting Off
    //ZWrite Off
@@ -48,6 +47,7 @@
    struct Input {
      float2 uv_MainTex;
      float2 uv_BumpMap;
+     float4 color : COLOR;
    };
 
    half _Glossiness;
@@ -55,32 +55,25 @@
    half _EmissiveAmount;
    fixed4 _IndexColor;
    fixed4 _IndexColor2;
-   fixed4 _BlendColor;
-   half _BlendAmount;
    fixed4 _FlashColor;
    half _FlashAmount;
         
-        int _FlipX;
-
-   // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
-   // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
-   // #pragma instancing_options assumeuniformscaling
-   UNITY_INSTANCING_BUFFER_START(Props)
-     // put more per-instance properties here
-   UNITY_INSTANCING_BUFFER_END(Props)
-
+   int _FlipX;
+   
+   fixed4 _Tint;
+   float _TintAmount;
+   
    void surf (Input IN, inout SurfaceOutputStandard o) 
    {
-     float4 c = tex2D (_MainTex, IN.uv_MainTex);
+     float4 c = tex2D (_MainTex, IN.uv_MainTex);// * IN.color;
 
      int r = (int)(c.r * 255.0);
      if( r==1 )
        c.rgb = lerp( _IndexColor.rgb * min(1.0,c.g*2.0), float4(1,1,1,1), (c.g-0.5)*2.0 );
      if( r==2 )
        c.rgb = lerp( _IndexColor2.rgb * min(1.0,c.g*2.0), float4(1,1,1,1), (c.g-0.5)*2.0 );
-
-
-     o.Albedo = lerp( c.rgb, _BlendColor, _BlendAmount );
+       
+     o.Albedo = lerp( c.rgb, _Tint.rgb, _TintAmount );
     float3 norm = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
     if( _FlipX )
       norm.x = -norm.x;

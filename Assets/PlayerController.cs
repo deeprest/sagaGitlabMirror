@@ -275,7 +275,7 @@ public class PlayerController : Character, IDamage
         audio2.loop = true;
         audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
         foreach( var sr in spriteRenderers )
-          sr.material.SetColor( "_BlendColor", chargeColor );
+          sr.material.SetColor( "_FlashColor", chargeColor );
         ChargePulseFlip();
         GameObject geffect = Instantiate( weapon.ChargeEffect, transform );
         chargeEffect = geffect.GetComponent<ParticleSystem>();
@@ -310,7 +310,7 @@ public class PlayerController : Character, IDamage
       chargeStartDelay.Stop( false );
       chargePulse.Stop( false );
       foreach( var sr in spriteRenderers )
-        sr.material.SetFloat( "_BlendAmount", 0 );
+        sr.material.SetFloat( "_FlashAmount", 0 );
       chargeEffect = null;
       chargeAmount = 0;
     }
@@ -574,10 +574,10 @@ public class PlayerController : Character, IDamage
       chargePulseOn = !chargePulseOn;
       if( chargePulseOn )
         foreach( var sr in spriteRenderers )
-          sr.material.SetFloat( "_BlendAmount", 0.5f );
+          sr.material.SetFloat( "_FlashAmount", 0.5f );
       else
         foreach( var sr in spriteRenderers )
-          sr.material.SetFloat( "_BlendAmount", 0 );
+          sr.material.SetFloat( "_FlashAmount", 0 );
       ChargePulseFlip();
     } );
   }
@@ -591,11 +591,11 @@ public class PlayerController : Character, IDamage
       if( damagePulseOn )
         foreach( var sr in spriteRenderers )
           sr.enabled = true;
-      //animator.material.SetFloat( "_BlendAmount", 0.5f );
+      //animator.material.SetFloat( "_FlashAmount", 0.5f );
       else
         foreach( var sr in spriteRenderers )
           sr.enabled = false;
-      //animator.material.SetFloat( "_BlendAmount", 0 );
+      //animator.material.SetFloat( "_FlashAmount", 0 );
       DamagePulseFlip();
     } );
   }
@@ -623,12 +623,12 @@ public class PlayerController : Character, IDamage
     {
       takingDamage = false;
       arm.gameObject.SetActive( true );
-      //animator.material.SetFloat( "_BlendAmount", 0 );
-      //animator.material.SetColor( "_BlendColor", damagePulseColor );
+      //animator.material.SetFloat( "_FlashAmount", 0 );
+      //animator.material.SetColor( "_FlashColor", damagePulseColor );
       DamagePulseFlip();
       damageTimer.Start( damageBlinkDuration, null, delegate ()
       {
-        //animator.material.SetFloat( "_BlendAmount", 0 );
+        //animator.material.SetFloat( "_FlashAmount", 0 );
         foreach( var sr in spriteRenderers )
           sr.enabled = true;
         invulnerable = false;

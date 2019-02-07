@@ -689,10 +689,11 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1563210130524808}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 1c39f8c58cb83400089739cd8e4d9c58,
+    type: 2}
+  m_audioClip: {fileID: 8300000, guid: 74c5e51d4c9c84495820dfdb80a5d04d, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -1510,7 +1511,6 @@ GameObject:
   - component: {fileID: 7319106273476287188}
   - component: {fileID: 7197562399528161157}
   - component: {fileID: 5256872053445144375}
-  - component: {fileID: 1491732291}
   m_Layer: 0
   m_Name: cam
   m_TagString: MainCamera
@@ -1526,7 +1526,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 603064957685407736}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4865489402398300}
@@ -1555,7 +1555,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 1
+  near clip plane: -10
   far clip plane: 20
   field of view: 57
   orthographic: 1
@@ -1583,14 +1583,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 603064957685407736}
   m_Enabled: 1
---- !u!124 &1491732291
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 603064957685407736}
-  m_Enabled: 1
 --- !u!1001 &8110591398483061427
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1611,7 +1603,7 @@ PrefabInstance:
     - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.28
+      value: 1.53
       objectReference: {fileID: 0}
     - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
         type: 3}
@@ -1658,10 +1650,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4182039790881745493, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
+        type: 3}
+      propertyPath: useRigidbodyForVelocity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182039790881745493, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
+        type: 3}
+      propertyPath: randomSeed
+      value: -1502423971
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182039790881745493, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
+        type: 3}
+      propertyPath: InitialModule.maxNumParticles
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182039790881745493, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
+        type: 3}
+      propertyPath: ShapeModule.radius.value
+      value: 0.59999996
+      objectReference: {fileID: 0}
     - target: {fileID: 1888601634, guid: 818c984cb06ae41bcbfb19c3f0434ff6, type: 3}
       propertyPath: follow
       value: 
       objectReference: {fileID: 4698691396701194}
+    - target: {fileID: 1888601634, guid: 818c984cb06ae41bcbfb19c3f0434ff6, type: 3}
+      propertyPath: offset.y
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1888601634, guid: 818c984cb06ae41bcbfb19c3f0434ff6, type: 3}
+      propertyPath: ratio
+      value: 0.24
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 818c984cb06ae41bcbfb19c3f0434ff6, type: 3}
 --- !u!4 &5370275305408020711 stripped

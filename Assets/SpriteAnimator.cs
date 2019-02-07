@@ -76,10 +76,8 @@ public class SpriteAnimator : MonoBehaviour
 
   void Awake()
   {
-
     if( sr == null )
       sr = GetComponent<SpriteRenderer>();
-
   }
 
   void Start()
@@ -200,7 +198,6 @@ public class SpriteAnimator : MonoBehaviour
         }
       }
     }
-
   }
 
   void Update()
