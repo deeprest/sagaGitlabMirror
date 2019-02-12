@@ -1,24 +1,13 @@
-+ raycast from center to arm pos to avoid shooting through doors while adjacent
-+ camera shake
-+ smoke: dash, wall slide
-+ arm normals, pulse while charging
-+ player take damage
-  temp no input
-  face direction
-  inertia up and away
-  after damage anim, non-damage blinking duration
-  if charged, fire charged weapon
-  emissive flash
-  hide arm  
 
-- fix arm anim positions
+- audio: intro, loop, battle
+- intro sequence: audio, fades, dialogue text
+- escape cursor lock in player
+
+
 - health on HUD
-
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
-
 - borrow camera dolly/ramp from Flatlander, find ideal camera distance(s)
 - camera bounds
-
 - hornet
   forward/back tilt
   guns
@@ -30,6 +19,8 @@
 * upgrade to new input system
 - Menu with control options (and remap)
 - 2x requested grappling hook
+- 4 buttons: change weapon, menu, interact, use item/powerup
+- weapon ideas: slowtime, speedboost, shields, rapidfire, doublewhammy, homingmissles, supercharge, beam, stickybomb, invisible
 
 **DESIGN**
 # keep
@@ -84,3 +75,39 @@ Camera can center on an imaginary point around the player, in the aiming directi
 MegamanX can only shoot forwards, not upwards or even slightly higher. The ability to shoot upwards in games like Contra is an improvement. Having weapons that spread out when shot can make this limitation feel less awkward.
 3. Enemies respawn at logical locations.
 Not arbitrary static points.
+
+
+
+# Fan Games
+
+["Cancelled/Dead Mega Man X Fangames"](https://www.youtube.com/watch?v=PB8pMBSK8AU)
+["Mega Man X Elf Wars (aiming)"](https://youtu.be/xGahhqoooT0?t=109)
+["Mega Man X++"](https://www.youtube.com/watch?v=twI3res-obs)
+["Mega Man X: Corrupted"](http://www.megamanxcorrupted.com/)
+["Apsel Haven Mega Man X fangame"](https://www.youtube.com/watch?v=CwW_cziXs4U)
+["Mega Man X AD"](https://reploidsoft.blogspot.com/)
+
+## random
+bad design mode: super slow text you cannot skip. (super metroid: "SPACE COLON".."Y")
+
+
+## where to release demo
+gamejolt
+sprites.co.uk forums
+send to Stone McKnuckle
+tigsource (to find pixel artist for next project)
+## distribution platforms
+itch.io
+GOG
+Steam
+## target platforms
+1. Linux
+2. MacOS
+3. PS4
+# announcements
+tigsource forums
+gamejolt
+indiegamesplus
+itch.io devlog
+twitter
+reddit

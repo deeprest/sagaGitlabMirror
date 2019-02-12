@@ -2,6 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public struct TimerParams
+{
+  public bool unscaledTime;
+  public float duration;
+  //
+  public bool repeat;
+  public int loops;
+  public float interval;
+
+  public System.Action<Timer> UpdateDelegate;
+  public System.Action CompleteDelegate;
+}
+
 public class Timer
 {
   // New timers are held until the next frame, so that adding timers within the callback
@@ -10,7 +23,7 @@ public class Timer
   //  public static List<Timer> InactiveTimers = new List<Timer>();
   public static List<Timer> ActiveTimers = new List<Timer>();
   public static List<Timer> RemoveTimers = new List<Timer>();
-    
+
 
   public static void UpdateTimers()
   {
@@ -35,7 +48,7 @@ public class Timer
   {
     active = false;
     repeat = false;
-//    InactiveTimers.Add( this );
+    //    InactiveTimers.Add( this );
   }
 
   public Timer( float duration, System.Action<Timer> UpdateDelegate, System.Action CompleteDelegate )
@@ -52,6 +65,29 @@ public class Timer
   public Timer( int loops, float interval, System.Action<Timer> IntervalDelegate, System.Action CompleteDelegate )
   {
     Start( loops, interval, IntervalDelegate, CompleteDelegate );
+  }
+
+  public void Start( TimerParams param )
+  {
+    active = true;
+    NewTimers.Add( this );
+    unscaledTime = param.unscaledTime;
+    if( param.unscaledTime )
+      StartTime = Time.unscaledTime;
+    else
+      StartTime = Time.time;
+    if( param.repeat )
+    {
+      Interval = param.interval;
+      IntervalStartTime = StartTime;
+      Duration = param.interval * param.loops;
+    }
+    else
+    {
+      Duration = param.duration;
+    }
+    OnUpdate = param.UpdateDelegate;
+    OnComplete = param.CompleteDelegate;
   }
 
   public void Start( float duration, System.Action<Timer> UpdateDelegate, System.Action CompleteDelegate )
@@ -90,8 +126,7 @@ public class Timer
   {
     if( active )
     {
-
-      if( Time.time - StartTime > Duration )
+      if( time - StartTime > Duration )
       {
         active = false;
         if( OnComplete != null )
@@ -99,7 +134,7 @@ public class Timer
       }
       else if( repeat )
       {
-        if( Time.time - IntervalStartTime > Interval )
+        if( time - IntervalStartTime > Interval )
         {
           IntervalStartTime = Time.time;
           if( OnInterval != null )
@@ -118,16 +153,18 @@ public class Timer
 
   public void SetProgress( float progressSeconds )
   {
-    StartTime = Time.time - progressSeconds;
+    StartTime = time - progressSeconds;
   }
 
-  public bool IsActive{ get { return active; } }
+  float time { get { return unscaledTime ? Time.unscaledTime : Time.time; } }
+  public bool IsActive { get { return active; } }
 
-  public float ProgressSeconds{ get { return Time.time - StartTime; } }
+  public float ProgressSeconds { get { return time - StartTime; } }
 
-  public float ProgressNormalized{ get { return Mathf.Clamp( ( Time.time - StartTime ) / Duration, 0, 1 ); } }
+  public float ProgressNormalized{ get{ return Mathf.Clamp( (time - StartTime) / Duration, 0, 1 ); }}
 
   bool active;
+  public bool unscaledTime;
   float StartTime;
   float Duration;
   float Interval;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -62,6 +63,7 @@ public class SpriteAnimator : MonoBehaviour
   public SpriteAnimationChild[] sac;
 
   [SerializeField] SpriteRenderer sr;
+  [SerializeField] Image image;
 
   public bool flipX = false;
   public AnimSequence CurrentSequence;
@@ -78,6 +80,8 @@ public class SpriteAnimator : MonoBehaviour
   {
     if( sr == null )
       sr = GetComponent<SpriteRenderer>();
+    if( image == null )
+      image = GetComponent<Image>();
   }
 
   void Start()
@@ -115,8 +119,9 @@ public class SpriteAnimator : MonoBehaviour
     animStart = Time.time;
 #endif
 
-    if( !sr.enabled )
+    if( sr != null && !sr.enabled )
       sr.enabled = true;
+
   }
 
   public void Play( string animName )
@@ -170,14 +175,21 @@ public class SpriteAnimator : MonoBehaviour
       sprite = CurrentSequence.sprites[CurrentFrameIndex];
     }
 
+    if( sr != null )
+    {
+      sr.sprite = sprite;
+      sr.flipX = flipX;
 
-    sr.sprite = sprite;
-    sr.flipX = flipX;
-
-    if( Application.isPlaying )
-      sr.material.SetInt( "_FlipX", flipX ? 1 : 0 );
-    else
-      sr.sharedMaterial.SetInt( "_FlipX", flipX ? 1 : 0 );
+      if( Application.isPlaying )
+        sr.material.SetInt( "_FlipX", flipX ? 1 : 0 );
+      else
+        sr.sharedMaterial.SetInt( "_FlipX", flipX ? 1 : 0 );
+    }
+    if( image !=null )
+    {
+      image.enabled = sprite!=null;
+      image.sprite = sprite;
+    }
 
     if( CurrentSequence.UseFrames )
     {

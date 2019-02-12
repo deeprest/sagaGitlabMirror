@@ -11,6 +11,7 @@ public class CameraController : MonoBehaviour
   public bool CursorInfluence = false;
   [SerializeField] RectTransform cursor;
   public float cursorAlpha = 0;
+  public float beyondCursorCoef = 1f;
   public float lerpAlpha = 50;
   Vector3 WithinRectPos;
   public float zOffset;
@@ -57,7 +58,11 @@ public class CameraController : MonoBehaviour
 
       Vector3 final = WithinRectPos;
       if( CursorInfluence )
-        final = Vector3.Lerp( WithinRectPos, cam.ScreenToWorldPoint( cursor.anchoredPosition ), cursorAlpha );
+      {
+        Vector3 stwp = cursor.anchoredPosition;
+        stwp.z = -cam.transform.position.z;
+        final = Vector3.Lerp( WithinRectPos, cam.ScreenToWorldPoint( stwp ), cursorAlpha );
+      }
 
       final.z = zOffset;
 

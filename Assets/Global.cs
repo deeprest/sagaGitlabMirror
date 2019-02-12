@@ -38,10 +38,13 @@ public class Global : MonoBehaviour
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
   public float deadZone = 0.3f;
+  public bool SimulatePlayer = false;
 
   [Header( "References" )]
   public string InitialSceneName;
   public CameraController CameraController;
+  public Image fader;
+  public GameObject ready;
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
@@ -63,6 +66,9 @@ public class Global : MonoBehaviour
   public float slowtime = 0.2f;
   [SerializeField] Text debugButtons;
 
+
+  Timer fadeTimer = new Timer();
+  public float introdelay = 13;
 
   [RuntimeInitializeOnLoadMethod]
   static void RunOnStart()
@@ -101,21 +107,46 @@ public class Global : MonoBehaviour
     StartCoroutine( InitializeRoutine() );
   }
 
-  IEnumerator InitializeRoutine()
+  void SpawnPlayer()
   {
-    if( !Application.isEditor )
-    {
-      SceneManager.LoadScene( InitialSceneName, LoadSceneMode.Single );
-      yield return null;
-    }
     GameObject go = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
     CurrentPlayer = go.GetComponent<PlayerController>();
     CameraController.LookTarget = CurrentPlayer.gameObject;
     CameraController.transform.position = CurrentPlayer.transform.position;
+  }
 
-    yield return new WaitForSecondsRealtime( 1f );
+  IEnumerator InitializeRoutine()
+  {
+    if( !Application.isEditor || SimulatePlayer )
+    {
+      yield return LoadScene( "intro" );
+      yield return new WaitForSecondsRealtime( introdelay );
+      yield return LoadScene( "mmx-city", false );
+      SpawnPlayer();
+      ChopDrop();
+    }
+    else
+    {
+      SpawnPlayer();
+      yield return new WaitForSecondsRealtime( 1 );
+    }
+
     Unpause();
+    ready.SetActive( true );
     yield return null;
+  }
+
+  IEnumerator LoadScene( string scene, bool waitForFadeIn = true )
+  {
+    FadeBlack();
+    while( fadeTimer.IsActive )
+      yield return null;
+    SceneManager.LoadScene( scene, LoadSceneMode.Single );
+    yield return null;
+    FadeClear();
+    if( waitForFadeIn )
+      while( fadeTimer.IsActive )
+        yield return null;
   }
 
   void Update()
@@ -155,7 +186,10 @@ public class Global : MonoBehaviour
 
     if( Mathf.Abs( Input.GetAxis( "Zoom" ) ) > 0 )
     {
-      Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
+      if( Camera.main.orthographic )
+        Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
+      else
+        Camera.main.fieldOfView += Input.GetAxis( "Zoom" );
     }
 
     if( Input.GetKeyDown( KeyCode.O ) )
@@ -165,6 +199,16 @@ public class Global : MonoBehaviour
       else
         Global.instance.Slow();
     }
+
+    /*if( Input.GetButtonDown( "Screenshot" ) )
+    {
+      string now = System.DateTime.Now.Year.ToString() +
+                   System.DateTime.Now.Month.ToString( "D2" ) +
+                   System.DateTime.Now.Day.ToString( "D2" ) + "." +
+                   System.DateTime.Now.Minute.ToString( "D2" ) +
+                   System.DateTime.Now.Second.ToString( "D2" );
+      ScreenCapture.CaptureScreenshot( Application.persistentDataPath + "/" + now + ".png" );
+    }*/
 
     /*if( Input.GetKeyDown( KeyCode.P ) )
     {
@@ -452,7 +496,7 @@ public class Global : MonoBehaviour
 
   void AddControlListItem( string key )
   {
-    GameObject go = GameObject.Instantiate( controllerMapListItemTemplate, controllerMapListParent );
+    GameObject go = Instantiate( controllerMapListItemTemplate, controllerMapListParent );
     go.SetActive( true );
     go.name = key;
     Text[] ts = go.GetComponentsInChildren<Text>();
@@ -548,7 +592,7 @@ public class Global : MonoBehaviour
       }
     }
 
-    GameObject go = GameObject.Instantiate( prefab, position, rotation, parent );
+    GameObject go = Instantiate( prefab, position, rotation, parent );
     go.name = prefab.name;
 
     if( initialize )
@@ -572,9 +616,9 @@ public class Global : MonoBehaviour
     } );
   }
 
-
   void ChopDrop()
   {
+    Camera.main.fieldOfView = 25;
     chopper = FindObjectOfType<Chopper>();
     if( chopper != null )
     {
@@ -583,4 +627,48 @@ public class Global : MonoBehaviour
     }
   }
 
+  public void FadeBlack()
+  {
+    fader.color = new Color( fader.color.r, fader.color.g, fader.color.b, 0 );
+    fader.gameObject.SetActive( true );
+    fadeTimer.Stop( true );
+    TimerParams tp = new TimerParams
+    {
+      unscaledTime = true,
+      repeat = false,
+      duration = 5,
+      UpdateDelegate = delegate ( Timer t )
+      {
+        Color fc = fader.color;
+        fc.a = t.ProgressNormalized;
+        fader.color = fc;
+      }
+    };
+    fadeTimer.Start( tp );
+  }
+
+  public void FadeClear()
+  {
+    fader.gameObject.SetActive( true );
+    fadeTimer.Stop( true );
+    TimerParams tp = new TimerParams
+    {
+      unscaledTime = true,
+      repeat = false,
+      duration = 5,
+      UpdateDelegate = delegate ( Timer t )
+      {
+        Color fc = fader.color;
+        fc.a = 1 - t.ProgressNormalized;
+        fader.color = fc;
+      },
+      CompleteDelegate = delegate
+      {
+        fader.gameObject.SetActive( false );
+      }
+    };
+    fadeTimer.Start( tp );
+  }
+
 }
+
