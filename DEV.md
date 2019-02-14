@@ -1,8 +1,5 @@
 
-- audio: intro, loop, battle
 - intro sequence: audio, fades, dialogue text
-- escape cursor lock in player
-
 
 - health on HUD
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
@@ -15,6 +12,7 @@
   drop enemies (wheels instead of walkers)
 * death, respawn
 * boss
+- audio: intro, loop, battle
 - atmosphere: rain/dust flying around, blinking lights
 * upgrade to new input system
 - Menu with control options (and remap)
@@ -43,7 +41,7 @@ camera movement follows aiming
 projectiles collide with everything
 lighting, normal mapped sprites, emissive
 ---
-weapons like Raiden, Contra
+maybe temporary powerup weapons like Raiden, Contra
 grappling hook
 
 ## aesthetics
@@ -89,6 +87,9 @@ Not arbitrary static points.
 
 ## random
 bad design mode: super slow text you cannot skip. (super metroid: "SPACE COLON".."Y")
+jack basswards
+slap branmuffin
+dert mcderples
 
 
 ## where to release demo

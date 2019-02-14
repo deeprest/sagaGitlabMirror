@@ -92,6 +92,7 @@ public class Global : MonoBehaviour
     }
     instance = this;
     DontDestroyOnLoad( gameObject );
+    //Cursor.visible = false;
     Pause();
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
     {
@@ -245,10 +246,8 @@ public class Global : MonoBehaviour
 
   void OnApplicationFocus( bool hasFocus )
   {
-    if( hasFocus )
-      Cursor.lockState = CursorLockMode.Locked;
-    else
-      Cursor.lockState = CursorLockMode.None;
+    Cursor.lockState = hasFocus ? CursorLockMode.Locked : CursorLockMode.None;
+    Cursor.visible = !hasFocus;
   }
 
   Vector3 aimRaw;
