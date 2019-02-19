@@ -137,12 +137,14 @@ public class Global : MonoBehaviour
     yield return null;
   }
 
-  IEnumerator LoadScene( string scene, bool waitForFadeIn = true )
+  IEnumerator LoadScene( string sceneName, bool waitForFadeIn = true )
   {
     FadeBlack();
     while( fadeTimer.IsActive )
       yield return null;
-    SceneManager.LoadScene( scene, LoadSceneMode.Single );
+    SceneManager.LoadScene( sceneName, LoadSceneMode.Single );
+    Scene scene = SceneManager.GetSceneByName( sceneName );
+    SceneManager.SetActiveScene( scene );
     yield return null;
     FadeClear();
     if( waitForFadeIn )

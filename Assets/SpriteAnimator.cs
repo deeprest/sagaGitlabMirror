@@ -185,9 +185,9 @@ public class SpriteAnimator : MonoBehaviour
       else
         sr.sharedMaterial.SetInt( "_FlipX", flipX ? 1 : 0 );
     }
-    if( image !=null )
+    if( image != null )
     {
-      image.enabled = sprite!=null;
+      image.enabled = sprite != null;
       image.sprite = sprite;
     }
 

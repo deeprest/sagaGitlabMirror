@@ -252,6 +252,11 @@ PrefabInstance:
       propertyPath: introdelay
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114329875613515752, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 3}
+      propertyPath: SimulatePlayer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 971458369, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -264,6 +269,30 @@ PrefabInstance:
     - target: {fileID: 681935436, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
       propertyPath: m_PlayOnAwake
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5370275305408020711, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5370275305408020708, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5370275305408020710, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8110591398744042641, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 971458371, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}

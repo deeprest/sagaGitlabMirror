@@ -41,7 +41,7 @@ camera movement follows aiming
 projectiles collide with everything
 lighting, normal mapped sprites, emissive
 ---
-maybe temporary powerup weapons like Raiden, Contra
+pickup temporary weapons from defeated foes
 grappling hook
 
 ## aesthetics

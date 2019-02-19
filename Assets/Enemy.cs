@@ -12,12 +12,13 @@ public class Enemy : Character, IDamage
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
   public Vector2 box = new Vector2( 0.3f, 0.3f );
-  static string[] CollideLayers = { "Default" };
-  static string[] DamageLayers = { "character" };
+  public  string[] CollideLayers = { "Default" };
+  public  string[] DamageLayers = { "character" };
   public bool collideRight = false;
   public bool collideLeft = false;
   public bool collideTop = false;
   public bool collideBottom = false;
+  protected RaycastHit2D[] hits;
   RaycastHit2D hitRight;
   RaycastHit2D hitLeft;
 
@@ -30,65 +31,44 @@ public class Enemy : Character, IDamage
   public AudioClip soundHit;
   public float hitPush = 4;
   Timer flashTimer = new Timer();
-  public float flashInterval = 0.1f;
+  public float flashInterval = 0.05f;
   public int flashCount = 5;
   bool flip = false;
   readonly float flashOn = 1f;
 
   public Damage ContactDamage;
 
-  public string enemyType = "wheel";
-  System.Action UpdateDelegate;
+  protected System.Action UpdateEnemy;
+  protected System.Action UpdateCollision;
+  protected System.Action UpdatePosition;
+  protected System.Action UpdateHit;
 
-  void Start()
+  protected void EnemyStart()
   {
     animator.Play( idle );
     //renderer.material.SetFloat( "_FlashAmount", 0 );
-    switch( enemyType )
-    {
-      case "wheel":
-      UpdateDelegate = UpdateWheel;
-      velocity.x = wheelVelocity;
-      animator.enabled = false;
-      break;
-
-      case "airbot": break;
-    }
-  }
-
-  const float wheelAnimRate = 0.0167f;
-  public float wheelVelocity = 1;
-  float wheelTime = 0;
-
-  void UpdateWheel()
-  {
-    if( collideLeft )
-      velocity.x = wheelVelocity;
-    if( collideRight )
-      velocity.x = -wheelVelocity;
-    wheelVelocity = Mathf.Abs( velocity.x );
-    animator.flipX = velocity.x > 0;
-    wheelTime += Mathf.Abs( velocity.x ) * wheelAnimRate * Time.timeScale;
-    animator.AdvanceFrame( wheelTime );
-    animator.UpdateFrame();
+    UpdateHit = BoxHit;
+    UpdateCollision = BoxCollision;
+    UpdatePosition = BasicPosition;
   }
 
   void Update()
   {
-    if( UpdateDelegate != null )
-      UpdateDelegate();
-    UpdateCollision();
+    if( UpdateEnemy != null )
+      UpdateEnemy();
+
+    if( UpdateHit != null )
+      UpdateHit();
+
+    if( UpdateCollision !=null )
+      UpdateCollision();
+
+    if( UpdatePosition != null )
+      UpdatePosition();
   }
 
-  void UpdateCollision()
+  protected void BoxHit()
   {
-    collideRight = false;
-    collideLeft = false;
-    collideTop = false;
-    collideBottom = false;
-
-    RaycastHit2D[] hits;
-
     hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, raylength, LayerMask.GetMask( DamageLayers ) );
     foreach( var hit in hits )
     {
@@ -101,6 +81,42 @@ public class Enemy : Character, IDamage
         dam.TakeDamage( dmg );
       }
     }
+  }
+
+  protected void BasicPosition()
+  {
+    if( UseGravity )
+      velocity.y += -Global.Gravity * Time.deltaTime;
+
+    if( collideTop )
+    {
+      velocity.y = Mathf.Min( velocity.y, 0 );
+    }
+    if( collideBottom )
+    {
+      velocity.x -= (velocity.x * friction) * Time.deltaTime;
+      velocity.y = Mathf.Max( velocity.y, 0 );
+    }
+    if( collideRight )
+    {
+      velocity.x = Mathf.Min( velocity.x, 0 );
+    }
+    if( collideLeft )
+    {
+      velocity.x = Mathf.Max( velocity.x, 0 );
+    }
+
+    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
+    velocity -= (velocity * airFriction) * Time.deltaTime;
+    transform.position += velocity * Time.deltaTime;
+  }
+
+  protected void BoxCollision()
+  {
+    collideRight = false;
+    collideLeft = false;
+    collideTop = false;
+    collideBottom = false;
 
     const float corner = 0.707f;
     Vector2 adjust = transform.position;
@@ -150,30 +166,6 @@ public class Enemy : Character, IDamage
     }
     transform.position = adjust;
 
-    if( UseGravity )
-      velocity.y += -Global.Gravity * Time.deltaTime;
-
-    if( collideTop )
-    {
-      velocity.y = Mathf.Min( velocity.y, 0 );
-    }
-    if( collideBottom )
-    {
-      velocity.x -= (velocity.x * friction) * Time.deltaTime;
-      velocity.y = Mathf.Max( velocity.y, 0 );
-    }
-    if( collideRight )
-    {
-      velocity.x = Mathf.Min( velocity.x, 0 );
-    }
-    if( collideLeft )
-    {
-      velocity.x = Mathf.Max( velocity.x, 0 );
-    }
-
-    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    velocity -= (velocity * airFriction) * Time.deltaTime;
-    transform.position += velocity * Time.deltaTime;
   }
 
 

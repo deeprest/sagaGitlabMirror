@@ -55,6 +55,7 @@ public class AnimFrame
 [CreateAssetMenu]
 public class AnimSequence : ScriptableObject
 {
+  //public string ID;
   public bool UseFrames = false;
   public int fps = 20;
   public bool loop = true;
