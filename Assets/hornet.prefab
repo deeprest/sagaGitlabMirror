@@ -139,7 +139,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: 4
-  m_Sprite: {fileID: 21300000, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
+  m_Sprite: {fileID: 21300018, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -175,7 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 0
+  CurrentFrameIndex: 2
   sac:
   - {fileID: 4148881417808290978}
   sr: {fileID: 4845195264365010521}
@@ -186,6 +186,36 @@ MonoBehaviour:
   playAtAStart: 1
   anims:
   - {fileID: 0}
+--- !u!1 &6116949047199148970
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6813992315022888228}
+  m_Layer: 14
+  m_Name: drop
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6813992315022888228
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6116949047199148970}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.444, y: -0.54, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7299322179488540083}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7302641308233258165
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,11 +225,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7299322179488540083}
-  - component: {fileID: 7316064129609748803}
   - component: {fileID: 7469246720352550077}
   - component: {fileID: 7261148479284126975}
   - component: {fileID: 7701764033589986434}
   - component: {fileID: 5327086571122986379}
+  - component: {fileID: 8388642051660687798}
   m_Layer: 14
   m_Name: hornet
   m_TagString: Untagged
@@ -220,35 +250,10 @@ Transform:
   m_Children:
   - {fileID: 260917434}
   - {fileID: 2900289598886463288}
+  - {fileID: 6813992315022888228}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &7316064129609748803
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7302641308233258165}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.65625, y: 1.140625}
-    newSize: {x: 1.65625, y: 1.140625}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.17, y: 0.42}
-  m_EdgeRadius: 0
 --- !u!212 &7469246720352550077
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -428,7 +433,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d338913fe7604d658dbdc31041e9c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collider: {fileID: 7316064129609748803}
+  collider: {fileID: 0}
   UseGravity: 0
   velocity: {x: 0, y: 0, z: 0}
   inertia: {x: 0, y: 0, z: 0}
@@ -459,6 +464,43 @@ MonoBehaviour:
   flySpeed: 2
   up: 2.5
   over: 4
-  small: 0.5
-  rot: 15
-  rotspeed: 10
+  small: 1
+  rot: 10
+  rotspeed: 30
+  topspeedrot: 2
+  acc: 1
+  wheelDropInterval: 3
+  drop: {fileID: 6813992315022888228}
+  dropPrefab: {fileID: 1094346900350558, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+--- !u!60 &8388642051660687798
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7302641308233258165}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.65625, y: 1.140625}
+    newSize: {x: 1.65625, y: 1.140625}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.8191185, y: -0.04534927}
+      - {x: 0.68034554, y: 0.47417796}
+      - {x: -0.333395, y: 0.47401118}
+      - {x: -0.7861023, y: 0.16653037}
+      - {x: -0.72660446, y: -0.28746155}
+      - {x: -0.2600708, y: -0.54621655}
+      - {x: 0.6076088, y: -0.54930115}

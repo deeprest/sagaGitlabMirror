@@ -128,6 +128,7 @@ public class Global : MonoBehaviour
     }
     else
     {
+      // remember to set the active scene in editor
       SpawnPlayer();
       yield return new WaitForSecondsRealtime( 1 );
     }
@@ -142,10 +143,9 @@ public class Global : MonoBehaviour
     FadeBlack();
     while( fadeTimer.IsActive )
       yield return null;
-    SceneManager.LoadScene( sceneName, LoadSceneMode.Single );
-    Scene scene = SceneManager.GetSceneByName( sceneName );
-    SceneManager.SetActiveScene( scene );
-    yield return null;
+   AsyncOperation ao = SceneManager.LoadSceneAsync( sceneName, LoadSceneMode.Single );
+    while( !ao.isDone )
+      yield return null;
     FadeClear();
     if( waitForFadeIn )
       while( fadeTimer.IsActive )
