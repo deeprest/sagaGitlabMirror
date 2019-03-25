@@ -222,11 +222,11 @@ public class Global : MonoBehaviour
     }*/
     if( Input.GetKeyDown( KeyCode.Return ) )
     {
-      GameObject go = FindSpawnPoint();
-      if( go != null )
-      {
+      Chopper chopper = FindObjectOfType<Chopper>();
+      if( chopper != null )
         ChopDrop();
-      }
+      else
+        CurrentPlayer.transform.position = FindSpawnPosition();
     }
 
     if( UsingKeyboard )

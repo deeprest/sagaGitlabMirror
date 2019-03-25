@@ -40,7 +40,7 @@ public class SpriteAnimationChild : MonoBehaviour
       af.keyFrame = null;
       for( int i = sa.CurrentFrameIndex+1; i < sa.CurrentSequence.frames.Length; i++ )
       {
-        if( sa.CurrentSequence.frames[i].keyFrame == null )
+        if( sa.CurrentSequence.frames[i].keyFrame != null )
           break;
         sa.CurrentSequence.frames[i].keyFrame = af;
         sa.CurrentSequence.frames[i].point.Clear();
