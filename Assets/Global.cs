@@ -3,8 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor;
+[CustomEditor( typeof( Global ) )]
+public class GlobalEditor : Editor
+{
+  Global obj;
+  int screenshotInterval;
+  public override void OnInspectorGUI()
+  {
+    screenshotInterval = EditorGUILayout.IntField( "Screenshot Interval", screenshotInterval );
+    obj = target as Global;
+    if( obj.ScreenshotTimer.IsActive )
+    {
+      if( GUI.Button( EditorGUILayout.GetControlRect(), "Stop Screenshot Timer" ) )
+        obj.ScreenshotTimer.Stop( false );
+    }
+    else
+    {
+      if( GUI.Button( EditorGUILayout.GetControlRect(), "Start Screenshot Timer" ) )
+        StartTimer();
+    }
+    DrawDefaultInspector();
+  }
+  void StartTimer()
+  {
+    obj.ScreenshotTimer.Start( screenshotInterval, null, delegate
+    {
+      obj.Screenshot();
+      StartTimer();
+    } );
+  }
+}
+#endif
 
-public interface ITrigger
+  public interface ITrigger
 {
   void Trigger( Transform instigator );
 }
@@ -55,6 +88,15 @@ public class Global : MonoBehaviour
   public RectTransform cursor;
   public Chopper chopper;
 
+
+  public float slowtime = 0.2f;
+  [SerializeField] Text debugButtons;
+  [SerializeField] Text debugFOV;
+
+  Timer fadeTimer = new Timer();
+  public float introdelay = 13;
+
+  [Header( "UI" )]
   public float cursorOuter = 100;
   public float cursorInner = 50;
   public Vector3 cursorDelta;
@@ -62,13 +104,12 @@ public class Global : MonoBehaviour
   public bool CursorPlayerRelative = true;
   public Sprite[] cursors;
   int cursorIndex = 0;
+  Vector3 aimRaw;
+  public float cursorLerp = 10;
+  public bool positionalCursor = true;
+  public float cursorSpeed = 30;
+  public float cursorScale = 4;
 
-  public float slowtime = 0.2f;
-  [SerializeField] Text debugButtons;
-
-
-  Timer fadeTimer = new Timer();
-  public float introdelay = 13;
 
   [RuntimeInitializeOnLoadMethod]
   static void RunOnStart()
@@ -152,6 +193,17 @@ public class Global : MonoBehaviour
         yield return null;
   }
 
+  public Timer ScreenshotTimer = new Timer();
+  public void Screenshot()
+  {
+    string now = System.DateTime.Now.Year.ToString() +
+                   System.DateTime.Now.Month.ToString( "D2" ) +
+                   System.DateTime.Now.Day.ToString( "D2" ) + "." +
+                   System.DateTime.Now.Minute.ToString( "D2" ) +
+                   System.DateTime.Now.Second.ToString( "D2" );
+    ScreenCapture.CaptureScreenshot( Application.persistentDataPath + "/" + now + ".png" );
+  }
+
   void Update()
   {
     Timer.UpdateTimers();
@@ -190,9 +242,15 @@ public class Global : MonoBehaviour
     if( Mathf.Abs( Input.GetAxis( "Zoom" ) ) > 0 )
     {
       if( Camera.main.orthographic )
+      {
         Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
+        debugFOV.text = Camera.main.orthographicSize.ToString("##.#");
+      }
       else
+      {
         Camera.main.fieldOfView += Input.GetAxis( "Zoom" );
+        debugFOV.text = Camera.main.fieldOfView.ToString("##.#");
+      }
     }
 
     if( Input.GetKeyDown( KeyCode.O ) )
@@ -203,15 +261,10 @@ public class Global : MonoBehaviour
         Global.instance.Slow();
     }
 
-    /*if( Input.GetButtonDown( "Screenshot" ) )
+    if( Input.GetButtonDown( "Screenshot" ) )
     {
-      string now = System.DateTime.Now.Year.ToString() +
-                   System.DateTime.Now.Month.ToString( "D2" ) +
-                   System.DateTime.Now.Day.ToString( "D2" ) + "." +
-                   System.DateTime.Now.Minute.ToString( "D2" ) +
-                   System.DateTime.Now.Second.ToString( "D2" );
-      ScreenCapture.CaptureScreenshot( Application.persistentDataPath + "/" + now + ".png" );
-    }*/
+      Screenshot();
+    }
 
     /*if( Input.GetKeyDown( KeyCode.P ) )
     {
@@ -252,10 +305,7 @@ public class Global : MonoBehaviour
     Cursor.visible = !hasFocus;
   }
 
-  Vector3 aimRaw;
-  public float cursorLerp = 10;
-  public bool positionalCursor = true;
-  public float cursorSpeed = 30;
+ 
 
   void LateUpdate()
   {
@@ -368,7 +418,7 @@ public class Global : MonoBehaviour
     cursor.sizeDelta = new Vector2( spr.rect.width, spr.rect.height ) * cursorScale; // * spr.pixelsPerUnit;
   }
 
-  public float cursorScale = 4;
+
 
   public class InputControlScheme
   {
@@ -383,11 +433,11 @@ public class Global : MonoBehaviour
 
   public bool UsingKeyboard { get { return icsCurrent == icsKeyboard; } }
 
-  [Header( "Control Remap" )]
   KeyCode[] allKeys;
   KeyCode[] activateKeyboardKeys;
   bool remappingControls = false;
-  // UI
+
+  [Header( "Control Remap" )]
   public GameObject controllerRemapScreen;
   public RectTransform controllerMapListParent;
   public GameObject controllerMapListItemTemplate;

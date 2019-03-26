@@ -232,16 +232,14 @@ public class PlayerController : Character, IDamage
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );
     Vector3 shoot;
 
-    shoot = cursorDelta;
-
-    /*if( Global.instance.UsingKeyboard )
+    if( Global.instance.UsingKeyboard )
     {
       shoot = cursorDelta;
     }
     else
     {
       shoot = new Vector3( Input.GetAxisRaw( Global.instance.icsCurrent.axisMap["ShootX"] ), -Input.GetAxisRaw( Global.instance.icsCurrent.axisMap["ShootY"] ), 0 );
-      if( shoot.sqrMagnitude > Global.deadZone * Global.deadZone )
+      if( shoot.sqrMagnitude > Global.instance.deadZone * Global.instance.deadZone )
       {
         if( !shootRepeatTimer.IsActive )
         {
@@ -254,8 +252,9 @@ public class PlayerController : Character, IDamage
       else
       {
         // todo change arm sprite
+        shoot = Vector3.right;
       }
-    }*/
+    }
 
     if( Input.GetKey( Global.instance.icsCurrent.keyMap["Fire"] ) )
     {
