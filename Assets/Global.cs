@@ -10,14 +10,16 @@ public class GlobalEditor : Editor
 {
   Global obj;
   int screenshotInterval;
+  Timer ScreenshotTimer = new Timer();
+
   public override void OnInspectorGUI()
   {
     screenshotInterval = EditorGUILayout.IntField( "Screenshot Interval", screenshotInterval );
     obj = target as Global;
-    if( obj.ScreenshotTimer.IsActive )
+    if( ScreenshotTimer.IsActive )
     {
       if( GUI.Button( EditorGUILayout.GetControlRect(), "Stop Screenshot Timer" ) )
-        obj.ScreenshotTimer.Stop( false );
+        ScreenshotTimer.Stop( false );
     }
     else
     {
@@ -28,7 +30,7 @@ public class GlobalEditor : Editor
   }
   void StartTimer()
   {
-    obj.ScreenshotTimer.Start( screenshotInterval, null, delegate
+    ScreenshotTimer.Start( screenshotInterval, null, delegate
     {
       obj.Screenshot();
       StartTimer();
@@ -193,7 +195,6 @@ public class Global : MonoBehaviour
         yield return null;
   }
 
-  public Timer ScreenshotTimer = new Timer();
   public void Screenshot()
   {
     string now = System.DateTime.Now.Year.ToString() +

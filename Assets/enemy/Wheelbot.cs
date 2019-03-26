@@ -23,6 +23,7 @@ public class Wheelbot : Enemy
     if( collideRight )
       velocity.x = -wheelVelocity;
     wheelVelocity = Mathf.Abs( velocity.x );
+    animator.enabled = (wheelVelocity > 0.1f);
     animator.flipX = velocity.x > 0;
     wheelTime += Mathf.Abs( velocity.x ) * wheelAnimRate * Time.timeScale;
     animator.AdvanceFrame( wheelTime );

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 
 public static class ShowGUIDUtility
 {
@@ -17,7 +18,7 @@ public static class ShowGUIDUtility
   static void Execute()
   {
     for( int i = 0; i < Selection.objects.Length; i++ )
-      Debug.Log( Selection.objects[ i ].GetType().ToString() + " " + Selection.objects[ i ].name + " " + Selection.assetGUIDs[ i ] );
+      Debug.Log( Selection.objects[i].GetType().ToString() + " " + Selection.objects[i].name + " " + Selection.assetGUIDs[i] );
   }
 }
 
@@ -27,7 +28,7 @@ public class CustomUtility : EditorWindow
   static void Init()
   {
     // Get existing open window or if none, make a new one:
-    CustomUtility window = (CustomUtility)EditorWindow.GetWindow( typeof(CustomUtility) );
+    CustomUtility window = (CustomUtility)EditorWindow.GetWindow( typeof( CustomUtility ) );
     window.Show();
   }
 
@@ -90,16 +91,22 @@ public class CustomUtility : EditorWindow
     {
       if( BuildPipeline.isBuildingPlayer )
         return;
-      BuildPlayerOptions bpo = new BuildPlayerOptions ();
+      BuildPlayerOptions bpo = new BuildPlayerOptions();
       bpo.target = BuildTarget.StandaloneOSX;
-      bpo.scenes = new string[]{ "Assets/zero.unity", "Assets/mmx-city.unity" };
+      List<string> buildnames = new List<string>();
+      for( int i = 0; i < SceneManager.sceneCountInBuildSettings; i++ )
+      {
+        buildnames.Add( SceneUtility.GetScenePathByBuildIndex( i ) );
+        //string sceneName = path.Substring( 0, path.Length - 6 ).Substring( path.LastIndexOf( '/' ) + 1 );
+      }
+      bpo.scenes = buildnames.ToArray();  //new string[] { "Assets/zero.unity", "Assets/mmx-city.unity" };
       bpo.options = BuildOptions.CompressWithLz4; //BuildOptions.AutoRunPlayer;
       bpo.locationPathName = Directory.GetParent( Application.dataPath ).FullName + "/SagaCity-" + Util.Timestamp();
       Debug.Log( bpo.locationPathName );
       BuildPipeline.BuildPlayer( bpo );
     }
 
-    #if false
+#if false
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Zip Data" ) )
     {
       //string[] scenes = new string[]{ "home" };
@@ -136,9 +143,9 @@ public class CustomUtility : EditorWindow
           EditorGUIUtility.PingObject( obj );
         } );
     }
-    #endif
+#endif
 
-   
+
     GUILayout.Space( 10 );
     GUILayout.Label( "Audio Sources", EditorStyles.boldLabel );
     audioDistanceMin = EditorGUILayout.IntField( "audioDistanceMin", audioDistanceMin );
@@ -156,9 +163,9 @@ public class CustomUtility : EditorWindow
         foreach( var ass in source )
           auds.Add( ass );
       }
-      StartJob( "Applying...", auds.Count, delegate()
+      StartJob( "Applying...", auds.Count, delegate ()
       {
-        AudioSource ass = auds[ index ];
+        AudioSource ass = auds[index];
         Debug.Log( "audio source modified in prefab: " + ass.gameObject.name, ass.gameObject );
         ass.minDistance = audioDistanceMin;
         ass.maxDistance = audioDistanceMax;
@@ -175,13 +182,13 @@ public class CustomUtility : EditorWindow
     {
       gameobjects = new List<GameObject>( Resources.FindObjectsOfTypeAll<GameObject>() );
       List<GameObject> found = new List<GameObject>();
-      StartJob( "Searching...", gameobjects.Count, delegate()
+      StartJob( "Searching...", gameobjects.Count, delegate ()
       {
-        GameObject go = gameobjects[ index ];
+        GameObject go = gameobjects[index];
         if( go.layer == layer )
           found.Add( go );
       },
-        delegate()
+        delegate ()
         {
           foreach( var go in found )
           {
@@ -194,7 +201,7 @@ public class CustomUtility : EditorWindow
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Show GUID of selected assets" ) )
     {
       for( int i = 0; i < Selection.assetGUIDs.Length; i++ )
-        Debug.Log( Selection.objects[ i ].GetType().ToString() + " " + Selection.objects[ i ].name + " " + Selection.assetGUIDs[ i ] );
+        Debug.Log( Selection.objects[i].GetType().ToString() + " " + Selection.objects[i].name + " " + Selection.assetGUIDs[i] );
     }
 
     /*GUILayout.Label( "AnimFix", EditorStyles.boldLabel );
@@ -223,16 +230,16 @@ public class CustomUtility : EditorWindow
 
     GUILayout.Label( "Character", EditorStyles.boldLabel );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Select Player Character" ) )
-    if( Application.isPlaying )
-      Selection.activeGameObject = Global.instance.CurrentPlayer.gameObject;
+      if( Application.isPlaying )
+        Selection.activeGameObject = Global.instance.CurrentPlayer.gameObject;
 
     if( Selection.activeGameObject != null )
     {
-//      Character selected = Selection.activeGameObject.GetComponent<Character>();
-//      if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Dance, monkey, dance!" ) )
-//      {
-//        // there are no monkeys
-//      }
+      //      Character selected = Selection.activeGameObject.GetComponent<Character>();
+      //      if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Dance, monkey, dance!" ) )
+      //      {
+      //        // there are no monkeys
+      //      }
     }
   }
 
