@@ -135,8 +135,7 @@ public class Global : MonoBehaviour
     }
     instance = this;
     DontDestroyOnLoad( gameObject );
-    //Cursor.visible = false;
-    Pause();
+
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
     {
       //Debug.Log( "scene loaded" );
@@ -145,6 +144,10 @@ public class Global : MonoBehaviour
     {
       //Debug.Log( "active scene changed" );
     };
+
+    // UI
+    //Cursor.visible = false;
+    debugFOV.text = Camera.main.fieldOfView.ToString( "##.#" );
 
     InitializeControls();
 
@@ -163,7 +166,10 @@ public class Global : MonoBehaviour
   {
     if( !Application.isEditor || SimulatePlayer )
     {
+      Camera.main.fieldOfView = 15;
+      Pause();
       yield return LoadScene( "intro" );
+      Unpause();
       yield return new WaitForSecondsRealtime( introdelay );
       yield return LoadScene( "mmx-city", false );
       SpawnPlayer();
