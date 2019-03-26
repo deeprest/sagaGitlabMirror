@@ -605,8 +605,8 @@ public class PlayerController : Character, IDamage
   {
     if( invulnerable )
       return;
-    //print( "take damage from " + d.instigator.name );
-    //Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
+
+    Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
 
     float sign = Mathf.Sign( d.instigator.position.x - transform.position.x );
     facingRight = sign > 0;
