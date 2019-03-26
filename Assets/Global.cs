@@ -188,7 +188,7 @@ public class Global : MonoBehaviour
       yield return null;
    AsyncOperation ao = SceneManager.LoadSceneAsync( sceneName, LoadSceneMode.Single );
     while( !ao.isDone )
-      yield return null;
+      yield return null;  
     FadeClear();
     if( waitForFadeIn )
       while( fadeTimer.IsActive )
@@ -682,13 +682,13 @@ public class Global : MonoBehaviour
   public void FadeBlack()
   {
     fader.color = new Color( fader.color.r, fader.color.g, fader.color.b, 0 );
-    fader.gameObject.SetActive( true );
+    //fader.gameObject.SetActive( true );
     fadeTimer.Stop( true );
     TimerParams tp = new TimerParams
     {
       unscaledTime = true,
       repeat = false,
-      duration = 5,
+      duration = 1,
       UpdateDelegate = delegate ( Timer t )
       {
         Color fc = fader.color;
@@ -701,13 +701,13 @@ public class Global : MonoBehaviour
 
   public void FadeClear()
   {
-    fader.gameObject.SetActive( true );
+    //fader.gameObject.SetActive( true );
     fadeTimer.Stop( true );
     TimerParams tp = new TimerParams
     {
       unscaledTime = true,
       repeat = false,
-      duration = 5,
+      duration = 1,
       UpdateDelegate = delegate ( Timer t )
       {
         Color fc = fader.color;
@@ -716,7 +716,7 @@ public class Global : MonoBehaviour
       },
       CompleteDelegate = delegate
       {
-        fader.gameObject.SetActive( false );
+        //fader.gameObject.SetActive( false );
       }
     };
     fadeTimer.Start( tp );
