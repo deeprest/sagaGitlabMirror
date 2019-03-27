@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1361239658353872}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.129, y: 0.107, z: 0}
+  m_LocalPosition: {x: 0.048, y: 0.039, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4857518412556878}
@@ -4869,7 +4869,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: 10
-  m_Sprite: {fileID: 21300048, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
+  m_Sprite: {fileID: 21300050, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4892,14 +4892,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 7
+  CurrentFrameIndex: 8
   sac:
   - {fileID: 1614270579113136216}
   sr: {fileID: 212107818795109166}
   image: {fileID: 0}
   flipX: 0
   CurrentSequence: {fileID: 11400000, guid: ef484192eaacd44c5959cf8fcb67ebdc, type: 2}
-  isPlaying: 0
+  isPlaying: 1
   playAtAStart: 1
   anims:
   - {fileID: 11400000, guid: 3e4d5aa22a05c405fb81a2d9667479f0, type: 2}
@@ -4982,6 +4982,7 @@ MonoBehaviour:
   damageBlinkDuration: 1.5
   damageLift: 2
   damagePush: 1
+  soundDamage: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
 --- !u!61 &61999569739760366
 BoxCollider2D:
   m_ObjectHideFlags: 0

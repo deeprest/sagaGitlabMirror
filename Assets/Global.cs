@@ -50,9 +50,7 @@ public interface IDamage
 
 public class Character : MonoBehaviour
 {
-  public string CharacterName = "doofus";
   new public Collider2D collider;
-
 }
 
 public class Attack

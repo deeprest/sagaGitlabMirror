@@ -84,6 +84,7 @@ public class PlayerController : Character, IDamage
 
   public AudioClip soundJump;
   public AudioClip soundDash;
+  public AudioClip soundDamage;
 
   //  public Vector2 rightFoot;
   //  public Vector2 leftFoot;
@@ -234,15 +235,22 @@ public class PlayerController : Character, IDamage
       weapon.FireWeapon( this, pos, shoot );
   }
 
+  void ShootCharged()
+  {
+
+  }
+
+  Vector3 cursorDelta;
+  Vector3 shoot;
+
   void UpdatePlayerInput()
   {
 
     Vector3 cursorScreen = Global.instance.cursor.anchoredPosition;
     cursorScreen.z = -Camera.main.transform.position.z;
-    Vector3 cursorDelta = Camera.main.ScreenToWorldPoint( cursorScreen ) - arm.position;
+    cursorDelta = Camera.main.ScreenToWorldPoint( cursorScreen ) - arm.position;
     cursorDelta.z = 0;
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );
-    Vector3 shoot;
 
     if( Global.instance.UsingKeyboard )
     {
@@ -275,51 +283,19 @@ public class PlayerController : Character, IDamage
 
     if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Charge"] ) )
     {
-      chargeStartDelay.Start( chargeDelay, null, delegate
-      {
-        audio.PlayOneShot( weapon.soundCharge );
-        audio2.clip = weapon.soundChargeLoop;
-        audio2.loop = true;
-        audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
-        foreach( var sr in spriteRenderers )
-          sr.material.SetColor( "_FlashColor", chargeColor );
-        ChargePulseFlip();
-        GameObject geffect = Instantiate( weapon.ChargeEffect, transform );
-        chargeEffect = geffect.GetComponent<ParticleSystem>();
-      } );
+      inputChargeStart = true;
+
     }
     else
     if( Input.GetKey( Global.instance.icsCurrent.keyMap["Charge"] ) )
     {
-      // charge weapon
-      if( chargeEffect != null )
-      {
-        chargeAmount += Time.deltaTime;
-      }
+      inputCharge = true;
+
     }
     else
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Charge"] ) )
     {
-      if( chargeEffect != null )
-      {
-        audio.Stop();
-        audio.PlayOneShot( weapon.soundChargeShot );
-        audio2.Stop();
-
-        Destroy( chargeEffect.gameObject );
-        if( chargeAmount > chargeMin )
-        {
-          Vector3 pos = arm.position + cursorDelta.normalized * armRadius;
-          if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
-            weapon.FireWeaponCharged( this, pos, shoot );
-        }
-      }
-      chargeStartDelay.Stop( false );
-      chargePulse.Stop( false );
-      foreach( var sr in spriteRenderers )
-        sr.material.SetFloat( "_FlashAmount", 0 );
-      chargeEffect = null;
-      chargeAmount = 0;
+      inputChargeEnd = true;
     }
 
     // INPUT
@@ -340,8 +316,12 @@ public class PlayerController : Character, IDamage
     else
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Jump"] ) )
       inputJumpEnd = true;
-      
+
   }
+
+  bool inputChargeStart;
+  bool inputCharge;
+  bool inputChargeEnd;
 
   void ResetInput()
   {
@@ -351,6 +331,9 @@ public class PlayerController : Character, IDamage
     inputJumpEnd = false;
     inputDashStart = false;
     inputDashEnd = false;
+    inputChargeStart = false;
+    inputCharge = false;
+    inputChargeEnd = false;
   }
 
   void Update()
@@ -358,77 +341,100 @@ public class PlayerController : Character, IDamage
     if( Global.Paused )
       return;
 
-    if( playerInput && !takingDamage )
+    if( playerInput )
       UpdatePlayerInput();
 
-    if( inputRight )
+    if( inputChargeStart )
+      StartCharge();
+    if( inputCharge && chargeEffect != null )
+      chargeAmount += Time.deltaTime;
+    if( inputChargeEnd )
     {
-      // move along floor if angled downwards
-      Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.forward );
-      if( onGround && hitnormalCross.y < 0 )
-        // add a small downward vector for curved surfaces
-        velocity = hitnormalCross * moveVel + Vector3.down * downslopefudge;
-      else
-        velocity.x = moveVel;
-      if( !facingRight && onGround )
-        StopDash();
-      facingRight = true;
-    }
-
-    if( inputLeft )
-    {
-      // move along floor if angled downwards
-      Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.back );
-      if( onGround && hitnormalCross.y < 0 )
-        // add a small downward vector for curved surfaces
-        velocity = hitnormalCross * moveVel + Vector3.down * downslopefudge;
-      else
-        velocity.x = -moveVel;
-      if( facingRight && onGround )
-        StopDash();
-      facingRight = false;
-    }
-
-    if( inputDashStart )
-    {
-      if( onGround || collideLeft || collideRight )
+      if( chargeEffect != null )
       {
-        StartDash();
+        audio.Stop();
+        audio.PlayOneShot( weapon.soundChargeShot );
+        if( chargeAmount > chargeMin )
+        {
+          Vector3 pos = arm.position + cursorDelta.normalized * armRadius;
+          if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+            weapon.FireWeaponCharged( this, pos, shoot );
+        }
       }
+      StopCharge();
     }
-    if( inputDashEnd )
+
+    if( !takingDamage )
     {
-      if( !jumping )
-        StopDash();
-    }
-    if( dashing )
-    {
-      if( facingRight )
+      if( inputRight )
       {
-        if( onGround || inputRight )
-          velocity.x = dashVel;
-        if( onGround && Time.time - dashStart >= dashDuration )
+        // move along floor if angled downwards
+        Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.forward );
+        if( onGround && hitnormalCross.y < 0 )
+          // add a small downward vector for curved surfaces
+          velocity = hitnormalCross * moveVel + Vector3.down * downslopefudge;
+        else
+          velocity.x = moveVel;
+        if( !facingRight && onGround )
+          StopDash();
+        facingRight = true;
+      }
+
+      if( inputLeft )
+      {
+        // move along floor if angled downwards
+        Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.back );
+        if( onGround && hitnormalCross.y < 0 )
+          // add a small downward vector for curved surfaces
+          velocity = hitnormalCross * moveVel + Vector3.down * downslopefudge;
+        else
+          velocity.x = -moveVel;
+        if( facingRight && onGround )
+          StopDash();
+        facingRight = false;
+      }
+
+      if( inputDashStart )
+      {
+        if( onGround || collideLeft || collideRight )
+        {
+          StartDash();
+        }
+      }
+      if( inputDashEnd )
+      {
+        if( !jumping )
           StopDash();
       }
-      else
+      if( dashing )
       {
-        if( onGround || inputLeft )
-          velocity.x = -dashVel;
-        if( onGround && Time.time - dashStart >= dashDuration )
-          StopDash();
+        if( facingRight )
+        {
+          if( onGround || inputRight )
+            velocity.x = dashVel;
+          if( onGround && Time.time - dashStart >= dashDuration )
+            StopDash();
+        }
+        else
+        {
+          if( onGround || inputLeft )
+            velocity.x = -dashVel;
+          if( onGround && Time.time - dashStart >= dashDuration )
+            StopDash();
+        }
       }
-    }
 
-    if( inputJumpStart )
-    {
-      if( onGround || (inputRight && collideRight) || (inputLeft && collideLeft) )
+      if( inputJumpStart )
       {
-        StartJump();
+        if( onGround || (inputRight && collideRight) || (inputLeft && collideLeft) )
+        {
+          StartJump();
+        }
       }
-    }
-    if( inputJumpEnd )
-      StopJump();
+      if( inputJumpEnd )
+        StopJump();
 
+    }
     if( velocity.y < 0 )
       jumping = false;
 
@@ -605,6 +611,37 @@ public class PlayerController : Character, IDamage
     dashSmoke.Stop();
   }
 
+  void StartCharge()
+  {
+    chargeStartDelay.Start( chargeDelay, null, delegate
+    {
+      audio.PlayOneShot( weapon.soundCharge );
+      audio2.clip = weapon.soundChargeLoop;
+      audio2.loop = true;
+      audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
+      foreach( var sr in spriteRenderers )
+        sr.material.SetColor( "_FlashColor", chargeColor );
+      ChargePulseFlip();
+      GameObject geffect = Instantiate( weapon.ChargeEffect, transform );
+      chargeEffect = geffect.GetComponent<ParticleSystem>();
+    } );
+  }
+
+  void StopCharge()
+  {
+    if( chargeEffect != null )
+    {
+      audio2.Stop();
+      Destroy( chargeEffect.gameObject );
+    }
+    chargeStartDelay.Stop( false );
+    chargePulse.Stop( false );
+    foreach( var sr in spriteRenderers )
+      sr.material.SetFloat( "_FlashAmount", 0 );
+    chargeEffect = null;
+    chargeAmount = 0;
+  }
+
   void ChargePulseFlip()
   {
     chargePulse.Start( chargePulseInterval, null, delegate
@@ -638,11 +675,14 @@ public class PlayerController : Character, IDamage
     } );
   }
 
+
   public void TakeDamage( Damage d )
   {
     if( invulnerable )
       return;
 
+    //StopCharge();
+    audio.PlayOneShot( soundDamage );
     Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
 
     float sign = Mathf.Sign( d.instigator.position.x - transform.position.x );
