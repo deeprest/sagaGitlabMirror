@@ -13,23 +13,6 @@ public class AnimSequenceEditor : Editor
     AnimSequence seq = target as AnimSequence;
     if( GUI.Button( EditorGUILayout.GetControlRect(), "Sprites to Frames" ) )
       AnimSequence.SpritesToFrames( seq );
-    if( GUI.Button( EditorGUILayout.GetControlRect(), "Mark Keyframes" ) )
-    {
-      AnimFrame lastGood = seq.frames[0];
-      lastGood.keyFrame = null;
-      for( int i = 1; i < seq.frames.Length; i++ )
-      {
-        if( seq.frames[i].point.Count == 0 )
-        {
-          seq.frames[i].keyFrame = lastGood;
-        }
-        else
-        {
-          lastGood = seq.frames[i];
-          lastGood.keyFrame = null;
-        }
-      }
-    }
 
     DrawDefaultInspector();
   }
@@ -47,7 +30,8 @@ public class AnimFramePoint
 public class AnimFrame
 {
   // if this reference is null, then this is a keyframe
-  public AnimFrame keyFrame;
+  //public AnimFrame keyFrame;
+  public bool isKeyframe { get { return point.Count > 0; } }
   public Sprite sprite;
   public List<AnimFramePoint> point;
 }
@@ -84,18 +68,18 @@ public class AnimSequence : ScriptableObject
 
   public AnimFrame GetKeyFrame( int index )
   {
-    if( frames[index].keyFrame != null )
-      return frames[index].keyFrame;
-    return frames[index];
+    int i = index;
+    while( i > 0 )
+    {
+      if( frames[i].isKeyframe )
+        break;
+      i--;
+    }
+    return frames[i];
   }
 
   public void DeleteFrame( int index )
   {
     frames[index].point.Clear();
-    int previous = Mathf.Max( 0, index - 1 );
-    if( frames[previous].keyFrame == null )
-      frames[index].keyFrame = frames[previous];
-    else
-      frames[index].keyFrame = frames[previous].keyFrame;
   }
 }

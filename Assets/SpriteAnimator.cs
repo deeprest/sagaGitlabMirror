@@ -23,10 +23,6 @@ public class SpriteAnimationEditor : Editor
       if( GUI.Button( EditorGUILayout.GetControlRect(), "Play" ) )
         sa.Play( sa.CurrentSequence );
     }
-    if( GUI.Button( EditorGUILayout.GetControlRect(), "Update Children List" ) )
-    {
-      sa.sac = sa.GetComponentsInChildren<SpriteAnimationChild>();
-    }
     int frame = EditorGUILayout.IntField( "Current Frame Index", sa.CurrentFrameIndex );
     if( frame != sa.CurrentFrameIndex )
     {
@@ -143,6 +139,13 @@ public class SpriteAnimator : MonoBehaviour
   public void Stop()
   {
     isPlaying = false;
+#if UNITY_EDITOR
+    if( !Application.isPlaying )
+    {
+      foreach( var child in sac )
+        child.ResetPosition();
+    }
+#endif
   }
 
   public void AdvanceFrame( float time )

@@ -1,26 +1,32 @@
 
+
+- dialogue no show in release build
+
+- try aim snap to 1/8th
 + intro sequence: audio, fades, dialogue text
 - charge gets stuck on (cause: being hit while charging)
-- dialogue no show in release build
+- grappling hook
+- hornet
+  + forward/back tilt
+  + guns
+  + drop enemies (wheels instead of walkers)
+  - death sequence
+- pickup temporary weapons from defeated foes
 
 - health on HUD
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
 - borrow camera dolly/ramp from Flatlander, find ideal camera distance(s)
 - camera bounds
-- hornet
-  + forward/back tilt
-  + guns
-  - missiles
-  + drop enemies (wheels instead of walkers)
 * death, respawn
-* boss
+* BOSS.
 - audio: intro, loop, battle
 - atmosphere: rain/dust flying around, blinking lights
 * upgrade to new input system
 - Menu with control options (and remap)
 - 2x requested grappling hook
 - 4 color buttons: change weapon, menu, interact, use item/powerup
-- weapon ideas: slowtime, speedboost, shields, rapidfire, doublewhammy, homingmissles, supercharge, beam, stickybomb, invisible
+- weapon ideas: slowtime, speedboost, shields, rapidfire, doublewhammy, missiles, homing missiles, supercharge, beam, stickybomb, invisible
+
 
 **DESIGN**
 # keep
@@ -38,13 +44,11 @@ safety timer after taking damage
 only shoot forward -> aiming
 teleportation -> airdrop from chopper
 character/robot styles
-camera view size changes (1.5,2.5,3.5)
+camera view size changes
 camera movement follows aiming
-projectiles collide with everything
+projectiles collide with walls
 lighting, normal mapped sprites, emissive
----
-pickup temporary weapons from defeated foes
-grappling hook
+
 
 ## aesthetics
 1. animation
@@ -75,9 +79,6 @@ Camera can center on an imaginary point around the player, in the aiming directi
 MegamanX can only shoot forwards, not upwards or even slightly higher. The ability to shoot upwards in games like Contra is an improvement. Having weapons that spread out when shot can make this limitation feel less awkward.
 3. Enemies respawn at logical locations.
 Not arbitrary static points.
-
-# Philosophy
-make games that are tough to win but impossible to lose
 
 # Fan Games
 
