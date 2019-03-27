@@ -18,6 +18,10 @@ public class Hornet : Enemy
   public Transform drop;
   public GameObject dropPrefab;
 
+  public Weapon weapon;
+  Timer shootRepeatTimer = new Timer();
+  public Transform shotOrigin;
+
   void Start()
   {
     EnemyStart();
@@ -31,15 +35,19 @@ public class Hornet : Enemy
       Vector3 player = Global.instance.CurrentPlayer.transform.position;
       Vector3 tpos = player + Vector3.up * up + Vector3.right * over;
       Vector3 delta = tpos - transform.position;
-      if( delta.sqrMagnitude < small * small )
-        tvel = Vector3.zero;
-      else if( delta.sqrMagnitude < sightRange * sightRange )
+      if( (player - transform.position).sqrMagnitude < sightRange * sightRange )
       {
-        tvel = (tpos - transform.position).normalized * flySpeed;
-        // todo guns
-        // todo missles
-        // todo drop wheels
-        if( tvel.x > 0 && !wheelDrop.IsActive)
+        if( delta.sqrMagnitude < small * small )
+          tvel = Vector3.zero;
+        else
+        {
+          tvel = (tpos - transform.position).normalized * flySpeed;
+          velocity += (tvel - velocity) * acc * Time.deltaTime;
+          transform.rotation = Quaternion.RotateTowards( transform.rotation, Quaternion.Euler( 0, 0, Mathf.Clamp( velocity.x, -topspeedrot, topspeedrot ) * -rot ), rotspeed * Time.deltaTime );
+        }
+
+        // drop wheels
+        if( tvel.x > 0 && !wheelDrop.IsActive )
         {
           wheelDrop.Start( wheelDropInterval, null, null );
           GameObject go = Global.instance.Spawn( dropPrefab, drop.position, Quaternion.identity );
@@ -47,10 +55,26 @@ public class Hornet : Enemy
           Wheelbot wheelbot = go.GetComponent<Wheelbot>();
           wheelbot.wheelVelocity = Mathf.Sign( player.x - transform.position.x );
         }
+
+        // guns
+        //if( Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Projectile.NoShootLayers )) )
+        {
+          if( player.x < transform.position.x && player.y < transform.position.y )
+          {
+            if( !shootRepeatTimer.IsActive )
+              Shoot( new Vector3( -1, -1, 0 ) );  //player - transform.position );
+          }
+        }
+        // todo missles
       }
-      velocity += (tvel-velocity) * acc * Time.deltaTime;
-      transform.rotation = Quaternion.RotateTowards( transform.rotation, Quaternion.Euler( 0, 0, Mathf.Clamp( velocity.x, -topspeedrot, topspeedrot ) * -rot ), rotspeed * Time.deltaTime );
     }
   }
 
+  void Shoot( Vector3 shoot )
+  {
+    shootRepeatTimer.Start( weapon.shootInterval, null, null );
+    Vector3 pos = shotOrigin.position;
+    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+      weapon.FireWeapon( this, pos, shoot );
+  }
 }

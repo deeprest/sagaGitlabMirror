@@ -138,6 +138,36 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &1897412342210167813
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1670348743556002034}
+  m_Layer: 0
+  m_Name: shot origin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1670348743556002034
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897412342210167813}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.704, y: -0.344, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7299322179488540083}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2823580320920487878
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,6 +351,7 @@ Transform:
   - {fileID: 329149135660425811}
   - {fileID: 2900289598886463288}
   - {fileID: 6813992315022888228}
+  - {fileID: 1670348743556002034}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -503,7 +534,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d338913fe7604d658dbdc31041e9c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collider: {fileID: 0}
+  CharacterName: doofus
+  collider: {fileID: 8388642051660687798}
   UseGravity: 0
   velocity: {x: 0, y: 0, z: 0}
   inertia: {x: 0, y: 0, z: 0}
@@ -511,7 +543,7 @@ MonoBehaviour:
   airFriction: 0.5
   raylength: 0.01
   contactSeparation: 0.01
-  box: {x: 0.3, y: 0.3}
+  box: {x: 1.3, y: 0.9}
   CollideLayers:
   - Default
   DamageLayers:
@@ -523,9 +555,9 @@ MonoBehaviour:
   renderer: {fileID: 7469246720352550077}
   animator: {fileID: 7261148479284126975}
   idle: {fileID: 11400000, guid: 37065ca423ab942528fce8280a8c350e, type: 2}
-  health: 50
+  health: 40
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
-  soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
+  soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
   hitPush: 0.5
   flashInterval: 0.05
   flashCount: 1
@@ -533,8 +565,8 @@ MonoBehaviour:
   sightRange: 6
   flySpeed: 5
   up: 2.5
-  over: 4
-  small: 1
+  over: 3
+  small: 0.4
   rot: 10
   rotspeed: 30
   topspeedrot: 2
@@ -542,6 +574,8 @@ MonoBehaviour:
   wheelDropInterval: 3
   drop: {fileID: 6813992315022888228}
   dropPrefab: {fileID: 1094346900350558, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+  weapon: {fileID: 11400000, guid: 67bfd1773b4494e27874dbed922b0f43, type: 2}
+  shotOrigin: {fileID: 1670348743556002034}
 --- !u!60 &8388642051660687798
 PolygonCollider2D:
   m_ObjectHideFlags: 0

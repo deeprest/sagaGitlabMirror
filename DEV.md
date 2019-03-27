@@ -1,5 +1,7 @@
 
-- intro sequence: audio, fades, dialogue text
++ intro sequence: audio, fades, dialogue text
+- charge gets stuck on (cause: being hit while charging)
+- dialogue no show in release build
 
 - health on HUD
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
@@ -7,7 +9,7 @@
 - camera bounds
 - hornet
   + forward/back tilt
-  - guns
+  + guns
   - missiles
   + drop enemies (wheels instead of walkers)
 * death, respawn
@@ -74,7 +76,8 @@ MegamanX can only shoot forwards, not upwards or even slightly higher. The abili
 3. Enemies respawn at logical locations.
 Not arbitrary static points.
 
-
+# Philosophy
+make games that are tough to win but impossible to lose
 
 # Fan Games
 
@@ -88,7 +91,7 @@ Not arbitrary static points.
 ## random
 bad design mode: super slow text you cannot skip. (super metroid: "SPACE COLON".."Y")
 jack basswards
-slap branmuffin
+bran slapmuffin
 dert mcderples
 
 
@@ -96,7 +99,7 @@ dert mcderples
 gamejolt
 sprites.co.uk forums
 send to Stone McKnuckle
-tigsource (to find pixel artist for next project)
+pixeljoint or tigsource (to find pixel artist for next project)
 ## distribution platforms
 itch.io
 GOG

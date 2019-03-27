@@ -33,12 +33,12 @@ public class Projectile : MonoBehaviour
   void Update()
   {
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( CollideLayers ) );
-    if( hit.transform != null && hit.transform != instigator.transform )
+    if( hit.transform != null && (instigator == null || hit.transform != instigator) )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
-        Damage dmg = ScriptableObject.Instantiate<Damage>( ContactDamage );
+        Damage dmg = Instantiate<Damage>( ContactDamage );
         dmg.instigator = transform;
         dmg.point = hit.point;
         dam.TakeDamage( dmg );
