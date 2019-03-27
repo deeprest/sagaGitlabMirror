@@ -32,17 +32,21 @@ public class PlayerController : Character, IDamage
   public float dashDuration = 1;
   public float landDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
+  // input / control
+  public bool playerInput = true;
+  public bool inputRight;
+  public bool inputLeft;
+  public bool inputJumpStart;
+  public bool inputJumpEnd;
+  public bool inputDashStart;
+  public bool inputDashEnd;
   // state
   public bool facingRight = true;
-  public bool inputRight = false;
-  public bool inputLeft = false;
-  public bool inputJumpStart = false;
-  public bool inputJumpEnd = false;
-  public bool onGround = false;
-  public bool jumping = false;
-  public bool landing = false;
-  public bool dashing = false;
-  public bool hanging = false;
+  public bool onGround;
+  public bool jumping;
+  public bool landing;
+  public bool dashing;
+  public bool hanging;
 
   public Vector3 velocity = Vector3.zero;
   public Vector3 push = Vector3.zero;
@@ -52,12 +56,12 @@ public class PlayerController : Character, IDamage
   float jumpStart;
   float landStart;
 
-  string[] PlayerCollideLayers = new string[] { "Default", "triggerAndCollision" };
-  string[] TriggerLayers = new string[] { "trigger", "triggerAndCollision" };
-  public bool collideRight = false;
-  public bool collideLeft = false;
-  public bool collideHead = false;
-  public bool collideFeet = false;
+  string[] PlayerCollideLayers = { "Default", "triggerAndCollision" };
+  string[] TriggerLayers = { "trigger", "triggerAndCollision" };
+  public bool collideRight;
+  public bool collideLeft;
+  public bool collideHead;
+  public bool collideFeet;
   RaycastHit2D hitRight;
   RaycastHit2D hitLeft;
 
@@ -222,9 +226,17 @@ public class PlayerController : Character, IDamage
     transform.position = new Vector3( adjust.x, adjust.y, transform.position.z );
   }
 
-
-  void UpdateInput()
+  void Shoot( Vector3 shoot )
   {
+    shootRepeatTimer.Start( weapon.shootInterval, null, null );
+    Vector3 pos = arm.position + shoot.normalized * armRadius;
+    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+      weapon.FireWeapon( this, pos, shoot );
+  }
+
+  void UpdatePlayerInput()
+  {
+
     Vector3 cursorScreen = Global.instance.cursor.anchoredPosition;
     cursorScreen.z = -Camera.main.transform.position.z;
     Vector3 cursorDelta = Camera.main.ScreenToWorldPoint( cursorScreen ) - arm.position;
@@ -243,10 +255,7 @@ public class PlayerController : Character, IDamage
       {
         if( !shootRepeatTimer.IsActive )
         {
-          shootRepeatTimer.Start( weapon.shootInterval, null, null );
-          Vector3 pos = arm.position + shoot.normalized * armRadius;
-          if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
-            weapon.FireWeapon( this, pos, shoot );
+          Shoot( shoot );
         }
       }
       else
@@ -260,10 +269,7 @@ public class PlayerController : Character, IDamage
     {
       if( !shootRepeatTimer.IsActive )
       {
-        shootRepeatTimer.Start( weapon.shootInterval, null, null );
-        Vector3 pos = arm.position + shoot.normalized * armRadius;
-        if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
-          weapon.FireWeapon( this, pos, shoot );
+        Shoot( shoot );
       }
     }
 
@@ -322,6 +328,39 @@ public class PlayerController : Character, IDamage
       hanging = false;
 
     inputRight = Input.GetKey( Global.instance.icsCurrent.keyMap["MoveRight"] );
+    inputLeft = Input.GetKey( Global.instance.icsCurrent.keyMap["MoveLeft"] );
+
+    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Dash"] ) )
+      inputDashStart = true;
+    else if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Dash"] ) )
+      inputDashEnd = true;
+
+    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Jump"] ) )
+      inputJumpStart = true;
+    else
+    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Jump"] ) )
+      inputJumpEnd = true;
+      
+  }
+
+  void ResetInput()
+  {
+    inputRight = false;
+    inputLeft = false;
+    inputJumpStart = false;
+    inputJumpEnd = false;
+    inputDashStart = false;
+    inputDashEnd = false;
+  }
+
+  void Update()
+  {
+    if( Global.Paused )
+      return;
+
+    if( playerInput && !takingDamage )
+      UpdatePlayerInput();
+
     if( inputRight )
     {
       // move along floor if angled downwards
@@ -336,7 +375,6 @@ public class PlayerController : Character, IDamage
       facingRight = true;
     }
 
-    inputLeft = Input.GetKey( Global.instance.icsCurrent.keyMap["MoveLeft"] );
     if( inputLeft )
     {
       // move along floor if angled downwards
@@ -351,20 +389,18 @@ public class PlayerController : Character, IDamage
       facingRight = false;
     }
 
-
-    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Dash"] ) )
+    if( inputDashStart )
     {
       if( onGround || collideLeft || collideRight )
       {
         StartDash();
       }
     }
-    else if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Dash"] ) )
+    if( inputDashEnd )
     {
       if( !jumping )
         StopDash();
     }
-
     if( dashing )
     {
       if( facingRight )
@@ -383,32 +419,15 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Jump"] ) )
+    if( inputJumpStart )
     {
       if( onGround || (inputRight && collideRight) || (inputLeft && collideLeft) )
       {
-        jumping = true;
-        jumpStart = Time.time;
-        velocity.y = jumpVel;
-        audio.PlayOneShot( soundJump );
-        dashSmoke.Stop();
+        StartJump();
       }
     }
-    else
-    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Jump"] ) )
-    {
-      jumping = false;
-      velocity.y = Mathf.Min( velocity.y, 0 );
-    }
-  }
-
-  void Update()
-  {
-    if( Global.Paused )
-      return;
-
-    if( !takingDamage )
-      UpdateInput();
+    if( inputJumpEnd )
+      StopJump();
 
     if( velocity.y < 0 )
       jumping = false;
@@ -544,6 +563,24 @@ public class PlayerController : Character, IDamage
       landStart = Time.time;
     }
 
+    ResetInput();
+  }
+
+  void StartJump()
+  {
+
+    jumping = true;
+    jumpStart = Time.time;
+    velocity.y = jumpVel;
+    audio.PlayOneShot( soundJump );
+    dashSmoke.Stop();
+
+  }
+
+  void StopJump()
+  {
+    jumping = false;
+    velocity.y = Mathf.Min( velocity.y, 0 );
   }
 
   void StartDash()

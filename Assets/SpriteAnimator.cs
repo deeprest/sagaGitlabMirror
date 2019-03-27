@@ -82,11 +82,6 @@ public class SpriteAnimator : MonoBehaviour
       sr = GetComponent<SpriteRenderer>();
     if( image == null )
       image = GetComponent<Image>();
-  }
-
-  void Start()
-  {
-    sac = GetComponentsInChildren<SpriteAnimationChild>();
 
     if( anims.Length > 0 )
     {
@@ -95,6 +90,19 @@ public class SpriteAnimator : MonoBehaviour
         if( a != null )
           animLookup[a.name] = a;
     }
+  }
+
+  void Start()
+  {
+    sac = GetComponentsInChildren<SpriteAnimationChild>();
+
+    /*if( anims.Length > 0 )
+    {
+      animLookup = new Dictionary<string, AnimSequence>();
+      foreach( var a in anims )
+        if( a != null )
+          animLookup[a.name] = a;
+    }*/
 
     if( playAtAStart )
       Play( CurrentSequence );

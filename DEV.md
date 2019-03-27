@@ -6,10 +6,10 @@
 - borrow camera dolly/ramp from Flatlander, find ideal camera distance(s)
 - camera bounds
 - hornet
-  forward/back tilt
-  guns
-  missiles
-  drop enemies (wheels instead of walkers)
+  + forward/back tilt
+  - guns
+  - missiles
+  + drop enemies (wheels instead of walkers)
 * death, respawn
 * boss
 - audio: intro, loop, battle
@@ -17,7 +17,7 @@
 * upgrade to new input system
 - Menu with control options (and remap)
 - 2x requested grappling hook
-- 4 buttons: change weapon, menu, interact, use item/powerup
+- 4 color buttons: change weapon, menu, interact, use item/powerup
 - weapon ideas: slowtime, speedboost, shields, rapidfire, doublewhammy, homingmissles, supercharge, beam, stickybomb, invisible
 
 **DESIGN**

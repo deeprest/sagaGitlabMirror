@@ -50,6 +50,7 @@ public interface IDamage
 
 public class Character : MonoBehaviour
 {
+  public string CharacterName = "doofus";
   new public Collider2D collider;
 
 }
@@ -728,5 +729,64 @@ public class Global : MonoBehaviour
     fadeTimer.Start( tp );
   }
 
+  [Header( "Speech" )]
+  public Text SpeechName;
+  public Text SpeechText;
+  public Image SpeechIcon;
+  CharacterIdentity SpeechCharacter;
+  int SpeechPriority = 0;
+  public float SpeechRange = 8;
+  Timer SpeechTimer = new Timer();
+
+
+
+  public void Speak( CharacterIdentity character, string text, float timeout, int priority = 0 )
+  {
+    // priority 0 = offhand remarks
+    // priority 1 = unsolicted chat
+    // priority 2 = player-engaged speech
+    // priority 3 = mandatory message
+    //if( CurrentPlayer == null || character == null )
+      //return;
+    // equal priority overrides
+    if( SpeechTimer.IsActive && priority < SpeechPriority )
+      return;
+    //float DistanceSqr = Vector3.SqrMagnitude( character.moveTransform.position - playerCharacter.moveTransform.position );
+    //if( DistanceSqr > SpeechRange * SpeechRange )
+      //return;
+
+    SpeechCharacter = character;
+    SpeechPriority = priority;
+
+    SpeechIcon.sprite = SpeechCharacter.Icon;
+    /*string colorString = "#ffffff", 
+    Color color = Color.white;
+    ColorUtility.TryParseHtmlString( colorString, out color );
+    SpeechText.color = color;*/
+
+    //SpeechName.gameObject.SetActive( true );
+    //SpeechName.text = character.CharacterName;
+    SpeechIcon.gameObject.SetActive( true );
+    SpeechText.gameObject.SetActive( true );
+    SpeechText.text = text;
+    //SpeechText.rectTransform.localScale = Vector3.one * (1f - 0.5f * Mathf.Clamp( Mathf.Sqrt( DistanceSqr ) / SpeechRange, 0, 1 ));
+
+    SpeechTimer.Stop( false );
+    SpeechTimer.Start( timeout, null, delegate ()
+    {
+      //SpeechName.gameObject.SetActive( false );
+      SpeechText.gameObject.SetActive( false );
+      SpeechIcon.gameObject.SetActive( false );
+      SpeechCharacter = null;
+    } );
+  }
+
+
 }
 
+[CreateAssetMenu]
+public class CharacterIdentity : ScriptableObject
+{
+  public string CharacterName;
+  public Sprite Icon;
+}
