@@ -4,9 +4,17 @@ using UnityEngine;
 
 public class StoryIntro : MonoBehaviour
 {
+  public PlayerController player;
+  public CharacterIdentity drcain;
+  public JabberPlayer drcainJabber;
+  public SpriteAnimator drcainAnimator;
+
+  public bool runPlayer;
+
   // Start is called before the first frame update
   void Start()
   {
+    player = Global.instance.CurrentPlayer;
     player.playerInput = false;
 
     drcainAnimator.Play( "drcain-talk" );
@@ -22,12 +30,7 @@ public class StoryIntro : MonoBehaviour
       player.inputRight = true;
   }
 
-  public PlayerController player;
-  public CharacterIdentity drcain;
-  public JabberPlayer drcainJabber;
-  public SpriteAnimator drcainAnimator;
-
-  public bool runPlayer;
+ 
   public void PlayerRun()
   {
     runPlayer = true;

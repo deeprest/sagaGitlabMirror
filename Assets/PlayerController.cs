@@ -40,6 +40,9 @@ public class PlayerController : Character, IDamage
   public bool inputJumpEnd;
   public bool inputDashStart;
   public bool inputDashEnd;
+  public bool inputChargeStart;
+  public bool inputCharge;
+  public bool inputChargeEnd;
   // state
   public bool facingRight = true;
   public bool onGround;
@@ -237,7 +240,18 @@ public class PlayerController : Character, IDamage
 
   void ShootCharged()
   {
-
+    if( chargeEffect != null )
+    {
+      audio.Stop();
+      audio.PlayOneShot( weapon.soundChargeShot );
+      if( chargeAmount > chargeMin )
+      {
+        Vector3 pos = arm.position + cursorDelta.normalized * armRadius;
+        if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+          weapon.FireWeaponCharged( this, pos, shoot );
+      }
+    }
+    StopCharge();
   }
 
   Vector3 cursorDelta;
@@ -319,10 +333,6 @@ public class PlayerController : Character, IDamage
 
   }
 
-  bool inputChargeStart;
-  bool inputCharge;
-  bool inputChargeEnd;
-
   void ResetInput()
   {
     inputRight = false;
@@ -350,18 +360,7 @@ public class PlayerController : Character, IDamage
       chargeAmount += Time.deltaTime;
     if( inputChargeEnd )
     {
-      if( chargeEffect != null )
-      {
-        audio.Stop();
-        audio.PlayOneShot( weapon.soundChargeShot );
-        if( chargeAmount > chargeMin )
-        {
-          Vector3 pos = arm.position + cursorDelta.normalized * armRadius;
-          if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
-            weapon.FireWeaponCharged( this, pos, shoot );
-        }
-      }
-      StopCharge();
+      ShootCharged();
     }
 
     if( !takingDamage )

@@ -101,7 +101,7 @@ public class CustomUtility : EditorWindow
       }
       bpo.scenes = buildnames.ToArray();  //new string[] { "Assets/zero.unity", "Assets/mmx-city.unity" };
       bpo.options = BuildOptions.CompressWithLz4; //BuildOptions.AutoRunPlayer;
-      bpo.locationPathName = Directory.GetParent( Application.dataPath ).FullName + "/SagaCity-" + Util.Timestamp();
+      bpo.locationPathName = Directory.GetParent( Application.dataPath ).FullName + "/SagaCity-" + Util.Timestamp().Replace('.','-');
       Debug.Log( bpo.locationPathName );
       BuildPipeline.BuildPlayer( bpo );
     }

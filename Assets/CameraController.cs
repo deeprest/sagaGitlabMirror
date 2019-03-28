@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour
 
   public bool UseVerticalRange = true;
   public bool CursorInfluence = false;
-  [SerializeField] RectTransform cursor;
+  //[SerializeField] RectTransform cursor;
   public float cursorAlpha = 0;
   public float beyondCursorCoef = 1f;
   public float lerpAlpha = 50;
@@ -59,7 +59,7 @@ public class CameraController : MonoBehaviour
       Vector3 final = WithinRectPos;
       if( CursorInfluence )
       {
-        Vector3 stwp = cursor.anchoredPosition;
+        Vector3 stwp = Global.instance.cursor.anchoredPosition;
         stwp.z = -cam.transform.position.z;
         final = Vector3.Lerp( WithinRectPos, cam.ScreenToWorldPoint( stwp ), cursorAlpha );
       }

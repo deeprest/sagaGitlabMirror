@@ -165,9 +165,12 @@ public class Global : MonoBehaviour
   {
     if( !Application.isEditor || SimulatePlayer )
     {
-      Camera.main.fieldOfView = 15;
+      Camera.main.fieldOfView = 60;
       Pause();
       yield return LoadScene( "intro" );
+      SpawnPlayer();
+      StoryIntro story = FindObjectOfType<StoryIntro>();
+      story.enabled = true;
       Unpause();
       yield return new WaitForSecondsRealtime( introdelay );
       yield return LoadScene( "mmx-city", false );
@@ -193,7 +196,8 @@ public class Global : MonoBehaviour
       yield return null;
    AsyncOperation ao = SceneManager.LoadSceneAsync( sceneName, LoadSceneMode.Single );
     while( !ao.isDone )
-      yield return null;  
+      yield return null;
+    SceneManager.SetActiveScene( SceneManager.GetSceneByName( sceneName ) );
     FadeClear();
     if( waitForFadeIn )
       while( fadeTimer.IsActive )
@@ -728,7 +732,6 @@ public class Global : MonoBehaviour
   }
 
   [Header( "Speech" )]
-  public Text SpeechName;
   public Text SpeechText;
   public Image SpeechIcon;
   CharacterIdentity SpeechCharacter;
@@ -762,8 +765,6 @@ public class Global : MonoBehaviour
     ColorUtility.TryParseHtmlString( colorString, out color );
     SpeechText.color = color;*/
 
-    //SpeechName.gameObject.SetActive( true );
-    //SpeechName.text = character.CharacterName;
     SpeechIcon.gameObject.SetActive( true );
     SpeechText.gameObject.SetActive( true );
     SpeechText.text = text;
@@ -780,11 +781,4 @@ public class Global : MonoBehaviour
   }
 
 
-}
-
-[CreateAssetMenu]
-public class CharacterIdentity : ScriptableObject
-{
-  public string CharacterName;
-  public Sprite Icon;
 }
