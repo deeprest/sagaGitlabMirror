@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StoryIntro : MonoBehaviour
+public class SceneIntro : MonoBehaviour
 {
-  public PlayerController player;
+  PlayerController player;
   public CharacterIdentity drcain;
   public JabberPlayer drcainJabber;
   public SpriteAnimator drcainAnimator;
@@ -15,7 +15,7 @@ public class StoryIntro : MonoBehaviour
   void Start()
   {
     player = Global.instance.CurrentPlayer;
-    player.playerInput = false;
+    //player.playerInput = false;
 
     drcainAnimator.Play( "drcain-talk" );
     Timer talk = new Timer( 3, null, delegate { drcainAnimator.Play( "drcain-idle" ); } );
@@ -23,16 +23,4 @@ public class StoryIntro : MonoBehaviour
     Global.instance.Speak( drcain, "the city is being attacked!", 3 );
   }
 
-  // Update is called once per frame
-  void Update()
-  {
-    if( runPlayer )
-      player.inputRight = true;
-  }
-
- 
-  public void PlayerRun()
-  {
-    runPlayer = true;
-  }
 }

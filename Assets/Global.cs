@@ -39,7 +39,7 @@ public class GlobalEditor : Editor
 }
 #endif
 
-  public interface ITrigger
+public interface ITrigger
 {
   void Trigger( Transform instigator );
 }
@@ -87,12 +87,12 @@ public class Global : MonoBehaviour
   [Header( "Runtime Objects" )]
   public PlayerController CurrentPlayer;
   public RectTransform cursor;
-  public Chopper chopper;
+  public Chopper chopper; 
 
 
   public float slowtime = 0.2f;
   [SerializeField] Text debugButtons;
-  [SerializeField] Text debugFOV;
+  [SerializeField] Text debugText;
 
   Timer fadeTimer = new Timer();
   public float introdelay = 13;
@@ -146,14 +146,14 @@ public class Global : MonoBehaviour
 
     // UI
     //Cursor.visible = false;
-    debugFOV.text = Camera.main.fieldOfView.ToString( "##.#" );
+    debugText.text = CameraController.zOffset.ToString( "##.#" );
 
     InitializeControls();
 
     StartCoroutine( InitializeRoutine() );
   }
 
-  void SpawnPlayer()
+  public void SpawnPlayer()
   {
     GameObject go = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
     CurrentPlayer = go.GetComponent<PlayerController>();
@@ -165,21 +165,21 @@ public class Global : MonoBehaviour
   {
     if( !Application.isEditor || SimulatePlayer )
     {
-      Camera.main.fieldOfView = 60;
+      //Camera.main.fieldOfView = 60;
       Pause();
-      yield return LoadScene( "intro" );
+      yield return LoadSceneRoutine( "intro" );
       SpawnPlayer();
-      StoryIntro story = FindObjectOfType<StoryIntro>();
+      SceneIntro story = FindObjectOfType<SceneIntro>();
       story.enabled = true;
       Unpause();
-      yield return new WaitForSecondsRealtime( introdelay );
+
+      /*yield return new WaitForSecondsRealtime( introdelay );
       yield return LoadScene( "mmx-city", false );
       SpawnPlayer();
-      ChopDrop();
+      ChopDrop();*/
     }
     else
     {
-      // remember to set the active scene in editor
       SpawnPlayer();
       yield return new WaitForSecondsRealtime( 1 );
     }
@@ -189,7 +189,12 @@ public class Global : MonoBehaviour
     yield return null;
   }
 
-  IEnumerator LoadScene( string sceneName, bool waitForFadeIn = true )
+  public void LoadScene( string sceneName, bool waitForFadeIn = true )
+  {
+    StartCoroutine( LoadSceneRoutine( sceneName, waitForFadeIn ) );
+  }
+
+  IEnumerator LoadSceneRoutine( string sceneName, bool waitForFadeIn = true )
   {
     FadeBlack();
     while( fadeTimer.IsActive )
@@ -251,16 +256,8 @@ public class Global : MonoBehaviour
 
     if( Mathf.Abs( Input.GetAxis( "Zoom" ) ) > 0 )
     {
-      if( Camera.main.orthographic )
-      {
-        Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
-        debugFOV.text = Camera.main.orthographicSize.ToString("##.#");
-      }
-      else
-      {
-        Camera.main.fieldOfView += Input.GetAxis( "Zoom" );
-        debugFOV.text = Camera.main.fieldOfView.ToString("##.#");
-      }
+      CameraController.zOffset += Input.GetAxis( "Zoom" );
+      debugText.text = CameraController.zOffset.ToString("##.#");
     }
 
     if( Input.GetKeyDown( KeyCode.O ) )
@@ -276,17 +273,17 @@ public class Global : MonoBehaviour
       Screenshot();
     }
 
-    /*if( Input.GetKeyDown( KeyCode.P ) )
+    if( Input.GetKeyDown( KeyCode.P ) )
     {
       if( Paused )
         Unpause();
       else
         Pause();
-    }*/
+    }
     if( Input.GetKeyDown( KeyCode.Return ) )
     {
       Chopper chopper = FindObjectOfType<Chopper>();
-      if( chopper != null )
+      if( !Application.isEditor || (Global.instance.SimulatePlayer && chopper != null) )
         ChopDrop();
       else
         CurrentPlayer.transform.position = FindSpawnPosition();
@@ -677,9 +674,9 @@ public class Global : MonoBehaviour
     } );
   }
 
-  void ChopDrop()
+  public void ChopDrop()
   {
-    Camera.main.fieldOfView = 25;
+    //Camera.main.fieldOfView = 25;
     chopper = FindObjectOfType<Chopper>();
     if( chopper != null )
     {
@@ -732,6 +729,7 @@ public class Global : MonoBehaviour
   }
 
   [Header( "Speech" )]
+  public GameObject SpeechBubble;
   public Text SpeechText;
   public Image SpeechIcon;
   CharacterIdentity SpeechCharacter;
@@ -765,17 +763,14 @@ public class Global : MonoBehaviour
     ColorUtility.TryParseHtmlString( colorString, out color );
     SpeechText.color = color;*/
 
-    SpeechIcon.gameObject.SetActive( true );
-    SpeechText.gameObject.SetActive( true );
+    SpeechBubble.SetActive( true );
     SpeechText.text = text;
     //SpeechText.rectTransform.localScale = Vector3.one * (1f - 0.5f * Mathf.Clamp( Mathf.Sqrt( DistanceSqr ) / SpeechRange, 0, 1 ));
 
     SpeechTimer.Stop( false );
     SpeechTimer.Start( timeout, null, delegate ()
     {
-      //SpeechName.gameObject.SetActive( false );
-      SpeechText.gameObject.SetActive( false );
-      SpeechIcon.gameObject.SetActive( false );
+      SpeechBubble.SetActive( false );
       SpeechCharacter = null;
     } );
   }

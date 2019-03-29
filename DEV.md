@@ -1,31 +1,29 @@
 
-
-- dialogue no show in release build
-
-- try aim snap to 1/8th
 + intro sequence: audio, fades, dialogue text
-- charge gets stuck on (cause: being hit while charging)
-- grappling hook
++ charge gets stuck on (cause: being hit while charging)
+
 - hornet
   + forward/back tilt
   + guns
   + drop enemies (wheels instead of walkers)
   - death sequence
-- pickup temporary weapons from defeated foes
-
-- health on HUD
-- avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
-- borrow camera dolly/ramp from Flatlander, find ideal camera distance(s)
-- camera bounds
-* death, respawn
+- grappling hook
 * BOSS.
+- try aim snap to 1/8th
+- pickup temporary weapons from defeated foes
+- borrow camera dolly/ramp from Flatlander, find ideal camera distance(s)
 - audio: intro, loop, battle
-- atmosphere: rain/dust flying around, blinking lights
-* upgrade to new input system
+- health on HUD
+* death, respawn
+
+# improvements
+- upgrade to new input system
 - Menu with control options (and remap)
-- 2x requested grappling hook
-- 4 color buttons: change weapon, menu, interact, use item/powerup
+- camera bounds
+- avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
 - weapon ideas: slowtime, speedboost, shields, rapidfire, doublewhammy, missiles, homing missiles, supercharge, beam, stickybomb, invisible
+- 4 color buttons: change weapon, menu, interact, use item/powerup
+- atmosphere: rain/dust flying around, blinking lights
 
 
 **DESIGN**

@@ -168,6 +168,11 @@ public class Enemy : Character, IDamage
 
   }
 
+  protected virtual void Die()
+  {
+    Instantiate( explosion, transform.position, Quaternion.identity );
+    Destroy( gameObject );
+  }
 
   public void TakeDamage( Damage d )
   {
@@ -176,8 +181,7 @@ public class Enemy : Character, IDamage
     if( health <= 0 )
     {
       flashTimer.Stop( false );
-      Instantiate( explosion, transform.position, Quaternion.identity );
-      Destroy( gameObject );
+      Die();
     }
     else
     {

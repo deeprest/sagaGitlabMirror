@@ -17,12 +17,10 @@
 	}
 	SubShader {
 		Tags { 
-		//"Queue"="AlphaTest" "RenderType"="TransparentCutout" 
 		"Queue"="Transparent" 
-			"IgnoreProjector"="True" 
-			"RenderType"="Transparent" 
-			"PreviewType"="Plane"
-			"CanUseSpriteAtlas"="True"
+		"IgnoreProjector"="True" 
+		"RenderType"="Transparent" 
+		"PreviewType"="Plane"
 		}
 		LOD 200
 		Cull Off
@@ -54,13 +52,7 @@
 
 		fixed4 _BlendColor;
 		half _BlendAmount;
-
-		// Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
-		// See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
-		// #pragma instancing_options assumeuniformscaling
-		UNITY_INSTANCING_BUFFER_START(Props)
-			// put more per-instance properties here
-		UNITY_INSTANCING_BUFFER_END(Props)
+        
 
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
@@ -73,6 +65,7 @@
 
 
 			o.Albedo = lerp( o.Albedo, _BlendColor, _BlendAmount );
+            o.Normal = float3(0,0,1);
 			o.Metallic = _Metallic * (1.0 - tex2D( _MetallicTex, IN.uv_MainTex ));
 			o.Smoothness = _Glossiness;
 			o.Alpha = c.a;

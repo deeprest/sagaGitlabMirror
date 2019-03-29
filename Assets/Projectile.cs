@@ -18,6 +18,11 @@ public class Projectile : MonoBehaviour
   public AnimSequence HitEffect;
   public bool AlignXToMovementDirection = false;
 
+  void OnDestroy()
+  {
+    timeoutTimer.Stop( false );
+  }
+
   void Start()
   {
     timeoutTimer = new Timer( timeout, null, delegate()

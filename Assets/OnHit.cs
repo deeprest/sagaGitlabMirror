@@ -214,4 +214,9 @@ public class OnHit : MonoBehaviour
   {
     Global.instance.SendMessage( msg );
   }
+
+  public void LoadScene( string msg )
+  {
+    Global.instance.LoadScene( msg );
+  }
 }

@@ -534,7 +534,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d338913fe7604d658dbdc31041e9c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CharacterName: doofus
   collider: {fileID: 8388642051660687798}
   UseGravity: 0
   velocity: {x: 0, y: 0, z: 0}
@@ -543,7 +542,7 @@ MonoBehaviour:
   airFriction: 0.5
   raylength: 0.01
   contactSeparation: 0.01
-  box: {x: 1.3, y: 0.9}
+  box: {x: 1, y: 0.5}
   CollideLayers:
   - Default
   DamageLayers:
@@ -555,7 +554,7 @@ MonoBehaviour:
   renderer: {fileID: 7469246720352550077}
   animator: {fileID: 7261148479284126975}
   idle: {fileID: 11400000, guid: 37065ca423ab942528fce8280a8c350e, type: 2}
-  health: 40
+  health: 30
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
   hitPush: 0.5
@@ -571,6 +570,9 @@ MonoBehaviour:
   rotspeed: 30
   topspeedrot: 2
   acc: 1
+  crashSpeed: 3
+  explosionInterval: 0.2
+  explosionRange: 1
   wheelDropInterval: 3
   drop: {fileID: 6813992315022888228}
   dropPrefab: {fileID: 1094346900350558, guid: d602960e06ef345db9212ecac4516ddb, type: 3}

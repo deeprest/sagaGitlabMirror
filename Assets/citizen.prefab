@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 114256341618630126}
   - component: {fileID: 199290959818237558}
   - component: {fileID: 198247344210016428}
-  - component: {fileID: 114899051471186980}
   m_Layer: 12
   m_Name: citizen
   m_TagString: Untagged
@@ -122,19 +121,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseSpriteRenderer: 1
+  CurrentFrameIndex: 0
+  sac: []
   sr: {fileID: 212862396541373198}
-  mr: {fileID: 0}
-  mf: {fileID: 0}
+  image: {fileID: 0}
+  flipX: 0
   CurrentSequence: {fileID: 0}
-  startAnim: {fileID: 0}
   isPlaying: 0
   playAtAStart: 1
   anims:
   - {fileID: 0}
-  CurrentFrameIndex: 0
-  originalSharedMesh: {fileID: 0}
-  originalMaterial: {fileID: 0}
 --- !u!199 &199290959818237558
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -4859,15 +4855,3 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
---- !u!114 &114899051471186980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1900825541123544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04bf654b8d6e14e05967e574ce882660, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
