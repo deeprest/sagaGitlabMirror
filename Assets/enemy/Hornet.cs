@@ -38,6 +38,7 @@ public class Hornet : Enemy
   {
     dying = true;
     collider.enabled = false;
+    UpdateHit = null;
     UpdateCollision = null;
     explosionTimer.Start( 10, explosionInterval, 
     delegate { 

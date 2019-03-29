@@ -1,12 +1,12 @@
 
 + intro sequence: audio, fades, dialogue text
 + charge gets stuck on (cause: being hit while charging)
-
-- hornet
++ hornet
   + forward/back tilt
   + guns
   + drop enemies (wheels instead of walkers)
-  - death sequence
+  + death sequence
+
 - grappling hook
 * BOSS.
 - try aim snap to 1/8th
