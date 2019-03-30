@@ -34,37 +34,37 @@ public class PlayerController : Character, IDamage
   public float wallSlideFactor = 0.5f;
   // input / control
   public bool playerInput = true;
-  public bool inputRight;
-  public bool inputLeft;
-  public bool inputJumpStart;
-  public bool inputJumpEnd;
-  public bool inputDashStart;
-  public bool inputDashEnd;
-  public bool inputChargeStart;
-  public bool inputCharge;
-  public bool inputChargeEnd;
+  [SerializeField] bool inputRight;
+  [SerializeField] bool inputLeft;
+  [SerializeField] bool inputJumpStart;
+  [SerializeField] bool inputJumpEnd;
+  [SerializeField] bool inputDashStart;
+  [SerializeField] bool inputDashEnd;
+  [SerializeField] bool inputChargeStart;
+  [SerializeField] bool inputCharge;
+  [SerializeField] bool inputChargeEnd;
+  [SerializeField] bool inputGraphook;
   // state
-  public bool facingRight = true;
-  public bool onGround;
-  public bool jumping;
-  public bool landing;
-  public bool dashing;
-  public bool hanging;
+  [SerializeField] bool facingRight = true;
+  [SerializeField] bool onGround;
+  [SerializeField] bool jumping;
+  [SerializeField] bool landing;
+  [SerializeField] bool dashing;
+  public bool hanging { get; set; }
 
   public Vector3 velocity = Vector3.zero;
-  public Vector3 push = Vector3.zero;
+  public Vector3 damagePush = Vector3.zero;
   public float friction = 1f;
-  public float momentumTest = 2;
   float dashStart;
   float jumpStart;
   float landStart;
 
   string[] PlayerCollideLayers = { "Default", "triggerAndCollision" };
   string[] TriggerLayers = { "trigger", "triggerAndCollision" };
-  public bool collideRight;
-  public bool collideLeft;
-  public bool collideHead;
-  public bool collideFeet;
+  [SerializeField] bool collideRight;
+  [SerializeField] bool collideLeft;
+  [SerializeField] bool collideHead;
+  [SerializeField] bool collideFeet;
   RaycastHit2D hitRight;
   RaycastHit2D hitLeft;
 
@@ -104,7 +104,7 @@ public class PlayerController : Character, IDamage
   public float damagePulseInterval = .1f;
   public float damageBlinkDuration = 1f;
   public float damageLift = 1f;
-  public float damagePush = 1f;
+  public float damagePushAmount = 1f;
 
   void Start()
   {
@@ -230,12 +230,69 @@ public class PlayerController : Character, IDamage
     transform.position = new Vector3( adjust.x, adjust.y, transform.position.z );
   }
 
-  void Shoot( Vector3 shoot )
+  void Shoot()
   {
     shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector3 pos = arm.position + shoot.normalized * armRadius;
     if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
       weapon.FireWeapon( this, pos, shoot );
+  }
+
+  [SerializeField] GameObject graphookTip;
+  [SerializeField] SpriteRenderer grapCableRender;
+  public float grapDistance = 10;
+  public float grapSpeed = 5;
+  public float grapTimeout = 5;
+  public float grapPullSpeed = 10;
+  public float grapStopDistance = 0.1f;
+  Timer grapTimer = new Timer();
+  Timer grapPullTimer = new Timer();
+  Vector2 grapSize;
+  Vector3 graphitpos;
+  public bool grapPulling;
+
+  void ShootGraphook()
+  {
+    //shootRepeatTimer.Start( weapon.shootInterval, null, null );
+    Vector3 pos = arm.position + shoot.normalized * armRadius;
+    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+    {
+      RaycastHit2D hit = Physics2D.Raycast( pos, shoot, grapDistance, LayerMask.GetMask( PlayerCollideLayers ) );
+      if( hit )
+      {
+        Debug.DrawLine( pos, hit.point, Color.red );
+        graphitpos = hit.point;
+        graphookTip.SetActive( true );
+        graphookTip.transform.parent = null;
+        graphookTip.transform.position = pos;
+        grapTimer.Start( grapTimeout, delegate
+        {
+          pos = arm.position + shoot.normalized * armRadius;
+          graphookTip.transform.position = Vector3.MoveTowards( graphookTip.transform.position, graphitpos, grapSpeed * Time.deltaTime );
+          //grap cable
+          grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - pos) ) );
+          grapSize = grapCableRender.size;
+          grapSize.x = Vector3.Distance( graphookTip.transform.position, pos );
+          grapCableRender.size = grapSize;
+
+          if( Vector3.Distance( graphookTip.transform.position, graphitpos ) < 0.01f )
+          {
+            grapPulling = true;
+            //grapTimer.Stop( false );
+            grapTimer.Start( grapTimeout, null, StopGrap );
+          }
+        },
+        StopGrap );
+      }
+    }
+  }
+
+  void StopGrap()
+  {
+    grapPulling = false;
+    graphookTip.SetActive( false );
+    grapSize.x = 0;
+    grapCableRender.size = grapSize;
   }
 
   void ShootCharged()
@@ -266,6 +323,7 @@ public class PlayerController : Character, IDamage
     cursorDelta.z = 0;
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );
 
+
     if( Global.instance.UsingKeyboard )
     {
       shoot = cursorDelta;
@@ -277,7 +335,7 @@ public class PlayerController : Character, IDamage
       {
         if( !shootRepeatTimer.IsActive )
         {
-          Shoot( shoot );
+          Shoot();
         }
       }
       else
@@ -291,8 +349,14 @@ public class PlayerController : Character, IDamage
     {
       if( !shootRepeatTimer.IsActive )
       {
-        Shoot( shoot );
+        Shoot();
       }
+    }
+
+    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["graphook"] ) )
+    {
+      inputGraphook = true;
+      ShootGraphook();
     }
 
     if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Charge"] ) )
@@ -517,29 +581,44 @@ public class PlayerController : Character, IDamage
     if( takingDamage )
     {
       anim = "damage";
+      velocity += damagePush;
+      // vertical push is one-time instantaneous only
+      damagePush.y = 0;
+    }
+    else
+    if( grapPulling )
+    {
+      Vector3 armpos = arm.position + shoot.normalized * armRadius;
+      grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - armpos) ) );
+      grapSize = grapCableRender.size;
+      grapSize.x = Vector3.Distance( graphookTip.transform.position, armpos );
+      grapCableRender.size = grapSize;
+
+      Vector3 grapDelta = graphitpos - armpos;
+      if( grapDelta.magnitude < grapStopDistance )
+        StopGrap();
+      else
+        velocity += (graphitpos - transform.position).normalized * grapPullSpeed;
     }
 
-    velocity += push;
-    // vertically push is one-time instantaneous only
-    push.y = 0;
     // add gravity before velocity limits
     velocity.y -= Global.Gravity * Time.deltaTime;
     // limit velocity before adding to position
     if( collideRight )
     {
       velocity.x = Mathf.Min( velocity.x, 0 );
-      push.x = Mathf.Min( push.x, 0 );
+      damagePush.x = Mathf.Min( damagePush.x, 0 );
     }
     if( collideLeft )
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
-      push.x = Mathf.Max( push.x, 0 );
+      damagePush.x = Mathf.Max( damagePush.x, 0 );
     }
     // "onGround" is not the same as "collideFeet"
     if( onGround )
     {
       velocity.y = Mathf.Max( velocity.y, 0 );
-      push.x -= (push.x * friction) * Time.deltaTime;
+      damagePush.x -= (damagePush.x * friction) * Time.deltaTime;
     }
     if( collideHead )
     {
@@ -555,7 +634,8 @@ public class PlayerController : Character, IDamage
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     transform.position += velocity * Time.deltaTime;
     // must hold button to move horizontally, so allow no persistent horizontal velocity
-    velocity.x = 0;
+    if( !grapPulling )
+      velocity.x = 0;
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
 
@@ -686,15 +766,15 @@ public class PlayerController : Character, IDamage
 
     float sign = Mathf.Sign( d.instigator.position.x - transform.position.x );
     facingRight = sign > 0;
-    push.y = damageLift;
+    damagePush.y = damageLift;
     velocity.y = 0;
     arm.gameObject.SetActive( false );
     takingDamage = true;
     invulnerable = true;
     animator.Play( "damage" );
-    damageTimer.Start( animator.CurrentSequence.GetDuration(), delegate ( Timer t )
+    damageTimer.Start( animator.CurrentSequence.GetDuration(), (System.Action<Timer>)delegate ( Timer t )
     {
-      push.x = -sign * damagePush;
+      this.damagePush.x = -sign * this.damagePushAmount;
 
     }, delegate ()
     {

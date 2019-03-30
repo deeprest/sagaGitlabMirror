@@ -512,6 +512,7 @@ public class Global : MonoBehaviour
     icsKeyboard.keyMap["Down"] = KeyCode.S;
     icsKeyboard.keyMap["Dash"] = KeyCode.Space;
     icsKeyboard.keyMap["Fire"] = KeyCode.Mouse0;
+    icsKeyboard.keyMap["graphook"] = KeyCode.Mouse1;
 
     icsKeyboard.keyMap["Charge"] = KeyCode.Mouse0;
 
@@ -522,6 +523,7 @@ public class Global : MonoBehaviour
     icsGamepad.keyMap["Down"] = KeyCode.JoystickButton0;
     icsGamepad.keyMap["Dash"] = KeyCode.JoystickButton13;
     icsGamepad.keyMap["Fire"] = KeyCode.None;
+    icsGamepad.keyMap["graphook"] = KeyCode.None;
     icsGamepad.keyMap["Charge"] = KeyCode.None;
     icsGamepad.axisMap["ShootX"] = "Joy0Axis2";
     icsGamepad.axisMap["ShootY"] = "Joy0Axis3";
