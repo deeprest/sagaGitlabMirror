@@ -33,7 +33,7 @@ public class Chopper : MonoBehaviour {
       {
         character.transform.parent = null;
         character.hanging = false;
-        character.damagePush.x = speed;
+        character.push.x = speed;
         character = null;
       }
     }

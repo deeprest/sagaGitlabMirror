@@ -53,7 +53,7 @@ public class PlayerController : Character, IDamage
   public bool hanging { get; set; }
 
   public Vector3 velocity = Vector3.zero;
-  public Vector3 damagePush = Vector3.zero;
+  public Vector3 push = Vector3.zero;
   public float friction = 1f;
   float dashStart;
   float jumpStart;
@@ -590,11 +590,8 @@ public class PlayerController : Character, IDamage
     if( takingDamage )
     {
       anim = "damage";
-      velocity += damagePush;
-      // vertical push is one-time instantaneous only
-      damagePush.y = 0;
     }
-    else
+
     if( grapPulling )
     {
       Vector3 armpos = arm.position + shoot.normalized * armRadius;
@@ -609,6 +606,12 @@ public class PlayerController : Character, IDamage
       else
         velocity += (graphitpos - transform.position).normalized * grapPullSpeed;
     }
+    else
+    {
+      velocity += push;
+      // vertical push is one-time instantaneous only
+      push.y = 0;
+    }
 
     // add gravity before velocity limits
     velocity.y -= Global.Gravity * Time.deltaTime;
@@ -616,18 +619,18 @@ public class PlayerController : Character, IDamage
     if( collideRight )
     {
       velocity.x = Mathf.Min( velocity.x, 0 );
-      damagePush.x = Mathf.Min( damagePush.x, 0 );
+      push.x = Mathf.Min( push.x, 0 );
     }
     if( collideLeft )
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
-      damagePush.x = Mathf.Max( damagePush.x, 0 );
+      push.x = Mathf.Max( push.x, 0 );
     }
     // "onGround" is not the same as "collideFeet"
     if( onGround )
     {
       velocity.y = Mathf.Max( velocity.y, 0 );
-      damagePush.x -= (damagePush.x * friction) * Time.deltaTime;
+      push.x -= (push.x * friction) * Time.deltaTime;
     }
     if( collideHead )
     {
@@ -776,7 +779,7 @@ public class PlayerController : Character, IDamage
 
     float sign = Mathf.Sign( d.instigator.position.x - transform.position.x );
     facingRight = sign > 0;
-    damagePush.y = damageLift;
+    push.y = damageLift;
     velocity.y = 0;
     arm.gameObject.SetActive( false );
     takingDamage = true;
@@ -784,7 +787,7 @@ public class PlayerController : Character, IDamage
     animator.Play( "damage" );
     damageTimer.Start( animator.CurrentSequence.GetDuration(), (System.Action<Timer>)delegate ( Timer t )
     {
-      this.damagePush.x = -sign * this.damagePushAmount;
+      this.push.x = -sign * this.damagePushAmount;
 
     }, delegate ()
     {
