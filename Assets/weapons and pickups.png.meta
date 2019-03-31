@@ -20,6 +20,8 @@ TextureImporter:
     21300030: weapons and pickups_7
     21300032: weapons and pickups_8
     21300034: weapons and pickups_9
+    21300036: grapChain
+    21300038: grapHookTip
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -60,12 +62,12 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 1
+  spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -483,10 +485,50 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: grapChain
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 726
+        width: 8
+        height: 5
+      alignment: 4
+      pivot: {x: 0, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 838e4f0bdf9df488ba367d9eaba97163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: grapHookTip
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 779
+        width: 14
+        height: 15
+      alignment: 4
+      pivot: {x: 0, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f3658a7686ea425d878d7bd302bf49f
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 07711fa4531794aa4a456a20ae5d851e
     vertices: []
     indices: 
     edges: []

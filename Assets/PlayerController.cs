@@ -109,6 +109,8 @@ public class PlayerController : Character, IDamage
   void Start()
   {
     spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+    graphookTip.SetActive( false );
+    grapCableRender.gameObject.SetActive( false );
   }
 
   void UpdateCollision( float dT )
@@ -253,7 +255,6 @@ public class PlayerController : Character, IDamage
 
   void ShootGraphook()
   {
-    //shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector3 pos = arm.position + shoot.normalized * armRadius;
     if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
     {
@@ -265,12 +266,15 @@ public class PlayerController : Character, IDamage
         graphookTip.SetActive( true );
         graphookTip.transform.parent = null;
         graphookTip.transform.position = pos;
+        graphookTip.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - transform.position) ) ); ;
         grapTimer.Start( grapTimeout, delegate
         {
           pos = arm.position + shoot.normalized * armRadius;
           graphookTip.transform.position = Vector3.MoveTowards( graphookTip.transform.position, graphitpos, grapSpeed * Time.deltaTime );
           //grap cable
-          grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - pos) ) );
+          grapCableRender.gameObject.SetActive( true );
+          grapCableRender.transform.position = pos;
+          grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - pos) ) );
           grapSize = grapCableRender.size;
           grapSize.x = Vector3.Distance( graphookTip.transform.position, pos );
           grapCableRender.size = grapSize;
@@ -278,7 +282,7 @@ public class PlayerController : Character, IDamage
           if( Vector3.Distance( graphookTip.transform.position, graphitpos ) < 0.01f )
           {
             grapPulling = true;
-            //grapTimer.Stop( false );
+            grapTimer.Stop( false );
             grapTimer.Start( grapTimeout, null, StopGrap );
           }
         },
@@ -291,8 +295,10 @@ public class PlayerController : Character, IDamage
   {
     grapPulling = false;
     graphookTip.SetActive( false );
+    grapCableRender.gameObject.SetActive( false );
     grapSize.x = 0;
     grapCableRender.size = grapSize;
+    grapTimer.Stop( false );
   }
 
   void ShootCharged()
@@ -356,7 +362,6 @@ public class PlayerController : Character, IDamage
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["graphook"] ) )
     {
       inputGraphook = true;
-      ShootGraphook();
     }
 
     if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Charge"] ) )
@@ -408,6 +413,7 @@ public class PlayerController : Character, IDamage
     inputChargeStart = false;
     inputCharge = false;
     inputChargeEnd = false;
+    inputGraphook = false;
   }
 
   void Update()
@@ -417,6 +423,9 @@ public class PlayerController : Character, IDamage
 
     if( playerInput )
       UpdatePlayerInput();
+
+    if( inputGraphook && !grapPulling )
+      ShootGraphook();
 
     if( inputChargeStart )
       StartCharge();
@@ -589,13 +598,13 @@ public class PlayerController : Character, IDamage
     if( grapPulling )
     {
       Vector3 armpos = arm.position + shoot.normalized * armRadius;
-      grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - armpos) ) );
+      grapCableRender.transform.position = armpos;
+      grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - armpos) ) );
       grapSize = grapCableRender.size;
       grapSize.x = Vector3.Distance( graphookTip.transform.position, armpos );
       grapCableRender.size = grapSize;
 
-      Vector3 grapDelta = graphitpos - armpos;
-      if( grapDelta.magnitude < grapStopDistance )
+      if( (graphitpos - transform.position).magnitude < grapStopDistance )
         StopGrap();
       else
         velocity += (graphitpos - transform.position).normalized * grapPullSpeed;
@@ -634,8 +643,9 @@ public class PlayerController : Character, IDamage
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     transform.position += velocity * Time.deltaTime;
     // must hold button to move horizontally, so allow no persistent horizontal velocity
-    if( !grapPulling )
-      velocity.x = 0;
+    velocity.x = 0;
+    if( grapPulling )
+      velocity.y = 0;
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
 
