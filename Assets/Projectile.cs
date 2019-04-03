@@ -56,7 +56,8 @@ public class Projectile : MonoBehaviour
       float duration = animator.CurrentSequence.GetDuration();
       new Timer( duration, null, delegate
       {
-        Destroy( gameObject );
+        if( gameObject != null )
+          Destroy( gameObject );
       } );
         
       /*ParticleSystem ps = go.GetComponent<ParticleSystem>();

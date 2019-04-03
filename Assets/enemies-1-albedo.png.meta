@@ -30,6 +30,8 @@ TextureImporter:
     21300050: airbot-0
     21300052: airbot-1
     21300054: airbot-2
+    21300056: hjunk
+    21300058: hjunk2
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -75,7 +77,7 @@ TextureImporter:
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 0
+  spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -678,6 +680,57 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 4dc0da67c64534de789439fd7ae08793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hjunk
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 187
+        width: 34
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: 0, y: 15}
+        - {x: -17, y: 0}
+        - {x: -17, y: -13}
+        - {x: -16, y: -15}
+        - {x: 17, y: -15}
+        - {x: 17, y: 15}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c1730493c11749c3bcb0b5ce58429e0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hjunk2
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 193
+        width: 32
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -15, y: 14.5}
+        - {x: -16, y: 10.5}
+        - {x: -16, y: -16.5}
+        - {x: 16, y: -16.5}
+        - {x: 16, y: 14.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d89647a235194869b2bcef93ac07ec2
       vertices: []
       indices: 
       edges: []

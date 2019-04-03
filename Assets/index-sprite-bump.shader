@@ -28,9 +28,9 @@
      "RenderType"="Transparent" 
    }
    Cull Off
-   //Lighting Off
-   //ZWrite Off
-   //Blend One OneMinusSrcAlpha
+   Lighting On
+   ZWrite Off
+   Blend One OneMinusSrcAlpha
 
    CGPROGRAM
    // Physically based Standard lighting model, and enable shadows on all light types

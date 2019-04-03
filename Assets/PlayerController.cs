@@ -113,6 +113,16 @@ public class PlayerController : Character, IDamage
     grapCableRender.gameObject.SetActive( false );
   }
 
+  void OnDestroy()
+  {
+    damageTimer.Stop( false );
+    damagePulseTimer.Stop( false );
+    shootRepeatTimer.Stop( false );
+    chargePulse.Stop( false );
+    chargeSoundLoopDelay.Stop( false );
+    chargeStartDelay.Stop( false );
+  }
+
   void UpdateCollision( float dT )
   {
     collideRight = false;
@@ -229,7 +239,7 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    transform.position = new Vector3( adjust.x, adjust.y, transform.position.z );
+    transform.position = adjust;
   }
 
   void Shoot()
@@ -251,10 +261,15 @@ public class PlayerController : Character, IDamage
   Timer grapPullTimer = new Timer();
   Vector2 grapSize;
   Vector3 graphitpos;
+  public bool grapShooting;
   public bool grapPulling;
+  public AudioClip grapShotSound;
+  public AudioClip grapHitSound;
 
   void ShootGraphook()
   {
+    if( grapShooting )
+      return;
     Vector3 pos = arm.position + shoot.normalized * armRadius;
     if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
     {
@@ -262,6 +277,7 @@ public class PlayerController : Character, IDamage
       if( hit )
       {
         Debug.DrawLine( pos, hit.point, Color.red );
+        grapShooting = true;
         graphitpos = hit.point;
         graphookTip.SetActive( true );
         graphookTip.transform.parent = null;
@@ -281,18 +297,22 @@ public class PlayerController : Character, IDamage
 
           if( Vector3.Distance( graphookTip.transform.position, graphitpos ) < 0.01f )
           {
+            grapShooting = false;
             grapPulling = true;
             grapTimer.Stop( false );
             grapTimer.Start( grapTimeout, null, StopGrap );
+            audio.PlayOneShot( grapHitSound );
           }
         },
         StopGrap );
+        audio.PlayOneShot( grapShotSound );
       }
     }
   }
 
   void StopGrap()
   {
+    grapShooting = false;
     grapPulling = false;
     graphookTip.SetActive( false );
     grapCableRender.gameObject.SetActive( false );
@@ -601,10 +621,11 @@ public class PlayerController : Character, IDamage
       grapSize.x = Vector3.Distance( graphookTip.transform.position, armpos );
       grapCableRender.size = grapSize;
 
-      if( (graphitpos - transform.position).magnitude < grapStopDistance )
+      Vector3 grapDelta = graphitpos - transform.position;
+      if( grapDelta.magnitude < grapStopDistance )
         StopGrap();
-      else
-        velocity += (graphitpos - transform.position).normalized * grapPullSpeed;
+      else if( grapDelta.magnitude > 0.01f )
+        velocity += grapDelta.normalized * grapPullSpeed;
     }
     else
     {
@@ -644,6 +665,7 @@ public class PlayerController : Character, IDamage
       animator.Play( anim );
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
+    velocity.z = 0;
     transform.position += velocity * Time.deltaTime;
     // must hold button to move horizontally, so allow no persistent horizontal velocity
     velocity.x = 0;

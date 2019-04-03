@@ -17,6 +17,7 @@ public class Hornet : Enemy
   public float explosionRange = 1;
   bool dying;
   Timer explosionTimer = new Timer();
+  public GameObject junk;
   Vector3 tvel;
   Timer wheelDrop = new Timer();
   public float wheelDropInterval = 3;
@@ -33,20 +34,24 @@ public class Hornet : Enemy
     UpdateEnemy = UpdateHornet;
   }
 
+  void OnDestroy()
+  {
+    explosionTimer.Stop( false );
+  }
 
   protected override void Die()
   {
     dying = true;
     collider.enabled = false;
     UpdateHit = null;
-    UpdateCollision = null;
+    //UpdateCollision = null;
     explosionTimer.Start( 10, explosionInterval, 
     delegate { 
       Instantiate( explosion, transform.position + (Vector3)Random.insideUnitCircle * explosionRange, Quaternion.identity );
     }, 
     delegate { 
-      // boom
       Destroy( gameObject );
+      Instantiate( junk, transform.position, Quaternion.identity );
     } );
   }
 
@@ -57,6 +62,11 @@ public class Hornet : Enemy
       if( dying )
       {
         velocity += Vector3.down * crashSpeed * Time.deltaTime;
+        if( collideBottom )
+        {
+          Destroy( gameObject );
+          Instantiate( junk, transform.position, Quaternion.identity );
+        }
         return;
       }
       Vector3 player = Global.instance.CurrentPlayer.transform.position;

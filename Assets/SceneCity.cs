@@ -3,14 +3,13 @@ using System.Collections;
 
 public class SceneCity : MonoBehaviour
 {
-  // Use this for initialization
   void Start()
   {
-    if( !Application.isEditor || Global.instance.SimulatePlayer )
-    {
-      Global.instance.SpawnPlayer();
-      Global.instance.ChopDrop();
-    }
+    //if( Application.isEditor && !Global.instance.SimulatePlayer )
+      //return;
+    //Global.instance.SpawnPlayer();
+    Global.instance.ChopDrop();
+    Global.instance.ready.SetActive( true );
   }
 
 }

@@ -554,7 +554,7 @@ MonoBehaviour:
   renderer: {fileID: 7469246720352550077}
   animator: {fileID: 7261148479284126975}
   idle: {fileID: 11400000, guid: 37065ca423ab942528fce8280a8c350e, type: 2}
-  health: 30
+  health: 1
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
   hitPush: 0.5
@@ -570,9 +570,10 @@ MonoBehaviour:
   rotspeed: 30
   topspeedrot: 2
   acc: 1
-  crashSpeed: 3
+  crashSpeed: 2
   explosionInterval: 0.2
   explosionRange: 1
+  junk: {fileID: 1678155047526447402, guid: 8a88163a7c52c4dc9b6808a920402663, type: 3}
   wheelDropInterval: 3
   drop: {fileID: 6813992315022888228}
   dropPrefab: {fileID: 1094346900350558, guid: d602960e06ef345db9212ecac4516ddb, type: 3}

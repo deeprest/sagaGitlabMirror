@@ -364,7 +364,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 590970608}
-  - component: {fileID: 590970610}
+  - component: {fileID: 590970607}
   m_Layer: 0
   m_Name: SCENE
   m_TagString: Scene
@@ -372,6 +372,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &590970607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590970606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30a191d5ab0fb4f5f80b6714a53984f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drcain: {fileID: 11400000, guid: 2dfa3dd29aabe4b9c9daf91f7da83a50, type: 2}
+  drcainJabber: {fileID: 2134318689}
+  drcainAnimator: {fileID: 2134318685}
+  runPlayer: 0
 --- !u!4 &590970608
 Transform:
   m_ObjectHideFlags: 0
@@ -386,22 +402,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &590970610
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 590970606}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd1b0801381604b3bb8b1c0e56cff34e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  drcain: {fileID: 11400000, guid: 2dfa3dd29aabe4b9c9daf91f7da83a50, type: 2}
-  drcainJabber: {fileID: 2134318689}
-  drcainAnimator: {fileID: 2134318685}
-  runPlayer: 0
 --- !u!1 &641665940
 GameObject:
   m_ObjectHideFlags: 0

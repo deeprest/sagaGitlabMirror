@@ -87,7 +87,7 @@ public class Global : MonoBehaviour
   [Header( "Runtime Objects" )]
   public PlayerController CurrentPlayer;
   public RectTransform cursor;
-  public Chopper chopper; 
+  public Chopper chopper;
 
 
   public float slowtime = 0.2f;
@@ -163,29 +163,20 @@ public class Global : MonoBehaviour
 
   IEnumerator InitializeRoutine()
   {
-    if( !Application.isEditor || SimulatePlayer )
-    {
-      //Camera.main.fieldOfView = 60;
-      Pause();
-      yield return LoadSceneRoutine( "intro" );
-      SpawnPlayer();
-      SceneIntro story = FindObjectOfType<SceneIntro>();
-      story.enabled = true;
-      Unpause();
-
-      /*yield return new WaitForSecondsRealtime( introdelay );
-      yield return LoadScene( "mmx-city", false );
-      SpawnPlayer();
-      ChopDrop();*/
-    }
-    else
+    Pause();
+    if( Application.isEditor && !SimulatePlayer )
     {
       SpawnPlayer();
       yield return new WaitForSecondsRealtime( 1 );
     }
+    else
+    {
+      //Camera.main.fieldOfView = 60;
+      yield return LoadSceneRoutine( "home" );
+      SpawnPlayer();
+    }
 
     Unpause();
-    ready.SetActive( true );
     yield return null;
   }
 
@@ -199,10 +190,14 @@ public class Global : MonoBehaviour
     FadeBlack();
     while( fadeTimer.IsActive )
       yield return null;
-   AsyncOperation ao = SceneManager.LoadSceneAsync( sceneName, LoadSceneMode.Single );
+    if( CurrentPlayer != null )
+      SceneManager.MoveGameObjectToScene( CurrentPlayer.gameObject, gameObject.scene );
+    AsyncOperation ao = SceneManager.LoadSceneAsync( sceneName, LoadSceneMode.Single );
     while( !ao.isDone )
       yield return null;
-    SceneManager.SetActiveScene( SceneManager.GetSceneByName( sceneName ) );
+    Scene scene = SceneManager.GetSceneByName( sceneName );
+    //if( CurrentPlayer != null )
+    //SceneManager.MoveGameObjectToScene( CurrentPlayer.gameObject, scene );
     FadeClear();
     if( waitForFadeIn )
       while( fadeTimer.IsActive )
@@ -257,7 +252,7 @@ public class Global : MonoBehaviour
     if( Mathf.Abs( Input.GetAxis( "Zoom" ) ) > 0 )
     {
       CameraController.zOffset += Input.GetAxis( "Zoom" );
-      debugText.text = CameraController.zOffset.ToString("##.#");
+      debugText.text = CameraController.zOffset.ToString( "##.#" );
     }
 
     if( Input.GetKeyDown( KeyCode.O ) )
@@ -312,7 +307,7 @@ public class Global : MonoBehaviour
     Cursor.visible = !hasFocus;
   }
 
- 
+
 
   void LateUpdate()
   {
@@ -748,13 +743,13 @@ public class Global : MonoBehaviour
     // priority 2 = player-engaged speech
     // priority 3 = mandatory message
     //if( CurrentPlayer == null || character == null )
-      //return;
+    //return;
     // equal priority overrides
     if( SpeechTimer.IsActive && priority < SpeechPriority )
       return;
     //float DistanceSqr = Vector3.SqrMagnitude( character.moveTransform.position - playerCharacter.moveTransform.position );
     //if( DistanceSqr > SpeechRange * SpeechRange )
-      //return;
+    //return;
 
     SpeechCharacter = character;
     SpeechPriority = priority;

@@ -6,8 +6,11 @@
   + guns
   + drop enemies (wheels instead of walkers)
   + death sequence
++ grappling hook
 
-- grappling hook
+sound for graphook
+hornet explosion
+
 * BOSS.
 - try aim snap to 1/8th
 - pickup temporary weapons from defeated foes
