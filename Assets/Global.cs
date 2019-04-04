@@ -79,6 +79,7 @@ public class Global : MonoBehaviour
   public CameraController CameraController;
   public Image fader;
   public GameObject ready;
+  public AudioSource music;
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
@@ -137,19 +138,18 @@ public class Global : MonoBehaviour
 
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
     {
-      //Debug.Log( "scene loaded" );
+      Debug.Log( "scene loaded: "+arg0.name );
     };
     SceneManager.activeSceneChanged += delegate ( Scene arg0, Scene arg1 )
     {
-      //Debug.Log( "active scene changed" );
+      Debug.Log( "active scene changed from "+arg0.name+" to "+arg1.name );
     };
 
     // UI
     //Cursor.visible = false;
-    debugText.text = CameraController.zOffset.ToString( "##.#" );
-
+    //debugText.text = CameraController.zOffset.ToString( "##.#" );
+    debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
     InitializeControls();
-
     StartCoroutine( InitializeRoutine() );
   }
 
@@ -168,15 +168,23 @@ public class Global : MonoBehaviour
     {
       SpawnPlayer();
       yield return new WaitForSecondsRealtime( 1 );
+      Unpause();
     }
     else
     {
       //Camera.main.fieldOfView = 60;
-      yield return LoadSceneRoutine( "home" );
+      music.Play();
+      //yield return LoadSceneRoutine( "home" );
+      fader.color = Color.black;
+      AsyncOperation ao = SceneManager.LoadSceneAsync( "home", LoadSceneMode.Single );
+      while( !ao.isDone )
+        yield return null;
       SpawnPlayer();
+      Unpause();
+      FadeClear();
+      while( fadeTimer.IsActive )
+        yield return null;
     }
-
-    Unpause();
     yield return null;
   }
 
@@ -251,8 +259,10 @@ public class Global : MonoBehaviour
 
     if( Mathf.Abs( Input.GetAxis( "Zoom" ) ) > 0 )
     {
-      CameraController.zOffset += Input.GetAxis( "Zoom" );
-      debugText.text = CameraController.zOffset.ToString( "##.#" );
+      //CameraController.zOffset += Input.GetAxis( "Zoom" );
+      //debugText.text = CameraController.zOffset.ToString( "##.#" );
+      Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
+      debugText.text = Camera.main.orthographicSize.ToString("##.#");
     }
 
     if( Input.GetKeyDown( KeyCode.O ) )

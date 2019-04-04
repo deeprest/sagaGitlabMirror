@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1361239658353872}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.048, y: 0.021, z: 0}
+  m_LocalPosition: {x: 0.058, y: 0.028, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4857518412556878}
@@ -4871,7 +4871,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: 10
-  m_Sprite: {fileID: 21300034, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
+  m_Sprite: {fileID: 21300042, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4894,7 +4894,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 10
+  CurrentFrameIndex: 4
   sac:
   - {fileID: 1614270579113136216}
   sr: {fileID: 212107818795109166}
@@ -4995,8 +4995,8 @@ MonoBehaviour:
   grapStopDistance: 0.3
   grapShooting: 0
   grapPulling: 0
-  grapShotSound: {fileID: 0}
-  grapHitSound: {fileID: 0}
+  grapShotSound: {fileID: 8300000, guid: 714bd8ea9667041e99bb9a12a950f4f3, type: 3}
+  grapHitSound: {fileID: 8300000, guid: 55037177bb692440ebfcf4e001cef0aa, type: 3}
 --- !u!61 &61999569739760366
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5344,7 +5344,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 6a2648f69ce4948a9852f1ae71e1bd17, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

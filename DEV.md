@@ -7,15 +7,17 @@
   + drop enemies (wheels instead of walkers)
   + death sequence
 + grappling hook
++ sound for graphook
 
-sound for graphook
-hornet explosion
 
 * BOSS.
-- try aim snap to 1/8th
-- pickup temporary weapons from defeated foes
 - borrow camera dolly/ramp from Flatlander, find ideal camera distance(s)
+
+- aim auto-snap within distance
+- try aim snap to 1/8th
+
 - audio: intro, loop, battle
+- pickup temporary weapons from defeated foes
 - health on HUD
 * death, respawn
 
@@ -82,13 +84,15 @@ MegamanX can only shoot forwards, not upwards or even slightly higher. The abili
 Not arbitrary static points.
 
 # Fan Games
-
 ["Cancelled/Dead Mega Man X Fangames"](https://www.youtube.com/watch?v=PB8pMBSK8AU)
 ["Mega Man X Elf Wars (aiming)"](https://youtu.be/xGahhqoooT0?t=109)
 ["Mega Man X++"](https://www.youtube.com/watch?v=twI3res-obs)
 ["Mega Man X: Corrupted"](http://www.megamanxcorrupted.com/)
 ["Apsel Haven Mega Man X fangame"](https://www.youtube.com/watch?v=CwW_cziXs4U)
 ["Mega Man X AD"](https://reploidsoft.blogspot.com/)
+# Similar Derived Games
+["20XX"](https://store.steampowered.com/app/322110/20XX/)
+
 
 ## random
 bad design mode: super slow text you cannot skip. (super metroid: "SPACE COLON".."Y")

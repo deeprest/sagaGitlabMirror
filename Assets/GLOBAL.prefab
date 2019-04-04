@@ -192,10 +192,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deadZone: 0.1
   SimulatePlayer: 1
-  InitialSceneName: mmx-city
+  InitialSceneName: home
   CameraController: {fileID: 114243473509280006}
   fader: {fileID: 5111060840001965675}
   ready: {fileID: 5110452321791460834}
+  music: {fileID: 681935436}
   audioOneShotPrefab: {fileID: 1480036779989360, guid: d4170fe16bae647ac97e235eb55168d5,
     type: 3}
   AvatarPrefab: {fileID: 1789244597324514, guid: e30c09e9b626b42f7aaf16c4fd9379ee,
@@ -256,7 +257,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 243019548750328766, guid: 1c39f8c58cb83400089739cd8e4d9c58,
     type: 2}
   m_audioClip: {fileID: 8300000, guid: 74c5e51d4c9c84495820dfdb80a5d04d, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -368,7 +369,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1671587495769190}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -2}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7319106273476287188}
@@ -394,7 +395,7 @@ MonoBehaviour:
   cursorAlpha: 0.5
   beyondCursorCoef: 1
   lerpAlpha: 50
-  zOffset: -2
+  zOffset: -10
   yHalfWidth: 0.5
   lerp: {fileID: 114891334979047146}
 --- !u!114 &114891334979047146
@@ -571,11 +572,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
-  far clip plane: 20
-  field of view: 60
-  orthographic: 0
-  orthographic size: 2
+  near clip plane: 0
+  far clip plane: 50
+  field of view: 20
+  orthographic: 1
+  orthographic size: 3
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -948,7 +949,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5039628669359160086
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1999,7 +2000,7 @@ PrefabInstance:
     - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.6
+      value: 3.8999999
       objectReference: {fileID: 0}
     - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
         type: 3}
@@ -2054,7 +2055,7 @@ PrefabInstance:
     - target: {fileID: 4182039790881745493, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
         type: 3}
       propertyPath: ShapeModule.radius.value
-      value: 0.48
+      value: 0.71999997
       objectReference: {fileID: 0}
     - target: {fileID: 1888601634, guid: 818c984cb06ae41bcbfb19c3f0434ff6, type: 3}
       propertyPath: follow

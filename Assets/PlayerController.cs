@@ -34,16 +34,16 @@ public class PlayerController : Character, IDamage
   public float wallSlideFactor = 0.5f;
   // input / control
   public bool playerInput = true;
-  [SerializeField] bool inputRight;
-  [SerializeField] bool inputLeft;
-  [SerializeField] bool inputJumpStart;
-  [SerializeField] bool inputJumpEnd;
-  [SerializeField] bool inputDashStart;
-  [SerializeField] bool inputDashEnd;
-  [SerializeField] bool inputChargeStart;
-  [SerializeField] bool inputCharge;
-  [SerializeField] bool inputChargeEnd;
-  [SerializeField] bool inputGraphook;
+  public bool inputRight;
+  public bool inputLeft;
+  public bool inputJumpStart;
+  public bool inputJumpEnd;
+  public bool inputDashStart;
+  public bool inputDashEnd;
+  public bool inputChargeStart;
+  public bool inputCharge;
+  public bool inputChargeEnd;
+  public bool inputGraphook;
   // state
   [SerializeField] bool facingRight = true;
   [SerializeField] bool onGround;
@@ -380,26 +380,16 @@ public class PlayerController : Character, IDamage
     }
 
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["graphook"] ) )
-    {
       inputGraphook = true;
-    }
 
     if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Charge"] ) )
-    {
       inputChargeStart = true;
-
-    }
     else
     if( Input.GetKey( Global.instance.icsCurrent.keyMap["Charge"] ) )
-    {
       inputCharge = true;
-
-    }
     else
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Charge"] ) )
-    {
       inputChargeEnd = true;
-    }
 
     // INPUT
 
@@ -452,9 +442,7 @@ public class PlayerController : Character, IDamage
     if( inputCharge && chargeEffect != null )
       chargeAmount += Time.deltaTime;
     if( inputChargeEnd )
-    {
       ShootCharged();
-    }
 
     if( !takingDamage )
     {

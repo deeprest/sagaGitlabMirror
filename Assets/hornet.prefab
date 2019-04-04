@@ -133,7 +133,7 @@ Light:
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -238,7 +238,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: 4
-  m_Sprite: {fileID: 21300016, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
+  m_Sprite: {fileID: 21300018, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -274,7 +274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 1
+  CurrentFrameIndex: 2
   sac:
   - {fileID: 4148881417808290978}
   sr: {fileID: 4845195264365010521}
@@ -554,7 +554,7 @@ MonoBehaviour:
   renderer: {fileID: 7469246720352550077}
   animator: {fileID: 7261148479284126975}
   idle: {fileID: 11400000, guid: 37065ca423ab942528fce8280a8c350e, type: 2}
-  health: 1
+  health: 20
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
   hitPush: 0.5
