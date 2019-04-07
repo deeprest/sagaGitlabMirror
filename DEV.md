@@ -9,16 +9,17 @@
 + grappling hook
 + sound for graphook
 
-
+- health on HUD
+- jump up wall sprite glitch
 * BOSS.
 - borrow camera dolly/ramp from Flatlander, find ideal camera distance(s)
 
 - aim auto-snap within distance
 - try aim snap to 1/8th
+- gamepad controller; camera, button to shoot or autoaim
 
 - audio: intro, loop, battle
 - pickup temporary weapons from defeated foes
-- health on HUD
 * death, respawn
 
 # improvements

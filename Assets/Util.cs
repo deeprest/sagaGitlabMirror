@@ -24,7 +24,7 @@ static class Util
     return System.DateTime.Now.Year.ToString() +
       System.DateTime.Now.Month.ToString( "D2" ) +
       System.DateTime.Now.Day.ToString( "D2" ) + "." +
-      System.DateTime.Now.Minute.ToString( "D2" ) +
-      System.DateTime.Now.Second.ToString( "D2" );
+      System.DateTime.Now.Hour.ToString( "D2" ) +
+      System.DateTime.Now.Minute.ToString( "D2" );
   }
 }

@@ -288,7 +288,7 @@ public class Global : MonoBehaviour
     if( Input.GetKeyDown( KeyCode.Return ) )
     {
       Chopper chopper = FindObjectOfType<Chopper>();
-      if( !Application.isEditor || (Global.instance.SimulatePlayer && chopper != null) )
+      if( (!Application.isEditor || Global.instance.SimulatePlayer) && chopper != null )
         ChopDrop();
       else
         CurrentPlayer.transform.position = FindSpawnPosition();
@@ -359,7 +359,7 @@ public class Global : MonoBehaviour
     return null;
   }
 
-  Vector3 FindSpawnPosition()
+  public Vector3 FindSpawnPosition()
   {
     GameObject go = FindSpawnPoint();
     if( go != null )
