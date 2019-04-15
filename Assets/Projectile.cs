@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+  public enum ProjectileType
+  {
+    Pulse,
+    Bullet,
+    Beam,
+    Grenade,
+    Sticky,
+    Bounce
+  }
+  public ProjectileType type = ProjectileType.Pulse;
+
   public Transform instigator;
   public Damage ContactDamage;
   public SpriteAnimator animator;
@@ -33,6 +44,9 @@ public class Projectile : MonoBehaviour
 
     if( AlignXToMovementDirection )
       transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( velocity.normalized.y, velocity.normalized.x ) ) );
+
+    if( type == ProjectileType.Bounce )
+      enabled = false;
   }
 
   void Update()
@@ -48,18 +62,21 @@ public class Projectile : MonoBehaviour
         dmg.point = hit.point;
         dam.TakeDamage( dmg );
       }
-      enabled = false;
-      transform.position = hit.point;
-      animator.Play( HitEffect );
-      //GameObject go = GameObject.Instantiate( HitEffect, transform.position, Quaternion.identity );
-      //SpriteAnimator sa = go.GetComponent<SpriteAnimator>();
-      float duration = animator.CurrentSequence.GetDuration();
-      new Timer( duration, null, delegate
+
+      if( type == ProjectileType.Pulse )
       {
-        if( gameObject != null )
-          Destroy( gameObject );
-      } );
-        
+        enabled = false;
+        transform.position = hit.point;
+        animator.Play( HitEffect );
+        //GameObject go = GameObject.Instantiate( HitEffect, transform.position, Quaternion.identity );
+        //SpriteAnimator sa = go.GetComponent<SpriteAnimator>();
+        float duration = animator.CurrentSequence.GetDuration();
+        new Timer( duration, null, delegate
+        {
+          if( gameObject != null )
+            Destroy( gameObject );
+        } );
+      }
       /*ParticleSystem ps = go.GetComponent<ParticleSystem>();
       Timer t = new Timer( ps.main.duration, null, delegate
       {

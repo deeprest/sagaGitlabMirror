@@ -51,6 +51,7 @@ public interface IDamage
 public class Character : MonoBehaviour
 {
   new public Collider2D collider;
+  public virtual void PreSceneTransition() { }
 }
 
 public class Attack
@@ -173,6 +174,7 @@ public class Global : MonoBehaviour
     else
     {
       //Camera.main.fieldOfView = 60;
+      Camera.main.orthographicSize = 2;
       music.Play();
       //yield return LoadSceneRoutine( "home" );
       fader.color = Color.black;
@@ -199,7 +201,10 @@ public class Global : MonoBehaviour
     while( fadeTimer.IsActive )
       yield return null;
     if( CurrentPlayer != null )
+    {
+      CurrentPlayer.PreSceneTransition();
       SceneManager.MoveGameObjectToScene( CurrentPlayer.gameObject, gameObject.scene );
+    }
     AsyncOperation ao = SceneManager.LoadSceneAsync( sceneName, LoadSceneMode.Single );
     while( !ao.isDone )
       yield return null;

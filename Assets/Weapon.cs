@@ -5,12 +5,6 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Weapon : ScriptableObject 
 {
-  //public enum WeaponType
-  //{
-  //  Buster,
-  //  DoubleBuster
-  //}
-  //public WeaponType weaponType = WeaponType.Buster;
   public Projectile ProjectilePrefab;
   public float speed = 1;
   public float shootInterval = 0.1f;
@@ -35,6 +29,8 @@ public class Weapon : ScriptableObject
       p.velocity = shoot.normalized * speed;
       Physics2D.IgnoreCollision( p.circle, instigator.collider );
       Global.instance.AudioOneShot( soundXBusterPew, pos );
+      if( p.type == Projectile.ProjectileType.Bounce )
+        p.GetComponent<Rigidbody2D>().velocity = new Vector2( p.velocity.x, p.velocity.y );
     }
   }
 
@@ -49,6 +45,8 @@ public class Weapon : ScriptableObject
       p.velocity = shoot.normalized * chargedSpeed;
       Physics2D.IgnoreCollision( p.circle, instigator.collider );
       Global.instance.AudioOneShot( soundChargeShot, pos );
+      if( p.type == Projectile.ProjectileType.Bounce )
+        p.GetComponent<Rigidbody2D>().velocity = new Vector2( p.velocity.x, p.velocity.y );
     }
   }
 }

@@ -9,15 +9,18 @@
 + grappling hook
 + sound for graphook
 
-- health on HUD
-- jump up wall sprite glitch
-* BOSS.
-- borrow camera dolly/ramp from Flatlander, find ideal camera distance(s)
+# bugs
+- reproducible: charge particles on after transition. reset player state on level transition
+- once: stuck in mid-air (after transition?)
+- reproducible: jump up wall sprite glitch
 
+
+- borrow camera dolly/ramp from Flatlander, find ideal camera distance(s); lock while in chamber.
 - aim auto-snap within distance
 - try aim snap to 1/8th
-- gamepad controller; camera, button to shoot or autoaim
+- gamepad controls; camera, button to shoot or autoaim
 
+* BOSS.
 - audio: intro, loop, battle
 - pickup temporary weapons from defeated foes
 * death, respawn
@@ -27,7 +30,7 @@
 - Menu with control options (and remap)
 - camera bounds
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
-- weapon ideas: slowtime, speedboost, shields, rapidfire, doublewhammy, missiles, homing missiles, supercharge, beam, stickybomb, invisible
+- weapon ideas: slowtime, speedboost, shields, rapidfire, doublewhammy, rockets, seeking missiles, supercharge, beam, stickybomb, invisible
 - 4 color buttons: change weapon, menu, interact, use item/powerup
 - atmosphere: rain/dust flying around, blinking lights
 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#define ANIM
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,11 @@ public class PlayerController : Character, IDamage
 {
   new public AudioSource audio;
   public AudioSource audio2;
+#if ANIM
+  public Animator animator;
+#else
   public SpriteAnimator animator;
+#endif
   public ParticleSystem dashSmoke;
   public Transform arm;
 
@@ -109,6 +114,7 @@ public class PlayerController : Character, IDamage
   void Start()
   {
     spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+    sac = GetComponentsInChildren<SpriteChunk>();
     graphookTip.SetActive( false );
     grapCableRender.gameObject.SetActive( false );
   }
@@ -316,6 +322,8 @@ public class PlayerController : Character, IDamage
     grapPulling = false;
     graphookTip.SetActive( false );
     grapCableRender.gameObject.SetActive( false );
+    // avoid grapsize.y == 0 if StopGrap is called before grapSize is assigned
+    grapSize.y = grapCableRender.size.y;
     grapSize.x = 0;
     grapCableRender.size = grapSize;
     grapTimer.Stop( false );
@@ -524,8 +532,11 @@ public class PlayerController : Character, IDamage
     if( landing && (Time.time - landStart >= landDuration) )
       landing = false;
 
-    animator.flipX = !facingRight;
+#if ANIM
 
+#else
+    animator.flipX = !facingRight;
+#endif
     string anim = "idle";
 
     if( jumping )
@@ -536,7 +547,7 @@ public class PlayerController : Character, IDamage
       if( dashing )
         anim = "dash";
       else
-      if( inputRight || inputLeft )
+      if( inputRight || inputLeft ) 
         anim = "run";
       else
       if( landing )
@@ -649,9 +660,15 @@ public class PlayerController : Character, IDamage
     if( hanging )
       velocity = Vector3.zero;
 
+#if ANIM
+      //if( animator.GetCurrentAnimatorStateInfo( 0 ).shortNameHash != Animator.StringToHash( anim ) )
+        animator.Play( anim );
+        
+
+#else
     if( anim != animator.CurrentSequence.name )
       animator.Play( anim );
-
+#endif
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     velocity.z = 0;
     transform.position += velocity * Time.deltaTime;
@@ -672,6 +689,41 @@ public class PlayerController : Character, IDamage
     }
 
     ResetInput();
+  }
+
+  SpriteChunk[] sac;
+
+/*
+ #if ANIM
+  void OnAnimatorMove()
+  {
+    foreach( var sa in sac )
+      if( sa.flipXPosition )
+      {
+        Vector3 pos = sa.transform.localPosition;
+        pos.x = -pos.x;
+        sa.transform.localPosition = pos;
+      }
+  }
+#endif
+*/
+
+  void LateUpdate()
+  {
+    foreach( var sa in sac )
+    {
+      if( sa.flipXRenderer )
+      {
+        sa.spriteRenderer.flipX = !facingRight;
+        sa.spriteRenderer.material.SetInt( "_FlipX", !facingRight ? 1 : 0 );
+      }
+      if( !facingRight && sa.flipXPosition )
+      {
+        Vector3 pos = sa.transform.localPosition;
+        pos.x = -pos.x;
+        sa.transform.localPosition = pos;
+      }
+    }
   }
 
   void StartJump()
@@ -795,7 +847,12 @@ public class PlayerController : Character, IDamage
     takingDamage = true;
     invulnerable = true;
     animator.Play( "damage" );
-    damageTimer.Start( animator.CurrentSequence.GetDuration(), (System.Action<Timer>)delegate ( Timer t )
+#if ANIM
+    float length = animator.GetCurrentAnimatorStateInfo( 0 ).length;
+#else
+    float length = animator.CurrentSequence.GetDuration();
+#endif
+    damageTimer.Start( length, (System.Action<Timer>)delegate ( Timer t )
     {
       this.push.x = -sign * this.damagePushAmount;
 
@@ -818,4 +875,9 @@ public class PlayerController : Character, IDamage
 
   }
 
+  public override void PreSceneTransition()
+  {
+    StopCharge();
+    StopGrap();
+  }
 }

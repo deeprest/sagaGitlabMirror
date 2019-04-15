@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f70065a8d63941feaad937e3363da66, type: 3}
+  m_Name: BossOrange-walk
+  m_EditorClassIdentifier: 
+  UseFrames: 1
+  fps: 4
+  loop: 1
+  loopStartIndex: 0
+  sprites: []
+  frames:
+  - sprite: {fileID: 0}
+    point:
+    - name: torso
+      point: {x: 0, y: 0.428}
+    - name: leg back
+      point: {x: 0.23399997, y: 0.25199997}
+    - name: leg front
+      point: {x: -0.152, y: 0.249}
+    - name: leg back (1)
+      point: {x: 0.705, y: 0.34}
+  - sprite: {fileID: 0}
+    point:
+    - name: torso
+      point: {x: 0.064, y: 0.428}
+  - sprite: {fileID: 0}
+    point:
+    - name: torso
+      point: {x: 0.123, y: 0.428}
+  - sprite: {fileID: 0}
+    point:
+    - name: torso
+      point: {x: 0.206, y: 0.428}
+    - name: leg back (1)
+      point: {x: 0.772, y: 0.34}
+  - sprite: {fileID: 0}
+    point:
+    - name: torso
+      point: {x: 0.267, y: 0.428}
+  - sprite: {fileID: 0}
+    point:
+    - name: torso
+      point: {x: 0.288, y: 0.428}
+  - sprite: {fileID: 0}
+    point:
+    - name: torso
+      point: {x: 0.352, y: 0.428}
+  - sprite: {fileID: 0}
+    point:
+    - name: torso
+      point: {x: 0.373, y: 0.428}
+  - sprite: {fileID: 0}
+    point:
+    - name: torso
+      point: {x: 0.39, y: 0.428}
+  - sprite: {fileID: 0}
+    point:
+    - name: leg front
+      point: {x: 0.594, y: 0.249}

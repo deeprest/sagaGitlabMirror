@@ -33,7 +33,7 @@ public class AnimFrame
   //public AnimFrame keyFrame;
   public bool isKeyframe { get { return point.Count > 0; } }
   public Sprite sprite;
-  public List<AnimFramePoint> point;
+  public List<AnimFramePoint> point = new List<AnimFramePoint>();
 }
 
 [CreateAssetMenu]
@@ -81,5 +81,9 @@ public class AnimSequence : ScriptableObject
   public void DeleteFrame( int index )
   {
     frames[index].point.Clear();
+  }
+  public void NewFrame()
+  {
+    ArrayUtility.Add<AnimFrame>( ref frames, new AnimFrame() );
   }
 }

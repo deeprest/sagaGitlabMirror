@@ -6,6 +6,7 @@ using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
 
+/*
 [CanEditMultipleObjects]
 [CustomEditor( typeof( SpriteAnimator ) )]
 public class SpriteAnimationEditor : Editor
@@ -39,9 +40,39 @@ public class SpriteAnimationEditor : Editor
       foreach( var sac in sa.sac )
         sac.ResetPosition();
     }
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "New Frame" ) )
+    {
+      sa.CurrentSequence.NewFrame();
+      sa.CurrentFrameIndex = sa.CurrentSequence.frames.Length - 1;
+    }
+
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "Set Frame" ) )
+    {
+      List<AnimFramePoint> p = sa.CurrentSequence.frames[sa.CurrentFrameIndex].point;
+      foreach( var c in sa.sac )
+      {
+        AnimFramePoint afp = p.Find( x => x.name == c.name );
+        if( afp == null )
+        {
+          AnimFramePoint np = new AnimFramePoint();
+          np.name = c.name;
+          np.point = new Vector2( c.transform.position.x, c.transform.position.y );
+          p.Add( np );
+        }
+        else
+        {
+          afp.point = new Vector2( c.transform.position.x, c.transform.position.y );
+        }
+      }
+    }
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "Update Children" ) )
+    {
+      sa.sac = sa.gameObject.GetComponentsInChildren<SpriteAnimationChild>();
+    }
     DrawDefaultInspector();
   }
 }
+*/
 #endif
 
 [System.Serializable]
@@ -90,7 +121,7 @@ public class SpriteAnimator : MonoBehaviour
 
   void Start()
   {
-    sac = GetComponentsInChildren<SpriteAnimationChild>();
+    //sac = GetComponentsInChildren<SpriteAnimationChild>();
 
     /*if( anims.Length > 0 )
     {
@@ -139,13 +170,13 @@ public class SpriteAnimator : MonoBehaviour
   public void Stop()
   {
     isPlaying = false;
-#if UNITY_EDITOR
+/*#if UNITY_EDITOR
     if( !Application.isPlaying )
     {
       foreach( var child in sac )
         child.ResetPosition();
     }
-#endif
+#endif*/
   }
 
   public void AdvanceFrame( float time )

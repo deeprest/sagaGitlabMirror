@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4897319614591276}
   - component: {fileID: 212829855198719112}
-  - component: {fileID: 1614270579113136216}
+  - component: {fileID: 3732914601229661754}
   m_Layer: 10
   m_Name: arm
   m_TagString: Untagged
@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1361239658353872}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.082, y: 0.039, z: 0}
+  m_LocalPosition: {x: 0.043, y: 0.028, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4857518412556878}
@@ -80,7 +80,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1614270579113136216
+--- !u!114 &3732914601229661754
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -89,10 +89,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1361239658353872}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4784a28c7f28d4a758f4311f527ce77d, type: 3}
+  m_Script: {fileID: 11500000, guid: ac684522dd410417aba2deb62721cdba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sa: {fileID: 114275203110822438}
+  spriteRenderer: {fileID: 212829855198719112}
+  isRoot: 0
+  flipXRenderer: 0
+  flipXPosition: 1
 --- !u!1 &1361865905516568
 GameObject:
   m_ObjectHideFlags: 0
@@ -110,7 +113,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4628035983201072
 Transform:
   m_ObjectHideFlags: 0
@@ -4804,13 +4807,14 @@ GameObject:
   m_Component:
   - component: {fileID: 4857518412556878}
   - component: {fileID: 212107818795109166}
-  - component: {fileID: 114275203110822438}
   - component: {fileID: 114555753213364338}
   - component: {fileID: 61999569739760366}
   - component: {fileID: 82117261715149456}
   - component: {fileID: 82627251547920718}
+  - component: {fileID: 1697597636064711849}
+  - component: {fileID: 1941109611158836893}
   m_Layer: 10
-  m_Name: AvatarMMXSprite
+  m_Name: AvatarMMXSprite 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4871,7 +4875,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: 10
-  m_Sprite: {fileID: 21300040, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9336af96acf524f9eb4f5de5f0f9c797, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4882,38 +4886,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &114275203110822438
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1789244597324514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurrentFrameIndex: 3
-  sac:
-  - {fileID: 1614270579113136216}
-  sr: {fileID: 212107818795109166}
-  image: {fileID: 0}
-  flipX: 0
-  CurrentSequence: {fileID: 11400000, guid: ef484192eaacd44c5959cf8fcb67ebdc, type: 2}
-  isPlaying: 1
-  playAtAStart: 1
-  anims:
-  - {fileID: 11400000, guid: 3e4d5aa22a05c405fb81a2d9667479f0, type: 2}
-  - {fileID: 11400000, guid: ef484192eaacd44c5959cf8fcb67ebdc, type: 2}
-  - {fileID: 11400000, guid: 626796f6d86a74357977655c55788e41, type: 2}
-  - {fileID: 11400000, guid: b9c74197f38744c1fb0a79c4f9eaa6e4, type: 2}
-  - {fileID: 11400000, guid: 64beaaa95c7d74618a47e693bb3ff6c0, type: 2}
-  - {fileID: 11400000, guid: b53a32c2a40b34dcba259b969f22db01, type: 2}
-  - {fileID: 11400000, guid: 1754435b122d44de486be2f2d4e9d019, type: 2}
-  - {fileID: 11400000, guid: 683a52c627a7046c8a3d5c862fb03801, type: 2}
-  - {fileID: 11400000, guid: fc18f74c566684eadabce8da5353134e, type: 2}
-  - {fileID: 11400000, guid: 9a754c7c476e84e41950794f69e377a5, type: 2}
 --- !u!114 &114555753213364338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4929,7 +4901,7 @@ MonoBehaviour:
   collider: {fileID: 61999569739760366}
   audio: {fileID: 82117261715149456}
   audio2: {fileID: 82627251547920718}
-  animator: {fileID: 114275203110822438}
+  animator: {fileID: 1697597636064711849}
   dashSmoke: {fileID: 198502029244883790}
   arm: {fileID: 4897319614591276}
   raydown: 0.2
@@ -5217,6 +5189,41 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!95 &1697597636064711849
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789244597324514}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 848a5349d117b45498c969ca2624b53f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1941109611158836893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789244597324514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac684522dd410417aba2deb62721cdba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 212107818795109166}
+  isRoot: 1
+  flipXRenderer: 1
+  flipXPosition: 0
 --- !u!1 &4836708145371954099
 GameObject:
   m_ObjectHideFlags: 0
@@ -5233,7 +5240,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9082529370833958879
 Transform:
   m_ObjectHideFlags: 0
@@ -5312,7 +5319,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4402969251536614447
 Transform:
   m_ObjectHideFlags: 0
