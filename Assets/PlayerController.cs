@@ -98,6 +98,7 @@ public class PlayerController : Character, IDamage
   //  public Vector2 leftFoot;
 
   SpriteRenderer[] spriteRenderers;
+  SpriteChunk[] sac;
 
   [Header( "Damage" )]
   bool takingDamage;
@@ -609,6 +610,7 @@ public class PlayerController : Character, IDamage
     if( takingDamage )
     {
       anim = "damage";
+      velocity.y = 0;
     }
 
     if( grapPulling )
@@ -690,23 +692,6 @@ public class PlayerController : Character, IDamage
 
     ResetInput();
   }
-
-  SpriteChunk[] sac;
-
-/*
- #if ANIM
-  void OnAnimatorMove()
-  {
-    foreach( var sa in sac )
-      if( sa.flipXPosition )
-      {
-        Vector3 pos = sa.transform.localPosition;
-        pos.x = -pos.x;
-        sa.transform.localPosition = pos;
-      }
-  }
-#endif
-*/
 
   void LateUpdate()
   {
@@ -829,6 +814,7 @@ public class PlayerController : Character, IDamage
     } );
   }
 
+  [SerializeField] float damageDuration = 0.5f;
 
   public void TakeDamage( Damage d )
   {
@@ -847,12 +833,12 @@ public class PlayerController : Character, IDamage
     takingDamage = true;
     invulnerable = true;
     animator.Play( "damage" );
-#if ANIM
-    float length = animator.GetCurrentAnimatorStateInfo( 0 ).length;
-#else
-    float length = animator.CurrentSequence.GetDuration();
-#endif
-    damageTimer.Start( length, (System.Action<Timer>)delegate ( Timer t )
+//#if ANIM
+//    float length = animator.GetCurrentAnimatorStateInfo( 0 ).length;
+//#else
+//    float length = animator.CurrentSequence.GetDuration();
+//#endif
+    damageTimer.Start( damageDuration, (System.Action<Timer>)delegate ( Timer t )
     {
       this.push.x = -sign * this.damagePushAmount;
 

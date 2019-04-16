@@ -24,12 +24,19 @@ public static class ShowGUIDUtility
 
 public class CustomUtility : EditorWindow
 {
+  static string todo;
+
   [MenuItem( "Tool/Utility Window" )]
   static void Init()
   {
     // Get existing open window or if none, make a new one:
     CustomUtility window = (CustomUtility)EditorWindow.GetWindow( typeof( CustomUtility ) );
     window.Show();
+  }
+
+  private void OnEnable()
+  {
+    todo = File.ReadAllText( Application.dataPath + "/../todo" );
   }
 
   int audioDoppler = 0;
@@ -241,7 +248,17 @@ public class CustomUtility : EditorWindow
       //        // there are no monkeys
       //      }
     }
+
+
+    string td = EditorGUILayout.TextArea( todo, new GUILayoutOption[] { GUILayout.Height( 100 ) } );
+    if( td != todo )
+    {
+      todo = td;
+      File.WriteAllText( Application.dataPath + "/../todo", todo );
+    }
   }
+
+
 
   void ClearGroundImages()
   {

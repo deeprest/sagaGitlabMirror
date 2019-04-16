@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class Boss : MonoBehaviour
 {
+  public bool facingRight;
+  SpriteChunk[] sac;
+
   private void Awake()
   {
     sac = GetComponentsInChildren<SpriteChunk>();
   }
-
-
-  public bool facingRight;
-  SpriteChunk[] sac;
 
   void LateUpdate()
   {

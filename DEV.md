@@ -1,20 +1,10 @@
 
-+ intro sequence: audio, fades, dialogue text
-+ charge gets stuck on (cause: being hit while charging)
-+ hornet
-  + forward/back tilt
-  + guns
-  + drop enemies (wheels instead of walkers)
-  + death sequence
-+ grappling hook
-+ sound for graphook
-
 # bugs
 - reproducible: charge particles on after transition. reset player state on level transition
 - once: stuck in mid-air (after transition?)
 - reproducible: jump up wall sprite glitch
 
-
+# todo
 - borrow camera dolly/ramp from Flatlander, find ideal camera distance(s); lock while in chamber.
 - aim auto-snap within distance
 - try aim snap to 1/8th
