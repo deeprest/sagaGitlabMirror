@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Linq;
 
 public class XBuster : Projectile
 {
-  public GameObject HitEffect;
+  public float HitTimeout = 0.5f;
+  public new Light light;
 
   void OnDestroy()
   {
@@ -39,28 +39,16 @@ public class XBuster : Projectile
         dam.TakeDamage( dmg );
       }
 
-      Destroy( gameObject );
-
       enabled = false;
+      light.enabled = false;
       transform.position = hit.point;
-
-
-      GameObject hitGO = Instantiate( HitEffect, transform.position, transform.rotation );
-      //float duration = hitGO.GetComponent<Animator>().runtimeAnimatorController.animationClips.First( x => x.name == "hit" ).length;
-      //new Timer( duration, null, delegate
-      //{
-      //  if( hitGO != null )
-      //    Destroy( hitGO );
-      //} );
-
-
-      /*ParticleSystem ps = go.GetComponent<ParticleSystem>();
-      Timer t = new Timer( ps.main.duration, null, delegate
+      animator.Play( "hit" );
+      timeoutTimer = new Timer( HitTimeout, null, delegate
       {
-        Destroy( go );
-      } );*/
+        if( gameObject != null )
+          Destroy( gameObject );
+      } );
 
-      //timeoutTimer.Stop( false );
     }
     else
     {
