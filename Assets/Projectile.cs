@@ -4,30 +4,29 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-  public enum ProjectileType
-  {
-    Pulse,
-    Bullet,
-    Beam,
-    Grenade,
-    Sticky,
-    Bounce
-  }
-  public ProjectileType type = ProjectileType.Pulse;
+
+  public Animator animator;
+  public CircleCollider2D circle;
 
   public Transform instigator;
+
   public Damage ContactDamage;
-  public SpriteAnimator animator;
+  public float speed = 1;
   public float raycastDistance = 0.2f;
   public float timeout = 2;
-  Timer timeoutTimer;
+  protected Timer timeoutTimer;
   public Vector3 velocity;
-  public CircleCollider2D circle;
-  public static string[] CollideLayers = { "Default" ,"character", "triggerAndCollision", "enemy" };
+  public static string[] CollideLayers = { "Default", "character", "triggerAndCollision", "enemy" };
   // check first before spawning to avoid colliding with these layers on the first frame
-  public static string[] NoShootLayers = { "Default"};
-  public AnimSequence HitEffect;
-  public bool AlignXToMovementDirection = false;
+  public static string[] NoShootLayers = { "Default" };
+
+
+  public AudioClip StartSound;
+
+  public virtual void OnFire()
+  {
+
+  }
 
   void OnDestroy()
   {
@@ -36,20 +35,18 @@ public class Projectile : MonoBehaviour
 
   void Start()
   {
-    timeoutTimer = new Timer( timeout, null, delegate()
+    if( StartSound!=null )
+      Global.instance.AudioOneShot( StartSound, transform.position );
+
+    timeoutTimer = new Timer( timeout, null, delegate ()
     {
-      if( gameObject!=null )
+      if( gameObject != null )
         Destroy( gameObject );
     } );
-
-    if( AlignXToMovementDirection )
-      transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( velocity.normalized.y, velocity.normalized.x ) ) );
-
-    if( type == ProjectileType.Bounce )
-      enabled = false;
   }
 
-  void Update()
+
+    private void Update()
   {
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( CollideLayers ) );
     if( hit.transform != null && (instigator == null || hit.transform != instigator) )
@@ -62,34 +59,11 @@ public class Projectile : MonoBehaviour
         dmg.point = hit.point;
         dam.TakeDamage( dmg );
       }
-
-      if( type == ProjectileType.Pulse )
-      {
-        enabled = false;
-        transform.position = hit.point;
-        animator.Play( HitEffect );
-        //GameObject go = GameObject.Instantiate( HitEffect, transform.position, Quaternion.identity );
-        //SpriteAnimator sa = go.GetComponent<SpriteAnimator>();
-        float duration = animator.CurrentSequence.GetDuration();
-        new Timer( duration, null, delegate
-        {
-          if( gameObject != null )
-            Destroy( gameObject );
-        } );
-      }
-      /*ParticleSystem ps = go.GetComponent<ParticleSystem>();
-      Timer t = new Timer( ps.main.duration, null, delegate
-      {
-        Destroy( go );
-      } );*/
-
-      timeoutTimer.Stop( false );
+      Destroy( gameObject );
     }
     else
     {
       transform.position += velocity * Time.deltaTime;
     }
   }
-
-
 }

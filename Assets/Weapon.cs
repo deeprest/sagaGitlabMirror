@@ -5,10 +5,8 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Weapon : ScriptableObject 
 {
-  public Projectile ProjectilePrefab;
-  public float speed = 1;
   public float shootInterval = 0.1f;
-  public AudioClip soundXBusterPew;
+  public Projectile ProjectilePrefab;
 
   [Header("Charge")]
   public float chargedSpeed = 2;
@@ -20,33 +18,25 @@ public class Weapon : ScriptableObject
 
   public void FireWeapon( Character instigator, Vector3 pos, Vector3 shoot )
   {
-    Collider2D col = Physics2D.OverlapCircle( pos, ProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
-    if( col == null )
-    {
-      GameObject go = Instantiate( ProjectilePrefab.gameObject, pos, Quaternion.identity );
-      Projectile p = go.GetComponent<Projectile>();
-      p.instigator = instigator.transform;
-      p.velocity = shoot.normalized * speed;
-      Physics2D.IgnoreCollision( p.circle, instigator.collider );
-      Global.instance.AudioOneShot( soundXBusterPew, pos );
-      if( p.type == Projectile.ProjectileType.Bounce )
-        p.GetComponent<Rigidbody2D>().velocity = new Vector2( p.velocity.x, p.velocity.y );
-    }
+    FireWeaponProjectile( instigator, ProjectilePrefab, pos, shoot );
   }
 
   public void FireWeaponCharged( Character instigator, Vector3 pos, Vector3 shoot )
   {
-    Collider2D col = Physics2D.OverlapCircle( pos, ChargedProjectilePrefab.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
+    FireWeaponProjectile( instigator, ChargedProjectilePrefab, pos, shoot );
+  }
+
+  public void FireWeaponProjectile( Character instigator, Projectile projectile, Vector3 pos, Vector3 shoot )
+  {
+    Collider2D col = Physics2D.OverlapCircle( pos, projectile.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
     if( col == null )
     {
-      GameObject go = Instantiate( ChargedProjectilePrefab.gameObject, pos, Quaternion.identity );
+      GameObject go = Instantiate( projectile.gameObject, pos, Quaternion.identity );
       Projectile p = go.GetComponent<Projectile>();
       p.instigator = instigator.transform;
-      p.velocity = shoot.normalized * chargedSpeed;
+      p.velocity = shoot.normalized * p.speed;
       Physics2D.IgnoreCollision( p.circle, instigator.collider );
-      Global.instance.AudioOneShot( soundChargeShot, pos );
-      if( p.type == Projectile.ProjectileType.Bounce )
-        p.GetComponent<Rigidbody2D>().velocity = new Vector2( p.velocity.x, p.velocity.y );
+      p.OnFire();
     }
   }
 }

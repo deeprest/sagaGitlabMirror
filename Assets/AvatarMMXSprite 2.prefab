@@ -93,7 +93,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 212829855198719112}
-  isRoot: 0
   flipXRenderer: 0
   flipXPosition: 1
 --- !u!1 &1361865905516568
@@ -113,7 +112,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4628035983201072
 Transform:
   m_ObjectHideFlags: 0
@@ -4943,7 +4942,7 @@ MonoBehaviour:
   collideHead: 0
   collideFeet: 0
   ContactDamage: {fileID: 0}
-  weapon: {fileID: 11400000, guid: bc79bc153feb64c929fcc47e5ae33a26, type: 2}
+  weapon: {fileID: 11400000, guid: fd374035a3d2a4dfab5b20e9cd75ba10, type: 2}
   chargeMin: 0.5
   armRadius: 0.3
   chargeDelay: 0.4
@@ -4969,6 +4968,7 @@ MonoBehaviour:
   grapPulling: 0
   grapShotSound: {fileID: 8300000, guid: 714bd8ea9667041e99bb9a12a950f4f3, type: 3}
   grapHitSound: {fileID: 8300000, guid: 55037177bb692440ebfcf4e001cef0aa, type: 3}
+  damageDuration: 0.5
 --- !u!61 &61999569739760366
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5221,7 +5221,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 212107818795109166}
-  isRoot: 1
   flipXRenderer: 1
   flipXPosition: 0
 --- !u!1 &4836708145371954099
