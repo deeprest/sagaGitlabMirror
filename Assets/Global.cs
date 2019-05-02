@@ -148,8 +148,10 @@ public class Global : MonoBehaviour
 
     // UI
     //Cursor.visible = false;
-    //debugText.text = CameraController.zOffset.ToString( "##.#" );
-    debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
+    if( Camera.main.orthographic )
+      debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
+    else
+      debugText.text = CameraController.zOffset.ToString( "##.#" );
     InitializeControls();
     StartCoroutine( InitializeRoutine() );
   }
@@ -173,8 +175,10 @@ public class Global : MonoBehaviour
     }
     else
     {
-      //Camera.main.fieldOfView = 60;
-      Camera.main.orthographicSize = 2;
+      if( Camera.main.orthographic )
+        Camera.main.orthographicSize = 2;
+      else
+        Camera.main.fieldOfView = 20;
       music.Play();
       //yield return LoadSceneRoutine( "home" );
       fader.color = Color.black;
@@ -229,7 +233,7 @@ public class Global : MonoBehaviour
 
   void Update()
   {
-    Timer.UpdateTimers();
+    //Timer.UpdateTimers();
 
     debugButtons.text = "";
     for( int i = 0; i < 20; i++ )
@@ -264,10 +268,16 @@ public class Global : MonoBehaviour
 
     if( Mathf.Abs( Input.GetAxis( "Zoom" ) ) > 0 )
     {
-      //CameraController.zOffset += Input.GetAxis( "Zoom" );
-      //debugText.text = CameraController.zOffset.ToString( "##.#" );
-      Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
-      debugText.text = Camera.main.orthographicSize.ToString("##.#");
+      if( Camera.main.orthographic )
+      {
+        Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
+        debugText.text = Camera.main.orthographicSize.ToString("##.#");
+      }
+      else
+      {
+        CameraController.zOffset += Input.GetAxis( "Zoom" );
+        debugText.text = CameraController.zOffset.ToString( "##.#" );
+      }
     }
 
     if( Input.GetKeyDown( KeyCode.O ) )
@@ -282,7 +292,7 @@ public class Global : MonoBehaviour
     {
       Screenshot();
     }
-
+#if !UNITY_EDITOR
     if( Input.GetKeyDown( KeyCode.P ) )
     {
       if( Paused )
@@ -290,6 +300,7 @@ public class Global : MonoBehaviour
       else
         Pause();
     }
+#endif
     if( Input.GetKeyDown( KeyCode.Return ) )
     {
       Chopper chopper = FindObjectOfType<Chopper>();
@@ -326,6 +337,8 @@ public class Global : MonoBehaviour
 
   void LateUpdate()
   {
+    Timer.UpdateTimers();
+
     if( CurrentPlayer != null )
     {
       if( UsingKeyboard )

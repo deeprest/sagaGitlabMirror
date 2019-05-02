@@ -14,7 +14,9 @@ public class Projectile : MonoBehaviour
   public float speed = 1;
   public float raycastDistance = 0.2f;
   public float timeout = 2;
-  protected Timer timeoutTimer;
+
+  //Timer timeoutTimer;
+
   public Vector3 velocity;
   public static string[] CollideLayers = { "Default", "character", "triggerAndCollision", "enemy" };
   // check first before spawning to avoid colliding with these layers on the first frame
@@ -23,11 +25,11 @@ public class Projectile : MonoBehaviour
 
   public AudioClip StartSound;
 
+/*
   public virtual void OnFire()
   {
 
   }
-
   void OnDestroy()
   {
     timeoutTimer.Stop( false );
@@ -66,4 +68,5 @@ public class Projectile : MonoBehaviour
       transform.position += velocity * Time.deltaTime;
     }
   }
+  */
 }

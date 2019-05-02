@@ -6,6 +6,8 @@ public class XBuster : Projectile
   public float HitTimeout = 0.5f;
   public new Light light;
 
+  Timer timeoutTimer;
+
   void OnDestroy()
   {
     timeoutTimer.Stop( false );
@@ -43,6 +45,7 @@ public class XBuster : Projectile
       light.enabled = false;
       transform.position = hit.point;
       animator.Play( "hit" );
+      timeoutTimer.Stop( false );
       timeoutTimer = new Timer( HitTimeout, null, delegate
       {
         if( gameObject != null )

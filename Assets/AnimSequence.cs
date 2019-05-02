@@ -77,7 +77,7 @@ public class AnimSequence : ScriptableObject
     }
     return frames[i];
   }
-
+#if UNITY_EDITOR
   public void DeleteFrame( int index )
   {
     frames[index].point.Clear();
@@ -86,4 +86,5 @@ public class AnimSequence : ScriptableObject
   {
     ArrayUtility.Add<AnimFrame>( ref frames, new AnimFrame() );
   }
+#endif
 }

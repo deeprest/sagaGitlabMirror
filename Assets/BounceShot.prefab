@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 4978265925886940}
   - component: {fileID: 58790195297255388}
   - component: {fileID: 212190135428314220}
-  - component: {fileID: 114723058288635346}
-  - component: {fileID: 3936676733068914611}
-  - component: {fileID: 6137334717357891351}
+  - component: {fileID: 3263175227881446763}
+  - component: {fileID: 2679187230314664582}
   m_Layer: 11
   m_Name: BounceShot
   m_TagString: Untagged
@@ -29,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1227316525270448}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.613, y: -1.668, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4658682313527278}
@@ -45,13 +44,13 @@ CircleCollider2D:
   m_GameObject: {fileID: 1227316525270448}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 3244c00f1bd4b4f5bbd799a080ea2dcf, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.05
+  m_Radius: 0.06
 --- !u!212 &212190135428314220
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -89,7 +88,7 @@ SpriteRenderer:
   m_SortingLayerID: 1445702261
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300014, guid: b852c4d2216af4dd48b6e429a2346604, type: 3}
+  m_Sprite: {fileID: 21300040, guid: b852c4d2216af4dd48b6e429a2346604, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -100,29 +99,29 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &114723058288635346
+--- !u!114 &3263175227881446763
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1227316525270448}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7fedf88244445a5a27ec563256f57b, type: 3}
+  m_Script: {fileID: 11500000, guid: 73d526645fb974c1c8b23334f6659de9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 5
-  instigator: {fileID: 0}
-  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
   animator: {fileID: 0}
-  raycastDistance: 0.2
-  timeout: 2
-  velocity: {x: 0, y: 0, z: 0}
   circle: {fileID: 58790195297255388}
-  HitEffect: {fileID: 11400000, guid: 8af8502f7021344e5a71c5bd0c45f487, type: 2}
-  AlignXToMovementDirection: 1
---- !u!50 &3936676733068914611
+  instigator: {fileID: 0}
+  ContactDamage: {fileID: 0}
+  speed: 8
+  raycastDistance: 0.2
+  timeout: 1
+  velocity: {x: 0, y: 0, z: 0}
+  StartSound: {fileID: 8300000, guid: 20e667e89d46a47beba73825a6c36a76, type: 3}
+  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
+--- !u!50 &2679187230314664582
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -138,30 +137,11 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 3244c00f1bd4b4f5bbd799a080ea2dcf, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!95 &6137334717357891351
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1227316525270448}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1921470626033100
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,7 +206,7 @@ Light:
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0

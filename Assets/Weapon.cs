@@ -36,7 +36,7 @@ public class Weapon : ScriptableObject
       p.instigator = instigator.transform;
       p.velocity = shoot.normalized * p.speed;
       Physics2D.IgnoreCollision( p.circle, instigator.collider );
-      p.OnFire();
+      //p.OnFire();
     }
   }
 }

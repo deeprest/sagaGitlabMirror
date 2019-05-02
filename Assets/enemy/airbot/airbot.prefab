@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 4739618571392748}
   - component: {fileID: 61733048714469916}
   - component: {fileID: 212979940915122146}
-  - component: {fileID: 114974157661525920}
   - component: {fileID: 781258803751863346}
+  - component: {fileID: 4874249801477483448}
   m_Layer: 14
   m_Name: airbot
   m_TagString: Untagged
@@ -109,30 +109,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &114974157661525920
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1268720782321642}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurrentFrameIndex: 1
-  sac:
-  - {fileID: 3101467010246512747}
-  sr: {fileID: 212979940915122146}
-  image: {fileID: 0}
-  flipX: 0
-  CurrentSequence: {fileID: 11400000, guid: 4b6807c18345341929667700faef77d6, type: 2}
-  isPlaying: 1
-  playAtAStart: 1
-  anims:
-  - {fileID: 11400000, guid: 4b6807c18345341929667700faef77d6, type: 2}
-  - {fileID: 11400000, guid: 2a61f997ecc8a45ada5fd546a1e5e569, type: 2}
 --- !u!114 &781258803751863346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,8 +139,7 @@ MonoBehaviour:
   collideTop: 0
   collideBottom: 0
   renderer: {fileID: 212979940915122146}
-  animator: {fileID: 114974157661525920}
-  idle: {fileID: 11400000, guid: 2a61f997ecc8a45ada5fd546a1e5e569, type: 2}
+  animator: {fileID: 4874249801477483448}
   health: 2
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
@@ -176,6 +151,25 @@ MonoBehaviour:
   flySpeed: 1.5
   targetOffset: 0.3
   hitPauseOffset: 1
+--- !u!95 &4874249801477483448
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268720782321642}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 20015236aa3294d2e9d13af0b6d990e1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &9209941920657911778
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,8 +179,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9203506422267389143}
-  - component: {fileID: 3101467010246512747}
-  - component: {fileID: 323731816982871171}
   - component: {fileID: 6252819446673198804}
   m_Layer: 14
   m_Name: prop
@@ -209,42 +201,6 @@ Transform:
   m_Father: {fileID: 4739618571392748}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3101467010246512747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9209941920657911778}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4784a28c7f28d4a758f4311f527ce77d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sa: {fileID: 323731816982871171}
---- !u!114 &323731816982871171
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9209941920657911778}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurrentFrameIndex: 3
-  sac:
-  - {fileID: 3101467010246512747}
-  sr: {fileID: 6252819446673198804}
-  image: {fileID: 0}
-  flipX: 0
-  CurrentSequence: {fileID: 11400000, guid: cdbdfa5c6c2234c58a89a9a1e2c603be, type: 2}
-  isPlaying: 1
-  playAtAStart: 1
-  anims:
-  - {fileID: 0}
 --- !u!212 &6252819446673198804
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -282,7 +238,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300046, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
+  m_Sprite: {fileID: 21300040, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -178,8 +178,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2900289598886463288}
   - component: {fileID: 4845195264365010521}
-  - component: {fileID: 4148881417808290978}
-  - component: {fileID: 970836623978090709}
   m_Layer: 14
   m_Name: prop
   m_TagString: Untagged
@@ -238,7 +236,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: 4
-  m_Sprite: {fileID: 21300018, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
+  m_Sprite: {fileID: 21300016, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -249,42 +247,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4148881417808290978
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2823580320920487878}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4784a28c7f28d4a758f4311f527ce77d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sa: {fileID: 7261148479284126975}
---- !u!114 &970836623978090709
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2823580320920487878}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurrentFrameIndex: 2
-  sac:
-  - {fileID: 4148881417808290978}
-  sr: {fileID: 4845195264365010521}
-  image: {fileID: 0}
-  flipX: 0
-  CurrentSequence: {fileID: 11400000, guid: 3f523458dd577427c96bb7a6226c81ae, type: 2}
-  isPlaying: 1
-  playAtAStart: 1
-  anims:
-  - {fileID: 0}
 --- !u!1 &6116949047199148970
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,9 +287,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7299322179488540083}
   - component: {fileID: 7469246720352550077}
-  - component: {fileID: 7261148479284126975}
-  - component: {fileID: 7701764033589986434}
+  - component: {fileID: 6213555569455210955}
   - component: {fileID: 5327086571122986379}
+  - component: {fileID: 7701764033589986434}
   - component: {fileID: 8388642051660687798}
   m_Layer: 14
   m_Name: hornet
@@ -403,7 +365,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7261148479284126975
+--- !u!95 &6213555569455210955
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7302641308233258165}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 11503a9a6fb644a779e287f022c727c0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &5327086571122986379
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -412,19 +393,53 @@ MonoBehaviour:
   m_GameObject: {fileID: 7302641308233258165}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
+  m_Script: {fileID: 11500000, guid: 1d338913fe7604d658dbdc31041e9c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 0
-  sac:
-  - {fileID: 4148881417808290978}
-  sr: {fileID: 7469246720352550077}
-  image: {fileID: 0}
-  flipX: 0
-  CurrentSequence: {fileID: 11400000, guid: 37065ca423ab942528fce8280a8c350e, type: 2}
-  isPlaying: 1
-  playAtAStart: 1
-  anims: []
+  collider: {fileID: 8388642051660687798}
+  UseGravity: 0
+  velocity: {x: 0, y: 0, z: 0}
+  inertia: {x: 0, y: 0, z: 0}
+  friction: 0.5
+  airFriction: 0.5
+  raylength: 0.01
+  contactSeparation: 0.01
+  box: {x: 1, y: 0.5}
+  CollideLayers:
+  - Default
+  DamageLayers:
+  - character
+  collideRight: 0
+  collideLeft: 0
+  collideTop: 0
+  collideBottom: 0
+  renderer: {fileID: 7469246720352550077}
+  animator: {fileID: 6213555569455210955}
+  health: 20
+  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
+  soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
+  hitPush: 0.5
+  flashInterval: 0.05
+  flashCount: 1
+  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  sightRange: 6
+  flySpeed: 5
+  up: 2.5
+  over: 3
+  small: 0.4
+  rot: 10
+  rotspeed: 30
+  topspeedrot: 2
+  acc: 1
+  crashSpeed: 2
+  explosionInterval: 0.2
+  explosionRange: 1
+  junk: {fileID: 1678155047526447402, guid: 8a88163a7c52c4dc9b6808a920402663, type: 3}
+  wheelDropInterval: 3
+  drop: {fileID: 6813992315022888228}
+  dropPrefab: {fileID: 1094346900350558, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+  weapon: {fileID: 11400000, guid: 67bfd1773b4494e27874dbed922b0f43, type: 2}
+  shotOrigin: {fileID: 1670348743556002034}
 --- !u!82 &7701764033589986434
 AudioSource:
   m_ObjectHideFlags: 0
@@ -522,63 +537,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &5327086571122986379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7302641308233258165}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d338913fe7604d658dbdc31041e9c44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collider: {fileID: 8388642051660687798}
-  UseGravity: 0
-  velocity: {x: 0, y: 0, z: 0}
-  inertia: {x: 0, y: 0, z: 0}
-  friction: 0.5
-  airFriction: 0.5
-  raylength: 0.01
-  contactSeparation: 0.01
-  box: {x: 1, y: 0.5}
-  CollideLayers:
-  - Default
-  DamageLayers:
-  - character
-  collideRight: 0
-  collideLeft: 0
-  collideTop: 0
-  collideBottom: 0
-  renderer: {fileID: 7469246720352550077}
-  animator: {fileID: 7261148479284126975}
-  idle: {fileID: 11400000, guid: 37065ca423ab942528fce8280a8c350e, type: 2}
-  health: 20
-  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
-  soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
-  hitPush: 0.5
-  flashInterval: 0.05
-  flashCount: 1
-  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
-  sightRange: 6
-  flySpeed: 5
-  up: 2.5
-  over: 3
-  small: 0.4
-  rot: 10
-  rotspeed: 30
-  topspeedrot: 2
-  acc: 1
-  crashSpeed: 2
-  explosionInterval: 0.2
-  explosionRange: 1
-  junk: {fileID: 1678155047526447402, guid: 8a88163a7c52c4dc9b6808a920402663, type: 3}
-  wheelDropInterval: 3
-  drop: {fileID: 6813992315022888228}
-  dropPrefab: {fileID: 1094346900350558, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
-  weapon: {fileID: 11400000, guid: 67bfd1773b4494e27874dbed922b0f43, type: 2}
-  shotOrigin: {fileID: 1670348743556002034}
 --- !u!60 &8388642051660687798
 PolygonCollider2D:
   m_ObjectHideFlags: 0

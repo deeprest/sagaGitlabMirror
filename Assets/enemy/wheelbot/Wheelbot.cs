@@ -13,7 +13,8 @@ public class Wheelbot : Enemy
     EnemyStart();
     UpdateEnemy = UpdateWheel;
     velocity.x = wheelVelocity;
-    animator.enabled = false;
+    //animator.enabled = false;
+    animator.StartPlayback();
   }
 
   void UpdateWheel()
@@ -23,10 +24,17 @@ public class Wheelbot : Enemy
     if( collideRight )
       velocity.x = -wheelVelocity;
     wheelVelocity = Mathf.Abs( velocity.x );
-    animator.enabled = (wheelVelocity > 0.1f);
-    animator.flipX = velocity.x > 0;
-    wheelTime += Mathf.Abs( velocity.x ) * wheelAnimRate * Time.timeScale;
-    animator.AdvanceFrame( wheelTime );
-    animator.UpdateFrame();
+    //animator.enabled = (wheelVelocity > 0.1f);
+
+    /*renderer.flipX = velocity.x > 0;
+    renderer.material.SetInt( "_FlipX", velocity.x > 0 ? 1 : 0 );
+    wheelTime += Mathf.Abs( velocity.x ) * wheelAnimRate * Time.timeScale;*/
+
+    animator.speed = -velocity.x;
+
+    //animator.playbackTime = wheelTime;
+
+    //animator.AdvanceFrame( wheelTime );
+    //animator.UpdateFrame();
   }
 }

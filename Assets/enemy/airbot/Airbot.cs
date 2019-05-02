@@ -47,11 +47,11 @@ public class Airbot : Enemy
         dam.TakeDamage( dmg );
         hitpause = true;
         target = new Vector3( hit.point.x, hit.point.y, 0 ) + Vector3.up * hitPauseOffset;
-        animator.Play( "airbot-laugh" );
+        animator.Play( "laugh" );
         hitPauseTimer = new Timer( 2, null, delegate
         {
           hitpause = false;
-          animator.Play( "airbot-idle" );
+          animator.Play( "idle" );
         } );
       }
     }

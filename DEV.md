@@ -13,7 +13,7 @@
 * BOSS.
 - audio: intro, loop, battle
 - pickup temporary weapons from defeated foes
-* death, respawn
+* death, respawn  
 
 # improvements
 - upgrade to new input system

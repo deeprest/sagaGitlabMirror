@@ -22,9 +22,8 @@ public class Enemy : Character, IDamage
   RaycastHit2D hitRight;
   RaycastHit2D hitLeft;
 
-  [SerializeField] new SpriteRenderer renderer;
-  public SpriteAnimator animator;
-  public AnimSequence idle;
+  public new SpriteRenderer renderer;
+  public Animator animator;
 
   public int health = 5;
   public GameObject explosion;
@@ -45,7 +44,7 @@ public class Enemy : Character, IDamage
 
   protected void EnemyStart()
   {
-    animator.Play( idle );
+    animator.Play( "idle" );
     //renderer.material.SetFloat( "_FlashAmount", 0 );
     UpdateHit = BoxHit;
     UpdateCollision = BoxCollision;
