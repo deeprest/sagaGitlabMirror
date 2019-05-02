@@ -19,8 +19,8 @@ TextureImporter:
     21300028: enemies-1-diffuse_14
     21300030: enemies-1-diffuse_15
     21300032: enemies-1-diffuse_16
-    21300034: wheelbot-0
-    21300036: wheelbot-1
+    21300034: wheelbot-rotator
+    21300036: wheelbot-face
     21300038: wheelbot-2
     21300040: airbot-prop-0
     21300042: airbot-prop-1
@@ -465,7 +465,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wheelbot-0
+      name: wheelbot-rotator
       rect:
         serializedVersion: 2
         x: 135
@@ -485,13 +485,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wheelbot-1
+      name: wheelbot-face
       rect:
         serializedVersion: 2
-        x: 174
-        y: 177
-        width: 35
-        height: 35
+        x: 181
+        y: 184
+        width: 21
+        height: 21
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -500,26 +500,6 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 3e7b792cc265a481a88647cfd1a3fb2c
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wheelbot-2
-      rect:
-        serializedVersion: 2
-        x: 212
-        y: 177
-        width: 35
-        height: 35
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d658471505e64470da87842e6d6c7d96
       vertices: []
       indices: 
       edges: []

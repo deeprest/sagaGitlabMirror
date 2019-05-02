@@ -26,10 +26,6 @@ public class Projectile : MonoBehaviour
   public AudioClip StartSound;
 
 /*
-  public virtual void OnFire()
-  {
-
-  }
   void OnDestroy()
   {
     timeoutTimer.Stop( false );
