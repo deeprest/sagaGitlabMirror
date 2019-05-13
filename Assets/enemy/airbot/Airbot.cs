@@ -56,4 +56,10 @@ public class Airbot : Enemy
       }
     }
   }
+
+  protected override void Die()
+  {
+    base.Die();
+    hitPauseTimer.Stop( false );
+  }
 }
