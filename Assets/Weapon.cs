@@ -6,6 +6,7 @@ using UnityEngine;
 public class Weapon : ScriptableObject 
 {
   public float shootInterval = 0.1f;
+  public float speedIncrease;
   public Projectile ProjectilePrefab;
 
   [Header("Charge")]
@@ -34,7 +35,7 @@ public class Weapon : ScriptableObject
       GameObject go = Instantiate( projectile.gameObject, pos, Quaternion.identity );
       Projectile p = go.GetComponent<Projectile>();
       p.instigator = instigator.transform;
-      p.velocity = shoot.normalized * p.speed;
+      p.velocity = shoot.normalized * (p.speed + speedIncrease);
       Physics2D.IgnoreCollision( p.circle, instigator.collider );
       //p.OnFire();
     }

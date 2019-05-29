@@ -17,6 +17,7 @@ public class Airbot : Enemy
     EnemyStart();
     UpdateEnemy = UpdateAirbot;
     UpdateHit = AirbotHit;
+    hitPauseTimer = new Timer();
   }
 
   void UpdateAirbot()
@@ -48,7 +49,7 @@ public class Airbot : Enemy
         hitpause = true;
         target = new Vector3( hit.point.x, hit.point.y, 0 ) + Vector3.up * hitPauseOffset;
         animator.Play( "laugh" );
-        hitPauseTimer = new Timer( 2, null, delegate
+        hitPauseTimer.Start( 2, null, delegate
         {
           hitpause = false;
           animator.Play( "idle" );

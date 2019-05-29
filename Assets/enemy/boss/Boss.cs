@@ -6,6 +6,7 @@ public class Boss : MonoBehaviour
 {
   public bool facingRight;
   SpriteChunk[] sac;
+  Vector3 pos;
 
   private void Awake()
   {
@@ -14,18 +15,27 @@ public class Boss : MonoBehaviour
 
   void LateUpdate()
   {
+    GetComponent<Animator>().SetBool( "facingRight", facingRight );
+
+
+    //GetComponent<Animator>().GetCurrentAnimatorClipInfo( 0 )[0].clip.SampleAnimation( gameObject, GetComponent<Animator>().playbackTime );
+
     foreach( var sa in sac )
     {
       if( sa.flipXRenderer )
       {
         sa.spriteRenderer.flipX = !facingRight;
         sa.spriteRenderer.material.SetInt( "_FlipX", !facingRight ? 1 : 0 );
+        sa.spriteRenderer.sortingOrder = (facingRight? 1 : -1) * sa.spriteOrder;
       }
-      if( !facingRight && sa.flipXPosition )
+      if( sa.flipXPosition )
       {
-        Vector3 pos = sa.transform.localPosition;
-        pos.x = -pos.x;
-        sa.transform.localPosition = pos;
+        /*if( !facingRight )
+        {
+          pos = sa.transform.localPosition;
+          pos.x = -pos.x;
+          sa.transform.localPosition = pos;
+        }*/
       }
     }
   }

@@ -175,6 +175,8 @@ public class Enemy : Character, IDamage
 
   public void TakeDamage( Damage d )
   {
+    if( health <= 0 )
+      return;
     health -= d.amount;
     velocity += (transform.position - d.point) * hitPush;
     if( health <= 0 )
