@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Enemy : Character, IDamage
 {
+  public BoxCollider2D box;
+  public new SpriteRenderer renderer;
+  public Animator animator;
+
   public bool UseGravity = true;
   public Vector3 velocity = Vector3.zero;
   public Vector3 inertia = Vector3.zero;
@@ -11,7 +15,6 @@ public class Enemy : Character, IDamage
   public float airFriction = 0.05f;
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
-  public Vector2 box = new Vector2( 0.3f, 0.3f );
   public  string[] CollideLayers = { "Default" };
   public  string[] DamageLayers = { "character" };
   public bool collideRight = false;
@@ -22,8 +25,6 @@ public class Enemy : Character, IDamage
   RaycastHit2D hitRight;
   RaycastHit2D hitLeft;
 
-  public new SpriteRenderer renderer;
-  public Animator animator;
 
   public int health = 5;
   public GameObject explosion;
@@ -68,7 +69,9 @@ public class Enemy : Character, IDamage
 
   protected void BoxHit()
   {
-    hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, raylength, LayerMask.GetMask( DamageLayers ) );
+    if( ContactDamage == null ) 
+      return;
+    hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, raylength, LayerMask.GetMask( DamageLayers ) );
     foreach( var hit in hits )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
@@ -118,52 +121,52 @@ public class Enemy : Character, IDamage
     collideBottom = false;
 
     const float corner = 0.707f;
-    Vector2 adjust = transform.position;
+    Vector2 adjust = box.transform.position + (Vector3)box.offset;
 
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y > corner )
       {
         collideBottom = true;
-        adjust.y = hit.point.y + box.y + contactSeparation;
+        adjust.y = hit.point.y + box.size.y*0.5f + contactSeparation;
         break;
       }
     }
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.up, Mathf.Max( raylength, velocity.y * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.up, Mathf.Max( raylength, velocity.y * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y < -corner )
       {
         collideTop = true;
-        adjust.y = hit.point.y - box.y - contactSeparation;
+        adjust.y = hit.point.y - box.size.y*0.5f - contactSeparation;
         break;
       }
     }
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x > corner )
       {
         collideLeft = true;
         hitLeft = hit;
-        adjust.x = hit.point.x + box.x + contactSeparation;
+        adjust.x = hit.point.x + box.size.x*0.5f + contactSeparation;
         break;
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, Mathf.Max( raylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( raylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x < -corner )
       {
         collideRight = true;
         hitRight = hit;
-        adjust.x = hit.point.x - box.x - contactSeparation;
+        adjust.x = hit.point.x - box.size.x*0.5f - contactSeparation;
         break;
       }
     }
-    transform.position = adjust;
+    transform.position = (Vector3)adjust - (Vector3)box.offset;
 
   }
 

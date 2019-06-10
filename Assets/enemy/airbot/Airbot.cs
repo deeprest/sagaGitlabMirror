@@ -36,7 +36,7 @@ public class Airbot : Enemy
 
   void AirbotHit()
   {
-    hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, raylength, LayerMask.GetMask( DamageLayers ) );
+    hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, raylength, LayerMask.GetMask( DamageLayers ) );
     foreach( var hit in hits )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();

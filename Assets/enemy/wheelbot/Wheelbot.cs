@@ -2,7 +2,7 @@
 using System.Collections;
 
 
-public class Wheelbot : Enemy
+public class Wheelbot : Enemy, IDamage
 {
   public Transform rotator;
   [SerializeField] float wheelAnimRate = 0.0167f;
@@ -28,4 +28,10 @@ public class Wheelbot : Enemy
     wheelTime += velocity.x * wheelAnimRate * Time.timeScale;
     rotator.rotation = Quaternion.Euler( new Vector3( 0, 0, wheelTime ) );
   }
+
+ /*public new void TakeDamage( Damage d )
+  {
+    print( "wheelbot damage" );
+  }*/
+
 }

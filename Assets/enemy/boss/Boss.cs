@@ -2,29 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boss : MonoBehaviour
+public class Boss : Enemy
 {
   public bool facingRight;
   SpriteChunk[] sac;
   Vector3 pos;
+  public BoxCollider2D fist;
+  public BoxCollider2D torso;
 
   private void Awake()
   {
     sac = GetComponentsInChildren<SpriteChunk>();
+    Physics2D.IgnoreCollision( box, fist );
+    Physics2D.IgnoreCollision( box, torso );
+    Physics2D.IgnoreCollision( torso, fist );
+  }
+
+  void Start()
+  {
+    UpdateHit = BoxHit;
+    UpdateCollision = BoxCollision;
+    UpdatePosition = BasicPosition;
+    //UpdateEnemy = UpdateWheel;
   }
 
   void LateUpdate()
   {
-    GetComponent<Animator>().SetBool( "facingRight", facingRight );
-
-
+    //GetComponent<Animator>().SetBool( "facingRight", facingRight );
     //GetComponent<Animator>().GetCurrentAnimatorClipInfo( 0 )[0].clip.SampleAnimation( gameObject, GetComponent<Animator>().playbackTime );
+
+    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
 
     foreach( var sa in sac )
     {
       if( sa.flipXRenderer )
       {
-        sa.spriteRenderer.flipX = !facingRight;
+       //sa.spriteRenderer.flipX = !facingRight;
         sa.spriteRenderer.material.SetInt( "_FlipX", !facingRight ? 1 : 0 );
         sa.spriteRenderer.sortingOrder = (facingRight? 1 : -1) * sa.spriteOrder;
       }
