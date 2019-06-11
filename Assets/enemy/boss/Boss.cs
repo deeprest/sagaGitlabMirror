@@ -39,7 +39,7 @@ public class Boss : Enemy
       {
        //sa.spriteRenderer.flipX = !facingRight;
         sa.spriteRenderer.material.SetInt( "_FlipX", !facingRight ? 1 : 0 );
-        sa.spriteRenderer.sortingOrder = (facingRight? 1 : -1) * sa.spriteOrder;
+        //sa.spriteRenderer.sortingOrder = (facingRight? 1 : -1) * sa.spriteOrder;
       }
       if( sa.flipXPosition )
       {

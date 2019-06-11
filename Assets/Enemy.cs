@@ -121,7 +121,10 @@ public class Enemy : Character, IDamage
     collideBottom = false;
 
     const float corner = 0.707f;
-    Vector2 adjust = box.transform.position + (Vector3)box.offset;
+
+    Vector3 boxOffset = (Vector3)box.offset;
+    boxOffset.x *= Mathf.Sign( transform.localScale.x );
+    Vector2 adjust = box.transform.position + boxOffset;
 
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
     foreach( var hit in hits )
@@ -166,7 +169,7 @@ public class Enemy : Character, IDamage
         break;
       }
     }
-    transform.position = (Vector3)adjust - (Vector3)box.offset;
+    transform.position = (Vector3)adjust - boxOffset;
 
   }
 
