@@ -38,10 +38,10 @@ public class Boss : Enemy
       if( sa.flipXRenderer )
       {
        //sa.spriteRenderer.flipX = !facingRight;
-        sa.spriteRenderer.material.SetInt( "_FlipX", !facingRight ? 1 : 0 );
+        //sa.spriteRenderer.material.SetInt( "_FlipX", !facingRight ? 1 : 0 );
         //sa.spriteRenderer.sortingOrder = (facingRight? 1 : -1) * sa.spriteOrder;
       }
-      if( sa.flipXPosition )
+      //if( sa.flipXPosition )
       {
         /*if( !facingRight )
         {

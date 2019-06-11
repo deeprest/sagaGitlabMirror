@@ -93,13 +93,14 @@ bad design mode: super slow text you cannot skip. (super metroid: "SPACE COLON".
 jack basswards
 bran slapmuffin
 dert mcderples
+Slappy McTicklemonster
 
 
 ## where to release demo
 gamejolt
 sprites.co.uk forums
 send to Stone McKnuckle
-pixeljoint or tigsource (to find pixel artist for next project)
+pixeljoint or tigsource (to find pixel artist for full project)
 ## distribution platforms
 itch.io
 GOG
@@ -115,3 +116,9 @@ indiegamesplus
 itch.io devlog
 twitter
 reddit
+
+
+# Intro stage (demo)
+Has xbuster. Can gain other weapons from enemies. chopdrop. After boss is defeated (END OF DEMO HERE), a large explosion engulfs the player.
+# The Lab
+The player awakens in the lab, newly-rebuilt. The mechanic explains that the explosion destroyed your body but not your core. He has given you a new body but could not retrieve your weapons.

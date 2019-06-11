@@ -356,6 +356,7 @@ public class PlayerController : Character, IDamage
     cursorScreen.z = -Camera.main.transform.position.z;
     cursorDelta = Camera.main.ScreenToWorldPoint( cursorScreen ) - arm.position;
     cursorDelta.z = 0;
+    arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );
 
 
@@ -674,6 +675,7 @@ public class PlayerController : Character, IDamage
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     velocity.z = 0;
     transform.position += velocity * Time.deltaTime;
+    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     // must hold button to move horizontally, so allow no persistent horizontal velocity
     velocity.x = 0;
     if( grapPulling )
@@ -695,19 +697,20 @@ public class PlayerController : Character, IDamage
 
   void LateUpdate()
   {
+
     foreach( var sa in sac )
     {
       if( sa.flipXRenderer )
       {
-        sa.spriteRenderer.flipX = !facingRight;
-        sa.spriteRenderer.material.SetInt( "_FlipX", !facingRight ? 1 : 0 );
+        //sa.spriteRenderer.flipX = !facingRight;
+        //sa.spriteRenderer.material.SetInt( "_FlipX", !facingRight ? 1 : 0 );
       }
-      if( !facingRight && sa.flipXPosition )
+      /*if( !facingRight && sa.flipXPosition )
       {
         Vector3 pos = sa.transform.localPosition;
         pos.x = -pos.x;
         sa.transform.localPosition = pos;
-      }
+      }*/
     }
   }
 
