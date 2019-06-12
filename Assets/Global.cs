@@ -48,12 +48,6 @@ public interface IDamage
   void TakeDamage( Damage d );
 }
 
-public class Character : MonoBehaviour
-{
-  new public Collider2D collider;
-  public virtual void PreSceneTransition() { }
-}
-
 public class Attack
 {
   public Transform instigator;

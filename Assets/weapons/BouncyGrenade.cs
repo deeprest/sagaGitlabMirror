@@ -11,11 +11,7 @@ public class BouncyGrenade : Projectile
   {
     GetComponent<Rigidbody2D>().velocity = new Vector2( velocity.x, velocity.y );
 
-    timeoutTimer = new Timer( timeout, null, delegate ()
-    {
-      if( gameObject != null )
-        Boom();
-    } );
+    timeoutTimer = new Timer( timeout, null, Boom );
   }
 
   void OnDestroy()
@@ -26,6 +22,8 @@ public class BouncyGrenade : Projectile
 
   void Boom()
   {
+    if( gameObject!= null && !gameObject.activeSelf )
+      return;
     Instantiate( explosion, transform.position, Quaternion.identity );
     timeoutTimer.Stop( false );
     // HACK due to a Unity RIGIDBODY2D RemoveContact() crash bug, deactivate gameobject before a delayed destruction.

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Hornet : Enemy
+public class Hornet : Character
 {
   public float sightRange = 6;
   public float flySpeed = 2;
@@ -31,7 +31,7 @@ public class Hornet : Enemy
   void Start()
   {
     EnemyStart();
-    UpdateEnemy = UpdateHornet;
+    UpdateLogic = UpdateHornet;
   }
 
   void OnDestroy()

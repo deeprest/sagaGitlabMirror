@@ -8,25 +8,15 @@ public class PlayerController : Character, IDamage
 {
   new public AudioSource audio;
   public AudioSource audio2;
-#if ANIM
-  public Animator animator;
-#else
-  public SpriteAnimator animator;
-#endif
   public ParticleSystem dashSmoke;
   public Transform arm;
 
   // settings
   public float raydown = 0.2f;
   public float downOffset = 0.16f;
-  public float raylength = 0.01f;
-  public float contactSeparation = 0.01f;
-  public float sideraylength = 0.01f;
-  public float sidecontactSeparation = 0.01f;
 
   public float downslopefudge = 0f;
   const float corner = 0.707f;
-  public Vector2 box = new Vector2( 0.3f, 0.3f );
 
   // velocities
   public float moveVel = 2;
@@ -57,25 +47,16 @@ public class PlayerController : Character, IDamage
   [SerializeField] bool dashing;
   public bool hanging { get; set; }
 
-  public Vector3 velocity = Vector3.zero;
   public Vector3 push = Vector3.zero;
-  public float friction = 1f;
   float dashStart;
   float jumpStart;
   float landStart;
 
   string[] PlayerCollideLayers = { "Default", "triggerAndCollision" };
   string[] TriggerLayers = { "trigger", "triggerAndCollision" };
-  [SerializeField] bool collideRight;
-  [SerializeField] bool collideLeft;
-  [SerializeField] bool collideHead;
-  [SerializeField] bool collideFeet;
-  RaycastHit2D hitRight;
-  RaycastHit2D hitLeft;
 
   Vector3 hitBottomNormal;
 
-  public Damage ContactDamage;
   public Weapon weapon;
   Timer shootRepeatTimer = new Timer();
   ParticleSystem chargeEffect = null;
@@ -134,12 +115,12 @@ public class PlayerController : Character, IDamage
   {
     collideRight = false;
     collideLeft = false;
-    collideHead = false;
-    collideFeet = false;
+    collideTop = false;
+    collideBottom = false;
 
     RaycastHit2D[] hits;
 
-    hits = Physics2D.BoxCastAll( transform.position, box * 2, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( TriggerLayers ) );
+    hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( TriggerLayers ) );
     foreach( var hit in hits )
     {
       ITrigger tri = hit.transform.GetComponent<ITrigger>();
@@ -199,49 +180,49 @@ public class PlayerController : Character, IDamage
     */
 
     float down = jumping ? raydown - downOffset : raydown;
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y > corner )
       {
-        collideFeet = true;
-        adjust.y = hit.point.y + box.y + downOffset;
+        collideBottom = true;
+        adjust.y = hit.point.y + box.size.y * 0.5f + downOffset;
         hitBottomNormal = hit.normal;
         break;
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y < -corner )
       {
-        collideHead = true;
-        adjust.y = hit.point.y - box.y - contactSeparation;
+        collideTop = true;
+        adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
         break;
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.left, Mathf.Max( sideraylength, -velocity.x * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( contactSeparation, -velocity.x * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x > corner )
       {
         collideLeft = true;
         hitLeft = hit;
-        adjust.x = hit.point.x + box.x + sidecontactSeparation;
+        adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
         break;
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box * 2, 0, Vector2.right, Mathf.Max( sideraylength, velocity.x * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( contactSeparation, velocity.x * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x < -corner )
       {
         collideRight = true;
         hitRight = hit;
-        adjust.x = hit.point.x - box.x - sidecontactSeparation;
+        adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
         break;
       }
     }
@@ -257,6 +238,7 @@ public class PlayerController : Character, IDamage
       weapon.FireWeapon( this, pos, shoot );
   }
 
+  [Header("Graphook")]
   [SerializeField] GameObject graphookTip;
   [SerializeField] SpriteRenderer grapCableRender;
   public float grapDistance = 10;
@@ -533,12 +515,7 @@ public class PlayerController : Character, IDamage
 
     if( landing && (Time.time - landStart >= landDuration) )
       landing = false;
-
-#if ANIM
-
-#else
-    animator.flipX = !facingRight;
-#endif
+      
     string anim = "idle";
 
     if( jumping )
@@ -655,23 +632,16 @@ public class PlayerController : Character, IDamage
       velocity.y = Mathf.Max( velocity.y, 0 );
       push.x -= (push.x * friction) * Time.deltaTime;
     }
-    if( collideHead )
+    if( collideTop )
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
 
     if( hanging )
       velocity = Vector3.zero;
+      
+    animator.Play( anim );
 
-#if ANIM
-      //if( animator.GetCurrentAnimatorStateInfo( 0 ).shortNameHash != Animator.StringToHash( anim ) )
-        animator.Play( anim );
-        
-
-#else
-    if( anim != animator.CurrentSequence.name )
-      animator.Play( anim );
-#endif
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     velocity.z = 0;
     transform.position += velocity * Time.deltaTime;
@@ -684,7 +654,7 @@ public class PlayerController : Character, IDamage
     UpdateCollision( Time.deltaTime );
 
     bool oldGround = onGround;
-    onGround = collideFeet || (collideLeft && collideRight);
+    onGround = collideBottom || (collideLeft && collideRight);
     if( onGround && !oldGround )
     {
       StopDash();
@@ -693,25 +663,6 @@ public class PlayerController : Character, IDamage
     }
 
     ResetInput();
-  }
-
-  void LateUpdate()
-  {
-
-    foreach( var sa in sac )
-    {
-      if( sa.flipXRenderer )
-      {
-        //sa.spriteRenderer.flipX = !facingRight;
-        //sa.spriteRenderer.material.SetInt( "_FlipX", !facingRight ? 1 : 0 );
-      }
-      /*if( !facingRight && sa.flipXPosition )
-      {
-        Vector3 pos = sa.transform.localPosition;
-        pos.x = -pos.x;
-        sa.transform.localPosition = pos;
-      }*/
-    }
   }
 
   void StartJump()

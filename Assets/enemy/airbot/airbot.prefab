@@ -122,6 +122,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collider: {fileID: 61733048714469916}
+  box: {fileID: 61733048714469916}
+  renderer: {fileID: 212979940915122146}
+  animator: {fileID: 4874249801477483448}
   UseGravity: 0
   velocity: {x: 0, y: 0, z: 0}
   inertia: {x: 0, y: 0, z: 0}
@@ -129,7 +132,6 @@ MonoBehaviour:
   airFriction: 0.5
   raylength: 0.01
   contactSeparation: 0.01
-  box: {x: 0.3, y: 0.3}
   CollideLayers:
   - Default
   DamageLayers:
@@ -138,8 +140,6 @@ MonoBehaviour:
   collideLeft: 0
   collideTop: 0
   collideBottom: 0
-  renderer: {fileID: 212979940915122146}
-  animator: {fileID: 4874249801477483448}
   health: 2
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}

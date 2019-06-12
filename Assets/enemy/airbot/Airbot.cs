@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Airbot : Enemy
+public class Airbot : Character
 {
   public float sightRange = 6;
   public float flySpeed = 2;
@@ -15,7 +15,7 @@ public class Airbot : Enemy
   void Start()
   {
     EnemyStart();
-    UpdateEnemy = UpdateAirbot;
+    UpdateLogic = UpdateAirbot;
     UpdateHit = AirbotHit;
     hitPauseTimer = new Timer();
   }

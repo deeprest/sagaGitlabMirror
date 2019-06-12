@@ -4898,19 +4898,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collider: {fileID: 61999569739760366}
+  box: {fileID: 61999569739760366}
+  renderer: {fileID: 212107818795109166}
+  animator: {fileID: 1697597636064711849}
+  UseGravity: 1
+  velocity: {x: 0, y: 0, z: 0}
+  inertia: {x: 0, y: 0, z: 0}
+  friction: 8
+  airFriction: 0.05
+  raylength: 0.01
+  contactSeparation: 0.01
+  CollideLayers:
+  - Default
+  DamageLayers:
+  - character
+  health: 5
+  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
+  soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
+  hitPush: 4
+  flashInterval: 0.05
+  flashCount: 5
+  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
   audio: {fileID: 82117261715149456}
   audio2: {fileID: 82627251547920718}
-  animator: {fileID: 1697597636064711849}
   dashSmoke: {fileID: 198502029244883790}
   arm: {fileID: 4897319614591276}
   raydown: 0.2
   downOffset: 0.16
-  raylength: 0.01
-  contactSeparation: 0.01
   sideraylength: 0.01
   sidecontactSeparation: 0.01
   downslopefudge: 0.2
-  box: {x: 0.1, y: 0.1}
   moveVel: 1.5
   jumpVel: 5
   dashVel: 3
@@ -4934,14 +4951,7 @@ MonoBehaviour:
   jumping: 0
   landing: 0
   dashing: 0
-  velocity: {x: 0, y: 0, z: 0}
   push: {x: 0, y: 0, z: 0}
-  friction: 8
-  collideRight: 0
-  collideLeft: 0
-  collideHead: 0
-  collideFeet: 0
-  ContactDamage: {fileID: 0}
   weapon: {fileID: 11400000, guid: bc79bc153feb64c929fcc47e5ae33a26, type: 2}
   chargeMin: 0.5
   armRadius: 0.3

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : Character, IDamage
+public class Character : MonoBehaviour, IDamage
 {
+  new public Collider2D collider;
   public BoxCollider2D box;
   public new SpriteRenderer renderer;
   public Animator animator;
@@ -17,13 +18,13 @@ public class Enemy : Character, IDamage
   public float contactSeparation = 0.01f;
   public  string[] CollideLayers = { "Default" };
   public  string[] DamageLayers = { "character" };
-  public bool collideRight = false;
-  public bool collideLeft = false;
-  public bool collideTop = false;
-  public bool collideBottom = false;
+  protected bool collideRight = false;
+  protected bool collideLeft = false;
+  protected bool collideTop = false;
+  protected bool collideBottom = false;
   protected RaycastHit2D[] hits;
-  RaycastHit2D hitRight;
-  RaycastHit2D hitLeft;
+  protected RaycastHit2D hitRight;
+  protected RaycastHit2D hitLeft;
 
 
   public int health = 5;
@@ -38,10 +39,12 @@ public class Enemy : Character, IDamage
 
   public Damage ContactDamage;
 
-  protected System.Action UpdateEnemy;
+  protected System.Action UpdateLogic;
   protected System.Action UpdateCollision;
   protected System.Action UpdatePosition;
   protected System.Action UpdateHit;
+
+  public virtual void PreSceneTransition() { }
 
   protected void EnemyStart()
   {
@@ -54,8 +57,8 @@ public class Enemy : Character, IDamage
 
   void Update()
   {
-    if( UpdateEnemy != null )
-      UpdateEnemy();
+    if( UpdateLogic != null )
+      UpdateLogic();
 
     if( UpdateHit != null )
       UpdateHit();

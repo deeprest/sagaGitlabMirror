@@ -2,7 +2,7 @@
 using System.Collections;
 
 
-public class Wheelbot : Enemy, IDamage
+public class Wheelbot : Character, IDamage
 {
   public Transform rotator;
   [SerializeField] float wheelAnimRate = 0.0167f;
@@ -14,7 +14,7 @@ public class Wheelbot : Enemy, IDamage
     UpdateHit = BoxHit;
     UpdateCollision = BoxCollision;
     UpdatePosition = BasicPosition;
-    UpdateEnemy = UpdateWheel;
+    UpdateLogic = UpdateWheel;
     velocity.x = wheelVelocity;
   }
 
