@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 212190135428314220}
   - component: {fileID: 3263175227881446763}
   - component: {fileID: 2679187230314664582}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: BounceGrenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,9 +133,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0.1
   m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: 3244c00f1bd4b4f5bbd799a080ea2dcf, type: 2}
   m_Interpolate: 0
@@ -152,7 +152,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4658682313527278}
   - component: {fileID: 108267418089597158}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Point light (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
