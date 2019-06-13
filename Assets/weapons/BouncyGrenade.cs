@@ -5,7 +5,7 @@ public class BouncyGrenade : Projectile
 {
   public GameObject explosion;
   Timer timeoutTimer;
-  static string[] BouncyCollideLayers = { "character", "triggerAndCollision", "enemy" };
+  static string[] BouncyCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile" };
 
   void Start()
   {
@@ -22,7 +22,7 @@ public class BouncyGrenade : Projectile
 
   void Boom()
   {
-    if( gameObject!= null && !gameObject.activeSelf )
+    if( gameObject != null && !gameObject.activeSelf )
       return;
     Instantiate( explosion, transform.position, Quaternion.identity );
     timeoutTimer.Stop( false );
@@ -34,7 +34,7 @@ public class BouncyGrenade : Projectile
   void Update()
   {
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( BouncyCollideLayers ) );
-    if( hit.transform != null && (instigator == null || hit.transform != instigator) )
+    if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator )) )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
