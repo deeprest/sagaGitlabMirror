@@ -207,8 +207,11 @@ public class Global : MonoBehaviour
     while( !ao.isDone )
       yield return null;
     Scene scene = SceneManager.GetSceneByName( sceneName );
-    //if( CurrentPlayer != null )
-    //SceneManager.MoveGameObjectToScene( CurrentPlayer.gameObject, scene );
+    if( CurrentPlayer != null )
+    {
+      CurrentPlayer.PostSceneTransition();
+      SceneManager.MoveGameObjectToScene( CurrentPlayer.gameObject, scene );
+    }
     FadeClear();
     if( waitForFadeIn )
       while( fadeTimer.IsActive )

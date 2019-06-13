@@ -11,9 +11,7 @@ public class Wheelbot : Character, IDamage
 
   void Start()
   {
-    UpdateHit = BoxHit;
-    UpdateCollision = BoxCollision;
-    UpdatePosition = BasicPosition;
+    CharacterStart();
     UpdateLogic = UpdateWheel;
     velocity.x = wheelVelocity;
   }
@@ -28,10 +26,5 @@ public class Wheelbot : Character, IDamage
     wheelTime += velocity.x * wheelAnimRate * Time.timeScale;
     rotator.rotation = Quaternion.Euler( new Vector3( 0, 0, wheelTime ) );
   }
-
- /*public new void TakeDamage( Damage d )
-  {
-    print( "wheelbot damage" );
-  }*/
 
 }

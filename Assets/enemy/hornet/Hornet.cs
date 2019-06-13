@@ -30,7 +30,7 @@ public class Hornet : Character
 
   void Start()
   {
-    EnemyStart();
+    CharacterStart();
     UpdateLogic = UpdateHornet;
   }
 

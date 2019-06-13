@@ -9,6 +9,8 @@ public class Character : MonoBehaviour, IDamage
   public new SpriteRenderer renderer;
   public Animator animator;
 
+  SpriteRenderer[] spriteRenderers;
+
   public bool UseGravity = true;
   public Vector3 velocity = Vector3.zero;
   public Vector3 inertia = Vector3.zero;
@@ -16,8 +18,8 @@ public class Character : MonoBehaviour, IDamage
   public float airFriction = 0.05f;
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
-  public  string[] CollideLayers = { "Default" };
-  public  string[] DamageLayers = { "character" };
+  public string[] CollideLayers = { "Default" };
+  public string[] DamageLayers = { "character" };
   protected bool collideRight = false;
   protected bool collideLeft = false;
   protected bool collideTop = false;
@@ -45,13 +47,16 @@ public class Character : MonoBehaviour, IDamage
   protected System.Action UpdateHit;
 
   public virtual void PreSceneTransition() { }
+  public virtual void PostSceneTransition() { }
 
-  protected void EnemyStart()
+  protected void CharacterStart()
   {
-    animator.Play( "idle" );
+    spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
     UpdateHit = BoxHit;
     UpdateCollision = BoxCollision;
     UpdatePosition = BasicPosition;
+    //if( animator != null )
+      //animator.Play( "idle" );
   }
 
   void Update()
@@ -62,7 +67,7 @@ public class Character : MonoBehaviour, IDamage
     if( UpdateHit != null )
       UpdateHit();
 
-    if( UpdateCollision !=null )
+    if( UpdateCollision != null )
       UpdateCollision();
 
     if( UpdatePosition != null )
@@ -71,7 +76,7 @@ public class Character : MonoBehaviour, IDamage
 
   protected void BoxHit()
   {
-    if( ContactDamage == null ) 
+    if( ContactDamage == null )
       return;
     hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, raylength, LayerMask.GetMask( DamageLayers ) );
     foreach( var hit in hits )
@@ -134,7 +139,7 @@ public class Character : MonoBehaviour, IDamage
       if( hit.normal.y > corner )
       {
         collideBottom = true;
-        adjust.y = hit.point.y + box.size.y*0.5f + contactSeparation;
+        adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation;
         break;
       }
     }
@@ -144,7 +149,7 @@ public class Character : MonoBehaviour, IDamage
       if( hit.normal.y < -corner )
       {
         collideTop = true;
-        adjust.y = hit.point.y - box.size.y*0.5f - contactSeparation;
+        adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
         break;
       }
     }
@@ -155,7 +160,7 @@ public class Character : MonoBehaviour, IDamage
       {
         collideLeft = true;
         hitLeft = hit;
-        adjust.x = hit.point.x + box.size.x*0.5f + contactSeparation;
+        adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
         break;
       }
     }
@@ -167,7 +172,7 @@ public class Character : MonoBehaviour, IDamage
       {
         collideRight = true;
         hitRight = hit;
-        adjust.x = hit.point.x - box.size.x*0.5f - contactSeparation;
+        adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
         break;
       }
     }
@@ -198,17 +203,25 @@ public class Character : MonoBehaviour, IDamage
 
       // color pulse
       flip = false;
-      renderer.material.SetFloat( "_FlashAmount", flashOn );
+      //renderer.material.SetFloat( "_FlashAmount", flashOn );
+      foreach( var sr in spriteRenderers )
+        sr.material.SetFloat( "_FlashAmount", flashOn );
       flashTimer.Start( flashCount * 2, flashInterval, delegate ( Timer t )
       {
         flip = !flip;
         if( flip )
-          renderer.material.SetFloat( "_FlashAmount", flashOn );
+          //renderer.material.SetFloat( "_FlashAmount", flashOn );
+          foreach( var sr in spriteRenderers )
+            sr.material.SetFloat( "_FlashAmount", flashOn );
         else
-          renderer.material.SetFloat( "_FlashAmount", 0 );
+          foreach( var sr in spriteRenderers )
+            sr.material.SetFloat( "_FlashAmount", 0 );
+        //renderer.material.SetFloat( "_FlashAmount", 0 );
       }, delegate
       {
-        renderer.material.SetFloat( "_FlashAmount", 0 );
+        foreach( var sr in spriteRenderers )
+          sr.material.SetFloat( "_FlashAmount", 0 );
+        //renderer.material.SetFloat( "_FlashAmount", 0 );
       } );
 
     }

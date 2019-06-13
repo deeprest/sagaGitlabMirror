@@ -3,6 +3,7 @@
 - reproducible: charge particles on after transition. reset player state on level transition
 - once: stuck in mid-air (after transition?)
 - reproducible: jump up wall sprite glitch
+- once: graphooktip object was destroyed (parented to other object, then other object destroyed?)
 
 # todo
 - borrow camera dolly/ramp from Flatlander, find ideal camera distance(s); lock while in chamber.

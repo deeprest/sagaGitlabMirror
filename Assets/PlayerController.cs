@@ -82,6 +82,7 @@ public class PlayerController : Character, IDamage
   SpriteChunk[] sac;
 
   [Header( "Damage" )]
+  [SerializeField] float damageDuration = 0.5f;
   bool takingDamage;
   bool invulnerable;
   Timer damageTimer = new Timer();
@@ -270,6 +271,7 @@ public class PlayerController : Character, IDamage
         graphitpos = hit.point;
         graphookTip.SetActive( true );
         graphookTip.transform.parent = null;
+        graphookTip.transform.localScale = Vector3.one;
         graphookTip.transform.position = pos;
         graphookTip.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - transform.position) ) ); ;
         grapTimer.Start( grapTimeout, delegate
@@ -278,9 +280,10 @@ public class PlayerController : Character, IDamage
           graphookTip.transform.position = Vector3.MoveTowards( graphookTip.transform.position, graphitpos, grapSpeed * Time.deltaTime );
           //grap cable
           grapCableRender.gameObject.SetActive( true );
+          grapCableRender.transform.parent = null;
+          grapCableRender.transform.localScale = Vector3.one;
           grapCableRender.transform.position = pos;
           grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - pos) ) );
-          grapCableRender.transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
           grapSize = grapCableRender.size;
           grapSize.x = Vector3.Distance( graphookTip.transform.position, pos );
           grapCableRender.size = grapSize;
@@ -597,7 +600,6 @@ public class PlayerController : Character, IDamage
       Vector3 armpos = arm.position + shoot.normalized * armRadius;
       grapCableRender.transform.position = armpos;
       grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - armpos) ) );
-      grapCableRender.transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
       grapSize = grapCableRender.size;
       grapSize.x = Vector3.Distance( graphookTip.transform.position, armpos );
       grapCableRender.size = grapSize;
@@ -768,9 +770,7 @@ public class PlayerController : Character, IDamage
     } );
   }
 
-  [SerializeField] float damageDuration = 0.5f;
-
-  public void TakeDamage( Damage d )
+  new public void TakeDamage( Damage d )
   {
     if( invulnerable )
       return;
@@ -787,11 +787,6 @@ public class PlayerController : Character, IDamage
     takingDamage = true;
     invulnerable = true;
     animator.Play( "damage" );
-//#if ANIM
-//    float length = animator.GetCurrentAnimatorStateInfo( 0 ).length;
-//#else
-//    float length = animator.CurrentSequence.GetDuration();
-//#endif
     damageTimer.Start( damageDuration, (System.Action<Timer>)delegate ( Timer t )
     {
       this.push.x = -sign * this.damagePushAmount;
@@ -819,5 +814,13 @@ public class PlayerController : Character, IDamage
   {
     StopCharge();
     StopGrap();
+    // "pack" the graphook with this gameobject
+    graphookTip.transform.parent = gameObject.transform;
+    grapCableRender.transform.parent = gameObject.transform;
+  }
+
+  public override void PostSceneTransition()
+  {
+
   }
 }

@@ -58,7 +58,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.3, y: 0.3}
+  m_Size: {x: 0.4, y: 0.4}
   m_EdgeRadius: 0
 --- !u!212 &212949075796312028
 SpriteRenderer:
@@ -121,6 +121,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collider: {fileID: 61147437956396782}
+  box: {fileID: 61147437956396782}
+  renderer: {fileID: 212949075796312028}
+  animator: {fileID: 0}
   UseGravity: 1
   velocity: {x: 0, y: 0, z: 0}
   inertia: {x: 0, y: 0, z: 0}
@@ -128,17 +131,10 @@ MonoBehaviour:
   airFriction: 0.01
   raylength: 0.01
   contactSeparation: 0.01
-  box: {fileID: 61147437956396782}
   CollideLayers:
   - Default
   DamageLayers:
   - character
-  collideRight: 0
-  collideLeft: 0
-  collideTop: 0
-  collideBottom: 0
-  renderer: {fileID: 212949075796312028}
-  animator: {fileID: 0}
   health: 3
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}

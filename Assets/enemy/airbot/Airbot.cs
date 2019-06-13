@@ -14,7 +14,7 @@ public class Airbot : Character
 
   void Start()
   {
-    EnemyStart();
+    CharacterStart();
     UpdateLogic = UpdateAirbot;
     UpdateHit = AirbotHit;
     hitPauseTimer = new Timer();

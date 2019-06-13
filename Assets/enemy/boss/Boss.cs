@@ -22,7 +22,7 @@ public class Boss : Character
   public float jumpDuration = 0.4f;
   public float dashDuration = 1;
   public float landDuration = 0.1f;
-  bool jumping;
+  [SerializeField] bool jumping;
   [SerializeField] bool onGround;
   [SerializeField] bool landing;
   float jumpStart;
@@ -40,11 +40,8 @@ public class Boss : Character
 
   void Start()
   {
+    CharacterStart();
     UpdateLogic = BossUpdate;
-    UpdateHit = BoxHit;
-    UpdateCollision = BoxCollision;
-    UpdatePosition = BasicPosition;
-    animator.Play( "idle" );
   }
 
   void BossUpdate()
