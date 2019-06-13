@@ -1246,7 +1246,7 @@ PrefabInstance:
     - target: {fileID: 4045851430560821419, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
       propertyPath: m_Name
-      value: Mech
+      value: Mech Punchy
       objectReference: {fileID: 0}
     - target: {fileID: 4045851430560821422, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
@@ -1305,13 +1305,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
-      propertyPath: jumpDuration
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
-        type: 3}
-      propertyPath: jumpSpeed
-      value: 3
+      propertyPath: ContactDamage
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2347122d03bc54cd8aae519c83ae52ba, type: 3}

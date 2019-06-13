@@ -163,6 +163,7 @@ public class Global : MonoBehaviour
     Pause();
     if( Application.isEditor && !SimulatePlayer )
     {
+      music.Play();
       SpawnPlayer();
       yield return new WaitForSecondsRealtime( 1 );
       Unpause();

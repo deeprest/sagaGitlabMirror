@@ -601,9 +601,9 @@ MonoBehaviour:
   jumpRange: 2
   small: 0.5
   moveSpeed: 1
-  jumpSpeed: 5
+  jumpSpeed: 3
   dashSpeed: 5
-  jumpDuration: 0.4
+  jumpDuration: 2
   dashDuration: 1
   landDuration: 0.1
   jumping: 0
@@ -645,9 +645,10 @@ AudioSource:
   m_GameObject: {fileID: 4045851430560821419}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243862331985139506, guid: 1c39f8c58cb83400089739cd8e4d9c58,
+    type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
