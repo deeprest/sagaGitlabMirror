@@ -280,6 +280,7 @@ public class PlayerController : Character, IDamage
           grapCableRender.gameObject.SetActive( true );
           grapCableRender.transform.position = pos;
           grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - pos) ) );
+          grapCableRender.transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
           grapSize = grapCableRender.size;
           grapSize.x = Vector3.Distance( graphookTip.transform.position, pos );
           grapCableRender.size = grapSize;
@@ -596,6 +597,7 @@ public class PlayerController : Character, IDamage
       Vector3 armpos = arm.position + shoot.normalized * armRadius;
       grapCableRender.transform.position = armpos;
       grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - armpos) ) );
+      grapCableRender.transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
       grapSize = grapCableRender.size;
       grapSize.x = Vector3.Distance( graphookTip.transform.position, armpos );
       grapCableRender.size = grapSize;
