@@ -42,7 +42,8 @@ public class Hornet : Character
   protected override void Die()
   {
     dying = true;
-    collider.enabled = false;
+    foreach( var c in colliders )
+      c.enabled = false;
     UpdateHit = null;
     //UpdateCollision = null;
     explosionTimer.Start( 10, explosionInterval, 

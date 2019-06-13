@@ -125,11 +125,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4598682102021700, guid: bcaea2b19576c4f368aab98d53d5aabe, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.755
+      value: -2.576
       objectReference: {fileID: 0}
     - target: {fileID: 4598682102021700, guid: bcaea2b19576c4f368aab98d53d5aabe, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.185
+      value: 0.317
       objectReference: {fileID: 0}
     - target: {fileID: 4598682102021700, guid: bcaea2b19576c4f368aab98d53d5aabe, type: 3}
       propertyPath: m_LocalPosition.z
@@ -593,11 +593,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4598682102021700, guid: bcaea2b19576c4f368aab98d53d5aabe, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.86
+      value: -4.501
       objectReference: {fileID: 0}
     - target: {fileID: 4598682102021700, guid: bcaea2b19576c4f368aab98d53d5aabe, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.63861513
+      value: 0.318
       objectReference: {fileID: 0}
     - target: {fileID: 4598682102021700, guid: bcaea2b19576c4f368aab98d53d5aabe, type: 3}
       propertyPath: m_LocalPosition.z
@@ -797,6 +797,12 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!4 &1410655427 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8628652788884801234, guid: 2347122d03bc54cd8aae519c83ae52ba,
+    type: 3}
+  m_PrefabInstance: {fileID: 4045851430822365456}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1430925849
 GameObject:
   m_ObjectHideFlags: 0
@@ -879,11 +885,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4598682102021700, guid: bcaea2b19576c4f368aab98d53d5aabe, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.191
+      value: -1.125
       objectReference: {fileID: 0}
     - target: {fileID: 4598682102021700, guid: bcaea2b19576c4f368aab98d53d5aabe, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.53
+      value: -0.37
       objectReference: {fileID: 0}
     - target: {fileID: 4598682102021700, guid: bcaea2b19576c4f368aab98d53d5aabe, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1308,5 +1314,16 @@ PrefabInstance:
       propertyPath: ContactDamage
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: shotOrigin
+      value: 
+      objectReference: {fileID: 1410655427}
+    - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: weapon
+      value: 
+      objectReference: {fileID: 11400000, guid: bc79bc153feb64c929fcc47e5ae33a26,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2347122d03bc54cd8aae519c83ae52ba, type: 3}

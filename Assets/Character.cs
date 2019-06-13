@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Character : MonoBehaviour, IDamage
 {
-  new public Collider2D collider;
   public BoxCollider2D box;
   public new SpriteRenderer renderer;
   public Animator animator;
 
+  public Collider2D[] colliders;
   SpriteRenderer[] spriteRenderers;
 
   public bool UseGravity = true;
@@ -51,6 +51,7 @@ public class Character : MonoBehaviour, IDamage
 
   protected void CharacterStart()
   {
+    colliders = GetComponentsInChildren<Collider2D>();
     spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
     UpdateHit = BoxHit;
     UpdateCollision = BoxCollision;

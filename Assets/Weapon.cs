@@ -36,8 +36,8 @@ public class Weapon : ScriptableObject
       Projectile p = go.GetComponent<Projectile>();
       p.instigator = instigator.transform;
       p.velocity = shoot.normalized * (p.speed + speedIncrease);
-      Physics2D.IgnoreCollision( p.circle, instigator.collider );
-      //p.OnFire();
+      //foreach( var c in instigator.colliders )
+        //Physics2D.IgnoreCollision( p.circle, c );
     }
   }
 }

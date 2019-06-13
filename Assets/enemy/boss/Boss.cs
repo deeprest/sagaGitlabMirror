@@ -8,7 +8,6 @@ public class Boss : Character
 
   public bool facingRight;
   SpriteChunk[] sac;
-  Vector3 pos;
   public BoxCollider2D fist;
   public BoxCollider2D torso;
 
@@ -29,6 +28,10 @@ public class Boss : Character
   float landStart;
   Timer jumpRepeat = new Timer();
   public AudioClip soundJump;
+
+  [SerializeField] Weapon weapon;
+  Timer shootRepeatTimer = new Timer();
+  [SerializeField] Transform shotOrigin;
 
   private void Awake()
   {
@@ -64,7 +67,11 @@ public class Boss : Character
     facingRight = delta.x >= 0;
     if( (player - transform.position).sqrMagnitude < sightRange * sightRange )
     {
-      if( Mathf.Abs(delta.x) < small )
+      if( weapon != null )
+        if( !shootRepeatTimer.IsActive )
+          Shoot( player - shotOrigin.position );
+
+      if( Mathf.Abs( delta.x ) < small )
       {
         animator.Play( "idle" );
         velocity.x = 0;
@@ -73,7 +80,7 @@ public class Boss : Character
       {
         if( collideBottom )
         {
-          if( delta.y > 1 && !jumpRepeat.IsActive && !jumping && delta.sqrMagnitude<jumpRange*jumpRange )
+          if( delta.y > 1 && !jumpRepeat.IsActive && !jumping && delta.sqrMagnitude < jumpRange * jumpRange )
           {
             StartJump();
           }
@@ -86,7 +93,7 @@ public class Boss : Character
       }
     }
 
-    transform.localScale = new Vector3( facingRight? 1 : -1, 1, 1 );
+    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
 
     bool oldGround = onGround;
     onGround = collideBottom || (collideLeft && collideRight);
@@ -115,5 +122,12 @@ public class Boss : Character
     velocity.y = Mathf.Min( velocity.y, 0 );
   }
 
+
+  void Shoot( Vector3 shoot )
+  {
+    shootRepeatTimer.Start( weapon.shootInterval, null, null );
+    if( !Physics2D.Linecast( transform.position, shotOrigin.position, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+      weapon.FireWeapon( this, shotOrigin.position, shoot );
+  }
 
 }

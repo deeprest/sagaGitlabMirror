@@ -29,8 +29,8 @@ public class XBuster : Projectile
 
   void Update()
   {
-    RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( CollideLayers ) );
-    if( hit.transform != null && (instigator == null || hit.transform != instigator) )
+    RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( DefaultCollideLayers ) );
+    if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf(instigator) ) )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )

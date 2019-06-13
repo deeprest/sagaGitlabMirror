@@ -18,7 +18,8 @@ public class Projectile : MonoBehaviour
   //Timer timeoutTimer;
 
   public Vector3 velocity;
-  public static string[] CollideLayers = { "Default", "character", "triggerAndCollision", "enemy" };
+  public static string[] DefaultCollideLayers = { "Default", "character", "triggerAndCollision", "enemy" };
+  //public string[] CollideLayers = DefaultCollideLayers;
   // check first before spawning to avoid colliding with these layers on the first frame
   public static string[] NoShootLayers = { "Default" };
 

@@ -307,7 +307,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7302641308233258165}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 23.67, y: 0.18, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 260917434}
@@ -412,10 +412,6 @@ MonoBehaviour:
   - Default
   DamageLayers:
   - character
-  collideRight: 0
-  collideLeft: 0
-  collideTop: 0
-  collideBottom: 0
   health: 20
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
