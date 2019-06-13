@@ -667,13 +667,11 @@ public class PlayerController : Character, IDamage
 
   void StartJump()
   {
-
     jumping = true;
     jumpStart = Time.time;
     velocity.y = jumpVel;
     audio.PlayOneShot( soundJump );
     dashSmoke.Stop();
-
   }
 
   void StopJump()

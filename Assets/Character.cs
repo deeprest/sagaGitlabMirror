@@ -49,7 +49,6 @@ public class Character : MonoBehaviour, IDamage
   protected void EnemyStart()
   {
     animator.Play( "idle" );
-    //renderer.material.SetFloat( "_FlashAmount", 0 );
     UpdateHit = BoxHit;
     UpdateCollision = BoxCollision;
     UpdatePosition = BasicPosition;

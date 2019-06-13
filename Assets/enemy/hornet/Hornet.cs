@@ -3,30 +3,30 @@ using System.Collections;
 
 public class Hornet : Character
 {
-  public float sightRange = 6;
-  public float flySpeed = 2;
-  public float up = 3;
-  public float over = 2;
-  public float small = 0.1f;
-  public float rot = 15;
-  public float rotspeed = 20;
-  public float topspeedrot = 1;
-  public float acc = 2;
-  public float crashSpeed = 3;
-  public float explosionInterval = 0.2f;
-  public float explosionRange = 1;
+  [SerializeField] float sightRange = 6;
+  [SerializeField] float flySpeed = 2;
+  [SerializeField] float up = 3;
+  [SerializeField] float over = 2;
+  [SerializeField] float small = 0.1f;
+  [SerializeField] float rot = 15;
+  [SerializeField] float rotspeed = 20;
+  [SerializeField] float topspeedrot = 1;
+  [SerializeField] float acc = 2;
+  [SerializeField] float crashSpeed = 3;
+  [SerializeField] float explosionInterval = 0.2f;
+  [SerializeField] float explosionRange = 1;
   bool dying;
   Timer explosionTimer = new Timer();
-  public GameObject junk;
+  [SerializeField] GameObject junk;
   Vector3 tvel;
   Timer wheelDrop = new Timer();
-  public float wheelDropInterval = 3;
-  public Transform drop;
-  public GameObject dropPrefab;
+  [SerializeField] float wheelDropInterval = 3;
+  [SerializeField] Transform drop;
+  [SerializeField] GameObject dropPrefab;
 
-  public Weapon weapon;
+  [SerializeField] Weapon weapon;
   Timer shootRepeatTimer = new Timer();
-  public Transform shotOrigin;
+  [SerializeField] Transform shotOrigin;
 
   void Start()
   {

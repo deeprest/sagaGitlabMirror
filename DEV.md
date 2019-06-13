@@ -45,7 +45,8 @@ camera view size changes
 camera movement follows aiming
 projectiles collide with walls
 lighting, normal mapped sprites, emissive
-
+arbitrary ground and wall angles
+no instant-death spikes or bottomless pits
 
 ## aesthetics
 1. animation

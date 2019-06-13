@@ -309,7 +309,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 6001814801279530894}
   flipXRenderer: 1
-  flipXPosition: 1
   spriteOrder: -1
 --- !u!1 &3080994399749504100
 GameObject:
@@ -408,7 +407,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 267855414092507994}
   flipXRenderer: 1
-  flipXPosition: 1
   spriteOrder: 4
 --- !u!1 &3891050234502034460
 GameObject:
@@ -504,7 +502,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 5270611540057175337}
   flipXRenderer: 1
-  flipXPosition: 1
   spriteOrder: 1
 --- !u!1 &4045851430560821419
 GameObject:
@@ -518,6 +515,7 @@ GameObject:
   - component: {fileID: 5397825192010816886}
   - component: {fileID: 5736656210831704170}
   - component: {fileID: 1654668584601712558}
+  - component: {fileID: 8324022198147396173}
   m_Layer: 10
   m_Name: Boss
   m_TagString: Untagged
@@ -588,10 +586,6 @@ MonoBehaviour:
   - Default
   DamageLayers:
   - character
-  collideRight: 0
-  collideLeft: 0
-  collideTop: 0
-  collideBottom: 0
   health: 20
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
@@ -599,9 +593,22 @@ MonoBehaviour:
   flashInterval: 0.05
   flashCount: 5
   ContactDamage: {fileID: 0}
+  audio: {fileID: 8324022198147396173}
   facingRight: 1
   fist: {fileID: 810516726}
   torso: {fileID: 2144159810273346529}
+  sightRange: 6
+  jumpRange: 2
+  small: 0.5
+  moveSpeed: 2
+  jumpSpeed: 5
+  dashSpeed: 5
+  jumpDuration: 0.4
+  dashDuration: 1
+  landDuration: 0.1
+  onGround: 0
+  landing: 0
+  soundJump: {fileID: 8300000, guid: 868a350aac882450bac6f95cab0736d9, type: 3}
 --- !u!61 &1654668584601712558
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -628,6 +635,102 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.2, y: 0.5}
   m_EdgeRadius: 0
+--- !u!82 &8324022198147396173
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4045851430560821419}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &5409591350307037476
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,7 +895,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 2728132835290613611}
   flipXRenderer: 1
-  flipXPosition: 1
   spriteOrder: 0
 --- !u!1 &7307121025556308680
 GameObject:
@@ -888,7 +990,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 5950344626650477137}
   flipXRenderer: 1
-  flipXPosition: 1
   spriteOrder: -4
 --- !u!1 &8369412502855527898
 GameObject:
@@ -1014,5 +1115,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 4090060214824906407}
   flipXRenderer: 1
-  flipXPosition: 1
   spriteOrder: 3

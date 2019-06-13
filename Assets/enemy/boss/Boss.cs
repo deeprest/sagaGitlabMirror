@@ -4,11 +4,31 @@ using UnityEngine;
 
 public class Boss : Character
 {
+  new public AudioSource audio;
+
   public bool facingRight;
   SpriteChunk[] sac;
   Vector3 pos;
   public BoxCollider2D fist;
   public BoxCollider2D torso;
+
+  [SerializeField] float sightRange = 6;
+  [SerializeField] float jumpRange = 2;
+  [SerializeField] float small = 0.1f;
+  [SerializeField] float moveSpeed = 2;
+  [SerializeField] float jumpSpeed = 5;
+  [SerializeField] float dashSpeed = 5;
+  // durations
+  public float jumpDuration = 0.4f;
+  public float dashDuration = 1;
+  public float landDuration = 0.1f;
+  bool jumping;
+  [SerializeField] bool onGround;
+  [SerializeField] bool landing;
+  float jumpStart;
+  float landStart;
+  Timer jumpRepeat = new Timer();
+  public AudioClip soundJump;
 
   private void Awake()
   {
@@ -20,36 +40,83 @@ public class Boss : Character
 
   void Start()
   {
+    UpdateLogic = BossUpdate;
     UpdateHit = BoxHit;
     UpdateCollision = BoxCollision;
     UpdatePosition = BasicPosition;
-    //UpdateEnemy = UpdateWheel;
+    animator.Play( "idle" );
   }
 
-  void LateUpdate()
+  void BossUpdate()
   {
-    //GetComponent<Animator>().SetBool( "facingRight", facingRight );
-    //GetComponent<Animator>().GetCurrentAnimatorClipInfo( 0 )[0].clip.SampleAnimation( gameObject, GetComponent<Animator>().playbackTime );
 
-    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
+    if( velocity.y < 0 )
+      jumping = false;
 
-    foreach( var sa in sac )
+    if( jumping && (Time.time - jumpStart >= jumpDuration) )
+      StopJump();
+
+    if( landing && (Time.time - landStart >= landDuration) )
+      landing = false;
+
+    if( Global.instance.CurrentPlayer == null )
+      return;
+    Vector3 player = Global.instance.CurrentPlayer.transform.position;
+    Vector3 tpos = player;
+    Vector3 delta = tpos - transform.position;
+    facingRight = delta.x >= 0;
+    if( (player - transform.position).sqrMagnitude < sightRange * sightRange )
     {
-      if( sa.flipXRenderer )
+      if( Mathf.Abs(delta.x) < small )
       {
-       //sa.spriteRenderer.flipX = !facingRight;
-        //sa.spriteRenderer.material.SetInt( "_FlipX", !facingRight ? 1 : 0 );
-        //sa.spriteRenderer.sortingOrder = (facingRight? 1 : -1) * sa.spriteOrder;
+        animator.Play( "idle" );
+        velocity.x = 0;
       }
-      //if( sa.flipXPosition )
+      else
       {
-        /*if( !facingRight )
+        if( collideBottom )
         {
-          pos = sa.transform.localPosition;
-          pos.x = -pos.x;
-          sa.transform.localPosition = pos;
-        }*/
+          if( delta.y > 1 && !jumpRepeat.IsActive && !jumping && delta.sqrMagnitude<jumpRange*jumpRange )
+          {
+            StartJump();
+          }
+          else
+          {
+            animator.Play( "walk" );
+            velocity.x = Mathf.Sign( delta.x ) * moveSpeed;
+          }
+        }
       }
     }
+
+    transform.localScale = new Vector3( facingRight? 1 : -1, 1, 1 );
+
+    bool oldGround = onGround;
+    onGround = collideBottom || (collideLeft && collideRight);
+    if( onGround && !oldGround )
+    {
+      //StopDash();
+      landing = true;
+      landStart = Time.time;
+    }
   }
+
+  void StartJump()
+  {
+    jumping = true;
+    jumpStart = Time.time;
+    velocity.y = jumpSpeed;
+    audio.PlayOneShot( soundJump );
+    //dashSmoke.Stop();
+    animator.Play( "jump" );
+    jumpRepeat.Start( 2, null, null );
+  }
+
+  void StopJump()
+  {
+    jumping = false;
+    velocity.y = Mathf.Min( velocity.y, 0 );
+  }
+
+
 }
