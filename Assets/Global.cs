@@ -231,7 +231,7 @@ public class Global : MonoBehaviour
 
   void Update()
   {
-    //Timer.UpdateTimers();
+    Timer.UpdateTimers();
 
     debugButtons.text = "";
     for( int i = 0; i < 20; i++ )
@@ -298,6 +298,13 @@ public class Global : MonoBehaviour
       else
         Pause();
     }
+    if( Input.GetKeyDown( KeyCode.Escape ) )
+    {
+      if( Cursor.lockState == CursorLockMode.Locked )
+        Cursor.lockState = CursorLockMode.None;
+      else
+        Cursor.lockState = CursorLockMode.Locked;
+    }
 #endif
     if( Input.GetKeyDown( KeyCode.Return ) )
     {
@@ -335,8 +342,6 @@ public class Global : MonoBehaviour
 
   void LateUpdate()
   {
-    Timer.UpdateTimers();
-
     if( CurrentPlayer != null )
     {
       if( UsingKeyboard )

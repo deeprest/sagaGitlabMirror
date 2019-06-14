@@ -4812,6 +4812,7 @@ GameObject:
   - component: {fileID: 82627251547920718}
   - component: {fileID: 1697597636064711849}
   - component: {fileID: 1941109611158836893}
+  - component: {fileID: 2111217764532811413}
   m_Layer: 10
   m_Name: AvatarMMX
   m_TagString: Untagged
@@ -4849,10 +4850,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b7dea512de4f446d8c2325d6a19e493, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collider: {fileID: 61999569739760366}
   box: {fileID: 61999569739760366}
   renderer: {fileID: 212107818795109166}
   animator: {fileID: 1697597636064711849}
+  colliders: []
   UseGravity: 1
   velocity: {x: 0, y: 0, z: 0}
   inertia: {x: 0, y: 0, z: 0}
@@ -4871,6 +4872,7 @@ MonoBehaviour:
   flashInterval: 0.05
   flashCount: 5
   ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  body: {fileID: 2111217764532811413}
   audio: {fileID: 82117261715149456}
   audio2: {fileID: 82627251547920718}
   dashSmoke: {fileID: 198502029244883790}
@@ -4902,7 +4904,7 @@ MonoBehaviour:
   landing: 0
   dashing: 0
   push: {x: 0, y: 0, z: 0}
-  weapon: {fileID: 11400000, guid: fd374035a3d2a4dfab5b20e9cd75ba10, type: 2}
+  weapon: {fileID: 11400000, guid: bc79bc153feb64c929fcc47e5ae33a26, type: 2}
   chargeMin: 0.5
   armRadius: 0.3
   chargeDelay: 0.4
@@ -5231,6 +5233,27 @@ MonoBehaviour:
   spriteRenderer: {fileID: 212107818795109166}
   flipXRenderer: 1
   spriteOrder: 0
+--- !u!50 &2111217764532811413
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789244597324514}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &4836708145371954099
 GameObject:
   m_ObjectHideFlags: 0

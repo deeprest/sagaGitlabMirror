@@ -17,6 +17,8 @@ public class Boss : Character
   [SerializeField] float moveSpeed = 2;
   [SerializeField] float jumpSpeed = 5;
   [SerializeField] float dashSpeed = 5;
+  [SerializeField] float shootInterval = 1;
+  [SerializeField] float shootUp = 5;
   // durations
   public float jumpDuration = 0.4f;
   public float dashDuration = 1;
@@ -69,7 +71,7 @@ public class Boss : Character
     {
       if( weapon != null )
         if( !shootRepeatTimer.IsActive )
-          Shoot( player - shotOrigin.position );
+          Shoot( player - shotOrigin.position + Vector3.up * shootUp );
 
       if( Mathf.Abs( delta.x ) < small )
       {
@@ -80,7 +82,7 @@ public class Boss : Character
       {
         if( collideBottom )
         {
-          if( delta.y > 1 && !jumpRepeat.IsActive && !jumping && delta.sqrMagnitude < jumpRange * jumpRange )
+          if( delta.y > 0.1f && !jumpRepeat.IsActive && !jumping && delta.sqrMagnitude < jumpRange * jumpRange )
           {
             StartJump();
           }
@@ -125,7 +127,7 @@ public class Boss : Character
 
   void Shoot( Vector3 shoot )
   {
-    shootRepeatTimer.Start( weapon.shootInterval, null, null );
+    shootRepeatTimer.Start( shootInterval, null, null );
     if( !Physics2D.Linecast( transform.position, shotOrigin.position, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
       weapon.FireWeapon( this, shotOrigin.position, shoot );
   }

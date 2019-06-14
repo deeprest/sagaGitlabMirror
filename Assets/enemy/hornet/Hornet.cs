@@ -18,7 +18,7 @@ public class Hornet : Character
   bool dying;
   Timer explosionTimer = new Timer();
   [SerializeField] GameObject junk;
-  Vector3 tvel;
+  Vector2 tvel;
   Timer wheelDrop = new Timer();
   [SerializeField] float wheelDropInterval = 3;
   [SerializeField] Transform drop;
@@ -62,7 +62,7 @@ public class Hornet : Character
     {
       if( dying )
       {
-        velocity += Vector3.down * crashSpeed * Time.deltaTime;
+        velocity += Vector2.down * crashSpeed * Time.deltaTime;
         if( collideBottom )
         {
           Destroy( gameObject );
@@ -76,7 +76,7 @@ public class Hornet : Character
       if( (player - transform.position).sqrMagnitude < sightRange * sightRange )
       {
         if( delta.sqrMagnitude < small * small )
-          tvel = Vector3.zero;
+          tvel = Vector2.zero;
         else
         {
           tvel = (tpos - transform.position).normalized * flySpeed;

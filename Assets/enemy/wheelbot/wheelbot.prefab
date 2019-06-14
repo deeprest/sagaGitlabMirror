@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 61147437956396782}
   - component: {fileID: 212949075796312028}
   - component: {fileID: 8402770076920746544}
+  - component: {fileID: 88018454292964798}
   m_Layer: 14
   m_Name: wheelbot
   m_TagString: Untagged
@@ -120,10 +121,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1523864c09bbb430980a5732b9e33683, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collider: {fileID: 61147437956396782}
+  body: {fileID: 88018454292964798}
   box: {fileID: 61147437956396782}
   renderer: {fileID: 212949075796312028}
   animator: {fileID: 0}
+  colliders: []
   UseGravity: 1
   velocity: {x: 0, y: 0, z: 0}
   inertia: {x: 0, y: 0, z: 0}
@@ -145,6 +147,27 @@ MonoBehaviour:
   rotator: {fileID: 110268027408849183}
   wheelAnimRate: -3
   wheelVelocity: 1
+--- !u!50 &88018454292964798
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1094346900350558}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &5490519860742726923
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,7 +10,6 @@ public class BouncyGrenade : Projectile
   void Start()
   {
     GetComponent<Rigidbody2D>().velocity = new Vector2( velocity.x, velocity.y );
-
     timeoutTimer = new Timer( timeout, null, Boom );
   }
 
@@ -31,7 +30,7 @@ public class BouncyGrenade : Projectile
     Destroy( gameObject, 1f );
   }
 
-  void Update()
+  /*void Update()
   {
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( BouncyCollideLayers ) );
     if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator )) )
@@ -46,6 +45,22 @@ public class BouncyGrenade : Projectile
       }
       Boom();
     }
-  }
+  }*/
 
+  private void OnCollisionEnter2D( Collision2D hit )
+  {
+    if( (LayerMask.GetMask( BouncyCollideLayers ) & (1 << hit.gameObject.layer)) > 0 )
+    if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator )) )
+    {
+      IDamage dam = hit.transform.GetComponent<IDamage>();
+      if( dam != null )
+      {
+        Damage dmg = Instantiate( ContactDamage );
+        dmg.instigator = transform;
+        dmg.point = hit.GetContact( 0 ).point;
+        dam.TakeDamage( dmg );
+      }
+      Boom();
+    }
+  }
 }

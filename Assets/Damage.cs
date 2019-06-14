@@ -14,7 +14,7 @@ public class Damage : ScriptableObject
   [HideInInspector]
   public Transform instigator;
   [HideInInspector]
-  public Vector3 point;
+  public Vector2 point;
 
   public Damage( Transform instigator, DamageType type, int amount )
   {

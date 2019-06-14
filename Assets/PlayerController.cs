@@ -47,7 +47,7 @@ public class PlayerController : Character, IDamage
   [SerializeField] bool dashing;
   public bool hanging { get; set; }
 
-  public Vector3 push = Vector3.zero;
+  public Vector2 push = Vector2.zero;
   float dashStart;
   float jumpStart;
   float landStart;
@@ -94,8 +94,11 @@ public class PlayerController : Character, IDamage
   public float damageLift = 1f;
   public float damagePushAmount = 1f;
 
+  Vector3 pos;
+
   void Start()
   {
+    colliders = GetComponentsInChildren<Collider2D>();
     spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
     sac = GetComponentsInChildren<SpriteChunk>();
     graphookTip.SetActive( false );
@@ -121,7 +124,7 @@ public class PlayerController : Character, IDamage
 
     RaycastHit2D[] hits;
 
-    hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( TriggerLayers ) );
+    hits = Physics2D.BoxCastAll( pos, box.size, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( TriggerLayers ) );
     foreach( var hit in hits )
     {
       ITrigger tri = hit.transform.GetComponent<ITrigger>();
@@ -143,7 +146,7 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    Vector2 adjust = transform.position;
+    Vector2 adjust = pos;  //transform.position;
     /*
     // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground bug by 'sampling' the ground at multiple points
     RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
@@ -228,7 +231,9 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    transform.position = adjust;
+
+    body.MovePosition( adjust );
+    //transform.position = adjust;
   }
 
   void Shoot()
@@ -239,7 +244,7 @@ public class PlayerController : Character, IDamage
       weapon.FireWeapon( this, pos, shoot );
   }
 
-  [Header("Graphook")]
+  [Header( "Graphook" )]
   [SerializeField] GameObject graphookTip;
   [SerializeField] SpriteRenderer grapCableRender;
   public float grapDistance = 10;
@@ -260,6 +265,8 @@ public class PlayerController : Character, IDamage
   {
     if( grapShooting )
       return;
+    if( grapPulling )
+      StopGrap();
     Vector3 pos = arm.position + shoot.normalized * armRadius;
     if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
     {
@@ -430,7 +437,7 @@ public class PlayerController : Character, IDamage
     if( playerInput )
       UpdatePlayerInput();
 
-    if( inputGraphook && !grapPulling )
+    if( inputGraphook )
       ShootGraphook();
 
     if( inputChargeStart )
@@ -519,7 +526,7 @@ public class PlayerController : Character, IDamage
 
     if( landing && (Time.time - landStart >= landDuration) )
       landing = false;
-      
+
     string anim = "idle";
 
     if( jumping )
@@ -530,7 +537,7 @@ public class PlayerController : Character, IDamage
       if( dashing )
         anim = "dash";
       else
-      if( inputRight || inputLeft ) 
+      if( inputRight || inputLeft )
         anim = "run";
       else
       if( landing )
@@ -608,12 +615,12 @@ public class PlayerController : Character, IDamage
       if( grapDelta.magnitude < grapStopDistance )
         StopGrap();
       else if( grapDelta.magnitude > 0.01f )
-        velocity += grapDelta.normalized * grapPullSpeed;
+        velocity = grapDelta.normalized * grapPullSpeed; // * Time.deltaTime;
     }
     else
     {
       velocity += push;
-      // vertical push is one-time instantaneous only
+      // vertical push is one-time instantaneous only (so far only damage does this)
       push.y = 0;
     }
 
@@ -643,20 +650,23 @@ public class PlayerController : Character, IDamage
 
     if( hanging )
       velocity = Vector3.zero;
-      
+
     animator.Play( anim );
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    velocity.z = 0;
-    transform.position += velocity * Time.deltaTime;
+    //velocity.z = 0;
+    pos = body.position + velocity * Time.deltaTime;
+    //body.MovePosition( body.position + (Vector2)velocity * Time.deltaTime );
     transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
-    // must hold button to move horizontally, so allow no persistent horizontal velocity
-    velocity.x = 0;
+
     if( grapPulling )
-      velocity.y = 0;
+      velocity = Vector3.zero;
+    else
+      // must have input (or push) to move horizontally, so allow no persistent horizontal velocity
+      velocity.x = 0;
+
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
-
     bool oldGround = onGround;
     onGround = collideBottom || (collideLeft && collideRight);
     if( onGround && !oldGround )

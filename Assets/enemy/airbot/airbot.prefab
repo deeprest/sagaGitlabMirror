@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 212979940915122146}
   - component: {fileID: 781258803751863346}
   - component: {fileID: 4874249801477483448}
+  - component: {fileID: 9109282300699132467}
   m_Layer: 14
   m_Name: airbot
   m_TagString: Untagged
@@ -121,13 +122,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67e5d864805334a2195c67774fadae3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collider: {fileID: 61733048714469916}
+  body: {fileID: 9109282300699132467}
   box: {fileID: 61733048714469916}
   renderer: {fileID: 212979940915122146}
   animator: {fileID: 4874249801477483448}
+  colliders: []
   UseGravity: 0
-  velocity: {x: 0, y: 0, z: 0}
-  inertia: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
   friction: 0.5
   airFriction: 0.5
   raylength: 0.01
@@ -166,6 +168,27 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!50 &9109282300699132467
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268720782321642}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &9209941920657911778
 GameObject:
   m_ObjectHideFlags: 0
