@@ -115,6 +115,31 @@ public class PlayerController : Character, IDamage
     chargeStartDelay.Stop( false );
   }
 
+
+  [SerializeField] float highlightPickupRange = 3;
+  Pickup selectedPickup;
+  //List<Pickup> highlightedPickups = new List<Pickup>();
+  List<Pickup> pups = new List<Pickup>();
+  //List<Pickup> highlightedPickupsRemove = new List<Pickup>();
+
+
+  Component FindClosest( Vector3 position, Component[] cmps )
+  {
+    float distance = Mathf.Infinity;
+    Component closest = null;
+    foreach( var cmp in cmps )
+    {
+      float dist = Vector3.Distance( cmp.transform.position, position );
+      if( dist < distance )
+      {
+        closest = cmp;
+        distance = dist;
+      }
+    }
+    return closest;
+  }
+
+
   void UpdateCollision( float dT )
   {
     collideRight = false;
@@ -145,6 +170,41 @@ public class PlayerController : Character, IDamage
         }
       }
     }
+
+    pups.Clear();
+    hits = Physics2D.CircleCastAll( pos, highlightPickupRange, Vector2.zero, 0, LayerMask.GetMask( new string[] { "pickup" } ) );
+    foreach( var hit in hits )
+    {
+      Pickup pup = hit.transform.GetComponent<Pickup>();
+      if( pup != null )
+      {
+        pups.Add( pup );
+        //if( !highlightedPickups.Contains( pup ) )
+        //{
+        //  pup.Highlight();
+        //  highlightedPickups.Add( pup );
+        //}
+      }
+    }
+    Pickup closest = (Pickup)FindClosest( transform.position, pups.ToArray() );
+    if( closest!=null && closest!=selectedPickup )
+    {
+      if( selectedPickup != null )
+        selectedPickup.Unhighlight();
+      selectedPickup = closest;
+      selectedPickup.Highlight();
+      weapon = selectedPickup.weapon;
+    }
+    /*highlightedPickupsRemove.Clear();
+    foreach( var pup in highlightedPickups )
+      if( !pups.Contains( pup ) )
+      {
+        pup.Unhighlight();
+        highlightedPickupsRemove.Add( pup );
+      }
+    foreach( var pup in highlightedPickupsRemove )
+      highlightedPickups.Remove( pup );
+    */
 
     Vector2 adjust = pos;  //transform.position;
     /*
@@ -381,6 +441,9 @@ public class PlayerController : Character, IDamage
         Shoot();
       }
     }
+
+    //if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Pickup"] ) )
+      
 
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["graphook"] ) )
       inputGraphook = true;
@@ -652,7 +715,7 @@ public class PlayerController : Character, IDamage
 
     if( hanging )
       velocity = Vector3.zero;
-      
+
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     pos = (Vector2)transform.position + velocity * Time.deltaTime;
     transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
