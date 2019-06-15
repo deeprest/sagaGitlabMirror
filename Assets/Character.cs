@@ -74,6 +74,8 @@ public class Character : MonoBehaviour, IDamage
 
     if( UpdateCollision != null )
       UpdateCollision();
+
+    body.MovePosition( transform.position );
   }
 
   protected void BoxHit()
@@ -120,7 +122,7 @@ public class Character : MonoBehaviour, IDamage
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     velocity -= (velocity * airFriction) * Time.deltaTime;
-    pos = body.position + (Vector2)velocity * Time.deltaTime;
+    pos = (Vector2)transform.position + velocity * Time.deltaTime;
   }
 
   protected void BoxCollision()
@@ -179,8 +181,7 @@ public class Character : MonoBehaviour, IDamage
         break;
       }
     }
-    //transform.position = (Vector3)adjust - boxOffset;
-    body.MovePosition( adjust - boxOffset );
+    transform.position = (Vector3)(adjust - boxOffset);
   }
 
   protected virtual void Die()

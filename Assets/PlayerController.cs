@@ -232,8 +232,8 @@ public class PlayerController : Character, IDamage
     }
 
 
-    body.MovePosition( adjust );
-    //transform.position = adjust;
+    //body.MovePosition( adjust );
+    transform.position = adjust;
   }
 
   void Shoot()
@@ -624,6 +624,8 @@ public class PlayerController : Character, IDamage
       push.y = 0;
     }
 
+    animator.Play( anim );
+
     // add gravity before velocity limits
     velocity.y -= Global.Gravity * Time.deltaTime;
     // limit velocity before adding to position
@@ -650,13 +652,9 @@ public class PlayerController : Character, IDamage
 
     if( hanging )
       velocity = Vector3.zero;
-
-    animator.Play( anim );
-
+      
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    //velocity.z = 0;
-    pos = body.position + velocity * Time.deltaTime;
-    //body.MovePosition( body.position + (Vector2)velocity * Time.deltaTime );
+    pos = (Vector2)transform.position + velocity * Time.deltaTime;
     transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
 
     if( grapPulling )
@@ -667,6 +665,8 @@ public class PlayerController : Character, IDamage
 
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
+    body.MovePosition( transform.position );
+
     bool oldGround = onGround;
     onGround = collideBottom || (collideLeft && collideRight);
     if( onGround && !oldGround )
@@ -677,6 +677,7 @@ public class PlayerController : Character, IDamage
     }
 
     ResetInput();
+
   }
 
   void StartJump()
