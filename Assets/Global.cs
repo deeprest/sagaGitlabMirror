@@ -68,44 +68,44 @@ public class Global : MonoBehaviour
   public const float MaxVelocity = 60;
   public float deadZone = 0.3f;
   public bool SimulatePlayer = false;
+  public float slowtime = 0.2f;
+  Timer fadeTimer = new Timer();
 
   [Header( "References" )]
   public string InitialSceneName;
   public CameraController CameraController;
-  public Image fader;
-  public GameObject ready;
   public AudioSource music;
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
   public GameObject AvatarPrefab;
 
-  [Header( "Runtime Objects" )]
+  [Header( "Transient (Assigned at runtime)" )]
   public PlayerController CurrentPlayer;
-  public RectTransform cursor;
   public Chopper chopper;
 
-
-  public float slowtime = 0.2f;
-  [SerializeField] Text debugButtons;
-  [SerializeField] Text debugText;
-
-  Timer fadeTimer = new Timer();
-  public float introdelay = 13;
-
   [Header( "UI" )]
+  public Image fader;
+  public GameObject ready;
+  // cursor
+  public RectTransform cursor;
+  public Image cursorImage;
   public float cursorOuter = 100;
   public float cursorInner = 50;
   public Vector3 cursorDelta;
   public float cursorSensitivity = 1;
   public bool CursorPlayerRelative = true;
-  public Sprite[] cursors;
-  int cursorIndex = 0;
   Vector3 aimRaw;
   public float cursorLerp = 10;
   public bool positionalCursor = true;
   public float cursorSpeed = 30;
   public float cursorScale = 4;
+  // status 
+  public Image weaponIcon;
+
+  [Header("Debug")]
+  [SerializeField] Text debugButtons;
+  [SerializeField] Text debugText;
 
 
   [RuntimeInitializeOnLoadMethod]
@@ -211,7 +211,6 @@ public class Global : MonoBehaviour
     if( CurrentPlayer != null )
     {
       CurrentPlayer.PostSceneTransition();
-      SceneManager.MoveGameObjectToScene( CurrentPlayer.gameObject, scene );
     }
     FadeClear();
     if( waitForFadeIn )
@@ -328,8 +327,6 @@ public class Global : MonoBehaviour
         aimRaw = Vector3.zero;
     }
 
-    if( Input.GetKeyDown( KeyCode.R ) )
-      NextCursor();
   }
 
   void OnApplicationFocus( bool hasFocus )
@@ -402,6 +399,7 @@ public class Global : MonoBehaviour
   public void Slow()
   {
     Time.timeScale = Global.instance.slowtime;
+    Time.fixedDeltaTime = 0.01f * Time.timeScale;
     Slowed = true;
     mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
       snapNormal,
@@ -415,6 +413,7 @@ public class Global : MonoBehaviour
   public void NoSlow()
   {
     Time.timeScale = 1;
+    Time.fixedDeltaTime = 0.01f * Time.timeScale;
     Slowed = false;
     Global.instance.mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
       Global.instance.snapNormal,
@@ -428,26 +427,20 @@ public class Global : MonoBehaviour
   public static void Pause()
   {
     Time.timeScale = 0;
+    Time.fixedDeltaTime = 0.01f * Time.timeScale;
     Paused = true;
   }
 
   public static void Unpause()
   {
     Time.timeScale = 1;
+    Time.fixedDeltaTime = 0.01f * Time.timeScale;
     Paused = false;
   }
 
-
-
-  void NextCursor()
+  public void SetCursor( Sprite spr )
   {
-    cursorIndex = ++cursorIndex % (cursors.Length - 1);
-    SetCursor( cursors[cursorIndex] );
-  }
-
-  void SetCursor( Sprite spr )
-  {
-    cursor.GetComponent<Image>().sprite = spr;
+    cursorImage.sprite = spr;
     cursor.sizeDelta = new Vector2( spr.rect.width, spr.rect.height ) * cursorScale; // * spr.pixelsPerUnit;
   }
 
@@ -539,6 +532,7 @@ public class Global : MonoBehaviour
     icsKeyboard.keyMap["Dash"] = KeyCode.Space;
     icsKeyboard.keyMap["Fire"] = KeyCode.Mouse0;
     icsKeyboard.keyMap["graphook"] = KeyCode.Mouse1;
+    icsKeyboard.keyMap["Pickup"] = KeyCode.E;
 
     icsKeyboard.keyMap["Charge"] = KeyCode.Mouse0;
 

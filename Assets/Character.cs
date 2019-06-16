@@ -75,7 +75,7 @@ public class Character : MonoBehaviour, IDamage
     if( UpdateCollision != null )
       UpdateCollision();
 
-    body.MovePosition( transform.position );
+    //body.MovePosition( transform.position );
   }
 
   protected void BoxHit()
@@ -182,6 +182,7 @@ public class Character : MonoBehaviour, IDamage
       }
     }
     transform.position = (Vector3)(adjust - boxOffset);
+    //body.MovePosition( adjust - boxOffset );
   }
 
   protected virtual void Die()

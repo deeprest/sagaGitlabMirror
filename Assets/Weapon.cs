@@ -5,6 +5,9 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Weapon : ScriptableObject 
 {
+  public Sprite icon;
+  public Sprite cursor;
+
   public float shootInterval = 0.1f;
   public float speedIncrease;
   public Projectile ProjectilePrefab;

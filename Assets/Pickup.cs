@@ -15,6 +15,10 @@ public class Pickup : MonoBehaviour
   {
     animator.Play( "idle" );
   }
+  public void Selected()
+  {
+    animator.Play( "selected" );
+  }
 
   void Start()
   {

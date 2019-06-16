@@ -1,4 +1,9 @@
 
+primary single = single shot, grenade
+primary hold = full auto, charged blast
+secondary single = graphook, (shield)
+
+
 # bugs
 - reproducible: charge particles on after transition. reset player state on level transition
 - once: stuck in mid-air (after transition?)
@@ -20,7 +25,7 @@
 - Menu with control options (and remap)
 - camera bounds
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
-- weapon ideas: slowtime, speedboost, shields, rapidfire, doublewhammy, rockets, seeking missiles, supercharge, beam, stickybomb, invisible
+- weapon/powerup ideas: slowtime, speedboost, shields, rapidfire, doublewhammy/triple, rockets, seeking missiles, supercharge, beam, stickybomb, invisible
 - 4 color buttons: change weapon, menu, interact, use item/powerup
 - atmosphere: rain/dust flying around, blinking lights
 

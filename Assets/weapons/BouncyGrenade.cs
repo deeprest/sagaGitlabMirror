@@ -27,7 +27,8 @@ public class BouncyGrenade : Projectile
     timeoutTimer.Stop( false );
     // HACK due to a Unity RIGIDBODY2D RemoveContact() crash bug, deactivate gameobject before a delayed destruction.
     gameObject.SetActive( false );
-    Destroy( gameObject, 1f );
+    Destroy( gameObject );
+    //Destroy( gameObject, 1f );
   }
 
   /*void Update()

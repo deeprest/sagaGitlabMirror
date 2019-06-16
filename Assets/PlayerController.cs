@@ -117,7 +117,7 @@ public class PlayerController : Character, IDamage
 
 
   [SerializeField] float highlightPickupRange = 3;
-  Pickup selectedPickup;
+  Pickup closestPickup;
   //List<Pickup> highlightedPickups = new List<Pickup>();
   List<Pickup> pups = new List<Pickup>();
   //List<Pickup> highlightedPickupsRemove = new List<Pickup>();
@@ -179,21 +179,20 @@ public class PlayerController : Character, IDamage
       if( pup != null )
       {
         pups.Add( pup );
-        //if( !highlightedPickups.Contains( pup ) )
-        //{
-        //  pup.Highlight();
-        //  highlightedPickups.Add( pup );
-        //}
+        /*if( !highlightedPickups.Contains( pup ) )
+        {
+          pup.Highlight();
+          highlightedPickups.Add( pup );
+        }*/
       }
     }
     Pickup closest = (Pickup)FindClosest( transform.position, pups.ToArray() );
-    if( closest!=null && closest!=selectedPickup )
+    if( closest != null && closest != closestPickup )
     {
-      if( selectedPickup != null )
-        selectedPickup.Unhighlight();
-      selectedPickup = closest;
-      selectedPickup.Highlight();
-      weapon = selectedPickup.weapon;
+      if( closestPickup != null )
+        closestPickup.Unhighlight();
+      closestPickup = closest;
+      closestPickup.Highlight();
     }
     /*highlightedPickupsRemove.Clear();
     foreach( var pup in highlightedPickups )
@@ -442,8 +441,16 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    //if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Pickup"] ) )
-      
+    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Pickup"] ) )
+    {
+      if( closestPickup != null )
+      {
+        closestPickup.Selected();
+        weapon = closestPickup.weapon;
+        Global.instance.weaponIcon.sprite = weapon.icon;
+        Global.instance.SetCursor( weapon.cursor );
+      }
+    }
 
     if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["graphook"] ) )
       inputGraphook = true;
@@ -728,7 +735,7 @@ public class PlayerController : Character, IDamage
 
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
-    body.MovePosition( transform.position );
+    //body.MovePosition( transform.position );
 
     bool oldGround = onGround;
     onGround = collideBottom || (collideLeft && collideRight);

@@ -112,6 +112,18 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &551293696 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5150884474619670982, guid: a303ea602a9de415ea4561c7d9c43d4e,
+    type: 3}
+  m_PrefabInstance: {fileID: 702653378}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &702653378
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -122,10 +134,6 @@ PrefabInstance:
     - target: {fileID: 1563210130524808, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
       propertyPath: m_Name
       value: GLOBAL
-      objectReference: {fileID: 0}
-    - target: {fileID: 1563210130524808, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4364495294273822, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -253,59 +261,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114329875613515752, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
-      propertyPath: SimulatePlayer
-      value: 0
-      objectReference: {fileID: 0}
+      propertyPath: cursorImage
+      value: 
+      objectReference: {fileID: 551293696}
     - target: {fileID: 114329875613515752, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
-      propertyPath: AvatarPrefab
-      value: 
-      objectReference: {fileID: 1789244597324514, guid: b9ab9fa9feaf64647b54a4f4a828b2d4,
-        type: 3}
-    - target: {fileID: 4698691396701194, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.47
-      objectReference: {fileID: 0}
-    - target: {fileID: 4698691396701194, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -3.74
-      objectReference: {fileID: 0}
-    - target: {fileID: 5370275305408020711, guid: a303ea602a9de415ea4561c7d9c43d4e,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.47
-      objectReference: {fileID: 0}
-    - target: {fileID: 5370275305408020711, guid: a303ea602a9de415ea4561c7d9c43d4e,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.335
-      objectReference: {fileID: 0}
-    - target: {fileID: 7197562399528161157, guid: a303ea602a9de415ea4561c7d9c43d4e,
-        type: 3}
-      propertyPath: near clip plane
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 7197562399528161157, guid: a303ea602a9de415ea4561c7d9c43d4e,
-        type: 3}
-      propertyPath: orthographic
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5370275305408020710, guid: a303ea602a9de415ea4561c7d9c43d4e,
-        type: 3}
-      propertyPath: ShapeModule.radius.value
-      value: 0.444
-      objectReference: {fileID: 0}
-    - target: {fileID: 681935436, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: cfc1d7bbf69ff41ab819a8f01f6ba366, type: 3}
-    - target: {fileID: 681935436, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 681935436, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
-      propertyPath: m_Enabled
-      value: 0
+      propertyPath: SimulatePlayer
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
