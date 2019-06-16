@@ -1,5 +1,9 @@
-﻿using UnityEngine;
+﻿#define DEBUG_LINES
+
+using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.AI;
 
 public class Airbot : Character
 {
@@ -27,12 +31,16 @@ public class Airbot : Character
       if( !hitpause )
         target = Global.instance.CurrentPlayer.transform.position + Vector3.up * targetOffset;
       Vector3 delta = target - transform.position;
-      if( delta.sqrMagnitude < small*small )
-        velocity = Vector3.zero;
+      if( delta.sqrMagnitude < small * small )
+        WaypointVector = Vector3.zero;
       else if( delta.sqrMagnitude < sightRange * sightRange )
-        velocity = delta.normalized * flySpeed;
+        SetPath( Global.instance.CurrentPlayer.transform.position );
+      //velocity = delta.normalized * flySpeed;
     }
+    UpdatePath();
+    velocity = WaypointVector.normalized * flySpeed;
   }
+
 
   void AirbotHit()
   {

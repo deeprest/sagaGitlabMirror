@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.AI;
+
 #if UNITY_EDITOR
 using UnityEditor;
 [CustomEditor( typeof( Global ) )]
@@ -70,11 +72,14 @@ public class Global : MonoBehaviour
   public bool SimulatePlayer = false;
   public float slowtime = 0.2f;
   Timer fadeTimer = new Timer();
+  public float RepathInterval = 1;
 
   [Header( "References" )]
   public string InitialSceneName;
   public CameraController CameraController;
   public AudioSource music;
+  public NavMeshSurface navMesh0;
+  public NavMeshSurface navMesh1;
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
@@ -83,6 +88,7 @@ public class Global : MonoBehaviour
   [Header( "Transient (Assigned at runtime)" )]
   public PlayerController CurrentPlayer;
   public Chopper chopper;
+  public Dictionary<string, int> AgentType = new Dictionary<string, int>();
 
   [Header( "UI" )]
   public Image fader;
@@ -103,7 +109,7 @@ public class Global : MonoBehaviour
   // status 
   public Image weaponIcon;
 
-  [Header("Debug")]
+  [Header( "Debug" )]
   [SerializeField] Text debugButtons;
   [SerializeField] Text debugText;
 
@@ -133,11 +139,11 @@ public class Global : MonoBehaviour
 
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
     {
-      Debug.Log( "scene loaded: "+arg0.name );
+      Debug.Log( "scene loaded: " + arg0.name );
     };
     SceneManager.activeSceneChanged += delegate ( Scene arg0, Scene arg1 )
     {
-      Debug.Log( "active scene changed from "+arg0.name+" to "+arg1.name );
+      Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
     };
 
     // UI
@@ -177,9 +183,19 @@ public class Global : MonoBehaviour
       music.Play();
       //yield return LoadSceneRoutine( "home" );
       fader.color = Color.black;
+
+      NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
+      foreach( var mesh in meshSurfaces )
+        AgentType[NavMesh.GetSettingsNameFromID( mesh.agentTypeID )] = mesh.agentTypeID;
+
+      //SceneManager.LoadScene( "home", LoadSceneMode.Single );
       AsyncOperation ao = SceneManager.LoadSceneAsync( "home", LoadSceneMode.Single );
       while( !ao.isDone )
         yield return null;
+        
+      foreach( var mesh in meshSurfaces )
+        mesh.BuildNavMesh();
+
       SpawnPlayer();
       Unpause();
       FadeClear();
@@ -268,7 +284,7 @@ public class Global : MonoBehaviour
       if( Camera.main.orthographic )
       {
         Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
-        debugText.text = Camera.main.orthographicSize.ToString("##.#");
+        debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
       }
       else
       {
@@ -744,7 +760,7 @@ public class Global : MonoBehaviour
       },
       CompleteDelegate = delegate
       {
-        //fader.gameObject.SetActive( false );
+        fader.color = Color.clear;
       }
     };
     fadeTimer.Start( tp );

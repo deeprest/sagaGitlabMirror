@@ -5,6 +5,8 @@ public class Hornet : Character
 {
   [SerializeField] float sightRange = 6;
   [SerializeField] float flySpeed = 2;
+  [SerializeField] float hoverDistance = 0.5f;
+  [SerializeField] string[] hoverLayers = new string[] { "Default" };
   [SerializeField] float up = 3;
   [SerializeField] float over = 2;
   [SerializeField] float small = 0.1f;
@@ -46,11 +48,13 @@ public class Hornet : Character
       c.enabled = false;
     UpdateHit = null;
     //UpdateCollision = null;
-    explosionTimer.Start( 10, explosionInterval, 
-    delegate { 
+    explosionTimer.Start( 10, explosionInterval,
+    delegate
+    {
       Instantiate( explosion, transform.position + (Vector3)Random.insideUnitCircle * explosionRange, Quaternion.identity );
-    }, 
-    delegate { 
+    },
+    delegate
+    {
       Destroy( gameObject );
       Instantiate( junk, transform.position, Quaternion.identity );
     } );
@@ -70,29 +74,48 @@ public class Hornet : Character
         }
         return;
       }
-      Vector3 player = Global.instance.CurrentPlayer.transform.position;
-      Vector3 tpos = player + Vector3.up * up + Vector3.right * over;
-      Vector3 delta = tpos - transform.position;
-      if( (player - transform.position).sqrMagnitude < sightRange * sightRange )
+      Vector2 pos = (Vector2)transform.position;
+      Vector2 player = (Vector2)Global.instance.CurrentPlayer.transform.position;
+      Vector2 tpos = player + Vector2.up * up + Vector2.right * over;
+      Debug.DrawLine( player, tpos, Color.white );
+      // hover above surface
+      Vector2 delta = tpos - pos;
+      SetPath( tpos );
+      /*RaycastHit2D hit = Physics2D.Raycast( pos, Vector2.down, hoverDistance, LayerMask.GetMask( hoverLayers ) );
+      if( hit.transform != null )
+      {
+        print( "down" );
+        tpos = hit.point + Vector2.up * hoverDistance;
+        delta = tpos - pos;
+      }
+      hit = Physics2D.Raycast( pos, Vector2.left, hoverDistance, LayerMask.GetMask( hoverLayers ) );
+      if( hit.transform != null )
+      {
+        print( "left" );
+        tpos = hit.point + Vector2.right * hoverDistance;
+        delta = tpos - pos;
+      }*/
+      if( (player - pos).sqrMagnitude < sightRange * sightRange )
       {
         if( delta.sqrMagnitude < small * small )
           tvel = Vector2.zero;
         else
         {
-          tvel = (tpos - transform.position).normalized * flySpeed;
-          velocity += (tvel - velocity) * acc * Time.deltaTime;
+          UpdatePath();
+          velocity += (WaypointVector.normalized * flySpeed - velocity) * acc * Time.deltaTime;
+          //tvel = delta.normalized * flySpeed;
+          //velocity += (tvel - velocity) * acc * Time.deltaTime;
           transform.rotation = Quaternion.RotateTowards( transform.rotation, Quaternion.Euler( 0, 0, Mathf.Clamp( velocity.x, -topspeedrot, topspeedrot ) * -rot ), rotspeed * Time.deltaTime );
         }
-
-        // drop wheels
-        if( tvel.x > 0 && !wheelDrop.IsActive )
-        {
-          wheelDrop.Start( wheelDropInterval, null, null );
-          GameObject go = Global.instance.Spawn( dropPrefab, drop.position, Quaternion.identity );
-          Physics2D.IgnoreCollision( go.GetComponent<Collider2D>(), GetComponent<Collider2D>() );
-          Wheelbot wheelbot = go.GetComponent<Wheelbot>();
-          wheelbot.wheelVelocity = Mathf.Sign( player.x - transform.position.x );
-        }
+          // drop wheels
+          if( tvel.x > 0 && !wheelDrop.IsActive )
+          {
+            wheelDrop.Start( wheelDropInterval, null, null );
+            GameObject go = Global.instance.Spawn( dropPrefab, drop.position, Quaternion.identity );
+            Physics2D.IgnoreCollision( go.GetComponent<Collider2D>(), GetComponent<Collider2D>() );
+            Wheelbot wheelbot = go.GetComponent<Wheelbot>();
+            wheelbot.wheelVelocity = Mathf.Sign( player.x - transform.position.x );
+          }
 
         // guns
         //if( Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Projectile.NoShootLayers )) )
@@ -100,7 +123,7 @@ public class Hornet : Character
           if( player.x < transform.position.x && player.y < transform.position.y )
           {
             if( !shootRepeatTimer.IsActive )
-              Shoot( new Vector3( -1, -1, 0 ) );  //player - transform.position );
+              Shoot( new Vector3( -1, -1, 0 ) );
           }
         }
 

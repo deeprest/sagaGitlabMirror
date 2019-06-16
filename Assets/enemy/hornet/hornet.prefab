@@ -403,6 +403,7 @@ MonoBehaviour:
   renderer: {fileID: 7469246720352550077}
   animator: {fileID: 6213555569455210955}
   colliders: []
+  spriteRenderers: []
   UseGravity: 0
   velocity: {x: 0, y: 0}
   inertia: {x: 0, y: 0}
@@ -421,8 +422,18 @@ MonoBehaviour:
   flashInterval: 0.05
   flashCount: 1
   ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
-  sightRange: 6
+  HasPath: 0
+  WaypointRadii: 0.1
+  DestinationRadius: 0.3
+  DestinationPosition: {x: 0, y: 0, z: 0}
+  waypoint: []
+  AgentTypeName: Small
+  WaypointVector: {x: 0, y: 0}
+  sightRange: 15
   flySpeed: 5
+  hoverDistance: 0.5
+  hoverLayers:
+  - Default
   up: 2.5
   over: 3
   small: 0.4

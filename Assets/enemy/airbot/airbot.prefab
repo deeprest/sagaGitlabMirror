@@ -127,6 +127,7 @@ MonoBehaviour:
   renderer: {fileID: 212979940915122146}
   animator: {fileID: 4874249801477483448}
   colliders: []
+  spriteRenderers: []
   UseGravity: 0
   velocity: {x: 0, y: 0}
   inertia: {x: 0, y: 0}
@@ -149,6 +150,13 @@ MonoBehaviour:
   flySpeed: 1.5
   targetOffset: 0.1
   hitPauseOffset: 1
+  HasPath: 0
+  WaypointRadii: 0.1
+  DestinationRadius: 0.3
+  DestinationPosition: {x: 0, y: 0, z: 0}
+  waypoint: []
+  AgentTypeID: -1
+  MoveDirection: {x: 0, y: 0, z: 0}
 --- !u!95 &4874249801477483448
 Animator:
   serializedVersion: 3

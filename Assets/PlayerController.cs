@@ -78,7 +78,6 @@ public class PlayerController : Character, IDamage
   //  public Vector2 rightFoot;
   //  public Vector2 leftFoot;
 
-  SpriteRenderer[] spriteRenderers;
   SpriteChunk[] sac;
 
   [Header( "Damage" )]
@@ -93,8 +92,6 @@ public class PlayerController : Character, IDamage
   public float damageBlinkDuration = 1f;
   public float damageLift = 1f;
   public float damagePushAmount = 1f;
-
-  Vector3 pos;
 
   void Start()
   {
@@ -139,8 +136,8 @@ public class PlayerController : Character, IDamage
     return closest;
   }
 
-
-  void UpdateCollision( float dT )
+  Vector2 pos;
+  new void UpdateCollision( float dT )
   {
     collideRight = false;
     collideLeft = false;
@@ -290,8 +287,6 @@ public class PlayerController : Character, IDamage
       }
     }
 
-
-    //body.MovePosition( adjust );
     transform.position = adjust;
   }
 

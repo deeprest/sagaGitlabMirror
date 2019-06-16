@@ -127,12 +127,13 @@ MonoBehaviour:
   animator: {fileID: 0}
   colliders: []
   UseGravity: 1
-  velocity: {x: 0, y: 0, z: 0}
-  inertia: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
   friction: 0.1
   airFriction: 0.01
   raylength: 0.01
   contactSeparation: 0.01
+  downOffset: 0.01
   CollideLayers:
   - Default
   DamageLayers:

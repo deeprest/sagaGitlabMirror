@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Character : MonoBehaviour, IDamage
 {
@@ -10,7 +11,7 @@ public class Character : MonoBehaviour, IDamage
   public Animator animator;
 
   public Collider2D[] colliders;
-  SpriteRenderer[] spriteRenderers;
+  public SpriteRenderer[] spriteRenderers;
 
   public bool UseGravity = true;
   public Vector2 velocity = Vector2.zero;
@@ -41,6 +42,8 @@ public class Character : MonoBehaviour, IDamage
   readonly float flashOn = 1f;
 
   public Damage ContactDamage;
+  //
+  Vector2 pos;
 
   protected System.Action UpdateLogic;
   protected System.Action UpdateCollision;
@@ -58,7 +61,9 @@ public class Character : MonoBehaviour, IDamage
     UpdateCollision = BoxCollision;
     UpdatePosition = BasicPosition;
     //if( animator != null )
-      //animator.Play( "idle" );
+    //animator.Play( "idle" );
+    nvp = new NavMeshPath();
+    AgentTypeID = Global.instance.AgentType[AgentTypeName];
   }
 
   void Update()
@@ -96,7 +101,7 @@ public class Character : MonoBehaviour, IDamage
     }
   }
 
-  Vector2 pos;
+
   protected void BasicPosition()
   {
     if( UseGravity )
@@ -182,7 +187,6 @@ public class Character : MonoBehaviour, IDamage
       }
     }
     transform.position = (Vector3)(adjust - boxOffset);
-    //body.MovePosition( adjust - boxOffset );
   }
 
   protected virtual void Die()
@@ -232,5 +236,150 @@ public class Character : MonoBehaviour, IDamage
     }
   }
 
+
+  [Header("Pathing")]
+  public bool HasPath = false;
+  public float WaypointRadii = 0.1f;
+  public float DestinationRadius = 0.3f;
+  public Vector3 DestinationPosition;
+  public System.Action OnPathEnd;
+  public System.Action OnPathCancel;
+  public NavMeshPath nvp;
+  float PathEventTime;
+  public List<Vector3>.Enumerator waypointEnu;
+  public List<Vector3> waypoint = new List<Vector3>();
+  public List<LineSegment> debugPath = new List<LineSegment>();
+  public struct LineSegment
+  {
+    public Vector3 a;
+    public Vector3 b;
+  }
+  int AgentTypeID;
+  public string AgentTypeName = "Small";
+  public Vector2 WaypointVector;
+
+  protected void UpdatePath()
+  {
+    if( HasPath )
+    {
+      if( waypoint.Count > 0 )
+      {
+        if( Time.time - PathEventTime > Global.instance.RepathInterval )
+        {
+          PathEventTime = Time.time;
+          SetPath( DestinationPosition, OnPathEnd );
+        }
+        // follow path if waypoints exist
+        Vector3 waypointFlat = waypointEnu.Current;
+        waypointFlat.z = 0;
+        if( Vector3.SqrMagnitude( transform.position - waypointFlat ) > (Time.timeScale * WaypointRadii) * (WaypointRadii * Time.timeScale) )
+        {
+          WaypointVector = (Vector2)waypointEnu.Current - (Vector2)transform.position;
+        }
+        else
+        if( waypointEnu.MoveNext() && Vector3.SqrMagnitude( transform.position - DestinationPosition ) > DestinationRadius * DestinationRadius )
+        {
+          WaypointVector = (Vector2)waypointEnu.Current - (Vector2)transform.position;
+        }
+        else
+        {
+          // destination reached
+          // clear the waypoints before calling the callback because it may set another path and you do not want them to accumulate
+          waypoint.Clear();
+          debugPath.Clear();
+          HasPath = false;
+          DestinationPosition = transform.position;
+          // do this to allow OnPathEnd to become null because the callback may set another path without a callback.
+          System.Action temp = OnPathEnd;
+          OnPathEnd = null;
+          if( temp != null )
+            temp.Invoke();
+        }
+
+        //velocity = MoveDirection.normalized * speed;
+      }
+
+#if DEBUG_LINES
+        // draw path
+        if( debugPath.Count > 0 )
+        {
+          Color pathColor = Color.white;
+          if( nvp.status == NavMeshPathStatus.PathInvalid )
+            pathColor = Color.red;
+          if( nvp.status == NavMeshPathStatus.PathPartial )
+            pathColor = Color.gray;
+          foreach( var ls in debugPath )
+          {
+            Debug.DrawLine( ls.a, ls.b, pathColor );
+          }
+        }
+#endif
+
+    }
+  }
+
+  void ClearPath()
+  {
+    HasPath = false;
+    waypoint.Clear();
+    debugPath.Clear();
+    OnPathEnd = null;
+    DestinationPosition = transform.position;
+  }
+
+  public bool SetPath( Vector3 TargetPosition, System.Action onArrival = null )
+  {
+    OnPathEnd = onArrival;
+
+    Vector3 EndPosition = TargetPosition;
+    NavMeshHit hit;
+    if( NavMesh.SamplePosition( TargetPosition, out hit, 5.0f, NavMesh.AllAreas ) )
+      EndPosition = hit.position;
+    DestinationPosition = EndPosition;
+
+    Vector3 StartPosition = transform.position;
+    if( NavMesh.SamplePosition( StartPosition, out hit, 5.0f, NavMesh.AllAreas ) )
+      StartPosition = hit.position;
+
+
+    NavMeshQueryFilter filter = new NavMeshQueryFilter();
+    filter.agentTypeID = AgentTypeID;
+    filter.areaMask = NavMesh.AllAreas;
+    nvp.ClearCorners();
+    if( NavMesh.CalculatePath( StartPosition, EndPosition, filter, nvp ) )
+    {
+      if( nvp.status == NavMeshPathStatus.PathComplete || nvp.status == NavMeshPathStatus.PathPartial )
+      {
+        if( nvp.corners.Length > 0 )
+        {
+          Vector3 prev = StartPosition;
+          debugPath.Clear();
+          foreach( var p in nvp.corners )
+          {
+            LineSegment seg = new LineSegment();
+            seg.a = prev;
+            seg.b = p;
+            debugPath.Add( seg );
+            prev = p;
+          }
+          waypoint = new List<Vector3>( nvp.corners );
+          waypointEnu = waypoint.GetEnumerator();
+          waypointEnu.MoveNext();
+          PathEventTime = Time.time;
+          HasPath = true;
+          return true;
+        }
+        else
+        {
+          Debug.Log( "corners is zero path to: " + TargetPosition );
+        }
+      }
+      else
+      {
+        Debug.Log( "invalid path to: " + TargetPosition );
+      }
+    }
+    return false;
+  }
 
 }

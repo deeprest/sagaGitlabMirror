@@ -571,17 +571,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86e636d8da82f4704abbd4ea1453cefb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collider: {fileID: 1654668584601712558}
+  body: {fileID: 0}
   box: {fileID: 1654668584601712558}
   renderer: {fileID: 4090060214824906407}
   animator: {fileID: 5397825192010816886}
+  colliders: []
   UseGravity: 1
-  velocity: {x: 0, y: 0, z: 0}
-  inertia: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
   friction: 0.05
   airFriction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
+  downOffset: 0.01
   CollideLayers:
   - Default
   DamageLayers:
@@ -603,6 +605,8 @@ MonoBehaviour:
   moveSpeed: 1
   jumpSpeed: 3
   dashSpeed: 5
+  shootInterval: 1
+  shootUp: 5
   jumpDuration: 2
   dashDuration: 1
   landDuration: 0.1
@@ -610,6 +614,8 @@ MonoBehaviour:
   onGround: 0
   landing: 0
   soundJump: {fileID: 8300000, guid: 868a350aac882450bac6f95cab0736d9, type: 3}
+  weapon: {fileID: 0}
+  shotOrigin: {fileID: 0}
 --- !u!61 &1654668584601712558
 BoxCollider2D:
   m_ObjectHideFlags: 0

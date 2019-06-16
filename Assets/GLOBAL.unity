@@ -112,18 +112,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &551293696 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5150884474619670982, guid: a303ea602a9de415ea4561c7d9c43d4e,
-    type: 3}
-  m_PrefabInstance: {fileID: 702653378}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &702653378
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -259,14 +247,28 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114329875613515752, guid: a303ea602a9de415ea4561c7d9c43d4e,
-        type: 3}
-      propertyPath: cursorImage
+    - target: {fileID: 497188663, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 497188665, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
+      propertyPath: m_AgentTypeID
+      value: -1923039037
+      objectReference: {fileID: 0}
+    - target: {fileID: 497188665, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
+      propertyPath: m_NavMeshData
       value: 
-      objectReference: {fileID: 551293696}
-    - target: {fileID: 114329875613515752, guid: a303ea602a9de415ea4561c7d9c43d4e,
-        type: 3}
-      propertyPath: SimulatePlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 497188667, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 497188666, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1088863668, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
