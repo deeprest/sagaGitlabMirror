@@ -107,15 +107,15 @@ public class Hornet : Character
           //velocity += (tvel - velocity) * acc * Time.deltaTime;
           transform.rotation = Quaternion.RotateTowards( transform.rotation, Quaternion.Euler( 0, 0, Mathf.Clamp( velocity.x, -topspeedrot, topspeedrot ) * -rot ), rotspeed * Time.deltaTime );
         }
-          // drop wheels
-          if( tvel.x > 0 && !wheelDrop.IsActive )
-          {
-            wheelDrop.Start( wheelDropInterval, null, null );
-            GameObject go = Global.instance.Spawn( dropPrefab, drop.position, Quaternion.identity );
-            Physics2D.IgnoreCollision( go.GetComponent<Collider2D>(), GetComponent<Collider2D>() );
-            Wheelbot wheelbot = go.GetComponent<Wheelbot>();
-            wheelbot.wheelVelocity = Mathf.Sign( player.x - transform.position.x );
-          }
+        // drop wheels
+        if( velocity.x > 0 && !wheelDrop.IsActive )
+        {
+          wheelDrop.Start( wheelDropInterval, null, null );
+          GameObject go = Global.instance.Spawn( dropPrefab, drop.position, Quaternion.identity );
+          Physics2D.IgnoreCollision( go.GetComponent<Collider2D>(), GetComponent<Collider2D>() );
+          Wheelbot wheelbot = go.GetComponent<Wheelbot>();
+          wheelbot.wheelVelocity = Mathf.Sign( player.x - transform.position.x );
+        }
 
         // guns
         //if( Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Projectile.NoShootLayers )) )

@@ -250,7 +250,7 @@ public class CustomUtility : EditorWindow
     }
 
 
-    string td = EditorGUILayout.TextArea( todo, new GUILayoutOption[] { GUILayout.Height( 100 ) } );
+    string td = EditorGUILayout.TextArea( todo, new GUILayoutOption[] { GUILayout.Height( 200 ) } );
     if( td != todo )
     {
       todo = td;

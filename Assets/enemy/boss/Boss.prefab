@@ -225,7 +225,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4328120609755577917}
   - component: {fileID: 6001814801279530894}
-  - component: {fileID: 3278418157653120661}
   m_Layer: 10
   m_Name: leg back
   m_TagString: Untagged
@@ -295,21 +294,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &3278418157653120661
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2811019918733132173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac684522dd410417aba2deb62721cdba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 6001814801279530894}
-  flipXRenderer: 1
-  spriteOrder: -1
 --- !u!1 &3080994399749504100
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,7 +304,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8199315221969577107}
   - component: {fileID: 267855414092507994}
-  - component: {fileID: 2838404460790553565}
   m_Layer: 10
   m_Name: arm front
   m_TagString: Untagged
@@ -393,21 +376,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2838404460790553565
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3080994399749504100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac684522dd410417aba2deb62721cdba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 267855414092507994}
-  flipXRenderer: 1
-  spriteOrder: 4
 --- !u!1 &3891050234502034460
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,7 +386,6 @@ GameObject:
   m_Component:
   - component: {fileID: 400696416266879941}
   - component: {fileID: 5270611540057175337}
-  - component: {fileID: 3105120344075791564}
   m_Layer: 10
   m_Name: leg front
   m_TagString: Untagged
@@ -488,21 +455,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &3105120344075791564
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3891050234502034460}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac684522dd410417aba2deb62721cdba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 5270611540057175337}
-  flipXRenderer: 1
-  spriteOrder: 1
 --- !u!1 &4045851430560821419
 GameObject:
   m_ObjectHideFlags: 0
@@ -576,6 +528,7 @@ MonoBehaviour:
   renderer: {fileID: 4090060214824906407}
   animator: {fileID: 5397825192010816886}
   colliders: []
+  spriteRenderers: []
   UseGravity: 1
   velocity: {x: 0, y: 0}
   inertia: {x: 0, y: 0}
@@ -583,7 +536,6 @@ MonoBehaviour:
   airFriction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
-  downOffset: 0.01
   CollideLayers:
   - Default
   DamageLayers:
@@ -595,6 +547,13 @@ MonoBehaviour:
   flashInterval: 0.05
   flashCount: 5
   ContactDamage: {fileID: 0}
+  HasPath: 0
+  WaypointRadii: 0.1
+  DestinationRadius: 0.3
+  DestinationPosition: {x: 0, y: 0, z: 0}
+  waypoint: []
+  AgentTypeName: Small
+  WaypointVector: {x: 0, y: 0}
   audio: {fileID: 8324022198147396173}
   facingRight: 1
   fist: {fileID: 810516726}
@@ -818,7 +777,6 @@ GameObject:
   m_Component:
   - component: {fileID: 409193905366348563}
   - component: {fileID: 2728132835290613611}
-  - component: {fileID: 7971418679179492725}
   m_Layer: 10
   m_Name: taint
   m_TagString: Untagged
@@ -889,21 +847,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7971418679179492725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6648614578685787312}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac684522dd410417aba2deb62721cdba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 2728132835290613611}
-  flipXRenderer: 1
-  spriteOrder: 0
 --- !u!1 &7307121025556308680
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,7 +857,6 @@ GameObject:
   m_Component:
   - component: {fileID: 646242960563807505}
   - component: {fileID: 5950344626650477137}
-  - component: {fileID: 8737044633596077143}
   m_Layer: 10
   m_Name: arm back
   m_TagString: Untagged
@@ -984,21 +926,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8737044633596077143
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7307121025556308680}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac684522dd410417aba2deb62721cdba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 5950344626650477137}
-  flipXRenderer: 1
-  spriteOrder: -4
 --- !u!1 &8369412502855527898
 GameObject:
   m_ObjectHideFlags: 0
@@ -1010,7 +937,6 @@ GameObject:
   - component: {fileID: 7588081617019825000}
   - component: {fileID: 4090060214824906407}
   - component: {fileID: 2144159810273346529}
-  - component: {fileID: 1881850012983602065}
   m_Layer: 10
   m_Name: torso
   m_TagString: Untagged
@@ -1109,18 +1035,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.625, y: 0.328125}
   m_EdgeRadius: 0
---- !u!114 &1881850012983602065
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8369412502855527898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac684522dd410417aba2deb62721cdba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 4090060214824906407}
-  flipXRenderer: 1
-  spriteOrder: 3

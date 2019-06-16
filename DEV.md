@@ -1,36 +1,33 @@
 
-primary single = single shot, grenade
-primary hold = full auto, charged blast
-secondary single = graphook, (shield)
-
-
-# bugs
-- reproducible: charge particles on after transition. reset player state on level transition
-- once: stuck in mid-air (after transition?)
-- reproducible: jump up wall sprite glitch
-
 # todo
+- upgrade to new input system
+- Menu with control options (and remap)
+- camera bounds
 - borrow camera dolly/ramp from Flatlander, find ideal camera distance(s); lock while in chamber.
 - aim auto-snap within distance
 - try aim snap to 1/8th
 - gamepad controls; camera, button to shoot or autoaim
 
-* BOSS.
-- audio: intro, loop, battle
-- pickup temporary weapons from defeated foes
-* death, respawn  
-
-# improvements
-- upgrade to new input system
-- Menu with control options (and remap)
-- camera bounds
+- BOSS. punchy mech. grenadier. graphook foe.
+- audio: intro, loop, battle.
+- pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
-- weapon/powerup ideas: slowtime, speedboost, shields, rapidfire, doublewhammy/triple, rockets, seeking missiles, supercharge, beam, stickybomb, invisible
+- weapon/powerup ideas: slowtime, speedboost, reflective shield, rapidfire, doublewhammy/triple, rockets, seeking missiles, supercharge, beam, stickybomb, invisible
 - 4 color buttons: change weapon, menu, interact, use item/powerup
-- atmosphere: rain/dust flying around, blinking lights
 
+# bugs
+release build screen fade in on level transition gets stuck
+- reproducible: charge particles on after transition. reset player state on level transition
+- once: stuck in mid-air (after transition?)
+- reproducible: jump up wall sprite glitch
 
 **DESIGN**
+primary single = single shot, grenade
+primary hold = full auto, charged blast
+secondary single = graphook, (shield)
+? Weapon limit. infinite, multiple, single(Contra).
+? Abilities: persistent, temporary, limited. Ex: persistent shields, temporary powerup, limited ammo.
+
 # keep
 special case inertia
 dash feels good
@@ -52,6 +49,7 @@ projectiles collide with walls
 lighting, normal mapped sprites, emissive
 arbitrary ground and wall angles
 no instant-death spikes or bottomless pits
+AI, navigation mesh
 
 ## aesthetics
 1. animation
@@ -68,13 +66,12 @@ no instant-death spikes or bottomless pits
 
 2. sounds
 Consistent with instruments in the music.
-
 3. music
 energy. melody.
 
 
 In my opinion, Megaman X1-X3 suffers from the same problems: small viewing area, can only shoot forward, enemies respawn immediately out of sight, levels are static.
-Megaman X4 is so bad I never played another MMX game again. I've watched gameplay videos to keep up to date with the MMX games, but it seems the franchise never improved.
+Megaman X4 is bad enough that I never played another MMX game again. I've watched gameplay videos to keep up to date with the MMX games, but it seems the franchise never improved.
 
 1. Camera view range.
 Camera can center on an imaginary point around the player, in the aiming direction. Allow for variance in zoom, depending on how cozy the surroundings (raycast in a few directions to determine).

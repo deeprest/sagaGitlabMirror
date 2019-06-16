@@ -167,9 +167,16 @@ public class Global : MonoBehaviour
   IEnumerator InitializeRoutine()
   {
     Pause();
+
+    NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
+    foreach( var mesh in meshSurfaces )
+      AgentType[NavMesh.GetSettingsNameFromID( mesh.agentTypeID )] = mesh.agentTypeID;
+
     if( Application.isEditor && !SimulatePlayer )
     {
       music.Play();
+      foreach( var mesh in meshSurfaces )
+        mesh.BuildNavMesh();
       SpawnPlayer();
       yield return new WaitForSecondsRealtime( 1 );
       Unpause();
@@ -184,15 +191,12 @@ public class Global : MonoBehaviour
       //yield return LoadSceneRoutine( "home" );
       fader.color = Color.black;
 
-      NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
-      foreach( var mesh in meshSurfaces )
-        AgentType[NavMesh.GetSettingsNameFromID( mesh.agentTypeID )] = mesh.agentTypeID;
 
       //SceneManager.LoadScene( "home", LoadSceneMode.Single );
       AsyncOperation ao = SceneManager.LoadSceneAsync( "home", LoadSceneMode.Single );
       while( !ao.isDone )
         yield return null;
-        
+
       foreach( var mesh in meshSurfaces )
         mesh.BuildNavMesh();
 
@@ -223,6 +227,11 @@ public class Global : MonoBehaviour
     AsyncOperation ao = SceneManager.LoadSceneAsync( sceneName, LoadSceneMode.Single );
     while( !ao.isDone )
       yield return null;
+
+    NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
+    foreach( var mesh in meshSurfaces )
+      mesh.BuildNavMesh();
+
     Scene scene = SceneManager.GetSceneByName( sceneName );
     if( CurrentPlayer != null )
     {

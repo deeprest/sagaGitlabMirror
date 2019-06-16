@@ -7,7 +7,6 @@ public class Boss : Character
   new public AudioSource audio;
 
   public bool facingRight;
-  SpriteChunk[] sac;
   public BoxCollider2D fist;
   public BoxCollider2D torso;
 
@@ -37,7 +36,6 @@ public class Boss : Character
 
   private void Awake()
   {
-    sac = GetComponentsInChildren<SpriteChunk>();
     Physics2D.IgnoreCollision( box, fist );
     Physics2D.IgnoreCollision( box, torso );
     Physics2D.IgnoreCollision( torso, fist );

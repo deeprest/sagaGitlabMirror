@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4897319614591276}
   - component: {fileID: 212829855198719112}
-  - component: {fileID: 3732914601229661754}
   m_Layer: 10
   m_Name: arm
   m_TagString: Untagged
@@ -80,21 +79,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &3732914601229661754
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1361239658353872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac684522dd410417aba2deb62721cdba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 212829855198719112}
-  flipXRenderer: 0
-  spriteOrder: 0
 --- !u!1 &1361865905516568
 GameObject:
   m_ObjectHideFlags: 0
@@ -4811,7 +4795,6 @@ GameObject:
   - component: {fileID: 82117261715149456}
   - component: {fileID: 82627251547920718}
   - component: {fileID: 1697597636064711849}
-  - component: {fileID: 1941109611158836893}
   - component: {fileID: 2111217764532811413}
   m_Layer: 10
   m_Name: AvatarMMX
@@ -4855,6 +4838,7 @@ MonoBehaviour:
   renderer: {fileID: 212107818795109166}
   animator: {fileID: 1697597636064711849}
   colliders: []
+  spriteRenderers: []
   UseGravity: 1
   velocity: {x: 0, y: 0}
   inertia: {x: 0, y: 0}
@@ -4873,6 +4857,13 @@ MonoBehaviour:
   flashInterval: 0.05
   flashCount: 5
   ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  HasPath: 0
+  WaypointRadii: 0.1
+  DestinationRadius: 0.3
+  DestinationPosition: {x: 0, y: 0, z: 0}
+  waypoint: []
+  AgentTypeName: Small
+  WaypointVector: {x: 0, y: 0}
   audio: {fileID: 82117261715149456}
   audio2: {fileID: 82627251547920718}
   dashSmoke: {fileID: 198502029244883790}
@@ -5219,21 +5210,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1941109611158836893
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1789244597324514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac684522dd410417aba2deb62721cdba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 212107818795109166}
-  flipXRenderer: 1
-  spriteOrder: 0
 --- !u!50 &2111217764532811413
 Rigidbody2D:
   serializedVersion: 4

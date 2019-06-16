@@ -78,8 +78,6 @@ public class PlayerController : Character, IDamage
   //  public Vector2 rightFoot;
   //  public Vector2 leftFoot;
 
-  SpriteChunk[] sac;
-
   [Header( "Damage" )]
   [SerializeField] float damageDuration = 0.5f;
   bool takingDamage;
@@ -97,7 +95,6 @@ public class PlayerController : Character, IDamage
   {
     colliders = GetComponentsInChildren<Collider2D>();
     spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
-    sac = GetComponentsInChildren<SpriteChunk>();
     graphookTip.SetActive( false );
     grapCableRender.gameObject.SetActive( false );
   }
