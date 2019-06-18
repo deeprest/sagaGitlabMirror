@@ -81,20 +81,6 @@ public class Hornet : Character
       // hover above surface
       Vector2 delta = tpos - pos;
       SetPath( tpos );
-      /*RaycastHit2D hit = Physics2D.Raycast( pos, Vector2.down, hoverDistance, LayerMask.GetMask( hoverLayers ) );
-      if( hit.transform != null )
-      {
-        print( "down" );
-        tpos = hit.point + Vector2.up * hoverDistance;
-        delta = tpos - pos;
-      }
-      hit = Physics2D.Raycast( pos, Vector2.left, hoverDistance, LayerMask.GetMask( hoverLayers ) );
-      if( hit.transform != null )
-      {
-        print( "left" );
-        tpos = hit.point + Vector2.right * hoverDistance;
-        delta = tpos - pos;
-      }*/
       if( (player - pos).sqrMagnitude < sightRange * sightRange )
       {
         if( delta.sqrMagnitude < small * small )

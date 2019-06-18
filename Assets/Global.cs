@@ -78,8 +78,6 @@ public class Global : MonoBehaviour
   public string InitialSceneName;
   public CameraController CameraController;
   public AudioSource music;
-  public NavMeshSurface navMesh0;
-  public NavMeshSurface navMesh1;
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
@@ -190,7 +188,6 @@ public class Global : MonoBehaviour
       music.Play();
       //yield return LoadSceneRoutine( "home" );
       fader.color = Color.black;
-
 
       //SceneManager.LoadScene( "home", LoadSceneMode.Single );
       AsyncOperation ao = SceneManager.LoadSceneAsync( "home", LoadSceneMode.Single );

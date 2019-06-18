@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AgentTypeID: 0
+  m_AgentTypeID: -1923039037
   m_CollectObjects: 0
   m_Size: {x: 10, y: 10, z: 10}
   m_Center: {x: 0, y: 2, z: 0}
@@ -61,7 +61,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.06666667
   m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 23800000, guid: 54346974c59054b4dba1266fed69c45c, type: 2}
+  m_NavMeshData: {fileID: 0}
 --- !u!114 &497188667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,7 +90,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.13333334
   m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 23800000, guid: 8c52622508c9a4a11ab27c094293ab81, type: 2}
+  m_NavMeshData: {fileID: 0}
 --- !u!114 &497188666
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.26666668
   m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 23800000, guid: 3632916adc9a04d4ca257d69815ef490, type: 2}
+  m_NavMeshData: {fileID: 0}
 --- !u!1 &754862382
 GameObject:
   m_ObjectHideFlags: 0
@@ -538,14 +538,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deadZone: 0.1
-  SimulatePlayer: 1
+  SimulatePlayer: 0
   slowtime: 0.2
   RepathInterval: 1
   InitialSceneName: home
   CameraController: {fileID: 114243473509280006}
   music: {fileID: 681935436}
-  navMesh0: {fileID: 0}
-  navMesh1: {fileID: 0}
   audioOneShotPrefab: {fileID: 1480036779989360, guid: d4170fe16bae647ac97e235eb55168d5,
     type: 3}
   AvatarPrefab: {fileID: 1789244597324514, guid: b9ab9fa9feaf64647b54a4f4a828b2d4,
@@ -580,7 +578,7 @@ MonoBehaviour:
   keyboardSprite: {fileID: 21300000, guid: f0874384bb8d343f1b4d7f187e092750, type: 3}
   gamepadSprite: {fileID: 21300000, guid: ebd0850e5efb8485eb58e6d4d498b7d5, type: 3}
   controllerIndicator: {fileID: 5150861342823128818}
-  SpeechBubble: {fileID: 5109516709708530702}
+  SpeechBubble: {fileID: 4746123360364923712}
   SpeechText: {fileID: 7212866214475871008}
   SpeechIcon: {fileID: 1274452571569816997}
   SpeechRange: 8
@@ -764,24 +762,24 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   rotateCurve:
     serializedVersion: 2
     m_Curve:
@@ -805,7 +803,7 @@ MonoBehaviour:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   LerpRotation: 0
   IgnoreYaw: 1
   Scale: 0
@@ -836,19 +834,19 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
-      inSlope: -1
-      outSlope: -1
-      tangentMode: 34
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 0
-      inSlope: -1
-      outSlope: -1
-      tangentMode: 34
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
@@ -1362,7 +1360,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5039628669359160086
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1839,15 +1837,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 33
+  CurrentFrameIndex: 0
   sac: []
   sr: {fileID: 0}
-  image: {fileID: 5407561356584400908}
+  image: {fileID: 0}
   flipX: 0
-  CurrentSequence: {fileID: 11400000, guid: 23a6895dd3ade45e99eb7ec4c0f9bd9b, type: 2}
-  isPlaying: 1
+  CurrentSequence: {fileID: 0}
+  isPlaying: 0
   playAtAStart: 1
-  anims: []
+  anims:
+  - {fileID: 0}
 --- !u!222 &4665220355297792857
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2483,12 +2482,12 @@ PrefabInstance:
     - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.47
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.335
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
         type: 3}
@@ -2543,19 +2542,7 @@ PrefabInstance:
     - target: {fileID: 4182039790881745493, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
         type: 3}
       propertyPath: ShapeModule.radius.value
-      value: 0.444
-      objectReference: {fileID: 0}
-    - target: {fileID: 1888601634, guid: 818c984cb06ae41bcbfb19c3f0434ff6, type: 3}
-      propertyPath: follow
-      value: 
-      objectReference: {fileID: 4698691396701194}
-    - target: {fileID: 1888601634, guid: 818c984cb06ae41bcbfb19c3f0434ff6, type: 3}
-      propertyPath: offset.y
-      value: 1.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1888601634, guid: 818c984cb06ae41bcbfb19c3f0434ff6, type: 3}
-      propertyPath: ratio
-      value: 0.24
+      value: 1.85
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 818c984cb06ae41bcbfb19c3f0434ff6, type: 3}

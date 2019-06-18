@@ -22,7 +22,7 @@ public class Door : MonoBehaviour, ITrigger
     if( transitioning )
       return;
     Open();
-  }
+  } 
 
   public void Open()
   {

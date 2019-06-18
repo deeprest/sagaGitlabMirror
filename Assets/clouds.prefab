@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4893524897785194}
-  - component: {fileID: 111734506428703026}
   - component: {fileID: 1821122072}
   - component: {fileID: 1821122071}
   m_Layer: 9
@@ -33,22 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!111 &111734506428703026
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1900237170319340}
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: c1eb421e4e14c44878b589e3356ede42, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: c1eb421e4e14c44878b589e3356ede42, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!212 &1821122072
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -109,6 +92,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaab33c2eac42445783b78788148b90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rate: {x: 1, y: 1}
-  depth: 1
-  offset: {x: 0, y: 0, z: 0}
+  rate: 1
+  rateVertical: 0.5
+  position: {x: 0, y: 0, z: 0}
