@@ -55,7 +55,7 @@ public class Attack
   public Transform instigator;
 }
 
-// TODO upgrade to new input system
+// TODO upgrade to 2019 and use new input system
 
 public class Global : MonoBehaviour
 {
@@ -68,16 +68,16 @@ public class Global : MonoBehaviour
   // settings
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
-  public float deadZone = 0.3f;
+  public float deadZone = 0.1f;
   public bool SimulatePlayer = false;
-  public float slowtime = 0.2f;
+  [SerializeField] float slowtime = 0.2f;
   Timer fadeTimer = new Timer();
   public float RepathInterval = 1;
 
   [Header( "References" )]
-  public string InitialSceneName;
+  [SerializeField] string InitialSceneName;
   public CameraController CameraController;
-  public AudioSource music;
+  [SerializeField] AudioSource music;
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
@@ -85,11 +85,16 @@ public class Global : MonoBehaviour
 
   [Header( "Transient (Assigned at runtime)" )]
   public PlayerController CurrentPlayer;
-  public Chopper chopper;
+  [SerializeField] Chopper chopper;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
 
   [Header( "UI" )]
-  public Image fader;
+  public GameObject UI;
+  public GameObject MainMenu;
+  [SerializeField] GameObject HUD;
+  bool MenuShowing { get { return MainMenu.activeInHierarchy; } }
+  public GameObject LoadingScreen;
+  [SerializeField] Image fader;
   public GameObject ready;
   // cursor
   public RectTransform cursor;
@@ -144,31 +149,28 @@ public class Global : MonoBehaviour
       Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
     };
 
-    // UI
-    //Cursor.visible = false;
+    StartCoroutine( InitializeRoutine() );
+  }
+
+  IEnumerator InitializeRoutine()
+  {
+    //ShowMenu( true );
+
+    NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
+    foreach( var mesh in meshSurfaces )
+      AgentType[NavMesh.GetSettingsNameFromID( mesh.agentTypeID )] = mesh.agentTypeID;
+
+
     if( Camera.main.orthographic )
       debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
     else
       debugText.text = CameraController.zOffset.ToString( "##.#" );
     InitializeControls();
-    StartCoroutine( InitializeRoutine() );
-  }
 
-  public void SpawnPlayer()
-  {
-    GameObject go = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
-    CurrentPlayer = go.GetComponent<PlayerController>();
-    CameraController.LookTarget = CurrentPlayer.gameObject;
-    CameraController.transform.position = CurrentPlayer.transform.position;
-  }
-
-  IEnumerator InitializeRoutine()
-  {
-    Pause();
-
-    NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
-    foreach( var mesh in meshSurfaces )
-      AgentType[NavMesh.GetSettingsNameFromID( mesh.agentTypeID )] = mesh.agentTypeID;
+    if( Camera.main.orthographic )
+      Camera.main.orthographicSize = 2;
+    else
+      Camera.main.fieldOfView = 20;
 
     if( Application.isEditor && !SimulatePlayer )
     {
@@ -176,46 +178,42 @@ public class Global : MonoBehaviour
       foreach( var mesh in meshSurfaces )
         mesh.BuildNavMesh();
       SpawnPlayer();
+      fader.color = Color.clear;
       yield return new WaitForSecondsRealtime( 1 );
-      Unpause();
     }
     else
     {
-      if( Camera.main.orthographic )
-        Camera.main.orthographicSize = 2;
-      else
-        Camera.main.fieldOfView = 20;
       music.Play();
-      //yield return LoadSceneRoutine( "home" );
-      fader.color = Color.black;
+      yield return LoadSceneRoutine( "home", true, true, false );
+    }
+    //Unpause();
+    //ShowMenu( false );
+    //FadeClear();
+    //while( fadeTimer.IsActive )
+      //yield return null;
+  }
 
-      //SceneManager.LoadScene( "home", LoadSceneMode.Single );
-      AsyncOperation ao = SceneManager.LoadSceneAsync( "home", LoadSceneMode.Single );
-      while( !ao.isDone )
-        yield return null;
+  public void LoadScene( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true )
+  {
+    StartCoroutine( LoadSceneRoutine( sceneName, waitForFadeIn, spawnPlayer, fadeOut ) );
+  }
 
-      foreach( var mesh in meshSurfaces )
-        mesh.BuildNavMesh();
-
-      SpawnPlayer();
-      Unpause();
-      FadeClear();
+  IEnumerator LoadSceneRoutine( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true )
+  {
+    if( fadeOut )
+    {
+      FadeBlack();
       while( fadeTimer.IsActive )
         yield return null;
     }
-    yield return null;
-  }
-
-  public void LoadScene( string sceneName, bool waitForFadeIn = true )
-  {
-    StartCoroutine( LoadSceneRoutine( sceneName, waitForFadeIn ) );
-  }
-
-  IEnumerator LoadSceneRoutine( string sceneName, bool waitForFadeIn = true )
-  {
-    FadeBlack();
-    while( fadeTimer.IsActive )
+    else
+    {
+      fader.color = Color.black;
       yield return null;
+    }
+    Pause();
+    yield return ShowLoadingScreenRoutine( true, "Loading... " + InitialSceneName );
+    yield return new WaitForSecondsRealtime( 2 );
     if( CurrentPlayer != null )
     {
       CurrentPlayer.PreSceneTransition();
@@ -230,10 +228,17 @@ public class Global : MonoBehaviour
       mesh.BuildNavMesh();
 
     Scene scene = SceneManager.GetSceneByName( sceneName );
-    if( CurrentPlayer != null )
+    if( CurrentPlayer == null )
+    {
+      if( spawnPlayer )
+        SpawnPlayer();
+    }
+    else
     {
       CurrentPlayer.PostSceneTransition();
     }
+    Unpause();
+    yield return HideLoadingScreenRoutine();
     FadeClear();
     if( waitForFadeIn )
       while( fadeTimer.IsActive )
@@ -349,6 +354,23 @@ public class Global : MonoBehaviour
         aimRaw = Vector3.zero;
     }
 
+    if( Input.GetButtonUp( "Menu" ) )
+    {
+      ShowMenu( !MenuShowing );
+#if UNITY_STANDALONE_LINUX
+      // hack: there is a weird bug where the Canvas will not update when an
+      // object with a canvas renderer is disabled
+      Canvas canvas = FindObjectOfType<Canvas>();
+      canvas.gameObject.SetActive( false );
+      canvas.gameObject.SetActive( true );
+#endif
+    }
+
+#if UNITY_EDITOR_LINUX
+    if( Input.GetKeyDown(KeyCode.Escape) )
+    Cursor.lockState = CursorLockMode.None;
+#else
+#endif
   }
 
   void OnApplicationFocus( bool hasFocus )
@@ -389,6 +411,14 @@ public class Global : MonoBehaviour
     }
 
     CameraController.CameraLateUpdate();
+  }
+
+  public void SpawnPlayer()
+  {
+    GameObject go = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
+    CurrentPlayer = go.GetComponent<PlayerController>();
+    CameraController.LookTarget = CurrentPlayer.gameObject;
+    CameraController.transform.position = CurrentPlayer.transform.position;
   }
 
   GameObject FindSpawnPoint()
@@ -448,16 +478,16 @@ public class Global : MonoBehaviour
 
   public static void Pause()
   {
-    Time.timeScale = 0;
-    Time.fixedDeltaTime = 0.01f * Time.timeScale;
     Paused = true;
+    Time.timeScale = 0;
+    Time.fixedDeltaTime = 0;
   }
 
   public static void Unpause()
   {
+    Paused = false;
     Time.timeScale = 1;
     Time.fixedDeltaTime = 0.01f * Time.timeScale;
-    Paused = false;
   }
 
   public void SetCursor( Sprite spr )
@@ -466,6 +496,60 @@ public class Global : MonoBehaviour
     cursor.sizeDelta = new Vector2( spr.rect.width, spr.rect.height ) * cursorScale; // * spr.pixelsPerUnit;
   }
 
+  void ShowMenu( bool show )
+  {
+    if( show )
+    {
+      Pause();
+      MainMenu.SetActive( true );
+      HUD.SetActive( false );
+      Cursor.lockState = CursorLockMode.None;
+      Cursor.visible = true;
+      EnableRaycaster( true );
+    }
+    else
+    {
+      Unpause();
+      MainMenu.SetActive( false );
+      HUD.SetActive( true );
+      Cursor.lockState = CursorLockMode.Locked;
+      Cursor.visible = false;
+      EnableRaycaster( false );
+      Input.ResetInputAxes();
+    }
+  }
+
+  public void EnableRaycaster( bool enable = true )
+  {
+    UI.GetComponent<UnityEngine.UI.GraphicRaycaster>().enabled = enable;
+  }
+
+  void ShowLoadingScreen( bool show, string message = "Loading.." )
+  {
+    LoadingScreen.SetActive( true );
+    Text txt = LoadingScreen.GetComponentInChildren<Text>();
+    txt.text = message;
+  }
+
+  void HideLoadingScreen()
+  {
+    LoadingScreen.SetActive( false );
+  }
+
+
+  IEnumerator ShowLoadingScreenRoutine( bool show, string message = "Loading.." )
+  {
+    // This is a coroutine simply to wait a single frame after activating the loading screen.
+    // Otherwise the screen will not show! 
+    ShowLoadingScreen( show, message );
+    yield return null;
+  }
+
+  IEnumerator HideLoadingScreenRoutine()
+  {
+    HideLoadingScreen();
+    yield return null;
+  }
 
 
   public class InputControlScheme
