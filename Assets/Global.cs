@@ -154,7 +154,7 @@ public class Global : MonoBehaviour
 
   IEnumerator InitializeRoutine()
   {
-    //ShowMenu( true );
+    ShowMenu( false );
 
     NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
     foreach( var mesh in meshSurfaces )
@@ -212,7 +212,8 @@ public class Global : MonoBehaviour
       yield return null;
     }
     Pause();
-    yield return ShowLoadingScreenRoutine( true, "Loading... " + InitialSceneName );
+    HUD.SetActive( false );
+    yield return ShowLoadingScreenRoutine( true, "Loading... " + sceneName );
     yield return new WaitForSecondsRealtime( 2 );
     if( CurrentPlayer != null )
     {
@@ -237,6 +238,7 @@ public class Global : MonoBehaviour
     {
       CurrentPlayer.PostSceneTransition();
     }
+    HUD.SetActive( true );
     Unpause();
     yield return HideLoadingScreenRoutine();
     FadeClear();
