@@ -14,6 +14,9 @@
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
 - weapon/powerup ideas: slowtime, speedboost, reflective shield, rapidfire, doublewhammy/triple, rockets, seeking missiles, supercharge, beam, stickybomb, invisible
 - 4 color buttons: change weapon, menu, interact, use item/powerup
+- idea: generate an area by connecting random nodes that represent the player's movement- run(duration increments), jump parabola, dash-jump, wall-jump, wall-slide, graphook,
+- idea: z-doors/manifold-doors to other rooms that exist in the same space. keep all objects live, allow enemies to enter doors.
+- idea: AI ability to navigate/traverse environment to follow player/attack. First pathfind, then plot out movement using "movement-nodes"
 
 # bugs
 release build screen fade in on level transition gets stuck

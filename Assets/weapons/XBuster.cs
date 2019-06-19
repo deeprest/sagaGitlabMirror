@@ -3,7 +3,7 @@ using System.Collections;
 
 public class XBuster : Projectile
 {
-  public float HitTimeout = 0.5f;
+  public float HitTimeout = 0.1f;
   public new Light light;
 
   Timer timeoutTimer;

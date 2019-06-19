@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SceneCity : MonoBehaviour
+public class SceneScript : MonoBehaviour
 {
-  void Start()
+  public virtual void StartScene() { }
+}
+
+public class SceneCity : SceneScript
+{
+  public override void StartScene()
   {
     if( Application.isEditor && !Global.instance.SimulatePlayer )
       return;
@@ -22,3 +27,5 @@ public class SceneCity : MonoBehaviour
   }
 
 }
+
+

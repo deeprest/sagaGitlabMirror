@@ -9,6 +9,8 @@ public class BouncyGrenade : Projectile
 
   void Start()
   {
+    if( StartSound != null )
+      Global.instance.AudioOneShot( StartSound, transform.position );
     GetComponent<Rigidbody2D>().velocity = new Vector2( velocity.x, velocity.y );
     timeoutTimer = new Timer( timeout, null, Boom );
   }

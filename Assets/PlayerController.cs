@@ -133,7 +133,6 @@ public class PlayerController : Character, IDamage
     return closest;
   }
 
-  Vector2 pos;
   new void UpdateCollision( float dT )
   {
     collideRight = false;
@@ -143,7 +142,7 @@ public class PlayerController : Character, IDamage
 
     RaycastHit2D[] hits;
 
-    hits = Physics2D.BoxCastAll( pos, box.size, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( TriggerLayers ) );
+    hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( TriggerLayers ) );
     foreach( var hit in hits )
     {
       ITrigger tri = hit.transform.GetComponent<ITrigger>();
@@ -166,7 +165,7 @@ public class PlayerController : Character, IDamage
     }
 
     pups.Clear();
-    hits = Physics2D.CircleCastAll( pos, highlightPickupRange, Vector2.zero, 0, LayerMask.GetMask( new string[] { "pickup" } ) );
+    hits = Physics2D.CircleCastAll( transform.position, highlightPickupRange, Vector2.zero, 0, LayerMask.GetMask( new string[] { "pickup" } ) );
     foreach( var hit in hits )
     {
       Pickup pup = hit.transform.GetComponent<Pickup>();
@@ -181,7 +180,15 @@ public class PlayerController : Character, IDamage
       }
     }
     Pickup closest = (Pickup)FindClosest( transform.position, pups.ToArray() );
-    if( closest != null && closest != closestPickup )
+    if( closest ==null )
+    {
+      if( closestPickup != null )
+      {
+        closestPickup.Unhighlight();
+        closestPickup = null;
+      }
+    }
+    else if( closest != closestPickup )
     {
       if( closestPickup != null )
         closestPickup.Unhighlight();
@@ -199,7 +206,7 @@ public class PlayerController : Character, IDamage
       highlightedPickups.Remove( pup );
     */
 
-    Vector2 adjust = pos;  //transform.position;
+    Vector2 adjust = transform.position;
     /*
     // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground bug by 'sampling' the ground at multiple points
     RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
@@ -647,7 +654,7 @@ public class PlayerController : Character, IDamage
         {
           velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           anim = "wallslide";
-          dashSmoke.transform.localPosition = new Vector3( -0.2f, -0.2f, 0 );
+          dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
           if( !dashSmoke.isPlaying )
             dashSmoke.Play();
         }
@@ -716,7 +723,7 @@ public class PlayerController : Character, IDamage
       velocity = Vector3.zero;
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    pos = (Vector2)transform.position + velocity * Time.deltaTime;
+    transform.position += (Vector3)velocity * Time.deltaTime;
     transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
 
     if( grapPulling )

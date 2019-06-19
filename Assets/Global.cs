@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿#pragma warning disable 414
+
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -23,7 +26,7 @@ public class GlobalEditor : Editor
       if( GUI.Button( EditorGUILayout.GetControlRect(), "Stop Screenshot Timer" ) )
         ScreenshotTimer.Stop( false );
     }
-    else
+    else 
     {
       if( GUI.Button( EditorGUILayout.GetControlRect(), "Start Screenshot Timer" ) )
         StartTimer();
@@ -116,6 +119,10 @@ public class Global : MonoBehaviour
   [SerializeField] Text debugButtons;
   [SerializeField] Text debugText;
 
+  bool loadingScene;
+  float prog = 0;
+  [SerializeField] Image progress;
+  [SerializeField] float progressSpeed = 0.5f;
 
   [RuntimeInitializeOnLoadMethod]
   static void RunOnStart()
@@ -174,23 +181,19 @@ public class Global : MonoBehaviour
 
     if( Application.isEditor && !SimulatePlayer )
     {
+      LoadingScreen.SetActive( false );
       music.Play();
       foreach( var mesh in meshSurfaces )
         mesh.BuildNavMesh();
       SpawnPlayer();
       fader.color = Color.clear;
-      yield return new WaitForSecondsRealtime( 1 );
+      //yield return new WaitForSecondsRealtime( 1 );
     }
     else
     {
       music.Play();
       yield return LoadSceneRoutine( "home", true, true, false );
     }
-    //Unpause();
-    //ShowMenu( false );
-    //FadeClear();
-    //while( fadeTimer.IsActive )
-      //yield return null;
   }
 
   public void LoadScene( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true )
@@ -213,16 +216,28 @@ public class Global : MonoBehaviour
     }
     Pause();
     HUD.SetActive( false );
-    yield return ShowLoadingScreenRoutine( true, "Loading... " + sceneName );
+    yield return ShowLoadingScreenRoutine( "Loading... " + sceneName );
     yield return new WaitForSecondsRealtime( 2 );
     if( CurrentPlayer != null )
     {
       CurrentPlayer.PreSceneTransition();
       SceneManager.MoveGameObjectToScene( CurrentPlayer.gameObject, gameObject.scene );
     }
+    loadingScene = true;
+    progress.fillAmount = 0;
+    prog = 0;
     AsyncOperation ao = SceneManager.LoadSceneAsync( sceneName, LoadSceneMode.Single );
     while( !ao.isDone )
+    {
+      //prog = Mathf.MoveTowards( prog, ao.progress, Time.unscaledDeltaTime * progressSpeed );
+      //progress.fillAmount = prog;
+      //progTarget = ao.progress;
+      //print( ao.progress.ToString() );
       yield return null;
+      //yield return new WaitForEndOfFrame();
+      yield return new WaitForSecondsRealtime( 1 );
+    }
+    loadingScene = false;
 
     NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
     foreach( var mesh in meshSurfaces )
@@ -238,6 +253,13 @@ public class Global : MonoBehaviour
     {
       CurrentPlayer.PostSceneTransition();
     }
+    if( !Application.isEditor || SimulatePlayer)
+    {
+      SceneScript ss = FindObjectOfType<SceneScript>();
+      if( ss != null )
+        ss.StartScene(); 
+    }
+     
     HUD.SetActive( true );
     Unpause();
     yield return HideLoadingScreenRoutine();
@@ -256,10 +278,24 @@ public class Global : MonoBehaviour
                    System.DateTime.Now.Second.ToString( "D2" );
     ScreenCapture.CaptureScreenshot( Application.persistentDataPath + "/" + now + ".png" );
   }
+   
+  float progTarget = 0;
+  [SerializeField] GameObject spinner;
+  [SerializeField] float spinnerMoveSpeed = 1;
 
   void Update()
   {
     Timer.UpdateTimers();
+
+    if( loadingScene )
+    {
+      prog = Mathf.MoveTowards( prog, progTarget, Time.unscaledDeltaTime * progressSpeed );
+      progress.fillAmount = prog;
+
+      if( Input.GetKey( Global.instance.icsCurrent.keyMap["MoveRight"] ) )
+        spinner.transform.localPosition += Vector3.right * spinnerMoveSpeed * Time.unscaledDeltaTime;
+      //inputLeft = Input.GetKey( Global.instance.icsCurrent.keyMap["MoveLeft"] );
+    }
 
     debugButtons.text = "";
     for( int i = 0; i < 20; i++ )
@@ -526,7 +562,7 @@ public class Global : MonoBehaviour
     UI.GetComponent<UnityEngine.UI.GraphicRaycaster>().enabled = enable;
   }
 
-  void ShowLoadingScreen( bool show, string message = "Loading.." )
+  void ShowLoadingScreen( string message = "Loading.." )
   {
     LoadingScreen.SetActive( true );
     Text txt = LoadingScreen.GetComponentInChildren<Text>();
@@ -539,11 +575,11 @@ public class Global : MonoBehaviour
   }
 
 
-  IEnumerator ShowLoadingScreenRoutine( bool show, string message = "Loading.." )
+  IEnumerator ShowLoadingScreenRoutine( string message = "Loading.." )
   {
     // This is a coroutine simply to wait a single frame after activating the loading screen.
     // Otherwise the screen will not show! 
-    ShowLoadingScreen( show, message );
+    ShowLoadingScreen( message );
     yield return null;
   }
 
@@ -652,6 +688,7 @@ public class Global : MonoBehaviour
     icsGamepad.keyMap["Dash"] = KeyCode.JoystickButton13;
     icsGamepad.keyMap["Fire"] = KeyCode.None;
     icsGamepad.keyMap["graphook"] = KeyCode.None;
+    icsGamepad.keyMap["Pickup"] = KeyCode.None;
     icsGamepad.keyMap["Charge"] = KeyCode.None;
     icsGamepad.axisMap["ShootX"] = "Joy0Axis2";
     icsGamepad.axisMap["ShootY"] = "Joy0Axis3";

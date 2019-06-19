@@ -42,8 +42,6 @@ public class Character : MonoBehaviour, IDamage
   readonly float flashOn = 1f;
 
   public Damage ContactDamage;
-  //
-  Vector2 pos;
 
   protected System.Action UpdateLogic;
   protected System.Action UpdateCollision;
@@ -127,7 +125,7 @@ public class Character : MonoBehaviour, IDamage
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     velocity -= (velocity * airFriction) * Time.deltaTime;
-    pos = (Vector2)transform.position + velocity * Time.deltaTime;
+    transform.position += (Vector3)velocity * Time.deltaTime;
   }
 
   protected void BoxCollision()
@@ -141,7 +139,7 @@ public class Character : MonoBehaviour, IDamage
 
     Vector2 boxOffset = box.offset;
     boxOffset.x *= Mathf.Sign( transform.localScale.x );
-    Vector2 adjust = pos + boxOffset;
+    Vector2 adjust = (Vector2)transform.position + boxOffset;
 
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
     foreach( var hit in hits )
