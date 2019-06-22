@@ -27,10 +27,7 @@ public class BouncyGrenade : Projectile
       return;
     Instantiate( explosion, transform.position, Quaternion.identity );
     timeoutTimer.Stop( false );
-    // HACK due to a Unity RIGIDBODY2D RemoveContact() crash bug, deactivate gameobject before a delayed destruction.
-    gameObject.SetActive( false );
-    Destroy( gameObject );
-    //Destroy( gameObject, 1f );
+    Global.instance.Destroy( gameObject );
   }
 
   /*void Update()

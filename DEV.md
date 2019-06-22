@@ -12,7 +12,9 @@
 - audio: intro, loop, battle.
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
-- weapon/powerup ideas: slowtime, speedboost, reflective shield, rapidfire, doublewhammy/triple, rockets, seeking missiles, supercharge, beam, stickybomb, invisible
+- weapon ideas:  doublewhammy/triple, rockets, seeking missiles, beam, stickybomb, invisible
+- powerups: speedboost, slowtime, reflective shield, supercharge
+- permanent mods: run speed, wall slide speed, dash duration, rapid shot, extra projectiles
 - 4 color buttons: change weapon, menu, interact, use item/powerup
 - idea: generate an area by connecting random nodes that represent the player's movement- run(duration increments), jump parabola, dash-jump, wall-jump, wall-slide, graphook,
 - idea: z-doors/manifold-doors to other rooms that exist in the same space. keep all objects live, allow enemies to enter doors.

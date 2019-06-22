@@ -3,11 +3,13 @@ using System.Collections;
 
 public class SceneScript : MonoBehaviour
 {
+  public PolygonCollider2D sb;
   public virtual void StartScene() { }
 }
 
 public class SceneCity : SceneScript
 {
+
   public override void StartScene()
   {
     if( Application.isEditor && !Global.instance.SimulatePlayer )

@@ -77,7 +77,7 @@ public class Hornet : Character
       Vector2 pos = (Vector2)transform.position;
       Vector2 player = (Vector2)Global.instance.CurrentPlayer.transform.position;
       Vector2 tpos = player + Vector2.up * up + Vector2.right * over;
-      Debug.DrawLine( player, tpos, Color.white );
+      //Debug.DrawLine( player, tpos, Color.white );
       // hover above surface
       Vector2 delta = tpos - pos;
       SetPath( tpos );

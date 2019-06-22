@@ -190,7 +190,7 @@ public class Character : MonoBehaviour, IDamage
   protected virtual void Die()
   {
     Instantiate( explosion, transform.position, Quaternion.identity );
-    Destroy( gameObject );
+    Global.instance.Destroy( gameObject );
   }
 
   public void TakeDamage( Damage d )

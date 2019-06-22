@@ -68,7 +68,7 @@ public class Airbot : Character
 
   protected override void Die()
   {
-    base.Die();
     hitPauseTimer.Stop( false );
+    base.Die();
   }
 }

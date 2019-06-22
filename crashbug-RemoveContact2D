@@ -1,0 +1,41 @@
+Assertion failed on expression: 'm_InstanceID != InstanceID_None'
+
+(Filename: /Users/builduser/buildslave/unity/build/Runtime/BaseClasses/BaseObject.h Line: 376)
+
+Contact key could not be found to be removed.
+
+(Filename: /Users/builduser/buildslave/unity/build/Modules/Physics2D/Public/PhysicsContacts2D.cpp Line: 471)
+
+Contact index is out of bounds so could not be removed.
+
+(Filename: /Users/builduser/buildslave/unity/build/Modules/Physics2D/Public/PhysicsContacts2D.cpp Line: 473)
+
+Receiving unhandled NULL exception
+Obtained 27 stack frames.
+#0  0x00000102336869 in PhysicsContacts2D::RemoveContact(std::__1::pair<Collider2D const*, Collider2D const*> const&)
+#1  0x00000102326c32 in PhysicsContacts2D::ProcessContacts(Collider2D*, bool)
+#2  0x000001022e9e20 in PhysicsManager2D::Simulate(PhysicsScene2D*, float)
+#3  0x000001022e90e7 in PhysicsManager2D::Initialize()::FixedUpdatePhysics2DFixedUpdateRegistrator::Forward()
+#4  0x00000100c9a54e in ExecutePlayerLoop(NativePlayerLoopSystem*)
+#5  0x00000100c9a5bc in ExecutePlayerLoop(NativePlayerLoopSystem*)
+#6  0x00000100c9a798 in PlayerLoop()
+#7  0x000001019c11a7 in PlayerLoopController::UpdateScene(bool)
+#8  0x000001019bb0b9 in PlayerLoopController::UpdateSceneIfNeeded()
+#9  0x000001019b9021 in Application::TickTimer()
+#10 0x000001006fecfe in -[EditorApplication TickTimer]
+#11 0x007fff5288d549 in __NSFireTimer
+#12 0x007fff50721ef4 in __CFRUNLOOP_IS_CALLING_OUT_TO_A_TIMER_CALLBACK_FUNCTION__
+#13 0x007fff50721b67 in __CFRunLoopDoTimer
+#14 0x007fff5072166a in __CFRunLoopDoTimers
+#15 0x007fff50718c3b in __CFRunLoopRun
+#16 0x007fff50718033 in CFRunLoopRunSpecific
+#17 0x007fff4fa02d96 in RunCurrentEventLoopInMode
+#18 0x007fff4fa02b06 in ReceiveNextEventCommon
+#19 0x007fff4fa02884 in _BlockUntilNextEventMatchingListInModeWithFilter
+#20 0x007fff4dcb2a73 in _DPSNextEvent
+#21 0x007fff4e448e34 in -[NSApplication(NSEvent) _nextEventMatchingEventMask:untilDate:inMode:dequeue:]
+#22 0x007fff4dca7885 in -[NSApplication run]
+#23 0x007fff4dc76a72 in NSApplicationMain
+#24 0x0000010072705c in EditorMain(int, char const**)
+#25 0x000001007274d9 in main
+#26 0x007fff78639015 in start

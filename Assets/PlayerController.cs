@@ -180,7 +180,7 @@ public class PlayerController : Character, IDamage
       }
     }
     Pickup closest = (Pickup)FindClosest( transform.position, pups.ToArray() );
-    if( closest ==null )
+    if( closest == null )
     {
       if( closestPickup != null )
       {
@@ -331,7 +331,7 @@ public class PlayerController : Character, IDamage
       RaycastHit2D hit = Physics2D.Raycast( pos, shoot, grapDistance, LayerMask.GetMask( PlayerCollideLayers ) );
       if( hit )
       {
-        Debug.DrawLine( pos, hit.point, Color.red );
+        //Debug.DrawLine( pos, hit.point, Color.red );
         grapShooting = true;
         graphitpos = hit.point;
         graphookTip.SetActive( true );
@@ -411,14 +411,14 @@ public class PlayerController : Character, IDamage
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );
 
 
-    if( Global.instance.UsingKeyboard )
+    if( GameInput.UsingKeyboard )
     {
       shoot = cursorDelta;
     }
     else
     {
-      shoot = new Vector3( Input.GetAxisRaw( Global.instance.icsCurrent.axisMap["ShootX"] ), -Input.GetAxisRaw( Global.instance.icsCurrent.axisMap["ShootY"] ), 0 );
-      if( shoot.sqrMagnitude > Global.instance.deadZone * Global.instance.deadZone )
+      shoot = new Vector3( GameInput.GetAxisRaw( "ShootX" ), -GameInput.GetAxisRaw( "ShootY" ), 0 );
+      if( shoot.sqrMagnitude > GameInput.deadZone * GameInput.deadZone )
       {
         if( !shootRepeatTimer.IsActive )
         {
@@ -432,7 +432,7 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    if( Input.GetKey( Global.instance.icsCurrent.keyMap["Fire"] ) )
+    if( GameInput.GetKey( "Fire" ) )
     {
       if( !shootRepeatTimer.IsActive )
       {
@@ -440,7 +440,7 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Pickup"] ) )
+    if( GameInput.GetKeyDown( "Pickup" ) )
     {
       if( closestPickup != null )
       {
@@ -451,35 +451,35 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["graphook"] ) )
+    if( GameInput.GetKeyUp( "graphook" ) )
       inputGraphook = true;
 
-    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Charge"] ) )
+    if( GameInput.GetKeyDown( "Charge" ) )
       inputChargeStart = true;
     else
-    if( Input.GetKey( Global.instance.icsCurrent.keyMap["Charge"] ) )
+    if( GameInput.GetKey( "Charge" ) )
       inputCharge = true;
     else
-    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Charge"] ) )
+    if( GameInput.GetKeyUp( "Charge" ) )
       inputChargeEnd = true;
 
     // INPUT
 
-    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Down"] ) )
+    if( GameInput.GetKeyUp( "Down" ) )
       hanging = false;
 
-    inputRight = Input.GetKey( Global.instance.icsCurrent.keyMap["MoveRight"] );
-    inputLeft = Input.GetKey( Global.instance.icsCurrent.keyMap["MoveLeft"] );
+    inputRight = GameInput.GetKey( "MoveRight" );
+    inputLeft = GameInput.GetKey( "MoveLeft" );
 
-    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Dash"] ) )
+    if( GameInput.GetKeyDown( "Dash" ) )
       inputDashStart = true;
-    else if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Dash"] ) )
+    else if( GameInput.GetKeyUp( "Dash" ) )
       inputDashEnd = true;
 
-    if( Input.GetKeyDown( Global.instance.icsCurrent.keyMap["Jump"] ) )
+    if( GameInput.GetKeyDown( "Jump" ) )
       inputJumpStart = true;
     else
-    if( Input.GetKeyUp( Global.instance.icsCurrent.keyMap["Jump"] ) )
+    if( GameInput.GetKeyUp( "Jump" ) )
       inputJumpEnd = true;
 
   }

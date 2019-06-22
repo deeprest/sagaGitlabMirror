@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.AI;
@@ -26,7 +27,7 @@ public class GlobalEditor : Editor
       if( GUI.Button( EditorGUILayout.GetControlRect(), "Stop Screenshot Timer" ) )
         ScreenshotTimer.Stop( false );
     }
-    else 
+    else
     {
       if( GUI.Button( EditorGUILayout.GetControlRect(), "Start Screenshot Timer" ) )
         StartTimer();
@@ -53,16 +54,11 @@ public interface IDamage
   void TakeDamage( Damage d );
 }
 
-public class Attack
-{
-  public Transform instigator;
-}
 
-// TODO upgrade to 2019 and use new input system
+// TODO upgrade to 2019 and use new input system, or find something on asset store.
 
 public class Global : MonoBehaviour
 {
-
   public static Global instance;
   public static bool Paused = false;
   public static bool Slowed = false;
@@ -78,6 +74,7 @@ public class Global : MonoBehaviour
   public float RepathInterval = 1;
 
   [Header( "References" )]
+  [SerializeField] GameInputRemapper GameInputRemapper;
   [SerializeField] string InitialSceneName;
   public CameraController CameraController;
   [SerializeField] AudioSource music;
@@ -118,11 +115,20 @@ public class Global : MonoBehaviour
   [Header( "Debug" )]
   [SerializeField] Text debugButtons;
   [SerializeField] Text debugText;
-
+  // loading screen
   bool loadingScene;
   float prog = 0;
   [SerializeField] Image progress;
   [SerializeField] float progressSpeed = 0.5f;
+
+  // color shift
+  Color shiftyColor = Color.red;
+  [SerializeField] float colorShiftSpeed = 1;
+  [SerializeField] Image shifty;
+  // This exists only because of a Unity crash bug when objects with active
+  // Contacts are destroyed from within OnCollisionEnter2D()
+  List<GameObject> DestructionList = new List<GameObject>();
+
 
   [RuntimeInitializeOnLoadMethod]
   static void RunOnStart()
@@ -172,7 +178,8 @@ public class Global : MonoBehaviour
       debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
     else
       debugText.text = CameraController.zOffset.ToString( "##.#" );
-    InitializeControls();
+
+    GameInputRemapper.InitializeControls();
 
     if( Camera.main.orthographic )
       Camera.main.orthographicSize = 2;
@@ -253,13 +260,15 @@ public class Global : MonoBehaviour
     {
       CurrentPlayer.PostSceneTransition();
     }
-    if( !Application.isEditor || SimulatePlayer)
+    if( !Application.isEditor || SimulatePlayer )
     {
-      SceneScript ss = FindObjectOfType<SceneScript>();
+      ss = FindObjectOfType<SceneScript>();
       if( ss != null )
-        ss.StartScene(); 
+      {
+        ss.StartScene();
+      }
     }
-     
+
     HUD.SetActive( true );
     Unpause();
     yield return HideLoadingScreenRoutine();
@@ -278,13 +287,17 @@ public class Global : MonoBehaviour
                    System.DateTime.Now.Second.ToString( "D2" );
     ScreenCapture.CaptureScreenshot( Application.persistentDataPath + "/" + now + ".png" );
   }
-   
+
   float progTarget = 0;
   [SerializeField] GameObject spinner;
   [SerializeField] float spinnerMoveSpeed = 1;
 
   void Update()
   {
+    for( int i = 0; i < DestructionList.Count; i++ )
+      GameObject.Destroy( DestructionList[i] );
+    DestructionList.Clear();
+
     Timer.UpdateTimers();
 
     if( loadingScene )
@@ -292,7 +305,7 @@ public class Global : MonoBehaviour
       prog = Mathf.MoveTowards( prog, progTarget, Time.unscaledDeltaTime * progressSpeed );
       progress.fillAmount = prog;
 
-      if( Input.GetKey( Global.instance.icsCurrent.keyMap["MoveRight"] ) )
+      if( GameInput.GetKey( "MoveRight" ) )
         spinner.transform.localPosition += Vector3.right * spinnerMoveSpeed * Time.unscaledDeltaTime;
       //inputLeft = Input.GetKey( Global.instance.icsCurrent.keyMap["MoveLeft"] );
     }
@@ -304,29 +317,7 @@ public class Global : MonoBehaviour
         debugButtons.text += "Button " + i + "=" + Input.GetKey( "joystick button " + i ) + "| ";
     }
 
-    if( !remappingControls )
-    {
-      if( UsingKeyboard )
-      {
-        for( int i = 0; i < 20; i++ )
-        {
-          if( Input.GetKey( "joystick button " + i ) )
-          {
-            UseGamepad();
-          }
-        }
-      }
-      else
-      {
-        for( int i = 0; i < activateKeyboardKeys.Length; i++ )
-        {
-          if( Input.GetKeyDown( activateKeyboardKeys[i] ) )
-          {
-            UseKeyboard();
-          }
-        }
-      }
-    }
+
 
     if( Mathf.Abs( Input.GetAxis( "Zoom" ) ) > 0 )
     {
@@ -379,13 +370,13 @@ public class Global : MonoBehaviour
         CurrentPlayer.transform.position = FindSpawnPosition();
     }
 
-    if( UsingKeyboard )
+    if( GameInput.UsingKeyboard )
     {
       cursorDelta += new Vector3( Input.GetAxis( "Cursor X" ), Input.GetAxis( "Cursor Y" ), 0 ) * cursorSensitivity;
     }
     else
     {
-      Vector3 raw = new Vector3( Input.GetAxisRaw( icsCurrent.axisMap["ShootX"] ), -Input.GetAxisRaw( icsCurrent.axisMap["ShootY"] ), 0 );
+      Vector3 raw = new Vector3( Input.GetAxisRaw( GameInput.icsCurrent.axisMap["ShootX"] ), -Input.GetAxisRaw( GameInput.icsCurrent.axisMap["ShootY"] ), 0 );
       if( raw.sqrMagnitude > deadZone * deadZone )
         aimRaw = raw;
       else
@@ -409,7 +400,41 @@ public class Global : MonoBehaviour
     Cursor.lockState = CursorLockMode.None;
 #else
 #endif
+    float H = 0;
+    float S = 1;
+    float V = 1;
+    Color.RGBToHSV( shiftyColor, out H, out S, out V );
+    H += colorShiftSpeed * Time.unscaledDeltaTime;
+    shiftyColor = Color.HSVToRGB( H, 1, 1 );
+    shifty.color = shiftyColor;
+
+    /* todo: use seprating axis theorem to find collisions with polygon bounds
+    if( ss != null && ss.sb != null )
+    {
+      float xangle = (Mathf.Deg2Rad * Camera.main.fieldOfView * 0.5f) * (16f / 10f);  //((float)Camera.main.pixelWidth / (float)Camera.main.pixelHeight);
+      float hh = Mathf.Tan( Mathf.Deg2Rad * Camera.main.fieldOfView * 0.5f ) * -Camera.main.transform.position.z;
+      float hw = Mathf.Tan( xangle ) * -Camera.main.transform.position.z;
+      Vector3 cp = Camera.main.transform.position; cp.z = 0;
+      Debug.DrawLine( new Vector3( -hw, -hh, 0 ) + cp, new Vector3( -hw, hh, 0 ) + cp, Color.red );
+      Debug.DrawLine( new Vector3( -hw, hh, 0 ) + cp, new Vector3( hw, hh, 0 ) + cp, Color.red );
+      Debug.DrawLine( new Vector3( hw, hh, 0 ) + cp, new Vector3( hw, -hh, 0 ) + cp, Color.red );
+      Debug.DrawLine( new Vector3( hw, -hh, 0 ) + cp, new Vector3( -hw, -hh, 0 ) + cp, Color.red );
+      Vector3 LR = new Vector3( hw, -hh, 0 );
+      Debug.DrawLine( cp, cp + LR, Color.white );
+      for( int i = 0; i < ss.sb.points.Length; i++ )
+      {
+        //int next = (i + 1) % ss.sb.points.Length;
+        Vector3 c = Vector3.Project( (Vector3)ss.sb.points[i] - cp, LR );
+        if( Vector3.Dot( c-cp, LR) > 0 && (c - cp).sqrMagnitude < LR.sqrMagnitude )
+          Debug.DrawLine( cp, cp+c, Color.magenta );
+
+      }
+    }
+    */
+
   }
+
+  SceneScript ss;
 
   void OnApplicationFocus( bool hasFocus )
   {
@@ -417,13 +442,11 @@ public class Global : MonoBehaviour
     Cursor.visible = !hasFocus;
   }
 
-
-
   void LateUpdate()
   {
     if( CurrentPlayer != null )
     {
-      if( UsingKeyboard )
+      if( GameInput.UsingKeyboard )
       {
         cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, cursorOuter ), cursorInner );
       }
@@ -544,6 +567,7 @@ public class Global : MonoBehaviour
       Cursor.lockState = CursorLockMode.None;
       Cursor.visible = true;
       EnableRaycaster( true );
+      GameInputRemapper.OnShow();
     }
     else
     {
@@ -589,221 +613,13 @@ public class Global : MonoBehaviour
     yield return null;
   }
 
-
-  public class InputControlScheme
+  // This exists only because of a Unity crash bug when objects with active
+  // Contacts are destroyed from within OnCollisionEnter2D()
+  public void Destroy( GameObject go )
   {
-    public Dictionary<string, KeyCode> keyMap = new Dictionary<string, KeyCode>();
-    public Dictionary<string, string> axisMap = new Dictionary<string, string>();
+    go.SetActive( false );
+    DestructionList.Add( go );
   }
-
-  public InputControlScheme icsCurrent { get; set; }
-
-  InputControlScheme icsKeyboard = new InputControlScheme();
-  InputControlScheme icsGamepad = new InputControlScheme();
-
-  public bool UsingKeyboard { get { return icsCurrent == icsKeyboard; } }
-
-  KeyCode[] allKeys;
-  KeyCode[] activateKeyboardKeys;
-  bool remappingControls = false;
-
-  [Header( "Control Remap" )]
-  public GameObject controllerRemapScreen;
-  public RectTransform controllerMapListParent;
-  public GameObject controllerMapListItemTemplate;
-  public Text remapInstruction;
-  public Sprite keyboardSprite;
-  public Sprite gamepadSprite;
-  public Image controllerIndicator;
-
-  void UseKeyboard()
-  {
-    print( "using keyboard" );
-    icsCurrent = icsKeyboard;
-    RepopulateControlBindingList();
-    controllerIndicator.sprite = keyboardSprite;
-    CursorPlayerRelative = false;
-  }
-
-  void UseGamepad()
-  {
-    print( "using gamepad" );
-    icsCurrent = icsGamepad;
-    RepopulateControlBindingList();
-    controllerIndicator.sprite = gamepadSprite;
-    CursorPlayerRelative = true;
-  }
-
-  void RepopulateControlBindingList()
-  {
-    // repopulate controller remap list
-    for( int i = 0; i < controllerMapListParent.childCount; i++ )
-    {
-      Transform tf = controllerMapListParent.GetChild( i );
-      if( tf.gameObject == controllerMapListItemTemplate )
-        continue;
-      Destroy( tf.gameObject );
-    }
-    foreach( var pair in icsCurrent.keyMap )
-      AddControlListItem( pair.Key );
-    foreach( var pair in icsCurrent.axisMap )
-      AddControlListItem( pair.Key );
-  }
-
-  string[] GetAllActions()
-  {
-    List<string> str = new List<string>();
-    foreach( var pair in icsCurrent.keyMap )
-    {
-      if( !str.Contains( pair.Key ) )
-        str.Add( pair.Key );
-    }
-    foreach( var pair in icsCurrent.axisMap )
-    {
-      if( !str.Contains( pair.Key ) )
-        str.Add( pair.Key );
-    }
-    return str.ToArray();
-  }
-
-  void SetDefaultControls()
-  {
-    // keyboard
-    icsKeyboard.keyMap["MoveRight"] = KeyCode.D;
-    icsKeyboard.keyMap["MoveLeft"] = KeyCode.A;
-    icsKeyboard.keyMap["Jump"] = KeyCode.W;
-    icsKeyboard.keyMap["Down"] = KeyCode.S;
-    icsKeyboard.keyMap["Dash"] = KeyCode.Space;
-    icsKeyboard.keyMap["Fire"] = KeyCode.Mouse0;
-    icsKeyboard.keyMap["graphook"] = KeyCode.Mouse1;
-    icsKeyboard.keyMap["Pickup"] = KeyCode.E;
-
-    icsKeyboard.keyMap["Charge"] = KeyCode.Mouse0;
-
-    // gamepad
-    icsGamepad.keyMap["MoveRight"] = KeyCode.JoystickButton8;
-    icsGamepad.keyMap["MoveLeft"] = KeyCode.JoystickButton7;
-    icsGamepad.keyMap["Jump"] = KeyCode.JoystickButton14;
-    icsGamepad.keyMap["Down"] = KeyCode.JoystickButton0;
-    icsGamepad.keyMap["Dash"] = KeyCode.JoystickButton13;
-    icsGamepad.keyMap["Fire"] = KeyCode.None;
-    icsGamepad.keyMap["graphook"] = KeyCode.None;
-    icsGamepad.keyMap["Pickup"] = KeyCode.None;
-    icsGamepad.keyMap["Charge"] = KeyCode.None;
-    icsGamepad.axisMap["ShootX"] = "Joy0Axis2";
-    icsGamepad.axisMap["ShootY"] = "Joy0Axis3";
-
-  }
-
-
-  void InitializeControls()
-  {
-    allKeys = (KeyCode[])System.Enum.GetValues( typeof( KeyCode ) );
-    List<KeyCode> temp = new List<KeyCode>( allKeys );
-    temp.RemoveAll( x => x >= KeyCode.JoystickButton0 );
-    // Escape is used to access keybind menu. 
-    // This is intended to avoid changing current input scheme before remapping controls
-    temp.RemoveAll( x => x == KeyCode.Escape || (x >= KeyCode.Mouse0 && x <= KeyCode.Mouse6) );
-    activateKeyboardKeys = temp.ToArray();
-
-    for( int i = 0; i < 20; i++ )
-      axes.Add( "Joy0Axis" + i );
-
-    SetDefaultControls();
-    UseKeyboard();
-
-    // UI
-    controllerRemapScreen.SetActive( false );
-    controllerMapListItemTemplate.SetActive( false );
-
-
-  }
-
-  void AddControlListItem( string key )
-  {
-    GameObject go = Instantiate( controllerMapListItemTemplate, controllerMapListParent );
-    go.SetActive( true );
-    go.name = key;
-    Text[] ts = go.GetComponentsInChildren<Text>();
-    ts[0].text = key;
-  }
-
-  public void InitiateRemap()
-  {
-    controllerRemapScreen.SetActive( true );
-    remapInstruction.text = "press desired button for each action";
-    StartCoroutine( RemapRoutine() );
-  }
-
-  List<string> axes = new List<string>();
-
-  IEnumerator RemapRoutine()
-  {
-    remappingControls = true;
-    bool done = false;
-
-    Dictionary<string, KeyCode> changeKey = new Dictionary<string, KeyCode>();
-    Dictionary<string, string> changeAxis = new Dictionary<string, string>();
-
-    string[] actions = GetAllActions();
-    for( int a = 0; !done && a < actions.Length; a++ )
-    {
-      string key = actions[a];
-      GameObject go = controllerMapListParent.Find( key ).gameObject;
-      Text[] ts = go.GetComponentsInChildren<Text>();
-      ts[0].color = Color.red;
-      remapInstruction.text = "press desired button for action: " + key;
-
-      bool hit = false;
-      while( !hit )
-      {
-        yield return null;
-        if( Input.GetButtonDown( "Cancel" ) )
-          break;
-        for( int i = 0; i < allKeys.Length; i++ )
-        {
-          if( Input.GetKeyDown( allKeys[i] ) )
-          {
-            ts[1].text = i.ToString();
-            hit = true;
-            changeKey[key] = allKeys[i];
-            break;
-          }
-        }
-        if( !hit )
-        {
-          foreach( var ax in axes )
-          {
-            if( Mathf.Abs( Input.GetAxisRaw( ax ) ) > 0.5f )
-            {
-              changeAxis[key] = ax;
-              hit = true;
-              break;
-            }
-          }
-        }
-      }
-
-      if( hit )
-      {
-        ts[0].color = Color.white;
-        Input.ResetInputAxes();
-        yield return new WaitForSecondsRealtime( 0.2f );
-      }
-    }
-
-    foreach( var pair in changeKey )
-      icsCurrent.keyMap[pair.Key] = pair.Value;
-    foreach( var pair in changeAxis )
-      icsCurrent.axisMap[pair.Key] = pair.Value;
-
-    controllerRemapScreen.SetActive( false );
-    Input.ResetInputAxes();
-    yield return null;
-    remappingControls = false;
-  }
-
-
 
   public GameObject Spawn( GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null, bool limit = true, bool initialize = true )
   {
@@ -941,6 +757,8 @@ public class Global : MonoBehaviour
       SpeechCharacter = null;
     } );
   }
+
+
 
 
 }

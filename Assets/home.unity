@@ -1017,6 +1017,7 @@ GameObject:
   m_Component:
   - component: {fileID: 590970608}
   - component: {fileID: 590970607}
+  - component: {fileID: 590970609}
   m_Layer: 0
   m_Name: SCENE
   m_TagString: Scene
@@ -1036,6 +1037,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30a191d5ab0fb4f5f80b6714a53984f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sb: {fileID: 590970609}
   drcain: {fileID: 11400000, guid: 2dfa3dd29aabe4b9c9daf91f7da83a50, type: 2}
   drcainJabber: {fileID: 2134318689}
   drcainAnimator: {fileID: 2134318685}
@@ -1055,6 +1057,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!60 &590970609
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590970606}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.47558117, y: 7.0466685}
+      - {x: -9.71533, y: 10.567973}
+      - {x: -23.687422, y: 6.6643972}
+      - {x: -24.68593, y: -8.758009}
+      - {x: 3.3053916, y: -9.165652}
+      - {x: 3.4648366, y: 2.5510416}
 --- !u!1 &591686298 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1648504042683558, guid: bcaea2b19576c4f368aab98d53d5aabe,

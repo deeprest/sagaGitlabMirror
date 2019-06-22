@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SceneHome :  MonoBehaviour
+public class SceneHome :  SceneScript
 {
   public CharacterIdentity drcain;
   public JabberPlayer drcainJabber;
   public SpriteAnimator drcainAnimator;
   public bool runPlayer;
 
-  void Start()
+  public override void StartScene()
   {
     //player.playerInput = false;
     drcainAnimator.Play( "drcain-talk" );
