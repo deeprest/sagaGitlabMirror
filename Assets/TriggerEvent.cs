@@ -19,6 +19,6 @@ public class TriggerEvent : MonoBehaviour, ITrigger
 
   public void LoadScene( string arg )
   {
-    Global.instance.LoadScene( arg, true );
+    Global.instance.LoadScene( arg );
   }
 }

@@ -1,6 +1,5 @@
 
 # todo
-- upgrade to new input system
 - Menu with control options (and remap)
 - camera bounds
 - borrow camera dolly/ramp from Flatlander, find ideal camera distance(s); lock while in chamber.
@@ -21,7 +20,7 @@
 - idea: AI ability to navigate/traverse environment to follow player/attack. First pathfind, then plot out movement using "movement-nodes"
 
 # bugs
-release build screen fade in on level transition gets stuck
+- release build screen fade in on level transition gets stuck
 - reproducible: charge particles on after transition. reset player state on level transition
 - once: stuck in mid-air (after transition?)
 - reproducible: jump up wall sprite glitch
