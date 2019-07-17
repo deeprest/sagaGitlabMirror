@@ -68,6 +68,7 @@ public class Global : MonoBehaviour
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
   public float deadZone = 0.1f;
+  [Tooltip( "Pretend this is a build we're running" )]
   public bool SimulatePlayer = false;
   [SerializeField] float slowtime = 0.2f;
   Timer fadeTimer = new Timer();
@@ -84,6 +85,9 @@ public class Global : MonoBehaviour
   public GameObject AvatarPrefab;
 
   [Header( "Transient (Assigned at runtime)" )]
+  public bool Updating = false;
+  public PolygonCollider2D CameraBounds;
+  [System.NonSerialized] public SceneScript ss;
   public PlayerController CurrentPlayer;
   [SerializeField] Chopper chopper;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
@@ -105,9 +109,9 @@ public class Global : MonoBehaviour
   public float cursorSensitivity = 1;
   public bool CursorPlayerRelative = true;
   Vector3 aimRaw;
-  public float cursorLerp = 10;
+  public float gamepadCursorLerp = 10;
   public bool positionalCursor = true;
-  public float cursorSpeed = 30;
+  public float positionalCursorSpeed = 30;
   public float cursorScale = 4;
   // status 
   public Image weaponIcon;
@@ -192,9 +196,13 @@ public class Global : MonoBehaviour
       music.Play();
       foreach( var mesh in meshSurfaces )
         mesh.BuildNavMesh();
-      SpawnPlayer();
+      if( CurrentPlayer == null )
+        SpawnPlayer();
       fader.color = Color.clear;
       //yield return new WaitForSecondsRealtime( 1 );
+      Updating = true;
+      ss = FindObjectOfType<SceneScript>();
+      CameraBounds = ss.sb;
     }
     else
     {
@@ -210,6 +218,7 @@ public class Global : MonoBehaviour
 
   IEnumerator LoadSceneRoutine( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true )
   {
+    Updating = false;
     if( fadeOut )
     {
       FadeBlack();
@@ -219,20 +228,21 @@ public class Global : MonoBehaviour
     else
     {
       fader.color = Color.black;
+      fader.gameObject.SetActive( true );
       yield return null;
     }
     Pause();
     HUD.SetActive( false );
     yield return ShowLoadingScreenRoutine( "Loading... " + sceneName );
-    yield return new WaitForSecondsRealtime( 2 );
     if( CurrentPlayer != null )
     {
       CurrentPlayer.PreSceneTransition();
       SceneManager.MoveGameObjectToScene( CurrentPlayer.gameObject, gameObject.scene );
     }
     loadingScene = true;
-    progress.fillAmount = 0;
-    prog = 0;
+    //progress.fillAmount = 0;
+    //prog = 0;
+    yield return new WaitForSecondsRealtime( 1 );
     AsyncOperation ao = SceneManager.LoadSceneAsync( sceneName, LoadSceneMode.Single );
     while( !ao.isDone )
     {
@@ -260,13 +270,12 @@ public class Global : MonoBehaviour
     {
       CurrentPlayer.PostSceneTransition();
     }
-    if( !Application.isEditor || SimulatePlayer )
+
+    ss = FindObjectOfType<SceneScript>();
+    if( ss != null )
     {
-      ss = FindObjectOfType<SceneScript>();
-      if( ss != null )
-      {
-        ss.StartScene();
-      }
+      CameraBounds = ss.sb;
+      ss.StartScene();
     }
 
     HUD.SetActive( true );
@@ -276,6 +285,7 @@ public class Global : MonoBehaviour
     if( waitForFadeIn )
       while( fadeTimer.IsActive )
         yield return null;
+    Updating = true;
   }
 
   public void Screenshot()
@@ -300,10 +310,13 @@ public class Global : MonoBehaviour
 
     Timer.UpdateTimers();
 
+    if( !Updating )
+      return;
+
     if( loadingScene )
     {
-      prog = Mathf.MoveTowards( prog, progTarget, Time.unscaledDeltaTime * progressSpeed );
-      progress.fillAmount = prog;
+      //prog = Mathf.MoveTowards( prog, progTarget, Time.unscaledDeltaTime * progressSpeed );
+      //progress.fillAmount = prog;
 
       if( GameInput.GetKey( "MoveRight" ) )
         spinner.transform.localPosition += Vector3.right * spinnerMoveSpeed * Time.unscaledDeltaTime;
@@ -313,8 +326,12 @@ public class Global : MonoBehaviour
     debugButtons.text = "";
     for( int i = 0; i < 20; i++ )
     {
-      if( Input.GetKey( "joystick button " + i ) )
-        debugButtons.text += "Button " + i + "=" + Input.GetKey( "joystick button " + i ) + "| ";
+      //if( Input.GetKey( "joystick button " + i ) )
+      debugButtons.text += "Button " + i + "=" + Input.GetKey( "joystick button " + i ) + "\n";
+    }
+    for( int i = 0; i < 6; i++ )
+    {
+      debugButtons.text += "Axis " + i + "=" + Input.GetAxis( "Joy0Axis" + i ) + "\n";
     }
 
 
@@ -408,33 +425,11 @@ public class Global : MonoBehaviour
     shiftyColor = Color.HSVToRGB( H, 1, 1 );
     shifty.color = shiftyColor;
 
-    /* todo: use seprating axis theorem to find collisions with polygon bounds
-    if( ss != null && ss.sb != null )
-    {
-      float xangle = (Mathf.Deg2Rad * Camera.main.fieldOfView * 0.5f) * (16f / 10f);  //((float)Camera.main.pixelWidth / (float)Camera.main.pixelHeight);
-      float hh = Mathf.Tan( Mathf.Deg2Rad * Camera.main.fieldOfView * 0.5f ) * -Camera.main.transform.position.z;
-      float hw = Mathf.Tan( xangle ) * -Camera.main.transform.position.z;
-      Vector3 cp = Camera.main.transform.position; cp.z = 0;
-      Debug.DrawLine( new Vector3( -hw, -hh, 0 ) + cp, new Vector3( -hw, hh, 0 ) + cp, Color.red );
-      Debug.DrawLine( new Vector3( -hw, hh, 0 ) + cp, new Vector3( hw, hh, 0 ) + cp, Color.red );
-      Debug.DrawLine( new Vector3( hw, hh, 0 ) + cp, new Vector3( hw, -hh, 0 ) + cp, Color.red );
-      Debug.DrawLine( new Vector3( hw, -hh, 0 ) + cp, new Vector3( -hw, -hh, 0 ) + cp, Color.red );
-      Vector3 LR = new Vector3( hw, -hh, 0 );
-      Debug.DrawLine( cp, cp + LR, Color.white );
-      for( int i = 0; i < ss.sb.points.Length; i++ )
-      {
-        //int next = (i + 1) % ss.sb.points.Length;
-        Vector3 c = Vector3.Project( (Vector3)ss.sb.points[i] - cp, LR );
-        if( Vector3.Dot( c-cp, LR) > 0 && (c - cp).sqrMagnitude < LR.sqrMagnitude )
-          Debug.DrawLine( cp, cp+c, Color.magenta );
 
-      }
-    }
-    */
+
 
   }
 
-  SceneScript ss;
 
   void OnApplicationFocus( bool hasFocus )
   {
@@ -442,36 +437,50 @@ public class Global : MonoBehaviour
     Cursor.visible = !hasFocus;
   }
 
+  public Vector3 origin;
+  public float CursorFactor = 0.02f;
+  public Vector2 CursorWorldPos;
+
   void LateUpdate()
   {
+    if( !Updating )
+      return;
+
     if( CurrentPlayer != null )
     {
       if( GameInput.UsingKeyboard )
       {
         cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, cursorOuter ), cursorInner );
       }
-      else if( positionalCursor )
-      {
-        cursorDelta += aimRaw * cursorSpeed;
-        cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, cursorOuter ), cursorInner );
-      }
       else
       {
-        cursorDelta = Vector3.Lerp( cursorDelta, aimRaw * cursorOuter, Mathf.Clamp01( cursorLerp * Time.deltaTime ) );
+        if( positionalCursor )
+        {
+          cursorDelta += aimRaw * positionalCursorSpeed;
+          cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, cursorOuter ), cursorInner );
+        }
+        else
+        {
+          cursorDelta = Vector3.Lerp( cursorDelta, aimRaw * cursorOuter, Mathf.Clamp01( gamepadCursorLerp * Time.deltaTime ) );
+        }
       }
 
       cursor.gameObject.SetActive( cursorDelta.sqrMagnitude > cursorInner * cursorInner );
 
-      Vector3 origin;
+
       if( CursorPlayerRelative )
-        origin = CurrentPlayer.arm.position;
+        origin = CurrentPlayer.transform.position; //.arm.position;
       else
-        origin = Camera.main.transform.position;
+        origin = CameraController.transform.position;
       origin.z = 0;
-      cursor.anchoredPosition = Camera.main.WorldToScreenPoint( origin ) + cursorDelta;
+
+      CursorWorldPos = origin + cursorDelta * CursorFactor;
+      cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPos );
     }
 
     CameraController.CameraLateUpdate();
+
+
   }
 
   public void SpawnPlayer()
@@ -671,8 +680,10 @@ public class Global : MonoBehaviour
   public void FadeBlack()
   {
     fader.color = new Color( fader.color.r, fader.color.g, fader.color.b, 0 );
-    //fader.gameObject.SetActive( true );
     fadeTimer.Stop( true );
+    // set gameObject active after Stop() because FadeClear() CompleteDelegate
+    // makes the gameObject insactive
+    fader.gameObject.SetActive( true );
     TimerParams tp = new TimerParams
     {
       unscaledTime = true,
@@ -683,6 +694,10 @@ public class Global : MonoBehaviour
         Color fc = fader.color;
         fc.a = t.ProgressNormalized;
         fader.color = fc;
+      },
+      CompleteDelegate = delegate
+      {
+        fader.color = Color.black;
       }
     };
     fadeTimer.Start( tp );
@@ -690,6 +705,7 @@ public class Global : MonoBehaviour
 
   public void FadeClear()
   {
+    //fader.color = new Color( fader.color.r, fader.color.g, fader.color.b, 1 );
     //fader.gameObject.SetActive( true );
     fadeTimer.Stop( true );
     TimerParams tp = new TimerParams
@@ -706,6 +722,7 @@ public class Global : MonoBehaviour
       CompleteDelegate = delegate
       {
         fader.color = Color.clear;
+        fader.gameObject.SetActive( false );
       }
     };
     fadeTimer.Start( tp );

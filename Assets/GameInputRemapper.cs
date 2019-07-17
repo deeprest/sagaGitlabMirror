@@ -60,7 +60,7 @@ public class GameInput
   {
     icsCurrent = icsKeyboard;
     RepopulateControlBindingList();
-    Global.instance.CursorPlayerRelative = false;
+    //Global.instance.CursorPlayerRelative = false;
     OnUseKeyboard();
   }
 
@@ -68,7 +68,7 @@ public class GameInput
   {
     icsCurrent = icsGamepad;
     RepopulateControlBindingList();
-    Global.instance.CursorPlayerRelative = true;
+    //Global.instance.CursorPlayerRelative = true;
     OnUseGamepad();
   }
 
@@ -164,15 +164,32 @@ public class GameInputRemapper : MonoBehaviour
 
   void Update()
   {
+    // Detect input device
     if( !GameInput.remappingControls )
     {
       if( GameInput.UsingKeyboard )
       {
+        bool button = false;
         for( int i = 0; i < 20; i++ )
         {
           if( Input.GetKey( "joystick button " + i ) )
           {
             GameInput.UseGamepad();
+            button = true;
+            break;
+          }
+        }
+
+        // incomplete: the threshold value must be considered for each axis
+        if( !button )
+        {
+          for( int i = 0; i < 6; i++ )
+          {
+            if( (i < 5 && Mathf.Abs( Input.GetAxisRaw( "Joy0Axis" + i ) ) > 0.5f) || Input.GetAxisRaw( "Joy0Axis" + i ) > 0.5f )
+            {
+              GameInput.UseGamepad();
+              break;
+            }
           }
         }
       }
@@ -230,8 +247,8 @@ public class GameInputRemapper : MonoBehaviour
   public void InitiateRemap()
   {
     controllerRemapScreen.SetActive( true );
-    remapInstruction.text = "press desired button for each action";
-    StartCoroutine( RemapRoutine() );
+    remapInstruction.text = "REMAP not implemented for now";
+    //StartCoroutine( RemapRoutine() );
   }
 
 
@@ -295,7 +312,7 @@ public class GameInputRemapper : MonoBehaviour
       GameInput.icsCurrent.keyMap[pair.Key] = pair.Value;
     foreach( var pair in changeAxis )
       GameInput.icsCurrent.axisMap[pair.Key] = pair.Value;
-      
+
     Input.ResetInputAxes();
     yield return null;
     GameInput.remappingControls = false;
@@ -311,6 +328,7 @@ public class GameInputRemapper : MonoBehaviour
     GameInput.remappingControls = true;
     GameObject go = controllerMapListParent.Find( key ).gameObject;
     Text[] ts = go.GetComponentsInChildren<Text>();
+    Color cachedColor = ts[0].color;
     ts[0].color = Color.red;
     remapInstruction.text = "press desired button for action: " + key;
 
@@ -336,6 +354,7 @@ public class GameInputRemapper : MonoBehaviour
       {
         foreach( var ax in GameInput.axes )
         {
+          print( ax + " " + Input.GetAxisRaw( ax ) );
           if( Mathf.Abs( Input.GetAxisRaw( ax ) ) > 0.5f )
           {
             changeAxis = ax;
@@ -345,10 +364,20 @@ public class GameInputRemapper : MonoBehaviour
         }
       }
     }
+    ts[0].color = cachedColor;
+
     if( changeKey != KeyCode.None )
+    {
       GameInput.icsCurrent.keyMap[key] = changeKey;
+      if( GameInput.icsCurrent.axisMap.ContainsKey( key ) )
+        GameInput.icsCurrent.axisMap.Remove( key );
+    }
     if( changeAxis != null )
+    {
       GameInput.icsCurrent.axisMap[key] = changeAxis;
+      if( GameInput.icsCurrent.keyMap.ContainsKey( key ) )
+        GameInput.icsCurrent.keyMap.Remove( key );
+    }
 
     GameInput.remappingControls = false;
   }
@@ -371,7 +400,7 @@ public class GameInputRemapper : MonoBehaviour
       }
     }
     Button btn = go.GetComponentInChildren<Button>();
-    if( EventSystem.current.currentSelectedGameObject != btn.gameObject )
+    if( EventSystem.current != null && EventSystem.current.currentSelectedGameObject != btn.gameObject )
       EventSystem.current.SetSelectedGameObject( btn.gameObject, null );
   }
 }

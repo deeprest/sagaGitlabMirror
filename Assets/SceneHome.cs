@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SceneHome :  SceneScript
+public class SceneHome : SceneScript
 {
   public CharacterIdentity drcain;
   public JabberPlayer drcainJabber;
@@ -10,6 +10,12 @@ public class SceneHome :  SceneScript
 
   public override void StartScene()
   {
+    if( Application.isEditor && !Global.instance.SimulatePlayer )
+    {
+      Global.instance.SpawnPlayer();
+      return;
+    }
+
     //player.playerInput = false;
     drcainAnimator.Play( "drcain-talk" );
     Timer talk = new Timer( 3, null, delegate { drcainAnimator.Play( "drcain-idle" ); } );

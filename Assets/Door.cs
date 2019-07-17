@@ -17,6 +17,8 @@ public class Door : MonoBehaviour, ITrigger
   public AudioClip soundOpen;
   public AudioClip soundClose;
 
+  public UnityEngine.Events.UnityEvent onOpen;
+
   public void Trigger( Transform instigator )
   {
     if( transitioning )
@@ -36,11 +38,14 @@ public class Door : MonoBehaviour, ITrigger
       //transitioning = false;
       isOpen = true;
       cd.enabled = false;
+      onOpen.Invoke();
       timer.Start( 2, null, delegate
       {
         Close();
       } );
     } );
+
+
   }
 
   public void Close()

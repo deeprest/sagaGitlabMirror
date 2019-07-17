@@ -27,4 +27,9 @@ static class Util
       System.DateTime.Now.Hour.ToString( "D2" ) +
       System.DateTime.Now.Minute.ToString( "D2" );
   }
+
+  public static Vector2 Project2D( Vector2 a, Vector2 b )
+  {
+    return new Vector2( (Vector2.Dot( a, b ) / (b.x * b.x + b.y * b.y)) * b.x, (Vector2.Dot( a, b ) / (b.x * b.x + b.y * b.y)) * b.y );
+  }
 }
