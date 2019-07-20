@@ -59,7 +59,7 @@ public class CameraController : MonoBehaviour
 
       if( CursorInfluence )
       {
-        pos = Vector3.Lerp( pos, Global.instance.CursorWorldPos, cursorAlpha );
+        pos = Vector3.Lerp( pos, Global.instance.CursorWorldPosition, cursorAlpha );
         pos.z = zOffset;
       }
 

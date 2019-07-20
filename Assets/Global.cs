@@ -102,7 +102,7 @@ public class Global : MonoBehaviour
   [SerializeField] Image fader;
   public GameObject ready;
   // cursor
-  public RectTransform cursor;
+  public RectTransform Cursor;
   public Image cursorImage;
   public float cursorOuter = 100;
   public float cursorInner = 50;
@@ -118,6 +118,10 @@ public class Global : MonoBehaviour
   public float SnapAngleDivide = 8;
   public float SnapCursorDistance = 1;
   public RectTransform CursorSnapped;
+  public bool AutoAim;
+  public RectTransform CursorAutoAim;
+  public float AutoAimCircleRadius = 1;
+  public float AutoAimDistance = 5;
   // status 
   public Image weaponIcon;
 
@@ -194,6 +198,9 @@ public class Global : MonoBehaviour
       Camera.main.orthographicSize = 2;
     else
       Camera.main.fieldOfView = 20;
+
+    // use cursor scale instead of serialized value
+    SetCursor( cursorImage.sprite );
 
     if( Application.isEditor && !SimulatePlayer )
     {
@@ -438,13 +445,14 @@ public class Global : MonoBehaviour
 
   void OnApplicationFocus( bool hasFocus )
   {
-    Cursor.lockState = hasFocus ? CursorLockMode.Locked : CursorLockMode.None;
-    Cursor.visible = !hasFocus;
+    UnityEngine.Cursor.lockState = hasFocus ? CursorLockMode.Locked : CursorLockMode.None;
+    UnityEngine.Cursor.visible = !hasFocus;
   }
 
   public Vector3 origin;
   public float CursorFactor = 0.02f;
-  public Vector2 CursorWorldPos;
+  public Vector2 AimPosition;
+  public Vector2 CursorWorldPosition;
 
   void LateUpdate()
   {
@@ -468,7 +476,7 @@ public class Global : MonoBehaviour
           CursorDelta = Vector3.Lerp( CursorDelta, aimRaw * cursorOuter, Mathf.Clamp01( gamepadCursorLerp * Time.deltaTime ) );
       }
 
-      cursor.gameObject.SetActive( CursorDelta.sqrMagnitude > cursorInner * cursorInner );
+      Cursor.gameObject.SetActive( CursorDelta.sqrMagnitude > cursorInner * cursorInner );
 
 
       if( CursorPlayerRelative )
@@ -479,23 +487,73 @@ public class Global : MonoBehaviour
 
       if( SnapCursorToAngle )
       {
+        // set cursor
+        Cursor.gameObject.SetActive( true );
+        CursorSnapped.gameObject.SetActive( true );
+        CursorAutoAim.gameObject.SetActive( false );
+
         float angle = Mathf.Atan2( CursorDelta.x, CursorDelta.y ) / Mathf.PI;
         float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
         Vector3 snapped = new Vector3( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ), 0 );
-        CursorWorldPos = origin + snapped * SnapCursorDistance;
-        CursorSnapped.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPos );
-        cursor.anchoredPosition = Camera.main.WorldToScreenPoint( origin + CursorDelta * CursorFactor );
+        AimPosition = origin + snapped * SnapCursorDistance;
+        CursorSnapped.anchoredPosition = Camera.main.WorldToScreenPoint( AimPosition );
+        CursorWorldPosition = origin + CursorDelta * CursorFactor;
+        Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
+      }
+      else if( AutoAim )
+      {
+        // set cursor
+        Cursor.gameObject.SetActive( true );
+        CursorSnapped.gameObject.SetActive( false );
+
+        CursorWorldPosition = origin + CursorDelta * CursorFactor;
+        RaycastHit2D[] hits = Physics2D.CircleCastAll( CurrentPlayer.transform.position, AutoAimCircleRadius, CursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
+        float distance = Mathf.Infinity;
+        Transform closest = null;
+        foreach( var hit in hits )
+        {
+          float dist = Vector2.Distance( CursorWorldPosition, hit.transform.position );
+          if( dist < distance )
+          {
+            closest = hit.transform;
+            distance = dist;
+          }
+        }
+
+        if( closest == null )
+        {
+          CursorAutoAim.gameObject.SetActive( false );
+          AimPosition = origin + CursorDelta * CursorFactor;
+        }
+        else
+        {
+          CursorAutoAim.gameObject.SetActive( true );
+          // todo adjust for flight path
+          //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
+          AimPosition = closest.position;
+          CursorAutoAim.anchoredPosition = Camera.main.WorldToScreenPoint( AimPosition );
+        }
+        Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
+
       }
       else
       {
-        CursorWorldPos = origin + CursorDelta * CursorFactor;
-        cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPos );
+        // set cursor
+        Cursor.gameObject.SetActive( true );
+        CursorSnapped.gameObject.SetActive( false );
+        CursorAutoAim.gameObject.SetActive( false );
+
+        AimPosition = origin + CursorDelta * CursorFactor;
+        CursorWorldPosition = AimPosition;
+        Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
       }
 
     }
 
     CameraController.CameraLateUpdate();
   }
+
+
 
   public void SpawnPlayer()
   {
@@ -577,7 +635,7 @@ public class Global : MonoBehaviour
   public void SetCursor( Sprite spr )
   {
     cursorImage.sprite = spr;
-    cursor.sizeDelta = new Vector2( spr.rect.width, spr.rect.height ) * cursorScale; // * spr.pixelsPerUnit;
+    Cursor.sizeDelta = new Vector2( spr.rect.width, spr.rect.height ) * cursorScale; // * spr.pixelsPerUnit;
   }
 
   void ShowMenu( bool show )
@@ -587,8 +645,8 @@ public class Global : MonoBehaviour
       Pause();
       MainMenu.SetActive( true );
       HUD.SetActive( false );
-      Cursor.lockState = CursorLockMode.None;
-      Cursor.visible = true;
+      UnityEngine.Cursor.lockState = CursorLockMode.None;
+      UnityEngine.Cursor.visible = true;
       EnableRaycaster( true );
       GameInputRemapper.OnShow();
     }
@@ -597,8 +655,8 @@ public class Global : MonoBehaviour
       Unpause();
       MainMenu.SetActive( false );
       HUD.SetActive( true );
-      Cursor.lockState = CursorLockMode.Locked;
-      Cursor.visible = false;
+      UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+      UnityEngine.Cursor.visible = false;
       EnableRaycaster( false );
       Input.ResetInputAxes();
     }
