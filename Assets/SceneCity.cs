@@ -7,9 +7,15 @@ public class SceneScript : MonoBehaviour
   public PolygonCollider2D sb;
   public virtual void StartScene() { }
 
+  public void PlayerInputOff()
+  {
+    Global.instance.CurrentPlayer.playerInput = false;
+  }
+
   public void ReplaceCameraPoly( PolygonCollider2D poly )
   {
     Global.instance.AssignCameraPoly( poly );
+    Global.instance.CameraController.EncompassBounds = false;
   }
 
   public void ReplaceCameraPolyEncompass( PolygonCollider2D poly )

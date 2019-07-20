@@ -17,14 +17,27 @@ public class Door : MonoBehaviour, ITrigger
   public AudioClip soundOpen;
   public AudioClip soundClose;
 
-  public UnityEngine.Events.UnityEvent onOpen;
+  bool Entering;
+  public Transform inside;
+  Transform instigator;
+  public UnityEngine.Events.UnityEvent onEnterTrigger;
+  public UnityEngine.Events.UnityEvent onExitTrigger;
+  public UnityEngine.Events.UnityEvent onEnter;
+  public UnityEngine.Events.UnityEvent onExit;
+
 
   public void Trigger( Transform instigator )
   {
     if( transitioning )
       return;
+    this.instigator = instigator;
+    Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
+    if( Entering )
+      onEnterTrigger.Invoke();
+    else
+      onExitTrigger.Invoke();
     Open();
-  } 
+  }
 
   public void Open()
   {
@@ -38,7 +51,10 @@ public class Door : MonoBehaviour, ITrigger
       //transitioning = false;
       isOpen = true;
       cd.enabled = false;
-      onOpen.Invoke();
+      if( Entering )
+        onEnter.Invoke();
+      else
+        onExit.Invoke();
       timer.Start( 2, null, delegate
       {
         Close();

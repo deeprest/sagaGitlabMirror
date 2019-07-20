@@ -220,7 +220,12 @@ PrefabInstance:
     - target: {fileID: 7197562399528161157, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
       propertyPath: field of view
-      value: 43
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197562399528161157, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 3}
+      propertyPath: far clip plane
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 5040601009363350888, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
@@ -310,7 +315,7 @@ PrefabInstance:
     - target: {fileID: 114329875613515752, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
       propertyPath: SimulatePlayer
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114329875613515752, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
@@ -438,6 +443,10 @@ PrefabInstance:
     - target: {fileID: 497188666, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
       propertyPath: m_NavMeshData
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4698691396701194, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -13.38
       objectReference: {fileID: 0}
     - target: {fileID: 9164698905892685137, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
