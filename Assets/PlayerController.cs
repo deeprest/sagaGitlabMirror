@@ -402,10 +402,7 @@ public class PlayerController : Character, IDamage
 
   void UpdatePlayerInput()
   {
-
-    Vector3 cursorScreen = Global.instance.cursor.anchoredPosition;
-    cursorScreen.z = -Camera.main.transform.position.z;
-    cursorDelta = Camera.main.ScreenToWorldPoint( cursorScreen ) - arm.position;
+    cursorDelta = Global.instance.CursorWorldPos - (Vector2)arm.position;
     cursorDelta.z = 0;
     arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );

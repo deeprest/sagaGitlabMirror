@@ -114,6 +114,10 @@ public class Global : MonoBehaviour
   public bool positionalCursor = true;
   public float positionalCursorSpeed = 30;
   public float cursorScale = 4;
+  public bool SnapCursorToAngle;
+  public float SnapAngleDivide = 8;
+  public float SnapCursorDistance = 1;
+  public RectTransform CursorSnapped;
   // status 
   public Image weaponIcon;
 
@@ -461,30 +465,36 @@ public class Global : MonoBehaviour
           CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
         }
         else
-        {
           CursorDelta = Vector3.Lerp( CursorDelta, aimRaw * cursorOuter, Mathf.Clamp01( gamepadCursorLerp * Time.deltaTime ) );
-        }
       }
 
       cursor.gameObject.SetActive( CursorDelta.sqrMagnitude > cursorInner * cursorInner );
 
 
       if( CursorPlayerRelative )
-        origin = CurrentPlayer.transform.position; //.arm.position;
+        origin = CurrentPlayer.arm.position;
       else
         origin = CameraController.transform.position;
       origin.z = 0;
 
-      //float angle = Mathf.Atan2( CursorDelta.y, CursorDelta.x );
-      //float snap = Mathf.Round( angle * 8.0f ) * (1.0f/8.0f);
-      //Vector3 snapped = new Vector3( Mathf.Sin( snap*Mathf.PI ), Mathf.Cos( snap*Mathf.PI ), 0 ) * CursorDelta.magnitude;
-      CursorWorldPos = origin + CursorDelta * CursorFactor;
-      cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPos );
+      if( SnapCursorToAngle )
+      {
+        float angle = Mathf.Atan2( CursorDelta.x, CursorDelta.y ) / Mathf.PI;
+        float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
+        Vector3 snapped = new Vector3( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ), 0 );
+        CursorWorldPos = origin + snapped * SnapCursorDistance;
+        CursorSnapped.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPos );
+        cursor.anchoredPosition = Camera.main.WorldToScreenPoint( origin + CursorDelta * CursorFactor );
+      }
+      else
+      {
+        CursorWorldPos = origin + CursorDelta * CursorFactor;
+        cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPos );
+      }
+
     }
 
     CameraController.CameraLateUpdate();
-
-
   }
 
   public void SpawnPlayer()

@@ -44,6 +44,26 @@ public class SceneScript : MonoBehaviour
     };
     runTimer.Start( tp );
   }
+
+  public void RunRight( float duration )
+  {
+    Global.instance.CurrentPlayer.playerInput = false;
+    TimerParams tp = new TimerParams
+    {
+      unscaledTime = true,
+      repeat = false,
+      duration = duration,
+      UpdateDelegate = delegate ( Timer t )
+      {
+        Global.instance.CurrentPlayer.inputRight = true;
+      },
+      CompleteDelegate = delegate
+      {
+        Global.instance.CurrentPlayer.playerInput = true;
+      }
+    };
+    runTimer.Start( tp );
+  }
 }
 
 public class SceneCity : SceneScript
