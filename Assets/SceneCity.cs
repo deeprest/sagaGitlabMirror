@@ -9,7 +9,13 @@ public class SceneScript : MonoBehaviour
 
   public void ReplaceCameraPoly( PolygonCollider2D poly )
   {
-    Global.instance.CameraBounds = poly;
+    Global.instance.AssignCameraPoly( poly );
+  }
+
+  public void ReplaceCameraPolyEncompass( PolygonCollider2D poly )
+  {
+    Global.instance.AssignCameraPoly( poly );
+    Global.instance.CameraController.EncompassBounds = true;
   }
 
   Timer runTimer = new Timer();

@@ -86,7 +86,8 @@ public class Global : MonoBehaviour
 
   [Header( "Transient (Assigned at runtime)" )]
   public bool Updating = false;
-  public PolygonCollider2D CameraBounds;
+  public PolygonCollider2D CameraPoly;
+  public Bounds CameraPolyBounds;
   [System.NonSerialized] public SceneScript ss;
   public PlayerController CurrentPlayer;
   [SerializeField] Chopper chopper;
@@ -105,7 +106,7 @@ public class Global : MonoBehaviour
   public Image cursorImage;
   public float cursorOuter = 100;
   public float cursorInner = 50;
-  public Vector3 cursorDelta;
+  public Vector3 CursorDelta;
   public float cursorSensitivity = 1;
   public bool CursorPlayerRelative = true;
   Vector3 aimRaw;
@@ -202,7 +203,7 @@ public class Global : MonoBehaviour
       //yield return new WaitForSecondsRealtime( 1 );
       Updating = true;
       ss = FindObjectOfType<SceneScript>();
-      CameraBounds = ss.sb;
+      AssignCameraPoly( ss.sb );
     }
     else
     {
@@ -274,7 +275,7 @@ public class Global : MonoBehaviour
     ss = FindObjectOfType<SceneScript>();
     if( ss != null )
     {
-      CameraBounds = ss.sb;
+      AssignCameraPoly( ss.sb );
       ss.StartScene();
     }
 
@@ -389,7 +390,7 @@ public class Global : MonoBehaviour
 
     if( GameInput.UsingKeyboard )
     {
-      cursorDelta += new Vector3( Input.GetAxis( "Cursor X" ), Input.GetAxis( "Cursor Y" ), 0 ) * cursorSensitivity;
+      CursorDelta += new Vector3( Input.GetAxis( "Cursor X" ), Input.GetAxis( "Cursor Y" ), 0 ) * cursorSensitivity;
     }
     else
     {
@@ -450,22 +451,22 @@ public class Global : MonoBehaviour
     {
       if( GameInput.UsingKeyboard )
       {
-        cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, cursorOuter ), cursorInner );
+        CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
       }
       else
       {
         if( positionalCursor )
         {
-          cursorDelta += aimRaw * positionalCursorSpeed;
-          cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, cursorOuter ), cursorInner );
+          CursorDelta += aimRaw * positionalCursorSpeed;
+          CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
         }
         else
         {
-          cursorDelta = Vector3.Lerp( cursorDelta, aimRaw * cursorOuter, Mathf.Clamp01( gamepadCursorLerp * Time.deltaTime ) );
+          CursorDelta = Vector3.Lerp( CursorDelta, aimRaw * cursorOuter, Mathf.Clamp01( gamepadCursorLerp * Time.deltaTime ) );
         }
       }
 
-      cursor.gameObject.SetActive( cursorDelta.sqrMagnitude > cursorInner * cursorInner );
+      cursor.gameObject.SetActive( CursorDelta.sqrMagnitude > cursorInner * cursorInner );
 
 
       if( CursorPlayerRelative )
@@ -474,7 +475,10 @@ public class Global : MonoBehaviour
         origin = CameraController.transform.position;
       origin.z = 0;
 
-      CursorWorldPos = origin + cursorDelta * CursorFactor;
+      //float angle = Mathf.Atan2( CursorDelta.y, CursorDelta.x );
+      //float snap = Mathf.Round( angle * 8.0f ) * (1.0f/8.0f);
+      //Vector3 snapped = new Vector3( Mathf.Sin( snap*Mathf.PI ), Mathf.Cos( snap*Mathf.PI ), 0 ) * CursorDelta.magnitude;
+      CursorWorldPos = origin + CursorDelta * CursorFactor;
       cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPos );
     }
 
@@ -775,6 +779,16 @@ public class Global : MonoBehaviour
     } );
   }
 
+
+
+  public void AssignCameraPoly( PolygonCollider2D poly )
+  {
+    CameraPoly = poly;
+    // camera poly bounds points are local to polygon
+    CameraPolyBounds = new Bounds();
+    foreach( var p in CameraPoly.points )
+      CameraPolyBounds.Encapsulate( p );
+  }
 
 
 

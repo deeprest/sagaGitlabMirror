@@ -13,6 +13,9 @@ public class CameraController : MonoBehaviour
   public float SmoothSpeed = 1;
   public float zOffset;
   public float yHalfWidth = 2;
+  // lerp target position
+  Vector3 pos;
+  public bool EncompassBounds = false;
 
   public void LerpTo( GameObject go )
   {
@@ -35,8 +38,6 @@ public class CameraController : MonoBehaviour
     };
   }
 
-  Vector3 pos;
-
   public void CameraLateUpdate()
   {
     if( !lerp.enabled && LookTarget != null )
@@ -58,68 +59,71 @@ public class CameraController : MonoBehaviour
 
       if( CursorInfluence )
       {
-        /*Vector3 stwp = Global.instance.cursor.anchoredPosition;
-        stwp.z = -cam.transform.position.z;
-        pos = Vector3.Lerp( pos, cam.ScreenToWorldPoint( stwp ), cursorAlpha );*/
         pos = Vector3.Lerp( pos, Global.instance.CursorWorldPos, cursorAlpha );
+        pos.z = zOffset;
       }
 
-      // camera polygon bounds
-      // todo Decide whether to adjust the camera zOffset to fit into polygon 
-      // bounds, or allow the offset to change freely and ignore one of the 
-      // clip points (current), which allows the camera to see outside the polygon.
-
-      // todo fix the jump-up-from-bottom snappy camera movement
-      if( Global.instance.CameraBounds != null )
+      if( Global.instance.CameraPoly != null )
       {
         // draw gray lines showing camera rectangle on z=0
-        float xangle = (Mathf.Deg2Rad * Camera.main.fieldOfView * 0.5f) * ((float)Camera.main.pixelWidth / (float)Camera.main.pixelHeight);
-        float hh = Mathf.Tan( Mathf.Deg2Rad * Camera.main.fieldOfView * 0.5f ) * -transform.position.z;
+        float yangle = Mathf.Deg2Rad * Camera.main.fieldOfView * 0.5f;
+        float hh = Mathf.Tan( yangle ) * -transform.position.z;
+        float xangle = yangle * ((float)Camera.main.pixelWidth / (float)Camera.main.pixelHeight);
         float hw = Mathf.Tan( xangle ) * -transform.position.z;
 
-        Vector3 cp3 = transform.position;
-        Debug.DrawLine( new Vector3( -hw, -hh, 0 ) + cp3, new Vector3( -hw, hh, 0 ) + cp3, Color.blue );
-        Debug.DrawLine( new Vector3( -hw, hh, 0 ) + cp3, new Vector3( hw, hh, 0 ) + cp3, Color.blue );
-        Debug.DrawLine( new Vector3( hw, hh, 0 ) + cp3, new Vector3( hw, -hh, 0 ) + cp3, Color.blue );
-        Debug.DrawLine( new Vector3( hw, -hh, 0 ) + cp3, new Vector3( -hw, -hh, 0 ) + cp3, Color.blue );
-
         Vector2 UL = (Vector2)pos + Vector2.left * hw + Vector2.up * hh;
-        if( ClipToInsidePolygon2D( Global.instance.CameraBounds, ref UL ) )
+        if( ClipToInsidePolygon2D( Global.instance.CameraPoly, ref UL ) )
         {
           if( pos.y > UL.y - hh ) pos.y = UL.y - hh;
           if( pos.x < UL.x + hw ) pos.x = UL.x + hw;
         }
 
         Vector2 UR = (Vector2)pos + Vector2.right * hw + Vector2.up * hh;
-        if( ClipToInsidePolygon2D( Global.instance.CameraBounds, ref UR ) )
+        if( ClipToInsidePolygon2D( Global.instance.CameraPoly, ref UR ) )
         {
           if( pos.y > UR.y - hh ) pos.y = UR.y - hh;
           if( pos.x > UR.x - hw ) pos.x = UR.x - hw;
         }
 
         Vector2 LL = (Vector2)pos + Vector2.left * hw + Vector2.down * hh;
-        if( ClipToInsidePolygon2D( Global.instance.CameraBounds, ref LL ) )
+        if( ClipToInsidePolygon2D( Global.instance.CameraPoly, ref LL ) )
         {
           if( pos.y < LL.y + hh ) pos.y = LL.y + hh;
           if( pos.x < LL.x + hw ) pos.x = LL.x + hw;
         }
 
         Vector2 LR = (Vector2)pos + Vector2.right * hw + Vector2.down * hh;
-        if( ClipToInsidePolygon2D( Global.instance.CameraBounds, ref LR ) )
+        if( ClipToInsidePolygon2D( Global.instance.CameraPoly, ref LR ) )
         {
           if( pos.y < LR.y + hh ) pos.y = LR.y + hh;
           if( pos.x > LR.x - hw ) pos.x = LR.x - hw;
         }
 
+#if UNITY_EDITOR
+        Vector3 cp3 = transform.position;
+        Debug.DrawLine( new Vector3( -hw, -hh, 0 ) + cp3, new Vector3( -hw, hh, 0 ) + cp3, Color.blue );
+        Debug.DrawLine( new Vector3( -hw, hh, 0 ) + cp3, new Vector3( hw, hh, 0 ) + cp3, Color.blue );
+        Debug.DrawLine( new Vector3( hw, hh, 0 ) + cp3, new Vector3( hw, -hh, 0 ) + cp3, Color.blue );
+        Debug.DrawLine( new Vector3( hw, -hh, 0 ) + cp3, new Vector3( -hw, -hh, 0 ) + cp3, Color.blue );
         cp3 = pos;
         Debug.DrawLine( new Vector3( -hw, -hh, 0 ) + cp3, new Vector3( -hw, hh, 0 ) + cp3, Color.gray );
         Debug.DrawLine( new Vector3( -hw, hh, 0 ) + cp3, new Vector3( hw, hh, 0 ) + cp3, Color.gray );
         Debug.DrawLine( new Vector3( hw, hh, 0 ) + cp3, new Vector3( hw, -hh, 0 ) + cp3, Color.gray );
         Debug.DrawLine( new Vector3( hw, -hh, 0 ) + cp3, new Vector3( -hw, -hh, 0 ) + cp3, Color.gray );
+#endif
+        if( EncompassBounds )
+        {
+          pos.x = Global.instance.CameraPoly.transform.position.x + Global.instance.CameraPolyBounds.center.x;
+          pos.y = Global.instance.CameraPoly.transform.position.y + Global.instance.CameraPolyBounds.center.y;
+          Bounds bounds = Global.instance.CameraPolyBounds; 
+          pos.z = -Mathf.Max( bounds.extents.x / Mathf.Sin( xangle ), bounds.extents.y / Mathf.Sin( yangle ) );
+          Debug.DrawLine( new Vector3( bounds.min.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.max.y ), Color.yellow );
+          Debug.DrawLine( new Vector3( bounds.min.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.max.y ), Color.yellow );
+          Debug.DrawLine( new Vector3( bounds.max.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.min.y ), Color.yellow );
+          Debug.DrawLine( new Vector3( bounds.max.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.min.y ), Color.yellow );
+        }
       }
     }
-
-    pos.z = zOffset;
 
     if( lerpAlpha > 0 )
       transform.position = Vector3.Lerp( transform.position, pos, Mathf.Clamp01( lerpAlpha * Time.deltaTime ) );
