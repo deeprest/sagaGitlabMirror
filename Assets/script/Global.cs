@@ -3,11 +3,15 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.AI;
+using LitJson;
+using Ionic.Zip;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -153,6 +157,7 @@ public class Global : MonoBehaviour
   {
     IsQuiting = true;
     // do pre-quit stuff here
+    Global.instance.WriteSettings();
     return true;
   }
 
@@ -174,6 +179,9 @@ public class Global : MonoBehaviour
     {
       Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
     };
+
+    InitializeSettings();
+    ReadSettings();
 
     StartCoroutine( InitializeRoutine() );
   }
@@ -384,10 +392,10 @@ public class Global : MonoBehaviour
     }
     if( Input.GetKeyDown( KeyCode.Escape ) )
     {
-      if( Cursor.lockState == CursorLockMode.Locked )
-        Cursor.lockState = CursorLockMode.None;
+      if( UnityEngine.Cursor.lockState == CursorLockMode.Locked )
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
       else
-        Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
     }
 #endif
     if( Input.GetKeyDown( KeyCode.Return ) )
@@ -405,14 +413,14 @@ public class Global : MonoBehaviour
     }
     else
     {
-      Vector3 raw = new Vector3( Input.GetAxisRaw( GameInput.icsCurrent.axisMap["ShootX"] ), -Input.GetAxisRaw( GameInput.icsCurrent.axisMap["ShootY"] ), 0 );
+      Vector3 raw = new Vector3( GameInput.GetAxisRaw( "AimX" ), -GameInput.GetAxisRaw( "AimY" ), 0 );
       if( raw.sqrMagnitude > deadZone * deadZone )
         aimRaw = raw;
       else
         aimRaw = Vector3.zero;
     }
 
-    if( Input.GetButtonUp( "Menu" ) )
+    if( GameInput.GetKeyUp( "Menu" ) )
     {
       ShowMenu( !MenuShowing );
 #if UNITY_STANDALONE_LINUX
@@ -436,10 +444,6 @@ public class Global : MonoBehaviour
     H += colorShiftSpeed * Time.unscaledDeltaTime;
     shiftyColor = Color.HSVToRGB( H, 1, 1 );
     shifty.color = shiftyColor;
-
-
-
-
   }
 
 
@@ -701,6 +705,28 @@ public class Global : MonoBehaviour
     DestructionList.Add( go );
   }
 
+  public GameData gameData;
+  public Dictionary<string, GameObject> ResourceLookup = new Dictionary<string, GameObject>();
+
+  public GameObject Spawn( string resourceName, Vector3 position, Quaternion rotation, Transform parent = null, bool limit = true, bool initialize = true )
+  {
+    // allow the lookup to check the name replacement table
+    GameObject prefab = null;
+    if( ResourceLookup.ContainsKey( resourceName ) )
+    {
+      prefab = ResourceLookup[resourceName];
+    }
+    else
+    if( gameData.replacements.ContainsKey( resourceName ) )
+    {
+      if( ResourceLookup.ContainsKey( gameData.replacements[resourceName] ) )
+        prefab = ResourceLookup[gameData.replacements[resourceName]];
+    }
+    if( prefab != null )
+      return Spawn( prefab, position, rotation, parent, limit, initialize );
+    return null;
+  }
+
   public GameObject Spawn( GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null, bool limit = true, bool initialize = true )
   {
     if( limit )
@@ -858,5 +884,180 @@ public class Global : MonoBehaviour
   }
 
 
+
+  public static string[] persistentFilenames = new string[] {
+    /*"settings.json",
+    "characters.json",
+    "events.json"*/
+  };
+  string settingsPath { get { return Application.persistentDataPath + "/" + "settings.json"; } }
+  public Dictionary<string, FloatValue> FloatSetting = new Dictionary<string, FloatValue>();
+  public Dictionary<string, BoolValue> BoolSetting = new Dictionary<string, BoolValue>();
+
+  public GameObject ToggleTemplate;
+  public GameObject SliderTemplate;
+
+  void CreateBoolSetting( string key, bool value, System.Action<bool> onChange )
+  {
+    BoolValue bv;
+    if( !BoolSetting.TryGetValue( key, out bv ) )
+    {
+      GameObject go = Instantiate( ToggleTemplate, ToggleTemplate.transform.parent );
+      SettingUI sss = go.GetComponent<SettingUI>();
+      sss.isBool = true;
+      bv = sss.boolValue;
+      bv.name = key;
+      bv.Init();
+      BoolSetting.Add( key, bv );
+    }
+    bv.onValueChanged = onChange;
+    bv.Value = value;
+  }
+
+  void CreateFloatSetting( string key, float value, System.Action<float> onChange )
+  {
+    FloatValue bv;
+    if( !FloatSetting.TryGetValue( key, out bv ) )
+    {
+      GameObject go = Instantiate( SliderTemplate, SliderTemplate.transform.parent );
+      SettingUI sss = go.GetComponent<SettingUI>();
+      sss.isInteger = true;
+      bv = sss.intValue;
+      bv.name = key;
+      bv.Init();
+      FloatSetting.Add( key, bv );
+    }
+    bv.onValueChanged = onChange;
+    bv.Value = value;
+  }
+
+  void InitializeSettings()
+  {
+    SettingUI[] settings = MainMenu.GetComponentsInChildren<SettingUI>( true );
+    // use existing UI objects, if they exist
+    foreach( var s in settings )
+    {
+      if( s.gameObject.GetInstanceID() == ToggleTemplate.GetInstanceID() || s.gameObject.GetInstanceID() == SliderTemplate.GetInstanceID() )
+        continue;
+      if( s.isInteger )
+      {
+        s.intValue.Init();
+        FloatSetting.Add( s.intValue.name, s.intValue );
+      }
+      if( s.isBool )
+      {
+        s.boolValue.Init();
+        BoolSetting.Add( s.boolValue.name, s.boolValue );
+      }
+    }
+
+    CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
+    CreateBoolSetting( "CursorInfluence", true, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
+    CreateBoolSetting( "AimSnap", true, delegate ( bool value ) { AimSnap = value; } );
+
+    CreateFloatSetting( "CursorOuterRadius", 150, delegate ( float value ) { cursorOuter = value; } );
+    CreateFloatSetting( "CameraLerpAlpha", 50, delegate ( float value ) { CameraController.lerpAlpha = value; } );
+    CreateFloatSetting( "ThumbstickDeadzone", 10, delegate ( float value ) { deadZone = value; } );
+
+    ToggleTemplate.gameObject.SetActive( false );
+    SliderTemplate.gameObject.SetActive( false );
+  }
+
+  void ReadSettings()
+  {
+    JsonData json = new JsonData();
+    if( File.Exists( settingsPath ) )
+    {
+      string gameJson = File.ReadAllText( settingsPath );
+      if( gameJson.Length > 0 )
+      {
+        JsonReader reader = new JsonReader( gameJson );
+        json = JsonMapper.ToObject( reader );
+      }
+    }
+
+    foreach( var pair in BoolSetting )
+      pair.Value.Value = JsonUtil.Read<bool>( pair.Value.Value, json, "settings", pair.Key );
+
+    foreach( var pair in FloatSetting )
+      pair.Value.Value = JsonUtil.Read<float>( pair.Value.Value, json, "settings", pair.Key );
+  }
+
+  void WriteSettings()
+  {
+    JsonWriter writer = new JsonWriter();
+    writer.PrettyPrint = true;
+    writer.WriteObjectStart(); // root
+
+    writer.WritePropertyName( "settings" );
+    writer.WriteObjectStart();
+    foreach( var pair in FloatSetting )
+    {
+      writer.WritePropertyName( pair.Key );
+      writer.Write( pair.Value.Value, "0.##" );
+    }
+    foreach( var pair in BoolSetting )
+    {
+      writer.WritePropertyName( pair.Key );
+      writer.Write( pair.Value.Value );
+    }
+    writer.WriteObjectEnd();
+    /*
+    writer.WritePropertyName( "world" );
+    writer.WriteObjectStart(); // world
+    writer.WritePropertyName( "limit" );
+    writer.WriteObjectStart();
+    writer.WritePropertyName( "character" );
+    writer.Write( Character.Limit.Upper );
+    writer.WritePropertyName( "deadbody" );
+    writer.Write( Deadbody.Limit.Upper );
+    writer.WritePropertyName( "Carry" );
+    writer.Write( CarryObject.Limit.Upper );
+    writer.WritePropertyName( "food" );
+    writer.Write( Food.Limit.Upper );
+    writer.WriteObjectEnd();
+    writer.WriteObjectEnd(); // world end
+
+    if( playerCharacter != null )
+    {
+      SerializedObject so = playerCharacter.GetComponent<SerializedObject>();
+      writer.WritePropertyName( "player" );
+      writer.WriteObjectStart(); // player
+      writer.WritePropertyName( "id" );
+      writer.Write( so.id );
+      writer.WriteObjectEnd(); // player end
+    }
+    */
+    writer.WriteObjectEnd(); // root end
+    File.WriteAllText( settingsPath, writer.ToString() );
+  }
+
+
+  void VerifyPersistentData()
+  {
+    // ensure that all persistent data files exist. IF not, unpack from zip in build.
+    bool unpack = false;
+    foreach( var filename in persistentFilenames )
+      if( !File.Exists( Application.persistentDataPath + "/" + filename ) )
+        unpack = true;
+    if( unpack )
+    {
+      string zipPath = Application.temporaryCachePath + "/persistent.zip";
+      TextAsset zipfile = Resources.Load( "persistent" ) as TextAsset;
+      if( zipfile != null )
+      {
+        File.WriteAllBytes( zipPath, zipfile.bytes );
+        Debug.Log( "Unzipping persistent: " + zipPath );
+        using( ZipFile zip = ZipFile.Read( zipPath ) )
+        {
+          zip.ExtractAll( Application.persistentDataPath, ExtractExistingFileAction.OverwriteSilently );
+        }
+      }
+      else
+      {
+        Debug.LogWarning( "no level directory or zip file in build: " + name );
+      }
+    }
+  }
 
 }

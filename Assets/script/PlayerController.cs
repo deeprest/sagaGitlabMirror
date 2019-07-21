@@ -407,8 +407,8 @@ public class PlayerController : Character, IDamage
     arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );
 
-
-    if( GameInput.UsingKeyboard )
+    shoot = cursorDelta;
+    /*if( GameInput.UsingKeyboard )
     {
       shoot = cursorDelta;
     }
@@ -427,9 +427,9 @@ public class PlayerController : Character, IDamage
         // todo change arm sprite
         shoot = Vector3.right;
       }
-    }
+    }*/
 
-    if( GameInput.GetKey( "Fire" ) )
+    if( GameInput.GetKey( "Fire" ) || (!GameInput.UsingKeyboard && GameInput.GetAxisRaw("Fire") > 0) )
     {
       if( !shootRepeatTimer.IsActive )
       {

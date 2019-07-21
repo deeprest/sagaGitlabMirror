@@ -75,6 +75,7 @@ public class GameInput
   public static void SetDefaultControls()
   {
     // keyboard
+    icsKeyboard.keyMap["Menu"] = KeyCode.M;
     icsKeyboard.keyMap["MoveRight"] = KeyCode.D;
     icsKeyboard.keyMap["MoveLeft"] = KeyCode.A;
     icsKeyboard.keyMap["Jump"] = KeyCode.W;
@@ -83,21 +84,29 @@ public class GameInput
     icsKeyboard.keyMap["Fire"] = KeyCode.Mouse0;
     icsKeyboard.keyMap["graphook"] = KeyCode.Mouse1;
     icsKeyboard.keyMap["Pickup"] = KeyCode.E;
-
     icsKeyboard.keyMap["Charge"] = KeyCode.Mouse0;
+    icsKeyboard.keyMap["ToggleAutoAim"] = KeyCode.R;
+
+    icsKeyboard.axisMap["Fire"] = "Joy0Axis20";
+
 
     // gamepad
+    icsGamepad.keyMap["Menu"] = KeyCode.JoystickButton15;
     icsGamepad.keyMap["MoveRight"] = KeyCode.JoystickButton8;
     icsGamepad.keyMap["MoveLeft"] = KeyCode.JoystickButton7;
     icsGamepad.keyMap["Jump"] = KeyCode.JoystickButton14;
     icsGamepad.keyMap["Down"] = KeyCode.JoystickButton0;
     icsGamepad.keyMap["Dash"] = KeyCode.JoystickButton13;
     icsGamepad.keyMap["Fire"] = KeyCode.None;
+    icsGamepad.keyMap["Pickup"] = KeyCode.JoystickButton16;
+    icsGamepad.keyMap["Charge"] = KeyCode.JoystickButton17;
     icsGamepad.keyMap["graphook"] = KeyCode.None;
-    icsGamepad.keyMap["Pickup"] = KeyCode.None;
-    icsGamepad.keyMap["Charge"] = KeyCode.None;
-    icsGamepad.axisMap["ShootX"] = "Joy0Axis2";
-    icsGamepad.axisMap["ShootY"] = "Joy0Axis3";
+    icsGamepad.keyMap["ToggleAutoAim"] = KeyCode.JoystickButton18;
+
+    icsGamepad.axisMap["Fire"] = "Joy0Axis5";
+    icsGamepad.axisMap["AimX"] = "Joy0Axis2";
+    icsGamepad.axisMap["AimY"] = "Joy0Axis3";
+    icsGamepad.axisMap["graphook"] = "Joy0Axis4";
 
   }
 
