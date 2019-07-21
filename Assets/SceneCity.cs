@@ -71,7 +71,7 @@ public class SceneCity : SceneScript
 
   public override void StartScene()
   {
-    if( Application.isEditor && !Global.instance.SimulatePlayer )
+    if( Application.isEditor && !Global.instance.SimulatePlayer && Global.instance.CurrentPlayer == null )
     {
       //Global.instance.SpawnPlayer();
       return;

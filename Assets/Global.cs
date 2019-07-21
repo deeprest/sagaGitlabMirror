@@ -114,7 +114,7 @@ public class Global : MonoBehaviour
   public bool positionalCursor = true;
   public float positionalCursorSpeed = 30;
   public float cursorScale = 4;
-  public bool SnapCursorToAngle;
+  public bool AimSnap;
   public float SnapAngleDivide = 8;
   public float SnapCursorDistance = 1;
   public RectTransform CursorSnapped;
@@ -485,12 +485,11 @@ public class Global : MonoBehaviour
         origin = CameraController.transform.position;
       origin.z = 0;
 
-      if( SnapCursorToAngle )
+      if( AimSnap )
       {
         // set cursor
         Cursor.gameObject.SetActive( true );
         CursorSnapped.gameObject.SetActive( true );
-        CursorAutoAim.gameObject.SetActive( false );
 
         float angle = Mathf.Atan2( CursorDelta.x, CursorDelta.y ) / Mathf.PI;
         float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
@@ -500,12 +499,20 @@ public class Global : MonoBehaviour
         CursorWorldPosition = origin + CursorDelta * CursorFactor;
         Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
       }
-      else if( AutoAim )
+      else
       {
         // set cursor
         Cursor.gameObject.SetActive( true );
         CursorSnapped.gameObject.SetActive( false );
 
+        AimPosition = origin + CursorDelta * CursorFactor;
+        CursorWorldPosition = AimPosition;
+        Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
+      }
+
+
+      if( AutoAim )
+      {
         CursorWorldPosition = origin + CursorDelta * CursorFactor;
         RaycastHit2D[] hits = Physics2D.CircleCastAll( CurrentPlayer.transform.position, AutoAimCircleRadius, CursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
         float distance = Mathf.Infinity;
@@ -523,7 +530,6 @@ public class Global : MonoBehaviour
         if( closest == null )
         {
           CursorAutoAim.gameObject.SetActive( false );
-          AimPosition = origin + CursorDelta * CursorFactor;
         }
         else
         {
@@ -538,14 +544,7 @@ public class Global : MonoBehaviour
       }
       else
       {
-        // set cursor
-        Cursor.gameObject.SetActive( true );
-        CursorSnapped.gameObject.SetActive( false );
         CursorAutoAim.gameObject.SetActive( false );
-
-        AimPosition = origin + CursorDelta * CursorFactor;
-        CursorWorldPosition = AimPosition;
-        Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
       }
 
     }
