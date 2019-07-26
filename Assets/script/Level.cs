@@ -61,14 +61,19 @@ public class Level : MonoBehaviour
   public void Generate()
   {
     DeleteNodes();
-    gos = new List<GameObject>( Resources.LoadAll<GameObject>( "LevelFreeNode" ) );
-
-    List<NodeLink> links = new List<NodeLink>();
 
     Random.InitState( seed );
+    GenerateChain( "street bg", false, 3 );
+    GenerateChain( "street", true );
+  }
+
+  void GenerateChain( string folder, bool overlapCheck = true, float zDepth = 0 )
+  {
+    gos = new List<GameObject>( Resources.LoadAll<GameObject>( "LevelFreeNode/" + folder ) );
+    List<NodeLink> links = new List<NodeLink>();
 
     GameObject firstPrefab = gos[0];
-    GameObject first = Instantiate( firstPrefab, new Vector3( 0, Random.Range( 10, 30 ), 0 ), Quaternion.identity );
+    GameObject first = Instantiate( firstPrefab, new Vector3( 0, Random.Range( 10, 20 ), zDepth ), Quaternion.identity );
     first.name = firstPrefab.name;
     gens.Add( first );
     links.AddRange( first.GetComponentsInChildren<NodeLink>() );
@@ -83,46 +88,59 @@ public class Level : MonoBehaviour
           continue;
         GameObject prefab = link.AllowedToLink[Random.Range( 0, link.AllowedToLink.Length )];
 
-        Bounds bounds = prefab.GetComponent<PrefabAABB>().bounds;
-        LineSegment seg;
-        seg.a = link.transform.position + bounds.min;
-        seg.b = link.transform.position + bounds.max;
-        debugSegments.Add( seg );
-
-        Collider2D[] overlap = Physics2D.OverlapAreaAll( seg.a, seg.b );
-        Collider2D[] ignore = link.transform.root.GetComponentsInChildren<Collider2D>();
-        List<Collider2D> conflict = new List<Collider2D>( overlap );
-        for( int c = 0; c < overlap.Length; c++ )
+        if( overlapCheck )
         {
-          for( int g = 0; g < ignore.Length; g++ )
+          Bounds bounds = prefab.GetComponent<PrefabAABB>().bounds;
+          LineSegment seg;
+          seg.a = link.transform.position + bounds.min;
+          seg.b = link.transform.position + bounds.max;
+          debugSegments.Add( seg );
+
+          Collider2D[] overlap = Physics2D.OverlapAreaAll( seg.a, seg.b );
+          Collider2D[] ignore = link.transform.root.GetComponentsInChildren<Collider2D>();
+          List<Collider2D> conflict = new List<Collider2D>( overlap );
+          for( int c = 0; c < overlap.Length; c++ )
           {
-            if( overlap[c] == ignore[g] )
+            for( int g = 0; g < ignore.Length; g++ )
             {
-              conflict.Remove( ignore[g] );
-              break;
+              if( overlap[c] == ignore[g] )
+              {
+                conflict.Remove( ignore[g] );
+                break;
+              }
             }
           }
-        }
 
-        if( conflict.Count == 0 )
+          if( conflict.Count == 0 )
+          {
+            GameObject go = Instantiate( prefab, link.transform.position, Quaternion.identity );
+            go.name = prefab.name;
+            gens.Add( go );
+            newlinks.AddRange( go.GetComponentsInChildren<NodeLink>() );
+          }
+          else
+          {
+            string conflictnames = "";
+            foreach( var cn in conflict )
+              conflictnames += cn.name + " ";
+            Debug.Log( "prefab " + prefab.name + " will not spawn due to overlap with " + conflictnames, conflict[0] );
+          }
+        }
+        else
         {
           GameObject go = Instantiate( prefab, link.transform.position, Quaternion.identity );
           go.name = prefab.name;
           gens.Add( go );
           newlinks.AddRange( go.GetComponentsInChildren<NodeLink>() );
         }
-        else
-        {
-          string conflictnames = "";
-          foreach( var cn in conflict )
-            conflictnames += cn.name + " ";
-          Debug.Log( "prefab " + prefab.name + " will not spawn due to overlap with " + conflictnames, conflict[0] );
-        }
         removelinks.Add( link );
       }
       links.AddRange( newlinks );
       foreach( var ugh in removelinks )
+      {
+        ugh.GetComponent<SpriteRenderer>().enabled = false;
         links.Remove( ugh );
+      }
     }
   }
 
@@ -177,7 +195,7 @@ public class Level : MonoBehaviour
   Color32[] structureData;
   Color32[] structureData2;
 
-  [Header("Marching Squares")]
+  [Header( "Marching Squares" )]
   public MarchingSquareData building;
   //public MarchingSquareData wall;
   //public MarchingSquareData door;
