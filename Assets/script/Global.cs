@@ -91,7 +91,7 @@ public class Global : MonoBehaviour
   [Header( "Transient (Assigned at runtime)" )]
   public bool Updating = false;
   public PolygonCollider2D CameraPoly;
-  public Bounds CameraPolyBounds;
+  public UnityEngine.Bounds CameraPolyBounds;
   [System.NonSerialized] public SceneScript ss;
   public PlayerController CurrentPlayer;
   [SerializeField] Chopper chopper;
@@ -182,6 +182,10 @@ public class Global : MonoBehaviour
 
     InitializeSettings();
     ReadSettings();
+
+    GameObject[] res = Resources.LoadAll<GameObject>( "" );
+    foreach( GameObject go in res )
+      ResourceLookup.Add( go.name, go );
 
     StartCoroutine( InitializeRoutine() );
   }
@@ -878,7 +882,7 @@ public class Global : MonoBehaviour
   {
     CameraPoly = poly;
     // camera poly bounds points are local to polygon
-    CameraPolyBounds = new Bounds();
+    CameraPolyBounds = new UnityEngine.Bounds();
     foreach( var p in CameraPoly.points )
       CameraPolyBounds.Encapsulate( p );
   }
@@ -1002,32 +1006,7 @@ public class Global : MonoBehaviour
       writer.Write( pair.Value.Value );
     }
     writer.WriteObjectEnd();
-    /*
-    writer.WritePropertyName( "world" );
-    writer.WriteObjectStart(); // world
-    writer.WritePropertyName( "limit" );
-    writer.WriteObjectStart();
-    writer.WritePropertyName( "character" );
-    writer.Write( Character.Limit.Upper );
-    writer.WritePropertyName( "deadbody" );
-    writer.Write( Deadbody.Limit.Upper );
-    writer.WritePropertyName( "Carry" );
-    writer.Write( CarryObject.Limit.Upper );
-    writer.WritePropertyName( "food" );
-    writer.Write( Food.Limit.Upper );
-    writer.WriteObjectEnd();
-    writer.WriteObjectEnd(); // world end
-
-    if( playerCharacter != null )
-    {
-      SerializedObject so = playerCharacter.GetComponent<SerializedObject>();
-      writer.WritePropertyName( "player" );
-      writer.WriteObjectStart(); // player
-      writer.WritePropertyName( "id" );
-      writer.Write( so.id );
-      writer.WriteObjectEnd(); // player end
-    }
-    */
+   
     writer.WriteObjectEnd(); // root end
     File.WriteAllText( settingsPath, writer.ToString() );
   }

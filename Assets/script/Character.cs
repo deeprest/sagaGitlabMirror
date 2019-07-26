@@ -247,11 +247,6 @@ public class Character : MonoBehaviour, IDamage
   public List<Vector3>.Enumerator waypointEnu;
   public List<Vector3> waypoint = new List<Vector3>();
   public List<LineSegment> debugPath = new List<LineSegment>();
-  public struct LineSegment
-  {
-    public Vector3 a;
-    public Vector3 b;
-  }
   int AgentTypeID;
   public string AgentTypeName = "Small";
   public Vector2 WaypointVector;

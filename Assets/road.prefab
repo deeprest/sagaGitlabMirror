@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4947372208737770}
   - component: {fileID: 61218374397043906}
   - component: {fileID: 212351754831142728}
+  - component: {fileID: 6485841106593464555}
   m_Layer: 0
   m_Name: road
   m_TagString: Untagged
@@ -45,18 +46,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.00046604872, y: -0.62491196}
+  m_Offset: {x: 0, y: -0.74}
   m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
+    border: {x: 0, y: 0, z: 0, w: 0.265625}
     pivot: {x: 0.5, y: 1}
     oldSize: {x: 1.5, y: 1}
-    newSize: {x: 0.78125, y: 0.78125}
+    newSize: {x: 10, y: 0.78125}
     adaptiveTilingThreshold: 0.5
-    drawMode: 0
+    drawMode: 2
     adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_AutoTiling: 1
   serializedVersion: 2
-  m_Size: {x: 1.4981295, y: 0.74669707}
+  m_Size: {x: 1.5, y: 1}
   m_EdgeRadius: 0
 --- !u!212 &212351754831142728
 SpriteRenderer:
@@ -99,10 +100,26 @@ SpriteRenderer:
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 0.78125, y: 0.78125}
+  m_DrawMode: 2
+  m_Size: {x: 10, y: 0.78125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!208 &6485841106593464555
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1425003200085648}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5, y: 0.39100003, z: 0.1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: -0.39100003, z: 0}
+  m_TimeToStationary: 0.5

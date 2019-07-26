@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 static class Util
 {
 /*  public static void Log(string message, [System.Runtime.CompilerServices.CallerFilePath] string filePath = "", [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
@@ -32,4 +33,11 @@ static class Util
   {
     return new Vector2( (Vector2.Dot( a, b ) / (b.x * b.x + b.y * b.y)) * b.x, (Vector2.Dot( a, b ) / (b.x * b.x + b.y * b.y)) * b.y );
   }
+}
+
+[System.Serializable]
+public struct LineSegment
+{
+  public Vector3 a;
+  public Vector3 b;
 }

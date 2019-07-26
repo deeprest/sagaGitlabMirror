@@ -115,7 +115,7 @@ public class CameraController : MonoBehaviour
         {
           pos.x = Global.instance.CameraPoly.transform.position.x + Global.instance.CameraPolyBounds.center.x;
           pos.y = Global.instance.CameraPoly.transform.position.y + Global.instance.CameraPolyBounds.center.y;
-          Bounds bounds = Global.instance.CameraPolyBounds; 
+          UnityEngine.Bounds bounds = Global.instance.CameraPolyBounds; 
           pos.z = -Mathf.Max( bounds.extents.x / Mathf.Sin( xangle ), bounds.extents.y / Mathf.Sin( yangle ) );
           Debug.DrawLine( new Vector3( bounds.min.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.max.y ), Color.yellow );
           Debug.DrawLine( new Vector3( bounds.min.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.max.y ), Color.yellow );

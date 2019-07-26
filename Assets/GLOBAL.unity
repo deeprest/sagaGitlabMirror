@@ -178,6 +178,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GLOBAL
       objectReference: {fileID: 0}
+    - target: {fileID: 6393837748405022823, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4364495294273822, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -381,11 +386,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 280
-      objectReference: {fileID: 0}
-    - target: {fileID: 6393837748405022823, guid: a303ea602a9de415ea4561c7d9c43d4e,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1051676327049251238, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
@@ -1132,6 +1132,11 @@ PrefabInstance:
     - target: {fileID: 2097324198, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
       propertyPath: m_MinWidth
       value: 130
+      objectReference: {fileID: 0}
+    - target: {fileID: 114329875613515752, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 3}
+      propertyPath: SimulatePlayer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
