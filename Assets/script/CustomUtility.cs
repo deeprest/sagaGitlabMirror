@@ -257,6 +257,7 @@ public class CustomUtility : EditorWindow
       File.WriteAllText( Application.dataPath + "/../todo", todo );
     }
 
+    /*
     GUILayout.Space( 10 );
     GUILayout.Label( "Level Generation", EditorStyles.boldLabel );
     max = EditorGUI.IntField( EditorGUILayout.GetControlRect(), max );
@@ -264,13 +265,13 @@ public class CustomUtility : EditorWindow
     {
       DeleteAllNodes();
 
-      /*gos = new List<GameObject>();
-      string[] guids = AssetDatabase.FindAssets( "t:GameObject", new string[] { "Assets/LevelFreeNode" } );
-      foreach( string guid in guids )
-      {
-        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>( AssetDatabase.GUIDToAssetPath( guid ) );
-        gos.Add( prefab );
-      }*/
+      //gos = new List<GameObject>();
+      //string[] guids = AssetDatabase.FindAssets( "t:GameObject", new string[] { "Assets/LevelFreeNode" } );
+      //foreach( string guid in guids )
+      //{
+      //  GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>( AssetDatabase.GUIDToAssetPath( guid ) );
+      //  gos.Add( prefab );
+      //}
 
       gos = new List<GameObject>( Resources.LoadAll<GameObject>( "LevelFreeNode" ) );
       int columns = dimension.x;
@@ -284,22 +285,22 @@ public class CustomUtility : EditorWindow
 
       StartJob( "Generating...", max, delegate ()
       {
-        /*Column column = new Column();
-        level.columns.Add( column );
-        column.xindex = pos.x;
+        //Column column = new Column();
+        //level.columns.Add( column );
+        //column.xindex = pos.x;
 
-        int height = Mathf.CeilToInt( Random.Range( 1, dimension.y ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
-        for( int i = 0; i < height; i++ )
-        {
-          GameObject go = Instantiate( gos[Random.Range( 0, gos.Count )] );
-          gens.Add( go );
-          go.transform.position = new Vector3( pos.x * cellsize.x, pos.y * cellsize.y, 0 );
-          LevelNode node = go.GetComponent<LevelNode>();
-          column.nodes.Add( node );
-          pos.y++;
-        }
-        pos.x++;
-        pos.y = 0;*/
+        //int height = Mathf.CeilToInt( Random.Range( 1, dimension.y ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
+        //for( int i = 0; i < height; i++ )
+        //{
+        //  GameObject go = Instantiate( gos[Random.Range( 0, gos.Count )] );
+        //  gens.Add( go );
+        //  go.transform.position = new Vector3( pos.x * cellsize.x, pos.y * cellsize.y, 0 );
+        //  LevelNode node = go.GetComponent<LevelNode>();
+        //  column.nodes.Add( node );
+        //  pos.y++;
+        //}
+        //pos.x++;
+        //pos.y = 0;
 
         List<NodeLink> newlinks = new List<NodeLink>();
         List<NodeLink> removelinks = new List<NodeLink>();
@@ -350,7 +351,7 @@ public class CustomUtility : EditorWindow
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Delete All Nodes" ) )
       DeleteAllNodes();
 
-
+  */
 
   }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.Profiling;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -43,6 +44,7 @@ public class Level : MonoBehaviour
   // marching squares
   public Vector2Int cellsize = new Vector2Int( 10, 10 );
   public List<Column> columns = new List<Column>();
+  public int GroundY = 2;
 
   // nodelinks
   List<GameObject> gens = new List<GameObject>();
@@ -51,6 +53,12 @@ public class Level : MonoBehaviour
   List<LineSegment> debugSegments = new List<LineSegment>();
   public int seed;
 
+  private void Awake()
+  {
+    if( Application.isEditor )
+      EditorApplication.playModeStateChanged += EditorApplication_PlayModeStateChanged;
+    Generate();
+  }
 
   private void Update()
   {
@@ -60,11 +68,31 @@ public class Level : MonoBehaviour
 
   public void Generate()
   {
+    Profiler.BeginSample( "Level Generation" );
+
     DeleteNodes();
 
     Random.InitState( seed );
     GenerateChain( "street bg", false, 3 );
     GenerateChain( "street", true );
+
+    GenerateStructure();
+
+    Profiler.EndSample();
+  }
+
+  void EditorApplication_PlayModeStateChanged( PlayModeStateChange obj )
+  {
+    if( obj == PlayModeStateChange.ExitingEditMode )
+    {
+      print( "exit edit" );
+      DeleteNodes();
+    }
+    if( obj == PlayModeStateChange.ExitingPlayMode )
+    {
+      // restore objects from ids
+      print( "exit play" );
+    }
   }
 
   void GenerateChain( string folder, bool overlapCheck = true, float zDepth = 0 )
@@ -150,6 +178,8 @@ public class Level : MonoBehaviour
     for( int i = 0; i < gens.Count; i++ )
       DestroyImmediate( gens[i] );
     gens.Clear();
+
+    DeleteStructureNodes();
   }
 
   public void GenerateStructure()
@@ -163,8 +193,8 @@ public class Level : MonoBehaviour
       Column column = new Column();
       columns.Add( column );
       column.xindex = pos.x;
-      int height = Mathf.CeilToInt( Random.Range( 1, dimension.y ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
-      for( int y = 1; y < height; y++ )
+      int height = Mathf.CeilToInt( Random.Range( 0, dimension.y ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
+      for( int y = 0; y < height; y++ )
       {
         SetStructureBitOn( pos.x, pos.y, PixelBit.Building );
         pos.y++;
@@ -197,7 +227,7 @@ public class Level : MonoBehaviour
 
   [Header( "Marching Squares" )]
   public MarchingSquareData building;
-  //public MarchingSquareData wall;
+  public MarchingSquareData underground;
   //public MarchingSquareData door;
   List<MarchingSquareData> msd;
 
@@ -272,7 +302,7 @@ public class Level : MonoBehaviour
         if( built.ContainsKey( key ) && built[key] != null )
         {
           for( int i = 0; i < built[key].Count; i++ )
-            GameObject.Destroy( built[key][i] );
+            Destroy( built[key][i] );
           built[key].Clear();
         }
         foreach( var ms in msd )
@@ -321,12 +351,18 @@ public class Level : MonoBehaviour
     }*/
 
 
-    for( int y = oy; y < oy + h && y < dimension.y - 1; y++ )
+    for( int y = oy; y < oy + h && y < dimension.y; y++ )
     {
-      for( int x = ox; x < ox + w && x < dimension.x - 1; x++ )
+      for( int x = ox; x < ox + w && x < dimension.x; x++ )
       {
         int key = x + y * dimension.x;
 
+        int buildingIndex = building.indexBuffer[x, y];
+        if( y <= GroundY )
+          SingleCell( key, x, y, underground.ms.Cells[buildingIndex].bottom, null );
+        else
+          SingleCell( key, x, y, building.ms.Cells[buildingIndex].bottom, null );
+        /*
         foreach( var ms in msd )
         {
           int buildingIndex = ms.indexBuffer[x, y];
@@ -368,7 +404,7 @@ public class Level : MonoBehaviour
     if( bottom != null )
     {
       Vector3 pos = new Vector3( x * cellsize.x, y * cellsize.y, 0 );
-      GameObject go = GameObject.Instantiate( bottom, pos, Quaternion.identity, null );
+      GameObject go = Instantiate( bottom, pos, Quaternion.identity, null );
       if( !built.ContainsKey( key ) )
         built[key] = new List<GameObject>();
       built[key].Add( go );
@@ -376,7 +412,7 @@ public class Level : MonoBehaviour
       //              topPrefab = cell.top[ Random.Range( 0, cell.top.Length - 1 ) ];
       if( top != null )
       {
-        built[key].Add( GameObject.Instantiate( top, pos, Quaternion.identity, null ) );
+        built[key].Add( Instantiate( top, pos, Quaternion.identity, null ) );
       }
 
     }

@@ -115,7 +115,7 @@ public class CameraController : MonoBehaviour
         {
           pos.x = Global.instance.CameraPoly.transform.position.x + Global.instance.CameraPolyBounds.center.x;
           pos.y = Global.instance.CameraPoly.transform.position.y + Global.instance.CameraPolyBounds.center.y;
-          UnityEngine.Bounds bounds = Global.instance.CameraPolyBounds; 
+          UnityEngine.Bounds bounds = Global.instance.CameraPolyBounds;
           pos.z = -Mathf.Max( bounds.extents.x / Mathf.Sin( xangle ), bounds.extents.y / Mathf.Sin( yangle ) );
           Debug.DrawLine( new Vector3( bounds.min.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.max.y ), Color.yellow );
           Debug.DrawLine( new Vector3( bounds.min.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.max.y ), Color.yellow );
@@ -131,7 +131,25 @@ public class CameraController : MonoBehaviour
     else
       transform.position = pos;
 
+    /*if( snapToPixel )
+    {
+      float yangle = Mathf.Deg2Rad * Camera.main.fieldOfView * 0.5f;
+      float worldCameraHeight = 2f * Mathf.Tan( yangle ) * -transform.position.z;
+      float xangle = yangle * ((float)Camera.main.pixelWidth / (float)Camera.main.pixelHeight);
+      float hw = Mathf.Tan( xangle ) * -transform.position.z;
+      pixelSnap = worldCameraHeight / pixelDensity * snapDivide; //(float)cam.pixelHeight;
+      presnap = transform.position.x;
+      transform.position = new Vector3( (Mathf.Floor( transform.position.x / pixelSnap ) + 0.5f) * pixelSnap, (Mathf.Floor( transform.position.y / pixelSnap ) + 0.5f) * pixelSnap, transform.position.z );
+      snapped = transform.position.x;
+    }*/
   }
+
+  public bool snapToPixel = true;
+  const float pixelDensity = 64;
+  public float snapDivide = 1;
+  public float pixelSnap;
+  public float presnap;
+  public float snapped;
 
 
   bool ClipToInsidePolygon2D( PolygonCollider2D poly, ref Vector2 cp )
