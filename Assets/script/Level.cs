@@ -15,8 +15,8 @@ public class LevelEditor : Editor
     Level level = target as Level;
     if( GUI.Button( EditorGUILayout.GetControlRect(), "Generate" ) )
       level.Generate();
-    if( GUI.Button( EditorGUILayout.GetControlRect(), "Delete Nodes" ) )
-      level.DeleteNodes();
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "Destroy" ) )
+      level.DestroyAll();
     DrawDefaultInspector();
   }
 }
@@ -41,10 +41,20 @@ public class Level : MonoBehaviour
 {
   public Vector2Int dimension = new Vector2Int( 1, 1 );
 
+
+  string StructurePath { get { return Application.persistentDataPath + "/" + name + "/" + "structure.png"; } }
+  Texture2D StructureTexture;
+  Dictionary<int, List<GameObject>> built = new Dictionary<int, List<GameObject>>();
+  Color32[] structureData;
+
+  [Header( "Marching Squares" )]
   // marching squares
   public Vector2Int cellsize = new Vector2Int( 10, 10 );
   public List<Column> columns = new List<Column>();
   public int GroundY = 2;
+  public MarchingSquareData building;
+  public MarchingSquareData underground;
+  List<MarchingSquareData> msd;
 
   // nodelinks
   List<GameObject> gens = new List<GameObject>();
@@ -53,11 +63,13 @@ public class Level : MonoBehaviour
   List<LineSegment> debugSegments = new List<LineSegment>();
   public int seed;
 
+  public GameObject spawnPointPrefab;
+
   private void Awake()
   {
-    if( Application.isEditor )
-      EditorApplication.playModeStateChanged += EditorApplication_PlayModeStateChanged;
-    Generate();
+#if UNITY_EDITOR
+    EditorApplication.playModeStateChanged += EditorApplication_PlayModeStateChanged;
+#endif
   }
 
   private void Update()
@@ -70,38 +82,58 @@ public class Level : MonoBehaviour
   {
     Profiler.BeginSample( "Level Generation" );
 
-    DeleteNodes();
-
+    DestroyAll();
     Random.InitState( seed );
-    GenerateChain( "street bg", false, 3 );
-    GenerateChain( "street", true );
 
-    GenerateStructure();
+    InitializeStructure();
+    Vector2Int pos = new Vector2Int( 1, 1 );
+    for( int x = 1; x < dimension.x; x++ )
+    {
+      Column column = new Column();
+      columns.Add( column );
+      column.xindex = pos.x;
+      int height = Mathf.CeilToInt( Random.Range( 0, dimension.y - 1 ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
+      for( int y = 0; y < height; y++ )
+      {
+        SetStructureBitOn( pos.x, pos.y, PixelBit.Building );
+        pos.y++;
+      }
+      pos.x += Random.Range( 1, 4 );
+      pos.y = 1;
+    }
+    UpdateStructure( 0, 0, dimension.x, dimension.y );
+
+    gens.Add( Instantiate( spawnPointPrefab, new Vector3( 2, 30, 0 ), Quaternion.identity ) );
+    GenerateChain( "street bg", false, 0, 3 );
+    GenerateChain( "street", true );
 
     Profiler.EndSample();
   }
 
+#if UNITY_EDITOR
   void EditorApplication_PlayModeStateChanged( PlayModeStateChange obj )
   {
     if( obj == PlayModeStateChange.ExitingEditMode )
     {
       print( "exit edit" );
-      DeleteNodes();
+      DestroyAll();
     }
     if( obj == PlayModeStateChange.ExitingPlayMode )
     {
       // restore objects from ids
       print( "exit play" );
+      DestroyAll();
     }
   }
+#endif
 
-  void GenerateChain( string folder, bool overlapCheck = true, float zDepth = 0 )
+  void GenerateChain( string folder, bool overlapCheck = true, float xpos = 0, float zDepth = 0 )
   {
     gos = new List<GameObject>( Resources.LoadAll<GameObject>( "LevelFreeNode/" + folder ) );
     List<NodeLink> links = new List<NodeLink>();
 
     GameObject firstPrefab = gos[0];
-    GameObject first = Instantiate( firstPrefab, new Vector3( 0, Random.Range( 10, 20 ), zDepth ), Quaternion.identity );
+    GameObject first = Instantiate( firstPrefab, new Vector3( xpos, Random.Range( 10, 20 ), zDepth ), Quaternion.identity );
     first.name = firstPrefab.name;
     gens.Add( first );
     links.AddRange( first.GetComponentsInChildren<NodeLink>() );
@@ -172,42 +204,15 @@ public class Level : MonoBehaviour
     }
   }
 
-  public void DeleteNodes()
+  public void DestroyAll()
   {
+    // node links
     debugSegments.Clear();
     for( int i = 0; i < gens.Count; i++ )
       DestroyImmediate( gens[i] );
     gens.Clear();
 
-    DeleteStructureNodes();
-  }
-
-  public void GenerateStructure()
-  {
-    DeleteStructureNodes();
-    InitializeStructure();
-    MarchingSquareCell[] cells = building.ms.Cells;
-    Vector2Int pos = new Vector2Int( 1, 1 );
-    for( int x = 1; x < dimension.x; x++ )
-    {
-      Column column = new Column();
-      columns.Add( column );
-      column.xindex = pos.x;
-      int height = Mathf.CeilToInt( Random.Range( 0, dimension.y ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
-      for( int y = 0; y < height; y++ )
-      {
-        SetStructureBitOn( pos.x, pos.y, PixelBit.Building );
-        pos.y++;
-      }
-      pos.x++;
-      pos.y = 1;
-    }
-
-    UpdateStructure( 0, 0, dimension.x, dimension.y );
-  }
-
-  public void DeleteStructureNodes()
-  {
+    // marching square built
     foreach( var pair in built )
       if( built[pair.Key] != null && built[pair.Key].Count > 0 )
         for( int i = 0; i < built[pair.Key].Count; i++ )
@@ -219,19 +224,6 @@ public class Level : MonoBehaviour
   }
 
 
-  string StructurePath { get { return Application.persistentDataPath + "/" + name + "/" + "structure.png"; } }
-  Texture2D StructureTexture;
-  Dictionary<int, List<GameObject>> built = new Dictionary<int, List<GameObject>>();
-  Color32[] structureData;
-  Color32[] structureData2;
-
-  [Header( "Marching Squares" )]
-  public MarchingSquareData building;
-  public MarchingSquareData underground;
-  //public MarchingSquareData door;
-  List<MarchingSquareData> msd;
-
-
   public void InitializeStructure()
   {
     msd = new List<MarchingSquareData>();
@@ -239,8 +231,8 @@ public class Level : MonoBehaviour
     //msd.Add( wall );
     foreach( var ms in msd )
       ms.indexBuffer = new int[dimension.x, dimension.y];
-    StructureTexture = new Texture2D( dimension.x, dimension.y );
-    structureData = new Color32[dimension.x * dimension.y];
+    StructureTexture = new Texture2D( dimension.x + 1, dimension.y + 1 );
+    structureData = new Color32[(dimension.x + 1) * (dimension.y + 1)];
   }
 
   public void DeserializeStructure()
@@ -266,15 +258,15 @@ public class Level : MonoBehaviour
 
   public void SetStructureValue( int x, int y, byte value )
   {
-    x = System.Math.Max( 0, System.Math.Min( x, dimension.x - 1 ) );
-    y = System.Math.Max( 0, System.Math.Min( y, dimension.x - 1 ) );
+    x = Mathf.Clamp( x, 0, dimension.x );
+    y = Mathf.Clamp( y, 0, dimension.y );
     structureData[x + y * dimension.x].r = value;
   }
 
   public void SetStructureBitOn( int x, int y, byte value )
   {
-    x = System.Math.Max( 0, System.Math.Min( x, dimension.x - 1 ) );
-    y = System.Math.Max( 0, System.Math.Min( y, dimension.x - 1 ) );
+    x = Mathf.Clamp( x, 0, dimension.x );
+    y = Mathf.Clamp( y, 0, dimension.y );
     structureData[x + y * dimension.x].r |= value;
   }
 
@@ -294,9 +286,9 @@ public class Level : MonoBehaviour
       h += 1;
     }
     // first pass
-    for( int y = oy; y < oy + h && y < dimension.y - 1; y++ )
+    for( int y = oy; y < oy + h && y < dimension.y; y++ )
     {
-      for( int x = ox; x < ox + w && x < dimension.x - 1; x++ )
+      for( int x = ox; x < ox + w && x < dimension.x; x++ )
       {
         int key = x + y * dimension.x;
         if( built.ContainsKey( key ) && built[key] != null )
@@ -358,10 +350,18 @@ public class Level : MonoBehaviour
         int key = x + y * dimension.x;
 
         int buildingIndex = building.indexBuffer[x, y];
-        if( y <= GroundY )
-          SingleCell( key, x, y, underground.ms.Cells[buildingIndex].bottom, null );
+        if( IsUnderground( x, y ) )
+        {
+          GameObject[] prefabs = underground.ms.Cells[buildingIndex].prefab;
+          if( prefabs.Length > 0 )
+            SingleCell( key, x, y, prefabs[Random.Range( 0, prefabs.Length )] );
+        }
         else
-          SingleCell( key, x, y, building.ms.Cells[buildingIndex].bottom, null );
+        {
+          GameObject[] prefabs = building.ms.Cells[buildingIndex].prefab;
+          if( prefabs.Length > 0 )
+            SingleCell( key, x, y, prefabs[Random.Range( 0, prefabs.Length )] );
+        }
         /*
         foreach( var ms in msd )
         {
@@ -397,26 +397,30 @@ public class Level : MonoBehaviour
 
   }
 
-  void SingleCell( int key, int x, int y, GameObject bottom, GameObject top )
+  void SingleCell( int key, int x, int y, GameObject prefab )
   {
-    //        if( cell.bottom.Length > 0 )
-    //          prefab = cell.bottom[ Random.Range( 0, cell.bottom.Length - 1 ) ];
-    if( bottom != null )
+    if( prefab != null )
     {
+      GameObject go = null;
       Vector3 pos = new Vector3( x * cellsize.x, y * cellsize.y, 0 );
-      GameObject go = Instantiate( bottom, pos, Quaternion.identity, null );
+      if( Application.isPlaying )
+        go = Global.instance.Spawn( prefab, pos, Quaternion.identity, null, false, true );
+      else
+        go = Instantiate( prefab, pos, Quaternion.identity, null );
+
+      GenerationVariant[] vars = go.GetComponentsInChildren<GenerationVariant>();
+      foreach( var cmp in vars )
+        cmp.Generate();
+
       if( !built.ContainsKey( key ) )
         built[key] = new List<GameObject>();
       built[key].Add( go );
-      //            if( cell.top.Length > 0 )
-      //              topPrefab = cell.top[ Random.Range( 0, cell.top.Length - 1 ) ];
-      if( top != null )
-      {
-        built[key].Add( Instantiate( top, pos, Quaternion.identity, null ) );
-      }
-
     }
   }
 
+  bool IsUnderground( int x, int y )
+  {
+    return y <= GroundY;
+  }
 
 }

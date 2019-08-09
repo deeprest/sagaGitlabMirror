@@ -252,6 +252,10 @@ public class PlayerController : Character, IDamage
         collideBottom = true;
         adjust.y = hit.point.y + box.size.y * 0.5f + downOffset;
         hitBottomNormal = hit.normal;
+
+        Character cha = hit.transform.GetComponent<Character>();
+        if( cha != null )
+            adjust.y += cha.velocity.y * Time.deltaTime;
         break;
       }
     }
@@ -328,7 +332,7 @@ public class PlayerController : Character, IDamage
     Vector3 pos = arm.position + shoot.normalized * armRadius;
     if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
     {
-      RaycastHit2D hit = Physics2D.Raycast( pos, shoot, grapDistance, LayerMask.GetMask( PlayerCollideLayers ) );
+      RaycastHit2D hit = Physics2D.Raycast( pos, shoot, grapDistance, LayerMask.GetMask( new string[] { "Default", "triggerAndCollision", "enemy" } ) );
       if( hit )
       {
         //Debug.DrawLine( pos, hit.point, Color.red );
@@ -429,7 +433,7 @@ public class PlayerController : Character, IDamage
       }
     }*/
 
-    if( GameInput.GetKey( "Fire" ) || (!GameInput.UsingKeyboard && GameInput.GetAxisRaw("Fire") > 0) )
+    if( GameInput.GetKey( "Fire" ) || (!GameInput.UsingKeyboard && GameInput.GetAxisRaw( "Fire" ) > 0) )
     {
       if( !shootRepeatTimer.IsActive )
       {

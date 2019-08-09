@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#define DEBUG_LINES
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -30,7 +31,7 @@ public class Character : MonoBehaviour, IDamage
   protected RaycastHit2D hitRight;
   protected RaycastHit2D hitLeft;
 
-
+  public bool CanTakeDamage = true;
   public int health = 5;
   public GameObject explosion;
   public AudioClip soundHit;
@@ -71,7 +72,7 @@ public class Character : MonoBehaviour, IDamage
 
     if( UpdateHit != null )
       UpdateHit();
-      
+
     if( UpdatePosition != null )
       UpdatePosition();
 
@@ -195,7 +196,7 @@ public class Character : MonoBehaviour, IDamage
 
   public void TakeDamage( Damage d )
   {
-    if( health <= 0 )
+    if( !CanTakeDamage || health <= 0 )
       return;
     health -= d.amount;
     velocity += (body.position - d.point) * hitPush;
@@ -206,7 +207,8 @@ public class Character : MonoBehaviour, IDamage
     }
     else
     {
-      Global.instance.AudioOneShot( soundHit, transform.position );
+      if( soundHit != null )
+        Global.instance.AudioOneShot( soundHit, transform.position );
 
       // color pulse
       flip = false;
@@ -235,7 +237,7 @@ public class Character : MonoBehaviour, IDamage
   }
 
 
-  [Header("Pathing")]
+  [Header( "Pathing" )]
   public bool HasPath = false;
   public float WaypointRadii = 0.1f;
   public float DestinationRadius = 0.3f;
@@ -293,19 +295,19 @@ public class Character : MonoBehaviour, IDamage
       }
 
 #if DEBUG_LINES
-        // draw path
-        if( debugPath.Count > 0 )
+      // draw path
+      if( debugPath.Count > 0 )
+      {
+        Color pathColor = Color.white;
+        if( nvp.status == NavMeshPathStatus.PathInvalid )
+          pathColor = Color.red;
+        if( nvp.status == NavMeshPathStatus.PathPartial )
+          pathColor = Color.gray;
+        foreach( var ls in debugPath )
         {
-          Color pathColor = Color.white;
-          if( nvp.status == NavMeshPathStatus.PathInvalid )
-            pathColor = Color.red;
-          if( nvp.status == NavMeshPathStatus.PathPartial )
-            pathColor = Color.gray;
-          foreach( var ls in debugPath )
-          {
-            Debug.DrawLine( ls.a, ls.b, pathColor );
-          }
+          Debug.DrawLine( ls.a, ls.b, pathColor );
         }
+      }
 #endif
 
     }
@@ -374,5 +376,6 @@ public class Character : MonoBehaviour, IDamage
     }
     return false;
   }
+
 
 }

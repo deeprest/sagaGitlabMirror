@@ -57,5 +57,9 @@ public class XBuster : Projectile
     {
       transform.position += velocity * Time.deltaTime;
     }
+
+    //SpriteRenderer sr = GetComponent<SpriteRenderer>();
+    //sr.color = Global.instance.shiftyColor;
+    //light.color = Global.instance.shiftyColor;
   }
 }

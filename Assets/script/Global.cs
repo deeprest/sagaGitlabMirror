@@ -139,7 +139,7 @@ public class Global : MonoBehaviour
   [SerializeField] float progressSpeed = 0.5f;
 
   // color shift
-  Color shiftyColor = Color.red;
+  public Color shiftyColor = Color.red;
   [SerializeField] float colorShiftSpeed = 1;
   [SerializeField] Image shifty;
   // This exists only because of a Unity crash bug when objects with active
@@ -218,15 +218,18 @@ public class Global : MonoBehaviour
     {
       LoadingScreen.SetActive( false );
       music.Play();
-      foreach( var mesh in meshSurfaces )
-        mesh.BuildNavMesh();
-      if( CurrentPlayer == null )
-        SpawnPlayer();
       fader.color = Color.clear;
       //yield return new WaitForSecondsRealtime( 1 );
       Updating = true;
       ss = FindObjectOfType<SceneScript>();
       AssignCameraPoly( ss.sb );
+
+      ss.level.Generate();
+      foreach( var mesh in meshSurfaces )
+        mesh.BuildNavMesh();
+
+      if( CurrentPlayer == null )
+        SpawnPlayer();
     }
     else
     {
@@ -298,6 +301,8 @@ public class Global : MonoBehaviour
     ss = FindObjectOfType<SceneScript>();
     if( ss != null )
     {
+      if( ss.level != null )
+        ss.level.Generate();
       AssignCameraPoly( ss.sb );
       ss.StartScene();
     }
@@ -748,9 +753,9 @@ public class Global : MonoBehaviour
 
     if( initialize )
     {
-      //      SerializedComponent[] scs = go.GetComponentsInChildren<SerializedComponent>();
-      //      foreach( var sc in scs )
-      //        sc.AfterDeserialize();
+      SerializedComponent[] scs = go.GetComponentsInChildren<SerializedComponent>();
+      foreach( var sc in scs )
+        sc.AfterDeserialize();
     }
     return go;
   }
@@ -958,6 +963,7 @@ public class Global : MonoBehaviour
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
     CreateBoolSetting( "CursorInfluence", true, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
     CreateBoolSetting( "AimSnap", true, delegate ( bool value ) { AimSnap = value; } );
+    CreateBoolSetting( "AutoAim", true, delegate ( bool value ) { AutoAim = value; } );
 
     CreateFloatSetting( "CursorOuterRadius", 150, delegate ( float value ) { cursorOuter = value; } );
     CreateFloatSetting( "CameraLerpAlpha", 50, delegate ( float value ) { CameraController.lerpAlpha = value; } );
@@ -1006,7 +1012,7 @@ public class Global : MonoBehaviour
       writer.Write( pair.Value.Value );
     }
     writer.WriteObjectEnd();
-   
+
     writer.WriteObjectEnd(); // root end
     File.WriteAllText( settingsPath, writer.ToString() );
   }

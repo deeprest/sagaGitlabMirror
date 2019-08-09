@@ -468,6 +468,7 @@ GameObject:
   - component: {fileID: 5736656210831704170}
   - component: {fileID: 1654668584601712558}
   - component: {fileID: 8324022198147396173}
+  - component: {fileID: 2269174923454845371}
   m_Layer: 10
   m_Name: Boss
   m_TagString: Untagged
@@ -523,7 +524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86e636d8da82f4704abbd4ea1453cefb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  body: {fileID: 0}
+  body: {fileID: 2269174923454845371}
   box: {fileID: 1654668584601712558}
   renderer: {fileID: 4090060214824906407}
   animator: {fileID: 5397825192010816886}
@@ -540,6 +541,7 @@ MonoBehaviour:
   - Default
   DamageLayers:
   - character
+  CanTakeDamage: 1
   health: 20
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
@@ -552,6 +554,7 @@ MonoBehaviour:
   DestinationRadius: 0.3
   DestinationPosition: {x: 0, y: 0, z: 0}
   waypoint: []
+  debugPath: []
   AgentTypeName: Small
   WaypointVector: {x: 0, y: 0}
   audio: {fileID: 8324022198147396173}
@@ -698,6 +701,27 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!50 &2269174923454845371
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4045851430560821419}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &5409591350307037476
 GameObject:
   m_ObjectHideFlags: 0

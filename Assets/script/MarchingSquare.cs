@@ -31,43 +31,44 @@ public class MarchingSquareData
 [System.Serializable]
 public class MarchingSquareCell
 {
-  public GameObject bottom;
-  //public GameObject top;
-  //public GameObject door;
+  public GameObject[] prefab;
 }
 
 [CreateAssetMenu]
 public class MarchingSquare : ScriptableObject
 {
   public MarchingSquareCell[] Cells = new MarchingSquareCell[16];
-  public MarchingSquareCell[] Inside = new MarchingSquareCell[16];
 
   [Tooltip( "These are parsed by name. Example: \"shack-3\" or \"wall-15-top\"" )]
   public GameObject[] Prefabs;
-
+#if UNITY_EDITOR
   public void PrefabsToCells()
   {
     if( Prefabs != null && Prefabs.Length > 0 )
     {
+      for( int i = 0; i < Cells.Length; i++ )
+      {
+        ArrayUtility.Clear( ref Cells[i].prefab );
+      }
       // parse prefab names
       foreach( var go in Prefabs )
       {
         string[] tokens = go.name.Split( new char[]{ '-' } );
         int index = int.Parse( tokens[ 1 ] );
         if( tokens.Length == 2 )
-          Cells[ index ].bottom = go;
-        /*else
+        {
+          ArrayUtility.Add( ref Cells[index].prefab, go );
+        }
+        else
         if( tokens.Length == 3 )
         {
-          if( tokens[ 2 ] == "top" )
-            Cells[ index ].top = go;
-          if( tokens[ 2 ] == "door" )
-            Cells[ index ].door = go;
-        }*/
+          ArrayUtility.Add( ref Cells[index].prefab, go );
+        }
         else
           Debug.LogError( "parsing of marching squares" );
       }
     }
   }
+#endif
 }
 

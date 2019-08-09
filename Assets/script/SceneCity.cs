@@ -3,6 +3,8 @@ using System.Collections;
 
 public class SceneScript : MonoBehaviour
 {
+  // temp
+  public Level level;
 
   public PolygonCollider2D sb;
   public virtual void StartScene() { }

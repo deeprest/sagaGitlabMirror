@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine.SceneManagement;
+using UnityEngine.AI;
 
 public static class ShowGUIDUtility
 {
@@ -211,6 +212,40 @@ public class CustomUtility : EditorWindow
         Debug.Log( Selection.objects[i].GetType().ToString() + " " + Selection.objects[i].name + " " + Selection.assetGUIDs[i] );
     }
 
+
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Fix all Nav Obstacles" ) )
+    {
+      gos = new List<GameObject>();
+      string[] guids = AssetDatabase.FindAssets( "t:prefab" );
+      foreach( string guid in guids )
+      {
+        GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>( AssetDatabase.GUIDToAssetPath( guid ) );
+        gos.Add( go );
+      }
+      //gos = new List<GameObject>( Resources.FindObjectsOfTypeAll<GameObject>() );
+      StartJob( "Searching...", gos.Count, delegate ()
+      {
+        GameObject go = gos[index];
+        NavMeshObstacle[] navs = go.GetComponentsInChildren<NavMeshObstacle>();
+        foreach( var nav in navs )
+        {
+          SpriteRenderer rdr = nav.gameObject.GetComponent<SpriteRenderer>();
+          if( rdr != null )
+          {
+            nav.carving = true;
+            nav.center = rdr.transform.worldToLocalMatrix.MultiplyPoint( rdr.bounds.center );
+            nav.size = new Vector3( rdr.size.x, rdr.size.y, 0.2f );
+          }
+        }
+
+      },
+        delegate ()
+        {
+          AssetDatabase.SaveAssets();
+        } );
+    }
+
+
     /*GUILayout.Label( "AnimFix", EditorStyles.boldLabel );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Apply" ) )
     {
@@ -257,116 +292,8 @@ public class CustomUtility : EditorWindow
       File.WriteAllText( Application.dataPath + "/../todo", todo );
     }
 
-    /*
-    GUILayout.Space( 10 );
-    GUILayout.Label( "Level Generation", EditorStyles.boldLabel );
-    max = EditorGUI.IntField( EditorGUILayout.GetControlRect(), max );
-    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Generate Level" ) )
-    {
-      DeleteAllNodes();
-
-      //gos = new List<GameObject>();
-      //string[] guids = AssetDatabase.FindAssets( "t:GameObject", new string[] { "Assets/LevelFreeNode" } );
-      //foreach( string guid in guids )
-      //{
-      //  GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>( AssetDatabase.GUIDToAssetPath( guid ) );
-      //  gos.Add( prefab );
-      //}
-
-      gos = new List<GameObject>( Resources.LoadAll<GameObject>( "LevelFreeNode" ) );
-      int columns = dimension.x;
-      Level level = FindObjectOfType<Level>();
-      List<NodeLink> links = new List<NodeLink>();
-      GameObject first = Instantiate( gos[Random.Range( 0, gos.Count )] );
-      gens.Add( first );
-      links.AddRange( first.GetComponentsInChildren<NodeLink>() );
-
-//Vector2Int pos = new Vector2Int();
-
-      StartJob( "Generating...", max, delegate ()
-      {
-        //Column column = new Column();
-        //level.columns.Add( column );
-        //column.xindex = pos.x;
-
-        //int height = Mathf.CeilToInt( Random.Range( 1, dimension.y ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
-        //for( int i = 0; i < height; i++ )
-        //{
-        //  GameObject go = Instantiate( gos[Random.Range( 0, gos.Count )] );
-        //  gens.Add( go );
-        //  go.transform.position = new Vector3( pos.x * cellsize.x, pos.y * cellsize.y, 0 );
-        //  LevelNode node = go.GetComponent<LevelNode>();
-        //  column.nodes.Add( node );
-        //  pos.y++;
-        //}
-        //pos.x++;
-        //pos.y = 0;
-
-        List<NodeLink> newlinks = new List<NodeLink>();
-        List<NodeLink> removelinks = new List<NodeLink>();
-        foreach( var link in links )
-        {
-          GameObject prefab = link.AllowedToLink[Random.Range( 0, link.AllowedToLink.Length )];
-          UnityEngine.Bounds bounds = new UnityEngine.Bounds();
-          Collider2D[] colliders = prefab.GetComponentsInChildren<Collider2D>();
-          foreach( var col in colliders )
-            bounds.Encapsulate( col.bounds );
-          Collider2D[] overlap = Physics2D.OverlapAreaAll( link.transform.position + bounds.min, link.transform.position + bounds.max );
-          Collider2D[] ignore = link.transform.root.GetComponentsInChildren<Collider2D>();
-          int count = overlap.Length;
-          for( int c = 0; c < overlap.Length; c++ )
-          {
-            for( int i = 0; i < ignore.Length; i++ )
-            {
-              if( overlap[c] == ignore[i] )
-              {
-                count--;
-                break;
-              }
-            }
-          }
-          if( count == 0 )
-          {
-            GameObject go = Instantiate( prefab );
-            gens.Add( go );
-            go.transform.position = link.gameObject.transform.position;
-            newlinks.AddRange( go.GetComponentsInChildren<NodeLink>() );
-          }
-          else
-          {
-            Debug.Log( "prefab " + prefab.name + " will not spawn due to overlap with " + count, overlap[0].gameObject );
-          }
-          removelinks.Add( link );
-        }
-        links.AddRange( newlinks );
-        foreach( var ugh in removelinks )
-          links.Remove( ugh );
-
-      }, null );
-    }
-
-    dimension.x = EditorGUI.IntField( EditorGUILayout.GetControlRect(), dimension.x );
-    dimension.y = EditorGUI.IntField( EditorGUILayout.GetControlRect(), dimension.y );
-
-    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Delete All Nodes" ) )
-      DeleteAllNodes();
-
-  */
 
   }
-
-  void DeleteAllNodes()
-  {
-    for( int i = 0; i < gens.Count; i++ )
-      DestroyImmediate( gens[i] );
-    gens.Clear();
-  }
-
-  int max;
-  List<GameObject> gens = new List<GameObject>();
-  Vector2Int dimension = new Vector2Int( 1, 1 );
-  Vector2Int cellsize = new Vector2Int( 10, 10 );
-
 
 
   void ClearGroundImages()

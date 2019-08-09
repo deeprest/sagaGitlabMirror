@@ -4851,6 +4851,7 @@ MonoBehaviour:
   - Default
   DamageLayers:
   - character
+  CanTakeDamage: 1
   health: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
@@ -4863,6 +4864,7 @@ MonoBehaviour:
   DestinationRadius: 0.3
   DestinationPosition: {x: 0, y: 0, z: 0}
   waypoint: []
+  debugPath: []
   AgentTypeName: Small
   WaypointVector: {x: 0, y: 0}
   audio: {fileID: 82117261715149456}
@@ -5228,7 +5230,7 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
@@ -5406,7 +5408,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4445419020123633359
 Transform:
   m_ObjectHideFlags: 0
