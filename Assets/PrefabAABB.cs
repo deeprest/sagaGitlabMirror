@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 
 // thank you Lassade: https://answers.unity.com/users/86543/lassade.html
 

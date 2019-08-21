@@ -109,8 +109,9 @@ TextureImporter:
     21300208: hq_104
     21300210: hq_floor
     21300212: hq_wallR
+    21300214: floor
   externalObjects: {}
-  serializedVersion: 7
+  serializedVersion: 9
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -192,7 +193,7 @@ TextureImporter:
     maxTextureSize: 256
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -247,7 +248,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 128
+        width: 64
         height: 64
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -277,6 +278,26 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 59ae3e800a6834784bc78d9d6c35f0ce
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: floor
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 32
+        width: 64
+        height: 32
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f777d6dc087c94a0e9f16486a5a07c30
       vertices: []
       indices: 
       edges: []

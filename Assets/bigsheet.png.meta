@@ -39,6 +39,12 @@ TextureImporter:
     21300068: lift-flash-4
     21300070: lift-flash-5
     21300072: bigsheet_0
+    21300074: hq-bg
+    21300076: bigsheet_1hq-floor
+    21300078: bigsheet_wallL
+    21300080: bigsheet_1wallR
+    21300082: crawlspace
+    21300084: ventcover
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -731,7 +737,7 @@ TextureImporter:
         width: 40
         height: 13
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -858,6 +864,126 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 1274c89583e98414899cd0b2fcae6916
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hq-bg
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 320
+        width: 240
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b82f6ba0f89b140dbbc851c2f3dfa602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bigsheet_1hq-floor
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 919019f79d68b41c590335bc55906cc2
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bigsheet_wallL
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 320
+        width: 8
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e061ecc9693064b47b670c630f6ea521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bigsheet_1wallR
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 320
+        width: 8
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e08478f8cf494204a6a3c7bddb5e58c
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crawlspace
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 256
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8d6198d8e994d423a818882b18df989e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ventcover
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 256
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c3fdc44ff143d48ddbf6a8e71c94e5d5
       vertices: []
       indices: 
       edges: []

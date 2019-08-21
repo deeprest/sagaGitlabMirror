@@ -10,7 +10,7 @@ public class PlayerController : Character, IDamage
   public AudioSource audio2;
   public ParticleSystem dashSmoke;
   public Transform arm;
-
+   
   // settings
   public float raydown = 0.2f;
   public float downOffset = 0.16f;
@@ -52,7 +52,6 @@ public class PlayerController : Character, IDamage
   float jumpStart;
   float landStart;
 
-  string[] PlayerCollideLayers = { "Default", "triggerAndCollision" };
   string[] TriggerLayers = { "trigger", "triggerAndCollision" };
 
   Vector3 hitBottomNormal;
@@ -244,7 +243,7 @@ public class PlayerController : Character, IDamage
     */
 
     float down = jumping ? raydown - downOffset : raydown;
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( CollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y > corner )
@@ -260,7 +259,7 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( CollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y < -corner )
@@ -271,7 +270,7 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( contactSeparation, -velocity.x * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( contactSeparation, -velocity.x * dT ), LayerMask.GetMask( CollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x > corner )
@@ -283,7 +282,7 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( contactSeparation, velocity.x * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( contactSeparation, velocity.x * dT ), LayerMask.GetMask( CollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x < -corner )
@@ -504,7 +503,7 @@ public class PlayerController : Character, IDamage
     if( Global.Paused )
       return;
 
-    if( playerInput )
+    if( Global.instance.CurrentPlayer == this && playerInput )
       UpdatePlayerInput();
 
     if( inputGraphook )

@@ -35,7 +35,9 @@ public class Character : MonoBehaviour, IDamage
   public int health = 5;
   public GameObject explosion;
   public AudioClip soundHit;
+  public bool CanHitPush = true;
   public float hitPush = 4;
+  // FLASH
   Timer flashTimer = new Timer();
   public float flashInterval = 0.05f;
   public int flashCount = 5;
@@ -199,7 +201,8 @@ public class Character : MonoBehaviour, IDamage
     if( !CanTakeDamage || health <= 0 )
       return;
     health -= d.amount;
-    velocity += (body.position - d.point) * hitPush;
+    if( CanHitPush )
+      velocity += (body.position - d.point) * hitPush;
     if( health <= 0 )
     {
       flashTimer.Stop( false );

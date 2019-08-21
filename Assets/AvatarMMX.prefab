@@ -4849,16 +4849,18 @@ MonoBehaviour:
   contactSeparation: 0.01
   CollideLayers:
   - Default
+  - triggerAndCollision
   DamageLayers:
   - character
   CanTakeDamage: 1
   health: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
+  CanHitPush: 1
   hitPush: 4
   flashInterval: 0.05
   flashCount: 5
-  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  ContactDamage: {fileID: 0}
   HasPath: 0
   WaypointRadii: 0.1
   DestinationRadius: 0.3
