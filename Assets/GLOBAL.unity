@@ -112,6 +112,32 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &335849404 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3373691660703674362, guid: a303ea602a9de415ea4561c7d9c43d4e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2052468624}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &335849405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 335849404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: 30
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &588666592 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3343577772401681100, guid: a303ea602a9de415ea4561c7d9c43d4e,
@@ -131,7 +157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: 100
+  m_MinWidth: 200
   m_MinHeight: 20
   m_PreferredWidth: -28
   m_PreferredHeight: -1
@@ -165,7 +191,7 @@ MonoBehaviour:
   m_Spacing: 10
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
+  m_ChildControlWidth: 1
   m_ChildControlHeight: 0
 --- !u!1001 &2052468624
 PrefabInstance:
@@ -390,7 +416,7 @@ PrefabInstance:
     - target: {fileID: 1051676327049251238, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 30
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1051676327049251238, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
@@ -445,7 +471,7 @@ PrefabInstance:
     - target: {fileID: 7172543194958436158, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7172543194958436158, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
@@ -1136,7 +1162,7 @@ PrefabInstance:
     - target: {fileID: 114329875613515752, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
       propertyPath: SimulatePlayer
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114243473509280006, guid: a303ea602a9de415ea4561c7d9c43d4e,
         type: 3}
@@ -1156,6 +1182,20 @@ PrefabInstance:
     - target: {fileID: 497188665, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
       propertyPath: m_NavMeshData
       value: 
+      objectReference: {fileID: 23800000, guid: eab60b881eb6c40258e26905e85da803,
+        type: 2}
+    - target: {fileID: 497188665, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
+      propertyPath: m_VoxelSize
+      value: 0.06666667
       objectReference: {fileID: 0}
+    - target: {fileID: 497188667, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
+      propertyPath: m_VoxelSize
+      value: 0.13333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 497188667, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 23800000, guid: 34754836e5a804d67bc6f7362ba3d12b,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}

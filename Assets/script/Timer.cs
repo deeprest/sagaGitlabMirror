@@ -55,7 +55,7 @@ public class Timer
   {
     active = true;
     NewTimers.Add( this );
-    StartTime = Time.time;
+    StartTime = time;
     Duration = duration;
     repeat = false;
     OnUpdate = UpdateDelegate;
@@ -72,10 +72,7 @@ public class Timer
     active = true;
     NewTimers.Add( this );
     unscaledTime = param.unscaledTime;
-    if( param.unscaledTime )
-      StartTime = Time.unscaledTime;
-    else
-      StartTime = Time.time;
+    StartTime = time;
     if( param.repeat )
     {
       Interval = param.interval;
@@ -94,7 +91,7 @@ public class Timer
   {
     active = true;
     NewTimers.Add( this );
-    StartTime = Time.time;
+    StartTime = time;
     Duration = duration;
     repeat = false;
     OnUpdate = UpdateDelegate;
@@ -105,7 +102,7 @@ public class Timer
   {
     active = true;
     NewTimers.Add( this );
-    StartTime = Time.time;
+    StartTime = time;
     Interval = interval;
     IntervalStartTime = StartTime;
     Duration = interval * loops;

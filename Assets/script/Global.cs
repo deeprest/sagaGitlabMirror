@@ -222,9 +222,12 @@ public class Global : MonoBehaviour
       //yield return new WaitForSecondsRealtime( 1 );
       Updating = true;
       ss = FindObjectOfType<SceneScript>();
-      AssignCameraPoly( ss.sb );
-
-      ss.level.Generate();
+      if( ss != null )
+      {
+        AssignCameraPoly( ss.sb );
+        if( ss.level != null )
+          ss.level.Generate();
+      }
       foreach( var mesh in meshSurfaces )
         mesh.BuildNavMesh();
 

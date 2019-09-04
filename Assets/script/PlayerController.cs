@@ -258,8 +258,9 @@ public class PlayerController : Character, IDamage
         break;
       }
     }
-
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( CollideLayers ) );
+    // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
+    Vector2 headbox = new Vector2( .1f, .1f );
+    hits = Physics2D.BoxCastAll( adjust+Vector2.down*0.1f, headbox, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( CollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y < -corner )
