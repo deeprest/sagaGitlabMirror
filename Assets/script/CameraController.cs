@@ -42,26 +42,34 @@ public class CameraController : MonoBehaviour
   {
     if( !lerp.enabled && LookTarget != null )
     {
-      pos.x = LookTarget.transform.position.x;
+      Vector3 lookTarget = LookTarget.transform.position;
+
+      if( CursorInfluence )
+      {
+        lookTarget = Vector3.Lerp( LookTarget.transform.position, Global.instance.CursorWorldPosition, cursorAlpha );
+        lookTarget.z = zOffset;
+      }
+      pos.x = lookTarget.x;
       pos.z = zOffset;
 
       if( UseVerticalRange )
       {
-        if( LookTarget.transform.position.y > pos.y + yHalfWidth )
-          pos.y = LookTarget.transform.position.y - yHalfWidth;
-        if( LookTarget.transform.position.y < pos.y - yHalfWidth )
-          pos.y = LookTarget.transform.position.y + yHalfWidth;
+        if( lookTarget.y > pos.y + yHalfWidth )
+          pos.y = lookTarget.y - yHalfWidth;
+        if( lookTarget.y < pos.y - yHalfWidth )
+          pos.y = lookTarget.y + yHalfWidth;
       }
       else
       {
-        pos.y = LookTarget.transform.position.y;
+        pos.y = lookTarget.y;
       }
 
-      if( CursorInfluence )
-      {
-        pos = Vector3.Lerp( pos, Global.instance.CursorWorldPosition, cursorAlpha );
-        pos.z = zOffset;
-      }
+      //if( CursorInfluence )
+      //{
+      //  Vector3 tmp = Vector3.Lerp( pos, Global.instance.CursorWorldPosition, cursorAlpha );
+      //  pos.x = tmp.x;
+      //  pos.z = zOffset;
+      //}
 
       if( Global.instance.CameraPoly != null )
       {

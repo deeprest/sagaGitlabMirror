@@ -10,7 +10,7 @@ public class PlayerController : Character, IDamage
   public AudioSource audio2;
   public ParticleSystem dashSmoke;
   public Transform arm;
-   
+
   // settings
   public float raydown = 0.2f;
   public float downOffset = 0.16f;
@@ -131,6 +131,9 @@ public class PlayerController : Character, IDamage
     }
     return closest;
   }
+
+  public Vector2 headbox = new Vector2( .1f, .1f );
+  public float headboxy = -0.1f;
 
   new void UpdateCollision( float dT )
   {
@@ -254,13 +257,13 @@ public class PlayerController : Character, IDamage
 
         Character cha = hit.transform.GetComponent<Character>();
         if( cha != null )
-            adjust.y += cha.velocity.y * Time.deltaTime;
+          adjust.y += cha.velocity.y * Time.deltaTime;
         break;
       }
     }
     // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
-    Vector2 headbox = new Vector2( .1f, .1f );
-    hits = Physics2D.BoxCastAll( adjust+Vector2.down*0.1f, headbox, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( CollideLayers ) );
+    //Vector2 headbox = new Vector2( box.size.x, .1f );
+    hits = Physics2D.BoxCastAll( adjust + Vector2.down * headboxy, headbox, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( CollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y < -corner )
@@ -395,7 +398,7 @@ public class PlayerController : Character, IDamage
       {
         Vector3 pos = arm.position + cursorDelta.normalized * armRadius;
         if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
-          weapon.FireWeaponCharged( this, pos, shoot );
+          weapon.ChargeVariant.FireWeapon( this, pos, shoot );
       }
     }
     StopCharge();
@@ -786,18 +789,21 @@ public class PlayerController : Character, IDamage
 
   void StartCharge()
   {
-    chargeStartDelay.Start( chargeDelay, null, delegate
+    if( weapon.ChargeVariant != null )
     {
-      audio.PlayOneShot( weapon.soundCharge );
-      audio2.clip = weapon.soundChargeLoop;
-      audio2.loop = true;
-      audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
-      foreach( var sr in spriteRenderers )
-        sr.material.SetColor( "_FlashColor", chargeColor );
-      ChargePulseFlip();
-      GameObject geffect = Instantiate( weapon.ChargeEffect, transform );
-      chargeEffect = geffect.GetComponent<ParticleSystem>();
-    } );
+      chargeStartDelay.Start( chargeDelay, null, delegate
+      {
+        audio.PlayOneShot( weapon.soundCharge );
+        audio2.clip = weapon.soundChargeLoop;
+        audio2.loop = true;
+        audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
+        foreach( var sr in spriteRenderers )
+          sr.material.SetColor( "_FlashColor", chargeColor );
+        ChargePulseFlip();
+        GameObject geffect = Instantiate( weapon.ChargeEffect, transform );
+        chargeEffect = geffect.GetComponent<ParticleSystem>();
+      } );
+    }
   }
 
   void StopCharge()

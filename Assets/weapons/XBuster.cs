@@ -15,8 +15,9 @@ public class XBuster : Projectile
 
   void Start()
   {
-    if( StartSound != null )
-      Global.instance.AudioOneShot( StartSound, transform.position );
+    // let the weapon play the sound instead
+    /*if( StartSound != null )
+      Global.instance.AudioOneShot( StartSound, transform.position );*/
 
     timeoutTimer = new Timer( timeout, null, delegate ()
     {
