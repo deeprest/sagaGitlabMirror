@@ -4,13 +4,12 @@ using System.Collections.Generic;
 
 //[SelectionBase]
 //[RequireComponent( typeof(Tags) )]
-public class SpawnPoint : MonoBehaviour //SerializedComponent, IAction, ITeam
+public class SpawnPoint : SerializedComponent //, IAction, ITeam
 {
 
-}
-  #if false
-  /*[Serialize] public string TeamName;
-  public Team MyTeam;*/
+
+  //[Serialize] public string TeamName;
+  //public Team MyTeam;
 
   public Transform SpawnPointLocal;
   public Animation Animation;
@@ -35,7 +34,7 @@ public class SpawnPoint : MonoBehaviour //SerializedComponent, IAction, ITeam
   int index = 0;
   System.Random randy;
 
-  /*[HideInInspector]
+  [HideInInspector]
   [Serialize] public List<int> SpawnedCharactersID = new List<int>();
 
   public override void BeforeSerialize()
@@ -58,11 +57,10 @@ public class SpawnPoint : MonoBehaviour //SerializedComponent, IAction, ITeam
     }
     SpawnedCharactersID.Clear();
 
-    Team team = Global.Instance.gameData.FindTeam( TeamName );
-    if( team != null )
-      Global.Instance.AssignTeam( gameObject, team );
+    //Team team = Global.instance.gameData.FindTeam( TeamName );
+    //if( team != null )
+      //Global.instance.AssignTeam( gameObject, team );
   }
-  */
 
   void OnEnable()
   {
@@ -172,7 +170,7 @@ public class SpawnPoint : MonoBehaviour //SerializedComponent, IAction, ITeam
     foreach( var obj in destroy )
     {
       SpawnedCharacters.Remove( obj );
-      GameObject.Destroy( obj );
+      Destroy( obj );
     }
   }
 
@@ -190,7 +188,9 @@ public class SpawnPoint : MonoBehaviour //SerializedComponent, IAction, ITeam
       Global.Instance.AssignTeam( gameObject, instigator.Team );
     }
   }
+  */
 
+  /*
   public void SetTeam( Team team )
   {
     MyTeam = team;
@@ -204,4 +204,4 @@ public class SpawnPoint : MonoBehaviour //SerializedComponent, IAction, ITeam
   }
   */
 }
-  #endif
+  

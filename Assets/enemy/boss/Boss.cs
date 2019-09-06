@@ -67,9 +67,17 @@ public class Boss : Character
     facingRight = delta.x >= 0;
     if( (player - transform.position).sqrMagnitude < sightRange * sightRange )
     {
-      if( weapon != null )
-        if( !shootRepeatTimer.IsActive )
+      if( weapon != null && !shootRepeatTimer.IsActive )
+      {
+        // todo check line of site to target
+        // todo check for team allegiance
+        // todo have a "ready to fire" animation play to warn player
+        //RaycastHit2D[] hit;
+        //hit = Physics2D.LinecastAll( shotOrigin.position, player );
+        RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( new string[] { "Default", "character" } ) );
+        if( hit.transform == Global.instance.CurrentPlayer.transform )
           Shoot( player - shotOrigin.position + Vector3.up * shootUp );
+      }
 
       if( Mathf.Abs( delta.x ) < small )
       {
