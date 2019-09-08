@@ -5,7 +5,6 @@ public class BouncyGrenade : Projectile
 {
   public GameObject explosion;
   Timer timeoutTimer;
-  static string[] BouncyCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile" };
 
   void Start()
   {
@@ -50,7 +49,7 @@ public class BouncyGrenade : Projectile
 
   private void OnCollisionEnter2D( Collision2D hit )
   {
-    if( (LayerMask.GetMask( BouncyCollideLayers ) & (1 << hit.gameObject.layer)) > 0 )
+    if( (LayerMask.GetMask( Global.BouncyCollideLayers ) & (1 << hit.gameObject.layer)) > 0 )
     if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator )) )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();

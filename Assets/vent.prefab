@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4596207536373528512}
   - component: {fileID: 4596207536373528127}
   - component: {fileID: 1199852028}
-  m_Layer: 13
+  m_Layer: 17
   m_Name: vent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,8 +149,6 @@ MonoBehaviour:
   airFriction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
-  CollideLayers:
-  - Default
   DamageLayers:
   - character
   CanTakeDamage: 1

@@ -21,8 +21,9 @@ public class Character : MonoBehaviour, IDamage
   public float airFriction = 0.05f;
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
-  public string[] CollideLayers = { "Default" };
-  public string[] DamageLayers = { "character" };
+
+  public List<Transform> IgnoreCollideObjects;
+
   protected bool collideRight = false;
   protected bool collideLeft = false;
   protected bool collideTop = false;
@@ -88,7 +89,7 @@ public class Character : MonoBehaviour, IDamage
   {
     if( ContactDamage == null )
       return;
-    hits = Physics2D.BoxCastAll( body.position, box.size, 0, velocity, raylength, LayerMask.GetMask( DamageLayers ) );
+    hits = Physics2D.BoxCastAll( body.position, box.size, 0, velocity, raylength, LayerMask.GetMask( Global.CharacterDamageLayers ) );
     foreach( var hit in hits )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
@@ -144,7 +145,7 @@ public class Character : MonoBehaviour, IDamage
     boxOffset.x *= Mathf.Sign( transform.localScale.x );
     Vector2 adjust = (Vector2)transform.position + boxOffset;
 
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y > corner )
@@ -154,7 +155,7 @@ public class Character : MonoBehaviour, IDamage
         break;
       }
     }
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.up, Mathf.Max( raylength, velocity.y * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.up, Mathf.Max( raylength, velocity.y * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.y < -corner )
@@ -164,7 +165,7 @@ public class Character : MonoBehaviour, IDamage
         break;
       }
     }
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x > corner )
@@ -176,7 +177,7 @@ public class Character : MonoBehaviour, IDamage
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( raylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( CollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( raylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
       if( hit.normal.x < -corner )

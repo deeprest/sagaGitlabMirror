@@ -137,26 +137,30 @@ MonoBehaviour:
   contactSeparation: 0.01
   CollideLayers:
   - Default
+  - Default
   DamageLayers:
   - character
+  CanTakeDamage: 1
   health: 2
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
+  CanHitPush: 1
   hitPush: 4
   flashInterval: 0.05
   flashCount: 1
   ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
-  sightRange: 4
-  flySpeed: 1.5
-  targetOffset: 0.1
-  hitPauseOffset: 1
   HasPath: 0
   WaypointRadii: 0.1
   DestinationRadius: 0.3
   DestinationPosition: {x: 0, y: 0, z: 0}
   waypoint: []
-  AgentTypeID: -1
-  MoveDirection: {x: 0, y: 0, z: 0}
+  debugPath: []
+  AgentTypeName: Small
+  WaypointVector: {x: 0, y: 0}
+  sightRange: 4
+  flySpeed: 1.5
+  targetOffset: 0.1
+  hitPauseOffset: 1
 --- !u!95 &4874249801477483448
 Animator:
   serializedVersion: 3

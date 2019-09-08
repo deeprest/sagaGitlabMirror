@@ -42,7 +42,7 @@ public class Weapon : ScriptableObject
 
   void FireWeaponProjectile( Character instigator, Projectile projectile, Vector3 pos, Vector3 shoot, bool playSound = true )
   {
-    Collider2D col = Physics2D.OverlapCircle( pos, projectile.circle.radius, LayerMask.GetMask( Projectile.NoShootLayers ) );
+    Collider2D col = Physics2D.OverlapCircle( pos, projectile.circle.radius, LayerMask.GetMask( Global.NoShootLayers ) );
     if( col == null )
     {
       GameObject go = Instantiate( projectile.gameObject, pos, Quaternion.identity );

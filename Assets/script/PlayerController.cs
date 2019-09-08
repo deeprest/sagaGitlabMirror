@@ -39,6 +39,7 @@ public class PlayerController : Character, IDamage
   public bool inputCharge;
   public bool inputChargeEnd;
   public bool inputGraphook;
+  public bool inputShield;
   // state
   [SerializeField] bool facingRight = true;
   [SerializeField] bool onGround;
@@ -52,7 +53,7 @@ public class PlayerController : Character, IDamage
   float jumpStart;
   float landStart;
 
-  string[] TriggerLayers = { "trigger", "triggerAndCollision" };
+
 
   Vector3 hitBottomNormal;
 
@@ -89,6 +90,12 @@ public class PlayerController : Character, IDamage
   public float damageBlinkDuration = 1f;
   public float damageLift = 1f;
   public float damagePushAmount = 1f;
+
+  void Awake()
+  {
+    //Collider2D shieldCollider = Shield.GetComponent<Collider2D>();
+    //Physics2D.IgnoreCollision( box, shieldCollider );
+  }
 
   void Start()
   {
@@ -144,7 +151,7 @@ public class PlayerController : Character, IDamage
 
     RaycastHit2D[] hits;
 
-    hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( TriggerLayers ) );
+    hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( Global.TriggerLayers ) );
     foreach( var hit in hits )
     {
       ITrigger tri = hit.transform.GetComponent<ITrigger>();
@@ -246,9 +253,11 @@ public class PlayerController : Character, IDamage
     */
 
     float down = jumping ? raydown - downOffset : raydown;
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( CollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
+      if( IgnoreCollideObjects.Contains( hit.transform ) )
+        continue;
       if( hit.normal.y > corner )
       {
         collideBottom = true;
@@ -263,9 +272,11 @@ public class PlayerController : Character, IDamage
     }
     // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
     //Vector2 headbox = new Vector2( box.size.x, .1f );
-    hits = Physics2D.BoxCastAll( adjust + Vector2.down * headboxy, headbox, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( CollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust + Vector2.down * headboxy, headbox, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
+      if( IgnoreCollideObjects.Contains( hit.transform ) )
+        continue;
       if( hit.normal.y < -corner )
       {
         collideTop = true;
@@ -274,9 +285,11 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( contactSeparation, -velocity.x * dT ), LayerMask.GetMask( CollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( contactSeparation, -velocity.x * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
+      if( IgnoreCollideObjects.Contains( hit.transform ) )
+        continue;
       if( hit.normal.x > corner )
       {
         collideLeft = true;
@@ -286,9 +299,11 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( contactSeparation, velocity.x * dT ), LayerMask.GetMask( CollideLayers ) );
+    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( contactSeparation, velocity.x * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
+      if( IgnoreCollideObjects.Contains( hit.transform ) )
+        continue;
       if( hit.normal.x < -corner )
       {
         collideRight = true;
@@ -305,7 +320,7 @@ public class PlayerController : Character, IDamage
   {
     shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector3 pos = arm.position + shoot.normalized * armRadius;
-    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.NoShootLayers ) ) )
       weapon.FireWeapon( this, pos, shoot );
   }
 
@@ -333,7 +348,7 @@ public class PlayerController : Character, IDamage
     if( grapPulling )
       StopGrap();
     Vector3 pos = arm.position + shoot.normalized * armRadius;
-    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.NoShootLayers ) ) )
     {
       RaycastHit2D hit = Physics2D.Raycast( pos, shoot, grapDistance, LayerMask.GetMask( new string[] { "Default", "triggerAndCollision", "enemy" } ) );
       if( hit )
@@ -390,6 +405,8 @@ public class PlayerController : Character, IDamage
 
   void ShootCharged()
   {
+    if( weapon.ChargeVariant == null )
+      return;
     if( chargeEffect != null )
     {
       audio.Stop();
@@ -397,7 +414,7 @@ public class PlayerController : Character, IDamage
       if( chargeAmount > chargeMin )
       {
         Vector3 pos = arm.position + cursorDelta.normalized * armRadius;
-        if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+        if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.NoShootLayers ) ) )
           weapon.ChargeVariant.FireWeapon( this, pos, shoot );
       }
     }
@@ -455,7 +472,11 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    if( GameInput.GetKeyUp( "graphook" ) )
+    inputShield = GameInput.GetKey( "Shield" );
+    //if( GameInput.GetKey( "Shield" ) )
+      //inputShield = true;
+
+    if( GameInput.GetKeyUp( "Graphook" ) )
       inputGraphook = true;
 
     if( GameInput.GetKeyDown( "Charge" ) )
@@ -502,6 +523,9 @@ public class PlayerController : Character, IDamage
     inputGraphook = false;
   }
 
+  [Header("Shield")]
+  public GameObject Shield;
+
   void Update()
   {
     if( Global.Paused )
@@ -512,6 +536,15 @@ public class PlayerController : Character, IDamage
 
     if( inputGraphook )
       ShootGraphook();
+
+    if( inputShield )
+    {
+      Shield.SetActive( true );
+    }
+    else
+    {
+      Shield.SetActive( false );
+    }
 
     if( inputChargeStart )
       StartCharge();

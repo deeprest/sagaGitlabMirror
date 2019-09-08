@@ -78,6 +78,15 @@ public class Global : MonoBehaviour
   Timer fadeTimer = new Timer();
   public float RepathInterval = 1;
 
+
+  public static string[] CharacterCollideLayers = { "Default", "destructible", "triggerAndCollision" };
+  public static string[] CharacterDamageLayers = { "character" };
+  public static string[] TriggerLayers = { "trigger", "triggerAndCollision" };
+  public static string[] DefaultProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible" };
+  // check first before spawning to avoid colliding with these layers on the first frame
+  public static string[] NoShootLayers = { "Default" };
+  public static string[] BouncyCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile", "destructible" };
+
   [Header( "References" )]
   [SerializeField] GameInputRemapper GameInputRemapper;
   [SerializeField] string InitialSceneName;

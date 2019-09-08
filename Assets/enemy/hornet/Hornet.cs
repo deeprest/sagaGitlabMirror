@@ -104,7 +104,7 @@ public class Hornet : Character
         }
 
         // guns
-        //if( Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Projectile.NoShootLayers )) )
+        //if( Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Global.NoShootLayers )) )
         {
           if( player.x < transform.position.x && player.y < transform.position.y )
           {
@@ -121,7 +121,7 @@ public class Hornet : Character
   {
     shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector3 pos = shotOrigin.position;
-    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Projectile.NoShootLayers ) ) )
+    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.NoShootLayers ) ) )
       weapon.FireWeapon( this, pos, shoot );
   }
 }

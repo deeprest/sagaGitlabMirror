@@ -82,7 +82,8 @@ public class GameInput
     icsKeyboard.keyMap["Down"] = KeyCode.S;
     icsKeyboard.keyMap["Dash"] = KeyCode.Space;
     icsKeyboard.keyMap["Fire"] = KeyCode.Mouse0;
-    icsKeyboard.keyMap["graphook"] = KeyCode.Mouse1;
+    icsKeyboard.keyMap["Graphook"] = KeyCode.None;  //Mouse1;
+    icsKeyboard.keyMap["Shield"] = KeyCode.Mouse1;
     icsKeyboard.keyMap["Pickup"] = KeyCode.E;
     icsKeyboard.keyMap["Charge"] = KeyCode.Mouse0;
     icsKeyboard.keyMap["ToggleAutoAim"] = KeyCode.R;
@@ -100,13 +101,14 @@ public class GameInput
     icsGamepad.keyMap["Fire"] = KeyCode.None;
     icsGamepad.keyMap["Pickup"] = KeyCode.JoystickButton16;
     icsGamepad.keyMap["Charge"] = KeyCode.JoystickButton17;
-    icsGamepad.keyMap["graphook"] = KeyCode.None;
+    icsGamepad.keyMap["Graphook"] = KeyCode.None;
+    icsGamepad.keyMap["Shield"] = KeyCode.None;
     icsGamepad.keyMap["ToggleAutoAim"] = KeyCode.JoystickButton18;
 
     icsGamepad.axisMap["Fire"] = "Joy0Axis5";
     icsGamepad.axisMap["AimX"] = "Joy0Axis2";
     icsGamepad.axisMap["AimY"] = "Joy0Axis3";
-    icsGamepad.axisMap["graphook"] = "Joy0Axis4";
+    icsGamepad.axisMap["Graphook"] = "Joy0Axis4";
 
   }
 

@@ -4,24 +4,15 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-
   public Animator animator;
   public CircleCollider2D circle;
-
   public Transform instigator;
-
   public Damage ContactDamage;
   public float speed = 1;
   public float raycastDistance = 0.2f;
   public float timeout = 2;
-
   //Timer timeoutTimer;
-
   public Vector3 velocity;
-  public static string[] DefaultCollideLayers = { "Default", "character", "triggerAndCollision", "enemy" };
-  //public string[] CollideLayers = DefaultCollideLayers;
-  // check first before spawning to avoid colliding with these layers on the first frame
-  public static string[] NoShootLayers = { "Default" };
 
 
   public AudioClip StartSound;
