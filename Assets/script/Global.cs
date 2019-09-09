@@ -55,7 +55,7 @@ public interface ITrigger
 }
 public interface IDamage
 {
-  void TakeDamage( Damage d );
+  bool TakeDamage( Damage d );
 }
 
 
@@ -68,7 +68,7 @@ public class Global : MonoBehaviour
   public static bool Slowed = false;
   public static bool IsQuiting = false;
 
-  // settings
+  [Header( "Global Settings" )]
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
   public float deadZone = 0.1f;
@@ -77,15 +77,22 @@ public class Global : MonoBehaviour
   [SerializeField] float slowtime = 0.2f;
   Timer fadeTimer = new Timer();
   public float RepathInterval = 1;
+  // sidestep
+  public bool GlobalSidestepping = true;
+  public float SidestepDistance = 1f;
+  public float SidestepRaycastDistance = 1f;
+  public float SidestepInterval = 1f;
+  public float SidestepIgnoreWithinDistanceToGoal = 0.5f;
 
-
-  public static string[] CharacterCollideLayers = { "Default", "destructible", "triggerAndCollision" };
+  // allowing characters to collide introduces potential for "pinch points"
+  public static string[] CharacterCollideLayers = { "Default", "destructible", "triggerAndCollision" }; //, "character", "enemy" };
+  public static string[] CharacterSidestepLayers = { "character", "enemy" };
   public static string[] CharacterDamageLayers = { "character" };
   public static string[] TriggerLayers = { "trigger", "triggerAndCollision" };
   public static string[] DefaultProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible" };
   // check first before spawning to avoid colliding with these layers on the first frame
-  public static string[] NoShootLayers = { "Default" };
-  public static string[] BouncyCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile", "destructible" };
+  public static string[] ProjectileNoShootLayers = { "Default" };
+  public static string[] BouncyGrenadeCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile", "destructible" };
 
   [Header( "References" )]
   [SerializeField] GameInputRemapper GameInputRemapper;

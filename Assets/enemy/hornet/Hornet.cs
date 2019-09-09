@@ -88,7 +88,7 @@ public class Hornet : Character
         else
         {
           UpdatePath();
-          velocity += (WaypointVector.normalized * flySpeed - velocity) * acc * Time.deltaTime;
+          velocity += (MoveDirection.normalized * flySpeed - velocity) * acc * Time.deltaTime;
           //tvel = delta.normalized * flySpeed;
           //velocity += (tvel - velocity) * acc * Time.deltaTime;
           transform.rotation = Quaternion.RotateTowards( transform.rotation, Quaternion.Euler( 0, 0, Mathf.Clamp( velocity.x, -topspeedrot, topspeedrot ) * -rot ), rotspeed * Time.deltaTime );
@@ -121,7 +121,7 @@ public class Hornet : Character
   {
     shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector3 pos = shotOrigin.position;
-    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.NoShootLayers ) ) )
+    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
       weapon.FireWeapon( this, pos, shoot );
   }
 }

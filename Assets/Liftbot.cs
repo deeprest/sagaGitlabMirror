@@ -49,7 +49,7 @@ public class Liftbot : Character
       //velocity = delta.normalized * flySpeed;
     }*/
     UpdatePath();
-    velocity = WaypointVector.normalized * flySpeed;
+    velocity = MoveDirection.normalized * flySpeed;
   }
 
 

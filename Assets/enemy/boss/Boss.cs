@@ -134,7 +134,7 @@ public class Boss : Character
   void Shoot( Vector3 shoot )
   {
     shootRepeatTimer.Start( shootInterval, null, null );
-    if( !Physics2D.Linecast( transform.position, shotOrigin.position, LayerMask.GetMask( Global.NoShootLayers ) ) )
+    if( !Physics2D.Linecast( transform.position, shotOrigin.position, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
       weapon.FireWeapon( this, shotOrigin.position, shoot );
   }
 

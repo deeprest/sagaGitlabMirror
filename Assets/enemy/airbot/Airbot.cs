@@ -8,7 +8,7 @@ public class Airbot : Character
   public float sightRange = 6;
   public float flySpeed = 2;
   public float targetOffset = 0.5f;
-  public float hitPauseOffset = 1;
+  const float hitPauseOffset = 0.5f;
   Vector3 target;
   Timer hitPauseTimer;
   bool hitpause = false;
@@ -30,13 +30,14 @@ public class Airbot : Character
         target = Global.instance.CurrentPlayer.transform.position + Vector3.up * targetOffset;
       Vector3 delta = target - transform.position;
       if( delta.sqrMagnitude < small * small )
-        WaypointVector = Vector3.zero;
+        MoveDirection = Vector3.zero;
       else if( delta.sqrMagnitude < sightRange * sightRange )
-        SetPath( Global.instance.CurrentPlayer.transform.position );
-      //velocity = delta.normalized * flySpeed;
+      {
+        SetPath( target );
+      }
     }
     UpdatePath();
-    velocity = WaypointVector.normalized * flySpeed;
+    velocity = MoveDirection.normalized * flySpeed;
   }
 
 
@@ -51,15 +52,17 @@ public class Airbot : Character
         Damage dmg = Instantiate( ContactDamage );
         dmg.instigator = transform;
         dmg.point = hit.point;
-        dam.TakeDamage( dmg );
-        hitpause = true;
-        target = new Vector3( hit.point.x, hit.point.y, 0 ) + Vector3.up * hitPauseOffset;
-        animator.Play( "laugh" );
-        hitPauseTimer.Start( 2, null, delegate
+        if( dam.TakeDamage( dmg ) )
         {
-          hitpause = false;
-          animator.Play( "idle" );
-        } );
+          hitpause = true;
+          target = new Vector3( hit.point.x, hit.point.y, 0 ) + Vector3.up * hitPauseOffset;
+          animator.Play( "laugh" );
+          hitPauseTimer.Start( 1, null, delegate
+          {
+            hitpause = false;
+            animator.Play( "idle" );
+          } );
+        }
       }
     }
   }

@@ -742,7 +742,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 100
+    maxNumParticles: 50
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -4866,13 +4866,16 @@ MonoBehaviour:
   waypoint: []
   debugPath: []
   AgentTypeName: Small
-  WaypointVector: {x: 0, y: 0}
+  MoveDirection: {x: 0, y: 0}
+  SidestepAvoidance: 1
   audio: {fileID: 82117261715149456}
   audio2: {fileID: 82627251547920718}
   dashSmoke: {fileID: 198502029244883790}
   arm: {fileID: 4897319614591276}
   raydown: 0.2
   downOffset: 0.12
+  headbox: {x: 0.1, y: 0.1}
+  headboxy: -0.1
   downslopefudge: 0.2
   moveVel: 1.5
   jumpVel: 5
@@ -4916,8 +4919,6 @@ MonoBehaviour:
   damageLift: 2
   damagePushAmount: 1
   highlightPickupRange: 1
-  headbox: {x: 0.1, y: 0.1}
-  headboxy: -0.1
   graphookTip: {fileID: 4836708145371954099}
   grapCableRender: {fileID: 525432861771323797}
   grapDistance: 10
@@ -5250,6 +5251,7 @@ GameObject:
   - component: {fileID: 3521304662830707932}
   - component: {fileID: 394507305719372179}
   - component: {fileID: 8432332649946774370}
+  - component: {fileID: 5007158516263336340}
   m_Layer: 0
   m_Name: Shield
   m_TagString: Untagged
@@ -5366,6 +5368,28 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &5007158516263336340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2937676852495435558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentFrameIndex: 0
+  sac: []
+  sr: {fileID: 394507305719372179}
+  image: {fileID: 0}
+  flipX: 0
+  CurrentSequence: {fileID: 0}
+  isPlaying: 0
+  playAtAStart: 1
+  anims:
+  - {fileID: 0}
 --- !u!1 &4836708145371954099
 GameObject:
   m_ObjectHideFlags: 0

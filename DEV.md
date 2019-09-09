@@ -1,14 +1,11 @@
 
 # todo
 - Menu with control options (and remap)
-+ camera bounds
-= borrow camera dolly/ramp from Flatlander, find ideal camera distance(s); lock while in chamber.
-+ aim auto-snap within distance
-+ try aim snap to 1/8th
 - gamepad controls; camera, button to shoot or autoaim
-
 - BOSS. punchy mech. grenadier. graphook foe.
 - audio: intro, loop, battle.
+
+# ideas
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
 - weapon ideas:  doublewhammy/triple, rockets, seeking missiles, beam, stickybomb, invisible
@@ -18,6 +15,13 @@
 - idea: generate an area by connecting random nodes that represent the player's movement- run(duration increments), jump parabola, dash-jump, wall-jump, wall-slide, graphook,
 - idea: z-doors/manifold-doors to other rooms that exist in the same space. keep all objects live, allow enemies to enter doors.
 - idea: AI ability to navigate/traverse environment to follow player/attack. First pathfind, then plot out movement using "movement-nodes"
+- wall slide at angle in and out. building exterior
+- ceiling claw climbing
+- dash with claw slash
+- serialize dead robot parts
+- enemy creature that collects parts and builds onto itself
+- subway. fast travel or GTA2 style train?
+- character model 3d. linear animations
 
 # bugs
 - release build screen fade in on level transition gets stuck

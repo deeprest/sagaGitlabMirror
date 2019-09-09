@@ -14,7 +14,9 @@ public class PlayerController : Character, IDamage
   // settings
   public float raydown = 0.2f;
   public float downOffset = 0.16f;
-
+  // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
+  public Vector2 headbox = new Vector2( .1f, .1f );
+  public float headboxy = -0.1f;
   public float downslopefudge = 0f;
   const float corner = 0.707f;
 
@@ -52,11 +54,9 @@ public class PlayerController : Character, IDamage
   float dashStart;
   float jumpStart;
   float landStart;
-
-
-
   Vector3 hitBottomNormal;
 
+  [Header("Weapon")]
   public Weapon weapon;
   Timer shootRepeatTimer = new Timer();
   ParticleSystem chargeEffect = null;
@@ -100,6 +100,8 @@ public class PlayerController : Character, IDamage
   void Start()
   {
     colliders = GetComponentsInChildren<Collider2D>();
+    foreach( var cld in colliders )
+      IgnoreCollideObjects.Add( cld.transform );
     spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
     graphookTip.SetActive( false );
     grapCableRender.gameObject.SetActive( false );
@@ -138,9 +140,6 @@ public class PlayerController : Character, IDamage
     }
     return closest;
   }
-
-  public Vector2 headbox = new Vector2( .1f, .1f );
-  public float headboxy = -0.1f;
 
   new void UpdateCollision( float dT )
   {
@@ -270,8 +269,7 @@ public class PlayerController : Character, IDamage
         break;
       }
     }
-    // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
-    //Vector2 headbox = new Vector2( box.size.x, .1f );
+
     hits = Physics2D.BoxCastAll( adjust + Vector2.down * headboxy, headbox, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
@@ -320,7 +318,7 @@ public class PlayerController : Character, IDamage
   {
     shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector3 pos = arm.position + shoot.normalized * armRadius;
-    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.NoShootLayers ) ) )
+    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
       weapon.FireWeapon( this, pos, shoot );
   }
 
@@ -348,7 +346,7 @@ public class PlayerController : Character, IDamage
     if( grapPulling )
       StopGrap();
     Vector3 pos = arm.position + shoot.normalized * armRadius;
-    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.NoShootLayers ) ) )
+    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
     {
       RaycastHit2D hit = Physics2D.Raycast( pos, shoot, grapDistance, LayerMask.GetMask( new string[] { "Default", "triggerAndCollision", "enemy" } ) );
       if( hit )
@@ -414,7 +412,7 @@ public class PlayerController : Character, IDamage
       if( chargeAmount > chargeMin )
       {
         Vector3 pos = arm.position + cursorDelta.normalized * armRadius;
-        if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.NoShootLayers ) ) )
+        if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
           weapon.ChargeVariant.FireWeapon( this, pos, shoot );
       }
     }
@@ -887,10 +885,10 @@ public class PlayerController : Character, IDamage
     } );
   }
 
-  new public void TakeDamage( Damage d )
+  new public bool TakeDamage( Damage d )
   {
     if( invulnerable )
-      return;
+      return false;
 
     //StopCharge();
     audio.PlayOneShot( soundDamage );
@@ -924,7 +922,7 @@ public class PlayerController : Character, IDamage
         damagePulseTimer.Stop( false );
       } );
     } );
-
+    return true;
   }
 
   public override void PreSceneTransition()
