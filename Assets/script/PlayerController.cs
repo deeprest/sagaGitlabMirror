@@ -596,7 +596,7 @@ public class PlayerController : Character, IDamage
       if( dashing )
       {
         if( !(onGround || collideLeft || collideRight) )
-          StopDash();
+          dashSmoke.Stop();
         if( facingRight )
         {
           if( onGround || inputRight )
