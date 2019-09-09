@@ -595,8 +595,6 @@ public class PlayerController : Character, IDamage
       }
       if( dashing )
       {
-        if( !(onGround || collideLeft || collideRight) )
-          dashSmoke.Stop();
         if( facingRight )
         {
           if( onGround || inputRight )
@@ -701,6 +699,9 @@ public class PlayerController : Character, IDamage
         dashSmoke.Stop();
       }
     }
+
+    if( !(onGround || collideLeft || collideRight) )
+      dashSmoke.Stop();
 
     if( takingDamage )
     {
