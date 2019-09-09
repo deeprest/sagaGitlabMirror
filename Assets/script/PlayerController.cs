@@ -595,6 +595,8 @@ public class PlayerController : Character, IDamage
       }
       if( dashing )
       {
+        if( !(onGround || collideLeft || collideRight) )
+          StopDash();
         if( facingRight )
         {
           if( onGround || inputRight )
