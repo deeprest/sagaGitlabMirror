@@ -1,9 +1,16 @@
 
 # todo
+- BOSS. punchy mech. grenadier. graphook foe.
+- music: intro, loop, battle.
 - Menu with control options (and remap)
 - gamepad controls; camera, button to shoot or autoaim
-- BOSS. punchy mech. grenadier. graphook foe.
-- audio: intro, loop, battle.
+
+- hide arm while not shooting
+- wall jump minimum anim duration
+- double tap wall jump pushes away from wall
+- add dash anim effect
+- add spark effect to wall jump
+
 
 # ideas
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)

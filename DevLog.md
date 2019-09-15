@@ -1,7 +1,7 @@
 
-Unity is great for static levels, skeletal animations
+Unity is great for static levels
 
-chose to use no 2d physics. just want collision detection
+chose to use no 2d physics. just want collision detection. Used boxcast for directional response.
 sprite animations (not in legacy animation, and not using state machine)
 multi-part sprite characters, animation frames
 normal maps. cannot use sprite atlas
@@ -9,12 +9,27 @@ lighting
 deployment
 
 
-+ intro sequence: audio, fades, dialogue text
-+ charge gets stuck on (cause: being hit while charging)
+- dialogue box (inprogress)
+
+# Enemies
++ navmesh + sidestep
++ wheelbot
++ liftbot
++ airbot
 + hornet
   + forward/back tilt
   + guns
   + drop enemies (wheels instead of walkers)
   + death sequence
++ Mech (inprogress)
++ chopdrop
+
+# Abilities
 + grappling hook
-+ sound for graphook
+- shield (inprogress)
+- slowmo (inprogress)
+
+# Weapons
++ xbuster + charge
+* multi-shot, variants
++ bouncy grenade

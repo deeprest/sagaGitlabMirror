@@ -82,8 +82,8 @@ public class GameInput
     icsKeyboard.keyMap["Down"] = KeyCode.S;
     icsKeyboard.keyMap["Dash"] = KeyCode.Space;
     icsKeyboard.keyMap["Fire"] = KeyCode.Mouse0;
-    icsKeyboard.keyMap["Graphook"] = KeyCode.None;  //Mouse1;
-    icsKeyboard.keyMap["Shield"] = KeyCode.Mouse1;
+    icsKeyboard.keyMap["Graphook"] = KeyCode.Mouse1;  //Mouse1;
+    icsKeyboard.keyMap["Shield"] = KeyCode.None;
     icsKeyboard.keyMap["Pickup"] = KeyCode.E;
     icsKeyboard.keyMap["Charge"] = KeyCode.Mouse0;
     icsKeyboard.keyMap["ToggleAutoAim"] = KeyCode.R;
