@@ -6,7 +6,6 @@ public class SceneHome : SceneScript
   public CharacterIdentity drcain;
   public JabberPlayer drcainJabber;
   public SpriteAnimator drcainAnimator;
-  public bool runPlayer;
 
   public override void StartScene()
   {

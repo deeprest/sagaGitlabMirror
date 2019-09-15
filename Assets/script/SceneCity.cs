@@ -13,7 +13,7 @@ public class SceneCity : SceneScript
     }
 
     Global.instance.ChopDrop();
-    Global.instance.ready.SetActive( true );
+    //Global.instance.ready.SetActive( true );
 
     Global.instance.CurrentPlayer.playerInput = false;
     new Timer( 5, delegate

@@ -6,7 +6,7 @@ public class Door : MonoBehaviour, ITrigger
 {
   [SerializeField] SpriteAnimator sa;
   [SerializeField] Collider2D cd;
-  [SerializeField] new AudioSource audio;
+  [SerializeField] AudioSource audio;
   public bool isOpen = false;
   bool transitioning = false;
   public AnimSequence open;

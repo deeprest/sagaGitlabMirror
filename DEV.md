@@ -1,10 +1,12 @@
 
+Saga2020
+
 # todo
 - BOSS. punchy mech. grenadier. graphook foe.
 - music: intro, loop, battle.
 - Menu with control options (and remap)
 - gamepad controls; camera, button to shoot or autoaim
-
+  
 - hide arm while not shooting
 - wall jump minimum anim duration
 - double tap wall jump pushes away from wall
@@ -33,7 +35,6 @@
 # bugs
 - release build screen fade in on level transition gets stuck
 - reproducible: charge particles on after transition. reset player state on level transition
-- once: stuck in mid-air (after transition?)
 - reproducible: jump up wall sprite glitch
 
 **DESIGN**
@@ -77,7 +78,7 @@ AI, navigation mesh
 - take damage
 - low health
 
-1. atmosphere
+1. atmosphere.
 
 2. sounds
 Consistent with instruments in the music.

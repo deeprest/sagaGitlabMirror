@@ -18,7 +18,8 @@ public class FloatValue
       {
         _value = value;
         _valueInitial = false;
-        onValueChanged( _value );
+        if( onValueChanged != null )
+          onValueChanged.Invoke( _value );
         // check for differing value to avoid infinite loop 
         updateView( _value );
       }
@@ -70,7 +71,9 @@ public class BoolValue
       {
         _value = value;
         _valueInitial = false;
-        onValueChanged( _value );
+        if( onValueChanged != null )
+          onValueChanged.Invoke( _value );
+        //onValueChanged( _value );
         // check for differing value to avoid infinite loop 
         updateView( _value );
       }

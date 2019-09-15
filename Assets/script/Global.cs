@@ -19,17 +19,16 @@ using UnityEditor;
 public class GlobalEditor : Editor
 {
   Global obj;
-  int screenshotInterval;
-  Timer ScreenshotTimer = new Timer();
+
 
   public override void OnInspectorGUI()
   {
-    screenshotInterval = EditorGUILayout.IntField( "Screenshot Interval", screenshotInterval );
+    //screenshotInterval = EditorGUILayout.IntField( "Screenshot Interval", screenshotInterval );
     obj = target as Global;
-    if( ScreenshotTimer.IsActive )
+    if( obj.ScreenshotTimer.IsActive )
     {
       if( GUI.Button( EditorGUILayout.GetControlRect(), "Stop Screenshot Timer" ) )
-        ScreenshotTimer.Stop( false );
+        obj.ScreenshotTimer.Stop( false );
     }
     else
     {
@@ -40,7 +39,7 @@ public class GlobalEditor : Editor
   }
   void StartTimer()
   {
-    ScreenshotTimer.Start( screenshotInterval, null, delegate
+    obj.ScreenshotTimer.Start( obj.screenshotInterval, null, delegate
     {
       obj.Screenshot();
       StartTimer();
@@ -72,6 +71,10 @@ public class Global : MonoBehaviour
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
   public float deadZone = 0.1f;
+
+  public int screenshotInterval;
+  public Timer ScreenshotTimer = new Timer();
+
   [Tooltip( "Pretend this is a build we're running" )]
   public bool SimulatePlayer = false;
   [SerializeField] float slowtime = 0.2f;
@@ -122,8 +125,9 @@ public class Global : MonoBehaviour
   [SerializeField] Image fader;
   public GameObject ready;
   // cursor
-  public RectTransform Cursor;
-  public Image cursorImage;
+  public Transform Cursor;
+  //public Image cursorImage;
+  public Sprite cursorSprite;
   public float cursorOuter = 100;
   public float cursorInner = 50;
   public Vector3 CursorDelta;
@@ -137,13 +141,22 @@ public class Global : MonoBehaviour
   public bool AimSnap;
   public float SnapAngleDivide = 8;
   public float SnapCursorDistance = 1;
-  public RectTransform CursorSnapped;
+  public Transform CursorSnapped;
   public bool AutoAim;
-  public RectTransform CursorAutoAim;
+  public Transform CursorAutoAim;
   public float AutoAimCircleRadius = 1;
   public float AutoAimDistance = 5;
   // status 
   public Image weaponIcon;
+
+  [Header( "Screen Settings" )]
+  bool Fullscreen;
+  int ScreenWidth;
+  int ScreenHeight;
+  float UIScale = 1;
+  public GameObject ScreenSettingsPrompt;
+  public Text ScreenSettingsCountdown;
+  Timer ScreenSettingsCountdownTimer = new Timer();
 
   [Header( "Debug" )]
   [SerializeField] Text debugButtons;
@@ -198,6 +211,7 @@ public class Global : MonoBehaviour
 
     InitializeSettings();
     ReadSettings();
+    ApplyScreenSettings();
 
     GameObject[] res = Resources.LoadAll<GameObject>( "" );
     foreach( GameObject go in res )
@@ -228,7 +242,7 @@ public class Global : MonoBehaviour
       Camera.main.fieldOfView = 20;
 
     // use cursor scale instead of serialized value
-    SetCursor( cursorImage.sprite );
+    SetCursor( cursorSprite );
 
     if( Application.isEditor && !SimulatePlayer )
     {
@@ -297,8 +311,7 @@ public class Global : MonoBehaviour
       //progTarget = ao.progress;
       //print( ao.progress.ToString() );
       yield return null;
-      //yield return new WaitForEndOfFrame();
-      yield return new WaitForSecondsRealtime( 1 );
+      //yield return new WaitForSecondsRealtime( 1 );
     }
     loadingScene = false;
 
@@ -527,9 +540,9 @@ public class Global : MonoBehaviour
         float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
         Vector3 snapped = new Vector3( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ), 0 );
         AimPosition = origin + snapped * SnapCursorDistance;
-        CursorSnapped.anchoredPosition = Camera.main.WorldToScreenPoint( AimPosition );
+        CursorSnapped.position = AimPosition;
         CursorWorldPosition = origin + CursorDelta * CursorFactor;
-        Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
+        Cursor.position = CursorWorldPosition;
       }
       else
       {
@@ -539,7 +552,8 @@ public class Global : MonoBehaviour
 
         AimPosition = origin + CursorDelta * CursorFactor;
         CursorWorldPosition = AimPosition;
-        Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
+        //Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
+        Cursor.position = CursorWorldPosition;
       }
 
 
@@ -566,12 +580,12 @@ public class Global : MonoBehaviour
         else
         {
           CursorAutoAim.gameObject.SetActive( true );
-          // todo adjust for flight path
+          // todo adjust for flight path 
           //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
           AimPosition = closest.position;
-          CursorAutoAim.anchoredPosition = Camera.main.WorldToScreenPoint( AimPosition );
+          CursorAutoAim.position = AimPosition;
         }
-        Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
+        Cursor.position = CursorWorldPosition;
 
       }
       else
@@ -665,8 +679,8 @@ public class Global : MonoBehaviour
 
   public void SetCursor( Sprite spr )
   {
-    cursorImage.sprite = spr;
-    Cursor.sizeDelta = new Vector2( spr.rect.width, spr.rect.height ) * cursorScale; // * spr.pixelsPerUnit;
+    cursorSprite = spr;
+    Cursor.localScale = Vector3.one * cursorScale;
   }
 
   void ShowMenu( bool show )
@@ -979,6 +993,11 @@ public class Global : MonoBehaviour
       }
     }
 
+    CreateBoolSetting( "Fullscreen", false, null );  //delegate ( bool value ) { Fullscreen = value; } );
+    CreateFloatSetting( "ScreenWidth", 1024, null );  //delegate ( float value ) { ScreenWidth = Mathf.FloorToInt( value ); } );
+    CreateFloatSetting( "ScreenHeight", 1024, null );  //delegate ( float value ) { ScreenHeight = Mathf.FloorToInt( value ); } );
+    CreateFloatSetting( "UIScale", 1, null );// delegate ( float value ) { UI.GetComponent<CanvasScaler>().scaleFactor = value; } );
+
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
     CreateBoolSetting( "CursorInfluence", true, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
     CreateBoolSetting( "AimSnap", true, delegate ( bool value ) { AimSnap = value; } );
@@ -1003,13 +1022,13 @@ public class Global : MonoBehaviour
         JsonReader reader = new JsonReader( gameJson );
         json = JsonMapper.ToObject( reader );
       }
+
+      foreach( var pair in BoolSetting )
+        pair.Value.Value = JsonUtil.Read<bool>( pair.Value.Value, json, "settings", pair.Key );
+
+      foreach( var pair in FloatSetting )
+        pair.Value.Value = JsonUtil.Read<float>( pair.Value.Value, json, "settings", pair.Key );
     }
-
-    foreach( var pair in BoolSetting )
-      pair.Value.Value = JsonUtil.Read<bool>( pair.Value.Value, json, "settings", pair.Key );
-
-    foreach( var pair in FloatSetting )
-      pair.Value.Value = JsonUtil.Read<float>( pair.Value.Value, json, "settings", pair.Key );
   }
 
   void WriteSettings()
@@ -1033,6 +1052,7 @@ public class Global : MonoBehaviour
     writer.WriteObjectEnd();
 
     writer.WriteObjectEnd(); // root end
+    print( settingsPath );
     File.WriteAllText( settingsPath, writer.ToString() );
   }
 
@@ -1062,6 +1082,56 @@ public class Global : MonoBehaviour
         Debug.LogWarning( "no level directory or zip file in build: " + name );
       }
     }
+  }
+
+
+
+  public void ApplyScreenSettings()
+  {
+    Fullscreen = BoolSetting["Fullscreen"].Value;
+    ScreenWidth = (int)FloatSetting["ScreenWidth"].Value;
+    ScreenHeight = (int)FloatSetting["ScreenHeight"].Value;
+    UIScale = FloatSetting["UIScale"].Value;
+    Screen.SetResolution( ScreenWidth, ScreenHeight, Fullscreen );
+    UI.GetComponent<CanvasScaler>().scaleFactor = UIScale;
+
+    ScreenSettingsPrompt.SetActive( false );
+    ScreenSettingsCountdownTimer.Stop( false );
+  }
+
+  public void ScreenChangePrompt()
+  {
+    Fullscreen = Screen.fullScreen;
+    ScreenWidth = Screen.width;
+    ScreenHeight = Screen.height;
+    // UIScale ?
+
+    ScreenSettingsPrompt.SetActive( true );
+    Screen.SetResolution( (int)FloatSetting["ScreenWidth"].Value, (int)FloatSetting["ScreenHeight"].Value, BoolSetting["Fullscreen"].Value );
+    UI.GetComponent<CanvasScaler>().scaleFactor = FloatSetting["UIScale"].Value;
+
+    TimerParams tp = new TimerParams
+    {
+      unscaledTime = true,
+      repeat = false,
+      duration = 10,
+      UpdateDelegate = delegate ( Timer obj )
+      {
+        ScreenSettingsCountdown.text = "Accept changes or revert in " + (10 - obj.ProgressSeconds).ToString( "0" ) + " seconds";
+      },
+      CompleteDelegate = RevertScreenSettings
+    };
+    ScreenSettingsCountdownTimer.Start( tp );
+  }
+
+  public void RevertScreenSettings()
+  {
+    BoolSetting["Fullscreen"].Value = Fullscreen;
+    FloatSetting["ScreenWidth"].Value = ScreenWidth;
+    FloatSetting["ScreenHeight"].Value = ScreenHeight;
+    FloatSetting["UIScale"].Value = UIScale;
+
+    ApplyScreenSettings();
   }
 
 }
