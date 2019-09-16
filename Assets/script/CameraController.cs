@@ -64,20 +64,23 @@ public class CameraController : MonoBehaviour
         pos.y = lookTarget.y;
       }
 
-      //if( CursorInfluence )
-      //{
-      //  Vector3 tmp = Vector3.Lerp( pos, Global.instance.CursorWorldPosition, cursorAlpha );
-      //  pos.x = tmp.x;
-      //  pos.z = zOffset;
-      //}
-
       if( Global.instance.CameraPoly != null )
       {
-        // draw gray lines showing camera rectangle on z=0
-        float yangle = Mathf.Deg2Rad * Camera.main.fieldOfView * 0.5f;
-        float hh = Mathf.Tan( yangle ) * -transform.position.z;
-        float xangle = yangle * ((float)Camera.main.pixelWidth / (float)Camera.main.pixelHeight);
-        float hw = Mathf.Tan( xangle ) * -transform.position.z;
+        float hh, hw, xangle = 0, yangle = 0;
+        if( Camera.main.orthographic )
+        {
+          hh = Camera.main.orthographicSize;
+          hw = Camera.main.orthographicSize * Camera.main.aspect;
+        }
+        else
+        {
+          // draw gray lines showing camera rectangle on z=0
+          yangle = Mathf.Deg2Rad * Camera.main.fieldOfView * 0.5f;
+          hh = Mathf.Tan( yangle ) * -transform.position.z;
+          xangle = yangle * ((float)Camera.main.pixelWidth / (float)Camera.main.pixelHeight);
+          hw = Mathf.Tan( xangle ) * -transform.position.z;
+        }
+
 
         Vector2 UL = (Vector2)pos + Vector2.left * hw + Vector2.up * hh;
         if( ClipToInsidePolygon2D( Global.instance.CameraPoly, ref UL ) )
