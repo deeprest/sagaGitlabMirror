@@ -1,18 +1,26 @@
+# Design Mistakes to Avoid
+starting too big
+onboarding player, ease of learning mechanics
+idea commitment
+overly rigid design
+story upfront
+polish lots
+add things arbitrarily
 
-Saga2020
 
 # todo
 - BOSS. punchy mech. grenadier. graphook foe.
 - music: intro, loop, battle.
 - Menu with control options (and remap)
 - gamepad controls; camera, button to shoot or autoaim
-  
+
 - hide arm while not shooting
 - wall jump minimum anim duration
 - double tap wall jump pushes away from wall
 - add dash anim effect
 - add spark effect to wall jump
 
+- use state machine for enemies? how capable are the bots? They already pathfind and sidestep.
 
 # ideas
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)

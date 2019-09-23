@@ -56,8 +56,10 @@ public class PlayerController : Character, IDamage
   float landStart;
   Vector3 hitBottomNormal;
 
-  [Header("Weapon")]
+  [Header( "Weapon" )]
   public Weapon weapon;
+  public int CurrentWeaponIndex;
+  [SerializeField] Weapon[] weapons;
   Timer shootRepeatTimer = new Timer();
   ParticleSystem chargeEffect = null;
   float chargeAmount = 0;
@@ -105,6 +107,21 @@ public class PlayerController : Character, IDamage
     spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
     graphookTip.SetActive( false );
     grapCableRender.gameObject.SetActive( false );
+
+    weapon = weapons[CurrentWeaponIndex];
+  }
+
+  void AssignWeapon( Weapon wpn )
+  {
+    weapon = wpn;
+    Global.instance.weaponIcon.sprite = weapon.icon;
+    Global.instance.SetCursor( weapon.cursor );
+  }
+
+  void NextWeapon()
+  {
+    CurrentWeaponIndex = (CurrentWeaponIndex + 1) % weapons.Length;
+    AssignWeapon( weapons[CurrentWeaponIndex] );
   }
 
   void OnDestroy()
@@ -140,6 +157,9 @@ public class PlayerController : Character, IDamage
     }
     return closest;
   }
+
+
+  Vector2 wallSlideNormal;
 
   new void UpdateCollision( float dT )
   {
@@ -293,6 +313,7 @@ public class PlayerController : Character, IDamage
         collideLeft = true;
         hitLeft = hit;
         adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
+        wallSlideNormal = hit.normal;
         break;
       }
     }
@@ -307,6 +328,7 @@ public class PlayerController : Character, IDamage
         collideRight = true;
         hitRight = hit;
         adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
+        wallSlideNormal = hit.normal;
         break;
       }
     }
@@ -464,15 +486,13 @@ public class PlayerController : Character, IDamage
       if( closestPickup != null )
       {
         closestPickup.Selected();
-        weapon = closestPickup.weapon;
-        Global.instance.weaponIcon.sprite = weapon.icon;
-        Global.instance.SetCursor( weapon.cursor );
+        AssignWeapon( closestPickup.weapon );
       }
     }
 
     inputShield = GameInput.GetKey( "Shield" );
     //if( GameInput.GetKey( "Shield" ) )
-      //inputShield = true;
+    //inputShield = true;
 
     if( GameInput.GetKeyUp( "Graphook" ) )
       inputGraphook = true;
@@ -505,6 +525,8 @@ public class PlayerController : Character, IDamage
     if( GameInput.GetKeyUp( "Jump" ) )
       inputJumpEnd = true;
 
+    if( GameInput.GetKeyDown( "NextWeapon" ) )
+      NextWeapon();
   }
 
   void ResetInput()
@@ -521,7 +543,7 @@ public class PlayerController : Character, IDamage
     inputGraphook = false;
   }
 
-  [Header("Shield")]
+  [Header( "Shield" )]
   public GameObject Shield;
 
   void Update()
@@ -651,6 +673,8 @@ public class PlayerController : Character, IDamage
     if( !jumping )
       anim = "fall";
 
+    // hack reset rotation in case there is no wall slide
+    transform.rotation = Quaternion.Euler( 0, 0, 0 );
 
     if( collideRight )
     {
@@ -668,6 +692,7 @@ public class PlayerController : Character, IDamage
           dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
           if( !dashSmoke.isPlaying )
             dashSmoke.Play();
+          transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( wallSlideNormal.y, -wallSlideNormal.x ) );
         }
       }
       else
@@ -692,6 +717,8 @@ public class PlayerController : Character, IDamage
           dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
           if( !dashSmoke.isPlaying )
             dashSmoke.Play();
+
+          transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( -wallSlideNormal.y, wallSlideNormal.x ) );
         }
       }
       else

@@ -2719,6 +2719,8 @@ MonoBehaviour:
   AutoAimCircleRadius: 1
   AutoAimDistance: 5
   weaponIcon: {fileID: 888078754791588591}
+  ScreenSettingsPrompt: {fileID: 2505034203747348761}
+  ScreenSettingsCountdown: {fileID: 5907061491218795952}
   debugButtons: {fileID: 5150060964763861140}
   debugText: {fileID: 408788475274947586}
   progress: {fileID: 6277160978111716213}
@@ -2744,8 +2746,6 @@ MonoBehaviour:
   SpeechRange: 8
   ToggleTemplate: {fileID: 6393837748405022823}
   SliderTemplate: {fileID: 1686713259436458748}
-  ScreenSettingsPrompt: {fileID: 2505034203747348761}
-  ScreenSettingsCountdown: {fileID: 5907061491218795952}
 --- !u!82 &681935436
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2920,6 +2920,8 @@ MonoBehaviour:
   zOffset: -12
   yHalfWidth: 0.5
   EncompassBounds: 0
+  orthoTarget: 2
+  orthoSpeed: 10
   snapToPixel: 0
   snapDivide: 1
   pixelSnap: 1

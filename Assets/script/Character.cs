@@ -333,6 +333,11 @@ public class Character : MonoBehaviour, IDamage
 #endif
 
     }
+    else
+    {
+      // no path
+      MoveDirection = Vector2.zero;
+    }
 
     if( Global.instance.GlobalSidestepping && SidestepAvoidance )
     {
@@ -366,6 +371,8 @@ public class Character : MonoBehaviour, IDamage
       }
       MoveDirection += Sidestep;
     }
+
+
 
 #if DEBUG_LINES
     Debug.DrawLine( transform.position, (Vector2)transform.position + MoveDirection.normalized * 0.5f, Color.magenta );

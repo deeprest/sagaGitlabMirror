@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class XBuster : Projectile
+public class BasicProjectile : Projectile
 {
   public float HitTimeout = 0.1f;
   public new Light light;
-
+  public Vector3 constantAcceleration;
   Timer timeoutTimer;
+  int HitCount;
+  public int DieAfterHitCount;
 
   void OnDestroy()
   {
@@ -28,10 +30,24 @@ public class XBuster : Projectile
     transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( velocity.normalized.y, velocity.normalized.x ) ) );
   }
 
+  void Hit( Vector3 position )
+  {
+    transform.position = position;
+    enabled = false;
+    light.enabled = false;
+    animator.Play( "hit" );
+    timeoutTimer.Stop( false );
+    timeoutTimer = new Timer( HitTimeout, null, delegate
+    {
+      if( gameObject != null )
+        Destroy( gameObject );
+    } );
+  }
+
   void Update()
   {
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( Global.DefaultProjectileCollideLayers ) );
-    if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf(instigator) ) )
+    if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator )) )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
@@ -39,26 +55,25 @@ public class XBuster : Projectile
         Damage dmg = Instantiate<Damage>( ContactDamage );
         dmg.instigator = transform;
         dmg.point = hit.point;
-        dam.TakeDamage( dmg );
+        if( dam.TakeDamage( dmg ) )
+        {
+          HitCount++;
+          if( HitCount >= DieAfterHitCount )
+          {
+            Hit( hit.point );
+          }
+        }
       }
-
-      enabled = false;
-      light.enabled = false;
-      transform.position = hit.point;
-      animator.Play( "hit" );
-      timeoutTimer.Stop( false );
-      timeoutTimer = new Timer( HitTimeout, null, delegate
+      else
       {
-        if( gameObject != null )
-          Destroy( gameObject );
-      } );
-
+        Hit( hit.point );
+      }
     }
     else
     {
+      velocity += constantAcceleration * Time.deltaTime;
       transform.position += velocity * Time.deltaTime;
     }
-
     //SpriteRenderer sr = GetComponent<SpriteRenderer>();
     //sr.color = Global.instance.shiftyColor;
     //light.color = Global.instance.shiftyColor;

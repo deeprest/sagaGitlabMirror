@@ -52,9 +52,17 @@ public interface ITrigger
 {
   void Trigger( Transform instigator );
 }
+
 public interface IDamage
 {
   bool TakeDamage( Damage d );
+}
+
+public interface ISelect
+{
+  void Highlight();
+  void Unhighlight();
+  void Selected();
 }
 
 
@@ -401,7 +409,8 @@ public class Global : MonoBehaviour
     {
       if( Camera.main.orthographic )
       {
-        Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
+        CameraController.orthoTarget += Input.GetAxis( "Zoom" );
+        //Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
         debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
       }
       else
@@ -920,7 +929,7 @@ public class Global : MonoBehaviour
   {
     CameraPoly = poly;
     // camera poly bounds points are local to polygon
-    CameraPolyBounds = new UnityEngine.Bounds();
+    CameraPolyBounds = new Bounds();
     foreach( var p in CameraPoly.points )
       CameraPolyBounds.Encapsulate( p );
   }

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4893524897785194}
   - component: {fileID: 1821122072}
-  - component: {fileID: 1821122071}
   m_Layer: 9
   m_Name: clouds
   m_TagString: Untagged
@@ -80,18 +79,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1821122071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1900237170319340}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aaab33c2eac42445783b78788148b90f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rate: 1
-  rateVertical: 0.5
-  position: {x: 0, y: 0, z: 0}

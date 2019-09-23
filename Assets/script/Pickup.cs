@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pickup : MonoBehaviour
+public class Pickup : MonoBehaviour, ISelect
 {
   [SerializeField] Animator animator;
   public Weapon weapon;

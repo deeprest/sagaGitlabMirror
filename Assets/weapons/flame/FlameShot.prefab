@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 58790195297255388}
   - component: {fileID: 212190135428314220}
   - component: {fileID: 4025981189729564986}
-  - component: {fileID: 3586802189887110494}
+  - component: {fileID: 7307074303829369182}
   m_Layer: 11
-  m_Name: XBusterShot
+  m_Name: FlameShot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,7 +50,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.05
+  m_Radius: 0.1
 --- !u!212 &212190135428314220
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -88,8 +88,8 @@ SpriteRenderer:
   m_SortingLayerID: 1445702261
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b852c4d2216af4dd48b6e429a2346604, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300016, guid: b852c4d2216af4dd48b6e429a2346604, type: 3}
+  m_Color: {r: 0.42700002, g: 0.35640728, b: 0.1687339, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -107,7 +107,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1227316525270448}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: f5c757d042c22456ca369dd98990b1ea, type: 2}
   m_CullingMode: 0
@@ -118,7 +118,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &3586802189887110494
+--- !u!114 &7307074303829369182
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -133,16 +133,15 @@ MonoBehaviour:
   animator: {fileID: 4025981189729564986}
   circle: {fileID: 58790195297255388}
   instigator: {fileID: 0}
-  ContactDamage: {fileID: 11400000, guid: 601397d903e4744ad818ea898f162fff, type: 2}
-  speed: 10
+  ContactDamage: {fileID: 11400000, guid: 9ee6504c4d3a34696b22db80eccab972, type: 2}
+  speed: 5
   raycastDistance: 0.2
-  timeout: 3
+  timeout: 1
   velocity: {x: 0, y: 0, z: 0}
-  StartSound: {fileID: 8300000, guid: 1c1f59a9693c44e518b4ee356051971f, type: 3}
+  StartSound: {fileID: 8300000, guid: ec22311f57e264c6999aa70be70d1f4b, type: 3}
   HitTimeout: 0.1
   light: {fileID: 108267418089597158}
-  constantAcceleration: {x: 0, y: 0, z: 0}
-  DieAfterHitCount: 1
+  constantAcceleration: {x: 0, y: 5, z: 0}
 --- !u!1 &1921470626033100
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,9 +183,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 0.972, g: 0.6144693, b: 0.38588408, a: 1}
-  m_Intensity: 1
-  m_Range: 3
+  m_Color: {r: 0.972, g: 0.81031287, b: 0.38588402, a: 1}
+  m_Intensity: 0.5
+  m_Range: 4
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -207,7 +206,7 @@ Light:
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0

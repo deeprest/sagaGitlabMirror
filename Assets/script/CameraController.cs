@@ -17,6 +17,17 @@ public class CameraController : MonoBehaviour
   Vector3 pos;
   public bool EncompassBounds = false;
 
+  public float orthoTarget = 1;
+  public float orthoSpeed = 1;
+
+  public bool snapToPixel = true;
+  const float pixelDensity = 64;
+  public float snapDivide = 1;
+  public float pixelSnap;
+  public float presnap;
+  public float snapped;
+
+
   public void LerpTo( GameObject go )
   {
     LookTarget = go;
@@ -40,6 +51,8 @@ public class CameraController : MonoBehaviour
 
   public void CameraLateUpdate()
   {
+    float ortho = orthoTarget;
+
     if( !lerp.enabled && LookTarget != null )
     {
       Vector3 lookTarget = LookTarget.transform.position;
@@ -126,8 +139,13 @@ public class CameraController : MonoBehaviour
         {
           pos.x = Global.instance.CameraPoly.transform.position.x + Global.instance.CameraPolyBounds.center.x;
           pos.y = Global.instance.CameraPoly.transform.position.y + Global.instance.CameraPolyBounds.center.y;
-          UnityEngine.Bounds bounds = Global.instance.CameraPolyBounds;
-          pos.z = -Mathf.Max( bounds.extents.x / Mathf.Sin( xangle ), bounds.extents.y / Mathf.Sin( yangle ) );
+          Bounds bounds = Global.instance.CameraPolyBounds;
+          if( Camera.main.orthographic )
+          {
+            ortho = bounds.extents.y;
+          }
+          else
+            pos.z = -Mathf.Max( bounds.extents.x / Mathf.Sin( xangle ), bounds.extents.y / Mathf.Sin( yangle ) );
           Debug.DrawLine( new Vector3( bounds.min.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.max.y ), Color.yellow );
           Debug.DrawLine( new Vector3( bounds.min.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.max.y ), Color.yellow );
           Debug.DrawLine( new Vector3( bounds.max.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.min.y ), Color.yellow );
@@ -136,11 +154,20 @@ public class CameraController : MonoBehaviour
       }
     }
 
+    if( Camera.main.orthographic )
+    {
+      //Camera.main.orthographicSize = Mathf.MoveTowards( Camera.main.orthographicSize, ortho, orthoSpeed * Time.deltaTime );
+      Camera.main.orthographicSize = Mathf.Lerp( Camera.main.orthographicSize, ortho, Mathf.Clamp01( orthoSpeed * Time.deltaTime ) );
+    }
+
     if( lerpAlpha > 0 )
+    {
       transform.position = Vector3.Lerp( transform.position, pos, Mathf.Clamp01( lerpAlpha * Time.deltaTime ) );
-    //transform.position = Vector3.MoveTowards( transform.position, pos, SmoothSpeed * Time.deltaTime );
+      //transform.position = Vector3.MoveTowards( transform.position, pos, SmoothSpeed * Time.deltaTime );
+    }
     else
       transform.position = pos;
+
 
     /*if( snapToPixel )
     {
@@ -154,14 +181,6 @@ public class CameraController : MonoBehaviour
       snapped = transform.position.x;
     }*/
   }
-
-  public bool snapToPixel = true;
-  const float pixelDensity = 64;
-  public float snapDivide = 1;
-  public float pixelSnap;
-  public float presnap;
-  public float snapped;
-
 
   bool ClipToInsidePolygon2D( PolygonCollider2D poly, ref Vector2 cp )
   {
