@@ -24,7 +24,6 @@ add things arbitrarily
 
 # ideas
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
-- avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
 - weapon ideas:  doublewhammy/triple, rockets, seeking missiles, beam, stickybomb, invisible
 - powerups: speedboost, slowtime, reflective shield, supercharge
 - permanent mods: run speed, wall slide speed, dash duration, rapid shot, extra projectiles
@@ -46,11 +45,12 @@ add things arbitrarily
 - reproducible: jump up wall sprite glitch
 
 **DESIGN**
-primary single = single shot, grenade
-primary hold = full auto, charged blast
-secondary single = graphook, (shield)
+primary = xbuster, grenade, flame
+primary charge = charged blast
+secondary = graphook, shield, slowmo
 ? Weapon limit. infinite, multiple, single(Contra).
 ? Abilities: persistent, temporary, limited. Ex: persistent shields, temporary powerup, limited ammo.
+- avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
 
 # keep
 special case inertia

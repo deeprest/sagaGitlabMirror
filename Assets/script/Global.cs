@@ -134,8 +134,6 @@ public class Global : MonoBehaviour
   public GameObject ready;
   // cursor
   public Transform Cursor;
-  //public Image cursorImage;
-  public Sprite cursorSprite;
   public float cursorOuter = 100;
   public float cursorInner = 50;
   public Vector3 CursorDelta;
@@ -248,9 +246,6 @@ public class Global : MonoBehaviour
       Camera.main.orthographicSize = 2;
     else
       Camera.main.fieldOfView = 20;
-
-    // use cursor scale instead of serialized value
-    SetCursor( cursorSprite );
 
     if( Application.isEditor && !SimulatePlayer )
     {
@@ -688,7 +683,7 @@ public class Global : MonoBehaviour
 
   public void SetCursor( Sprite spr )
   {
-    cursorSprite = spr;
+    Cursor.GetComponent<SpriteRenderer>().sprite = spr;
     Cursor.localScale = Vector3.one * cursorScale;
   }
 
