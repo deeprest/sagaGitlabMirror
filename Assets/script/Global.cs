@@ -48,21 +48,15 @@ public class GlobalEditor : Editor
 }
 #endif
 
-public interface ITrigger
-{
-  void Trigger( Transform instigator );
-}
 
-public interface IDamage
-{
-  bool TakeDamage( Damage d );
-}
 
-public interface ISelect
+public class WorldSelectable : MonoBehaviour
 {
-  void Highlight();
-  void Unhighlight();
-  void Selected();
+  //public bool IsSelected;
+  public virtual void Highlight() { }
+  public virtual void Unhighlight() { }
+  public virtual void Select() { }
+  public virtual void Unselect() { }
 }
 
 
@@ -79,9 +73,10 @@ public class Global : MonoBehaviour
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
   public float deadZone = 0.1f;
-
+  // screenshot timer
   public int screenshotInterval;
   public Timer ScreenshotTimer = new Timer();
+
 
   [Tooltip( "Pretend this is a build we're running" )]
   public bool SimulatePlayer = false;
@@ -95,6 +90,12 @@ public class Global : MonoBehaviour
   public float SidestepInterval = 1f;
   public float SidestepIgnoreWithinDistanceToGoal = 0.5f;
 
+  public static string[] persistentFilenames = new string[] {
+    /*"settings.json",
+    "characters.json",
+    "events.json"*/
+  };
+
   // allowing characters to collide introduces potential for "pinch points"
   public static string[] CharacterCollideLayers = { "Default", "destructible", "triggerAndCollision" }; //, "character", "enemy" };
   public static string[] CharacterSidestepLayers = { "character", "enemy" };
@@ -104,6 +105,21 @@ public class Global : MonoBehaviour
   // check first before spawning to avoid colliding with these layers on the first frame
   public static string[] ProjectileNoShootLayers = { "Default" };
   public static string[] BouncyGrenadeCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile", "destructible" };
+
+  [Header("Settings")]
+  public GameObject ToggleTemplate;
+  public GameObject SliderTemplate;
+  string settingsPath { get { return Application.persistentDataPath + "/" + "settings.json"; } }
+  public Dictionary<string, FloatValue> FloatSetting = new Dictionary<string, FloatValue>();
+  public Dictionary<string, BoolValue> BoolSetting = new Dictionary<string, BoolValue>();
+   // screen settings
+  bool Fullscreen;
+  int ScreenWidth;
+  int ScreenHeight;
+  float UIScale = 1;
+  public GameObject ScreenSettingsPrompt;
+  public Text ScreenSettingsCountdown;
+  Timer ScreenSettingsCountdownTimer = new Timer();
 
   [Header( "References" )]
   [SerializeField] GameInputRemapper GameInputRemapper;
@@ -155,14 +171,8 @@ public class Global : MonoBehaviour
   // status 
   public Image weaponIcon;
 
-  [Header( "Screen Settings" )]
-  bool Fullscreen;
-  int ScreenWidth;
-  int ScreenHeight;
-  float UIScale = 1;
-  public GameObject ScreenSettingsPrompt;
-  public Text ScreenSettingsCountdown;
-  Timer ScreenSettingsCountdownTimer = new Timer();
+
+
 
   [Header( "Debug" )]
   [SerializeField] Text debugButtons;
@@ -254,7 +264,7 @@ public class Global : MonoBehaviour
       fader.color = Color.clear;
       //yield return new WaitForSecondsRealtime( 1 );
       Updating = true;
-      ss = FindObjectOfType<SceneScript>();
+      ss = GetSceneScript();
       if( ss != null )
       {
         AssignCameraPoly( ss.sb );
@@ -443,7 +453,7 @@ public class Global : MonoBehaviour
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
     }
 #endif
-    if( Input.GetKeyDown( KeyCode.Return ) )
+    if( Input.GetKeyDown( KeyCode.F1 ) )
     {
       Chopper chopper = FindObjectOfType<Chopper>();
       if( (!Application.isEditor || Global.instance.SimulatePlayer) && chopper != null )
@@ -469,8 +479,7 @@ public class Global : MonoBehaviour
     {
       ShowMenu( !MenuShowing );
 #if UNITY_STANDALONE_LINUX
-      // hack: there is a weird bug where the Canvas will not update when an
-      // object with a canvas renderer is disabled
+      // hack: there is a Unity bug where the Canvas will not update when an object with a canvas renderer is disabled.
       Canvas canvas = FindObjectOfType<Canvas>();
       canvas.gameObject.SetActive( false );
       canvas.gameObject.SetActive( true );
@@ -918,7 +927,10 @@ public class Global : MonoBehaviour
     } );
   }
 
-
+  public SceneScript GetSceneScript()
+  {
+    return FindObjectOfType<SceneScript>();
+  }
 
   public void AssignCameraPoly( PolygonCollider2D poly )
   {
@@ -930,52 +942,34 @@ public class Global : MonoBehaviour
   }
 
 
-
-  public static string[] persistentFilenames = new string[] {
-    /*"settings.json",
-    "characters.json",
-    "events.json"*/
-  };
-  string settingsPath { get { return Application.persistentDataPath + "/" + "settings.json"; } }
-  public Dictionary<string, FloatValue> FloatSetting = new Dictionary<string, FloatValue>();
-  public Dictionary<string, BoolValue> BoolSetting = new Dictionary<string, BoolValue>();
-
-  public GameObject ToggleTemplate;
-  public GameObject SliderTemplate;
-
-  void CreateBoolSetting( string key, bool value, System.Action<bool> onChange )
+  void VerifyPersistentData()
   {
-    BoolValue bv;
-    if( !BoolSetting.TryGetValue( key, out bv ) )
+    // ensure that all persistent data files exist. IF not, unpack from zip in build.
+    bool unpack = false;
+    foreach( var filename in persistentFilenames )
+      if( !File.Exists( Application.persistentDataPath + "/" + filename ) )
+        unpack = true;
+    if( unpack )
     {
-      GameObject go = Instantiate( ToggleTemplate, ToggleTemplate.transform.parent );
-      SettingUI sss = go.GetComponent<SettingUI>();
-      sss.isBool = true;
-      bv = sss.boolValue;
-      bv.name = key;
-      bv.Init();
-      BoolSetting.Add( key, bv );
+      string zipPath = Application.temporaryCachePath + "/persistent.zip";
+      TextAsset zipfile = Resources.Load( "persistent" ) as TextAsset;
+      if( zipfile != null )
+      {
+        File.WriteAllBytes( zipPath, zipfile.bytes );
+        Debug.Log( "Unzipping persistent: " + zipPath );
+        using( ZipFile zip = ZipFile.Read( zipPath ) )
+        {
+          zip.ExtractAll( Application.persistentDataPath, ExtractExistingFileAction.OverwriteSilently );
+        }
+      }
+      else
+      {
+        Debug.LogWarning( "no level directory or zip file in build: " + name );
+      }
     }
-    bv.onValueChanged = onChange;
-    bv.Value = value;
   }
 
-  void CreateFloatSetting( string key, float value, System.Action<float> onChange )
-  {
-    FloatValue bv;
-    if( !FloatSetting.TryGetValue( key, out bv ) )
-    {
-      GameObject go = Instantiate( SliderTemplate, SliderTemplate.transform.parent );
-      SettingUI sss = go.GetComponent<SettingUI>();
-      sss.isInteger = true;
-      bv = sss.intValue;
-      bv.name = key;
-      bv.Init();
-      FloatSetting.Add( key, bv );
-    }
-    bv.onValueChanged = onChange;
-    bv.Value = value;
-  }
+  #region Settings
 
   void InitializeSettings()
   {
@@ -1013,6 +1007,40 @@ public class Global : MonoBehaviour
 
     ToggleTemplate.gameObject.SetActive( false );
     SliderTemplate.gameObject.SetActive( false );
+  }
+
+  void CreateBoolSetting( string key, bool value, System.Action<bool> onChange )
+  {
+    BoolValue bv;
+    if( !BoolSetting.TryGetValue( key, out bv ) )
+    {
+      GameObject go = Instantiate( ToggleTemplate, ToggleTemplate.transform.parent );
+      SettingUI sss = go.GetComponent<SettingUI>();
+      sss.isBool = true;
+      bv = sss.boolValue;
+      bv.name = key;
+      bv.Init();
+      BoolSetting.Add( key, bv );
+    }
+    bv.onValueChanged = onChange;
+    bv.Value = value;
+  }
+
+  void CreateFloatSetting( string key, float value, System.Action<float> onChange )
+  {
+    FloatValue bv;
+    if( !FloatSetting.TryGetValue( key, out bv ) )
+    {
+      GameObject go = Instantiate( SliderTemplate, SliderTemplate.transform.parent );
+      SettingUI sss = go.GetComponent<SettingUI>();
+      sss.isInteger = true;
+      bv = sss.intValue;
+      bv.name = key;
+      bv.Init();
+      FloatSetting.Add( key, bv );
+    }
+    bv.onValueChanged = onChange;
+    bv.Value = value;
   }
 
   void ReadSettings()
@@ -1059,36 +1087,6 @@ public class Global : MonoBehaviour
     print( settingsPath );
     File.WriteAllText( settingsPath, writer.ToString() );
   }
-
-
-  void VerifyPersistentData()
-  {
-    // ensure that all persistent data files exist. IF not, unpack from zip in build.
-    bool unpack = false;
-    foreach( var filename in persistentFilenames )
-      if( !File.Exists( Application.persistentDataPath + "/" + filename ) )
-        unpack = true;
-    if( unpack )
-    {
-      string zipPath = Application.temporaryCachePath + "/persistent.zip";
-      TextAsset zipfile = Resources.Load( "persistent" ) as TextAsset;
-      if( zipfile != null )
-      {
-        File.WriteAllBytes( zipPath, zipfile.bytes );
-        Debug.Log( "Unzipping persistent: " + zipPath );
-        using( ZipFile zip = ZipFile.Read( zipPath ) )
-        {
-          zip.ExtractAll( Application.persistentDataPath, ExtractExistingFileAction.OverwriteSilently );
-        }
-      }
-      else
-      {
-        Debug.LogWarning( "no level directory or zip file in build: " + name );
-      }
-    }
-  }
-
-
 
   public void ApplyScreenSettings()
   {
@@ -1137,5 +1135,7 @@ public class Global : MonoBehaviour
 
     ApplyScreenSettings();
   }
+
+  #endregion
 
 }

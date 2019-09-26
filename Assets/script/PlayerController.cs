@@ -135,12 +135,12 @@ public class PlayerController : Character, IDamage
   }
 
 
-  [SerializeField] float highlightPickupRange = 3;
-  Pickup closestPickup;
+  [SerializeField] float selectRange = 3;
+  WorldSelectable closestISelect;
+  WorldSelectable WorldSelection;
+  List<WorldSelectable> pups = new List<WorldSelectable>();
   //List<Pickup> highlightedPickups = new List<Pickup>();
-  List<Pickup> pups = new List<Pickup>();
   //List<Pickup> highlightedPickupsRemove = new List<Pickup>();
-
 
   Component FindClosest( Vector3 position, Component[] cmps )
   {
@@ -193,10 +193,10 @@ public class PlayerController : Character, IDamage
     }
 
     pups.Clear();
-    hits = Physics2D.CircleCastAll( transform.position, highlightPickupRange, Vector2.zero, 0, LayerMask.GetMask( new string[] { "pickup" } ) );
+    hits = Physics2D.CircleCastAll( transform.position, selectRange, Vector2.zero, 0, LayerMask.GetMask( new string[] { "pickup" } ) );
     foreach( var hit in hits )
     {
-      Pickup pup = hit.transform.GetComponent<Pickup>();
+      WorldSelectable pup = hit.transform.GetComponent<WorldSelectable>();
       if( pup != null )
       {
         pups.Add( pup );
@@ -207,21 +207,26 @@ public class PlayerController : Character, IDamage
         }*/
       }
     }
-    Pickup closest = (Pickup)FindClosest( transform.position, pups.ToArray() );
+    WorldSelectable closest = (WorldSelectable)FindClosest( transform.position, pups.ToArray() );
     if( closest == null )
     {
-      if( closestPickup != null )
+      if( closestISelect != null )
       {
-        closestPickup.Unhighlight();
-        closestPickup = null;
+        closestISelect.Unhighlight();
+        closestISelect = null;
+      }
+      if( WorldSelection != null )
+      {
+        WorldSelection.Unselect();
+        WorldSelection = null;
       }
     }
-    else if( closest != closestPickup )
+    else if( closest != closestISelect )
     {
-      if( closestPickup != null )
-        closestPickup.Unhighlight();
-      closestPickup = closest;
-      closestPickup.Highlight();
+      if( closestISelect != null )
+        closestISelect.Unhighlight();
+      closestISelect = closest;
+      closestISelect.Highlight();
     }
     /*highlightedPickupsRemove.Clear();
     foreach( var pup in highlightedPickups )
@@ -481,12 +486,22 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    if( GameInput.GetKeyDown( "Pickup" ) )
+    if( GameInput.GetKeyDown( "WorldSelect" ) )
     {
-      if( closestPickup != null )
+      if( WorldSelection != null )
       {
-        closestPickup.Selected();
-        AssignWeapon( closestPickup.weapon );
+        WorldSelection.Unselect();
+      }
+      if( WorldSelection == closestISelect )
+        WorldSelection = null;
+      else
+        WorldSelection = closestISelect;
+      if( WorldSelection != null )
+      {
+        WorldSelection.Select();
+        // move to Pickup? (IOC)
+        if( WorldSelection is Pickup )
+          AssignWeapon( ((Pickup)closestISelect).weapon );
       }
     }
 
@@ -968,4 +983,5 @@ public class PlayerController : Character, IDamage
   {
 
   }
+
 }

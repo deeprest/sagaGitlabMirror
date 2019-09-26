@@ -84,7 +84,7 @@ public class GameInput
     icsKeyboard.keyMap["Fire"] = KeyCode.Mouse0;
     icsKeyboard.keyMap["Graphook"] = KeyCode.Mouse1;  //Mouse1;
     icsKeyboard.keyMap["Shield"] = KeyCode.None;
-    icsKeyboard.keyMap["Pickup"] = KeyCode.E;
+    icsKeyboard.keyMap["WorldSelect"] = KeyCode.E;
     icsKeyboard.keyMap["Charge"] = KeyCode.Mouse0;
     icsKeyboard.keyMap["ToggleAutoAim"] = KeyCode.R;
     icsKeyboard.keyMap["NextWeapon"] = KeyCode.Q;
@@ -100,7 +100,7 @@ public class GameInput
     icsGamepad.keyMap["Down"] = KeyCode.JoystickButton0;
     icsGamepad.keyMap["Dash"] = KeyCode.JoystickButton13;
     icsGamepad.keyMap["Fire"] = KeyCode.None;
-    icsGamepad.keyMap["Pickup"] = KeyCode.JoystickButton16;
+    icsGamepad.keyMap["WorldSelect"] = KeyCode.JoystickButton16;
     icsGamepad.keyMap["Charge"] = KeyCode.JoystickButton17;
     icsGamepad.keyMap["Graphook"] = KeyCode.None;
     icsGamepad.keyMap["Shield"] = KeyCode.None;

@@ -2,23 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pickup : MonoBehaviour, ISelect
+public class Pickup : WorldSelectable
 {
   [SerializeField] Animator animator;
   public Weapon weapon;
 
-  public void Highlight()
+  public Transform GetTransform() { return transform; }
+
+  public override void Highlight()
   {
     animator.Play( "highlight" );
   }
-  public void Unhighlight()
+  public override void Unhighlight()
   {
     animator.Play( "idle" );
   }
-  public void Selected()
+  public override void Select()
   {
     animator.Play( "selected" );
   }
+  public override void Unselect()
+  { }
 
   void Start()
   {
