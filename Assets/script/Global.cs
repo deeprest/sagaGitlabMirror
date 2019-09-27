@@ -1,5 +1,5 @@
 ﻿#pragma warning disable 414
-
+//#define DESTRUCTION_LIST
 
 using System.Collections;
 using System.Collections.Generic;
@@ -106,13 +106,13 @@ public class Global : MonoBehaviour
   public static string[] ProjectileNoShootLayers = { "Default" };
   public static string[] BouncyGrenadeCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile", "destructible" };
 
-  [Header("Settings")]
+  [Header( "Settings" )]
   public GameObject ToggleTemplate;
   public GameObject SliderTemplate;
   string settingsPath { get { return Application.persistentDataPath + "/" + "settings.json"; } }
   public Dictionary<string, FloatValue> FloatSetting = new Dictionary<string, FloatValue>();
   public Dictionary<string, BoolValue> BoolSetting = new Dictionary<string, BoolValue>();
-   // screen settings
+  // screen settings
   bool Fullscreen;
   int ScreenWidth;
   int ScreenHeight;
@@ -187,10 +187,12 @@ public class Global : MonoBehaviour
   public Color shiftyColor = Color.red;
   [SerializeField] float colorShiftSpeed = 1;
   [SerializeField] Image shifty;
+
+#if DESTRUCTION_LIST
   // This exists only because of a Unity crash bug when objects with active
   // Contacts are destroyed from within OnCollisionEnter2D()
   List<GameObject> DestructionList = new List<GameObject>();
-
+#endif
 
   [RuntimeInitializeOnLoadMethod]
   static void RunOnStart()
@@ -378,9 +380,11 @@ public class Global : MonoBehaviour
 
   void Update()
   {
+    #if DESTRUCTION_LIST
     for( int i = 0; i < DestructionList.Count; i++ )
-      GameObject.Destroy( DestructionList[i] );
+      Destroy( DestructionList[i] );
     DestructionList.Clear();
+    #endif
 
     Timer.UpdateTimers();
 
@@ -752,6 +756,7 @@ public class Global : MonoBehaviour
     yield return null;
   }
 
+  #if DESTRUCTION_LIST
   // This exists only because of a Unity crash bug when objects with active
   // Contacts are destroyed from within OnCollisionEnter2D()
   public void Destroy( GameObject go )
@@ -759,6 +764,7 @@ public class Global : MonoBehaviour
     go.SetActive( false );
     DestructionList.Add( go );
   }
+  #endif
 
   public GameData gameData;
   public Dictionary<string, GameObject> ResourceLookup = new Dictionary<string, GameObject>();
@@ -969,7 +975,7 @@ public class Global : MonoBehaviour
     }
   }
 
-  #region Settings
+#region Settings
 
   void InitializeSettings()
   {
@@ -1136,6 +1142,6 @@ public class Global : MonoBehaviour
     ApplyScreenSettings();
   }
 
-  #endregion
+#endregion
 
 }

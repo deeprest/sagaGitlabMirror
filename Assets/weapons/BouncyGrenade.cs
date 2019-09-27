@@ -10,7 +10,7 @@ public class BouncyGrenade : Projectile
   {
     // weapon plays the sound instead
     //if( StartSound != null )
-      //Global.instance.AudioOneShot( StartSound, transform.position );
+    //Global.instance.AudioOneShot( StartSound, transform.position );
     GetComponent<Rigidbody2D>().velocity = new Vector2( velocity.x, velocity.y );
     timeoutTimer = new Timer( timeout, null, Boom );
   }
@@ -20,19 +20,19 @@ public class BouncyGrenade : Projectile
     timeoutTimer.Stop( false );
   }
 
-
   void Boom()
   {
     if( gameObject != null && !gameObject.activeSelf )
       return;
     Instantiate( explosion, transform.position, Quaternion.identity );
     timeoutTimer.Stop( false );
-    Global.instance.Destroy( gameObject );
+    //Global.instance.Destroy( gameObject );
+    Destroy( gameObject );
   }
 
-  /*void Update()
+  void Update()
   {
-    RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( BouncyCollideLayers ) );
+    RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( Global.BouncyGrenadeCollideLayers ) );
     if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator )) )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
@@ -45,9 +45,10 @@ public class BouncyGrenade : Projectile
       }
       Boom();
     }
-  }*/
+  }
 
-  private void OnCollisionEnter2D( Collision2D hit )
+  // UNITY CRASH BUG: Destroying this gameObject from within this callback causes a crash in Unity 2019.2.6f1
+  /*void OnCollisionEnter2D( Collision2D hit )
   {
     if( (LayerMask.GetMask( Global.BouncyGrenadeCollideLayers ) & (1 << hit.gameObject.layer)) > 0 )
     if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator )) )
@@ -62,5 +63,5 @@ public class BouncyGrenade : Projectile
       }
       Boom();
     }
-  }
+  }*/
 }
