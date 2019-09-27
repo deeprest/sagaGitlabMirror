@@ -5,6 +5,7 @@ public class BouncyGrenade : Projectile
 {
   public GameObject explosion;
   Timer timeoutTimer;
+  [SerializeField] float radiusFudge;
 
   void Start()
   {
@@ -32,7 +33,7 @@ public class BouncyGrenade : Projectile
 
   void Update()
   {
-    RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( Global.BouncyGrenadeCollideLayers ) );
+    RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius + radiusFudge, velocity, raycastDistance, LayerMask.GetMask( Global.BouncyGrenadeCollideLayers ) );
     if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator )) )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
@@ -48,6 +49,7 @@ public class BouncyGrenade : Projectile
   }
 
   // UNITY CRASH BUG: Destroying this gameObject from within this callback causes a crash in Unity 2019.2.6f1
+  // Even deferred destruction in Global.cs caused a crash.
   /*void OnCollisionEnter2D( Collision2D hit )
   {
     if( (LayerMask.GetMask( Global.BouncyGrenadeCollideLayers ) & (1 << hit.gameObject.layer)) > 0 )

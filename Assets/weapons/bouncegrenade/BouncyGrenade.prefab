@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 212190135428314220}
   - component: {fileID: 3263175227881446763}
   - component: {fileID: 2679187230314664582}
+  - component: {fileID: 2738584566118510243}
   m_Layer: 15
-  m_Name: BounceGrenade
+  m_Name: BouncyGrenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -122,6 +123,7 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   StartSound: {fileID: 8300000, guid: 20e667e89d46a47beba73825a6c36a76, type: 3}
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
+  radiusFudge: 0.1
 --- !u!50 &2679187230314664582
 Rigidbody2D:
   serializedVersion: 4
@@ -143,6 +145,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!95 &2738584566118510243
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227316525270448}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3bfe7500659f84dc2a549eb4381964b6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1921470626033100
 GameObject:
   m_ObjectHideFlags: 0
