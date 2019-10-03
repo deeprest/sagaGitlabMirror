@@ -12,7 +12,7 @@ public class SceneScript : MonoBehaviour
 
   public void PlayerInputOff()
   {
-    Global.instance.CurrentPlayer.playerInput = false;
+    Global.instance.Controls.BipedActions.Disable();
   }
 
   public void ReplaceCameraPoly( PolygonCollider2D poly )
@@ -30,7 +30,7 @@ public class SceneScript : MonoBehaviour
   Timer runTimer = new Timer();
   public void RunLeft( float duration )
   {
-    Global.instance.CurrentPlayer.playerInput = false;
+    Global.instance.Controls.BipedActions.Disable();
     TimerParams tp = new TimerParams
     {
       unscaledTime = true,
@@ -42,7 +42,7 @@ public class SceneScript : MonoBehaviour
       },
       CompleteDelegate = delegate
       {
-        Global.instance.CurrentPlayer.playerInput = true;
+        Global.instance.Controls.BipedActions.Enable();
       }
     };
     runTimer.Start( tp );
@@ -50,7 +50,7 @@ public class SceneScript : MonoBehaviour
 
   public void RunRight( float duration )
   {
-    Global.instance.CurrentPlayer.playerInput = false;
+    Global.instance.Controls.BipedActions.Disable();
     TimerParams tp = new TimerParams
     {
       unscaledTime = true,
@@ -62,7 +62,7 @@ public class SceneScript : MonoBehaviour
       },
       CompleteDelegate = delegate
       {
-        Global.instance.CurrentPlayer.playerInput = true;
+        Global.instance.Controls.BipedActions.Enable();
       }
     };
     runTimer.Start( tp );

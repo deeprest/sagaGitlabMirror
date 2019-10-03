@@ -2,8 +2,59 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
+/*
+// todo PlayerController -> PlayerPawn
+// Separate inputs from actions.
+// Bind the same action functions to input delegates driven by an AI brain.
+
+public class PawnController
+{
+  public Pawn pawn;
+  public virtual void Initialize() { }
+}
+
+public class NewPlayerController : PawnController
+{
+  public override void Initialize()
+  {
+    // without callback context
+    Global.instance.Controls.BipedActions.Fire.performed += ( obj ) => pawn.Fire_Performed();
+  }
+}
+
+public class AIController : PawnController
+{
+  public void Update()
+  {
+    // logic drives inputs
+
+    //InputAction.CallbackContext ctx = new InputAction.CallbackContext();
+    pawn.Fire_Performed( );
+  }
+}
+
+// todo make Character a subclass of Pawn
+public class Pawn : Character, IDamage
+{
+  public PawnController controller;
+
+  new public bool TakeDamage( Damage d )
+  {
+    return true;
+  }
+
+  //public void Fire_Performed( InputAction.CallbackContext obj )
+  public void Fire_Performed()
+  {
+    // shoot
+  }
+}
+*/
+
+// todo rename to PlayerPawn
 public class PlayerController : Character, IDamage
 {
   new public AudioSource audio;
@@ -30,7 +81,6 @@ public class PlayerController : Character, IDamage
   public float landDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
   // input / control
-  public bool playerInput = true;
   public bool inputRight;
   public bool inputLeft;
   public bool inputJumpStart;
@@ -42,6 +92,8 @@ public class PlayerController : Character, IDamage
   public bool inputChargeEnd;
   public bool inputGraphook;
   public bool inputShield;
+  public bool inputFire;
+  Vector3 shoot;
   // state
   [SerializeField] bool facingRight = true;
   [SerializeField] bool onGround;
@@ -93,10 +145,16 @@ public class PlayerController : Character, IDamage
   public float damageLift = 1f;
   public float damagePushAmount = 1f;
 
+  [Header( "Shield" )]
+  public GameObject Shield;
+
+
   void Awake()
   {
     //Collider2D shieldCollider = Shield.GetComponent<Collider2D>();
     //Physics2D.IgnoreCollision( box, shieldCollider );
+
+    BindControls();
   }
 
   void Start()
@@ -438,7 +496,7 @@ public class PlayerController : Character, IDamage
       audio.PlayOneShot( weapon.soundChargeShot );
       if( chargeAmount > chargeMin )
       {
-        Vector3 pos = arm.position + cursorDelta.normalized * armRadius;
+        Vector3 pos = arm.position + shoot.normalized * armRadius;
         if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
           weapon.ChargeVariant.FireWeapon( this, pos, shoot );
       }
@@ -446,72 +504,28 @@ public class PlayerController : Character, IDamage
     StopCharge();
   }
 
-  Vector3 cursorDelta;
-  Vector3 shoot;
 
-  void UpdatePlayerInput()
+
+  void BindControls()
   {
-    cursorDelta = Global.instance.AimPosition - (Vector2)arm.position;
-    cursorDelta.z = 0;
-    arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
-    arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, cursorDelta ) );
+    Global.instance.Controls.BipedActions.Fire.performed += ( obj ) => inputFire = true;
+    Global.instance.Controls.BipedActions.Jump.started += ( obj ) => inputJumpStart = true;
+    Global.instance.Controls.BipedActions.Jump.canceled += ( obj ) => inputJumpEnd = true;
+    Global.instance.Controls.BipedActions.Dash.started += ( obj ) => inputDashStart = true;
+    Global.instance.Controls.BipedActions.Dash.canceled += ( obj ) => inputDashEnd = true;
 
-    shoot = cursorDelta;
-    /*if( GameInput.UsingKeyboard )
-    {
-      shoot = cursorDelta;
-    }
-    else
-    {
-      shoot = new Vector3( GameInput.GetAxisRaw( "ShootX" ), -GameInput.GetAxisRaw( "ShootY" ), 0 );
-      if( shoot.sqrMagnitude > GameInput.deadZone * GameInput.deadZone )
-      {
-        if( !shootRepeatTimer.IsActive )
-        {
-          Shoot();
-        }
-      }
-      else
-      {
-        // todo change arm sprite
-        shoot = Vector3.right;
-      }
-    }*/
+    Global.instance.Controls.BipedActions.Shield.started += ( obj ) => inputShield = true;
+    Global.instance.Controls.BipedActions.Shield.canceled += ( obj ) => inputShield = false;
+    Global.instance.Controls.BipedActions.Graphook.performed += ( obj ) => inputGraphook = true; ;
 
-    if( GameInput.GetKey( "Fire" ) || (!GameInput.UsingKeyboard && GameInput.GetAxisRaw( "Fire" ) > 0) )
-    {
-      if( !shootRepeatTimer.IsActive )
-      {
-        Shoot();
-      }
-    }
-
-    if( GameInput.GetKeyDown( "WorldSelect" ) )
-    {
-      if( WorldSelection != null )
-      {
-        WorldSelection.Unselect();
-      }
-      if( WorldSelection == closestISelect )
-        WorldSelection = null;
-      else
-        WorldSelection = closestISelect;
-      if( WorldSelection != null )
-      {
-        WorldSelection.Select();
-        // move to Pickup? (IOC)
-        if( WorldSelection is Pickup )
-          AssignWeapon( ((Pickup)closestISelect).weapon );
-      }
-    }
-
-    inputShield = GameInput.GetKey( "Shield" );
-    //if( GameInput.GetKey( "Shield" ) )
-    //inputShield = true;
-
-    if( GameInput.GetKeyUp( "Graphook" ) )
-      inputGraphook = true;
-
+    /*Global.instance.Controls.BipedActions.Move.performed += ( obj ) => {
+      float move = obj.ReadValue<float>();
+      if( move > 0 )
+        inputRight = true;
+      if( move < 0 )
+        inputLeft = true;
+    };*/
+    /*
     if( GameInput.GetKeyDown( "Charge" ) )
       inputChargeStart = true;
     else
@@ -520,8 +534,6 @@ public class PlayerController : Character, IDamage
     else
     if( GameInput.GetKeyUp( "Charge" ) )
       inputChargeEnd = true;
-
-    // INPUT
 
     if( GameInput.GetKeyUp( "Down" ) )
       hanging = false;
@@ -542,10 +554,30 @@ public class PlayerController : Character, IDamage
 
     if( GameInput.GetKeyDown( "NextWeapon" ) )
       NextWeapon();
+      */
+
+    Global.instance.Controls.BipedActions.WorldSelect.performed += ( obj ) => {
+      if( WorldSelection != null )
+      {
+        WorldSelection.Unselect();
+      }
+      if( WorldSelection == closestISelect )
+        WorldSelection = null;
+      else
+        WorldSelection = closestISelect;
+      if( WorldSelection != null )
+      {
+        WorldSelection.Select();
+        // move to Pickup? (IOC)
+        if( WorldSelection is Pickup )
+          AssignWeapon( ((Pickup)closestISelect).weapon );
+      }
+    };
   }
 
   void ResetInput()
   {
+    inputFire = false;
     inputRight = false;
     inputLeft = false;
     inputJumpStart = false;
@@ -558,33 +590,36 @@ public class PlayerController : Character, IDamage
     inputGraphook = false;
   }
 
-  [Header( "Shield" )]
-  public GameObject Shield;
-
   void Update()
   {
     if( Global.Paused )
       return;
 
-    if( Global.instance.CurrentPlayer == this && playerInput )
-      UpdatePlayerInput();
+    shoot = Global.instance.AimPosition - (Vector2)arm.position;
+    shoot.z = 0;
+    arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
+    arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, shoot ) );
+
+    /*Vector2 move = Global.instance.Controls.BipedActions.Move.ReadValue<Vector2>();
+    if( move.x > 0 )
+      inputRight = true;
+    if( move.x < 0 )
+      inputLeft = true;
+      */
+    if( inputFire && !shootRepeatTimer.IsActive )
+      Shoot();
 
     if( inputGraphook )
       ShootGraphook();
 
-    if( inputShield )
-    {
-      Shield.SetActive( true );
-    }
-    else
-    {
-      Shield.SetActive( false );
-    }
+    Shield.SetActive( inputShield );
 
     if( inputChargeStart )
       StartCharge();
+
     if( inputCharge && chargeEffect != null )
       chargeAmount += Time.deltaTime;
+
     if( inputChargeEnd )
       ShootCharged();
 

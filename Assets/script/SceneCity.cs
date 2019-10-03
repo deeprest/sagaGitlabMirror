@@ -15,13 +15,13 @@ public class SceneCity : SceneScript
     Global.instance.ChopDrop();
     //Global.instance.ready.SetActive( true );
 
-    Global.instance.CurrentPlayer.playerInput = false;
+    Global.instance.Controls.BipedActions.Disable();
     new Timer( 5, delegate
     {
-      Global.instance.CurrentPlayer.inputRight = true;
+      Global.instance.Controls.BipedActions.Enable();
     }, delegate
     {
-      Global.instance.CurrentPlayer.playerInput = true;
+      Global.instance.Controls.BipedActions.Enable();
     } );
   }
 

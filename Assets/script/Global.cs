@@ -1,5 +1,6 @@
 ﻿#pragma warning disable 414
 //#define DESTRUCTION_LIST
+//#define OLD_INPUT
 
 using System.Collections;
 using System.Collections.Generic;
@@ -122,7 +123,6 @@ public class Global : MonoBehaviour
   Timer ScreenSettingsCountdownTimer = new Timer();
 
   [Header( "References" )]
-  [SerializeField] GameInputRemapper GameInputRemapper;
   [SerializeField] string InitialSceneName;
   public CameraController CameraController;
   [SerializeField] AudioSource music;
@@ -157,7 +157,7 @@ public class Global : MonoBehaviour
   public bool CursorPlayerRelative = true;
   Vector3 aimRaw;
   public float gamepadCursorLerp = 10;
-  public bool positionalCursor = true;
+  public bool CursorPositional = true;
   public float positionalCursorSpeed = 30;
   public float cursorScale = 4;
   public bool AimSnap;
@@ -171,7 +171,8 @@ public class Global : MonoBehaviour
   // status 
   public Image weaponIcon;
 
-
+  [Header( "Input" )]
+  public Controls Controls;
 
 
   [Header( "Debug" )]
@@ -217,6 +218,13 @@ public class Global : MonoBehaviour
     }
     instance = this;
     DontDestroyOnLoad( gameObject );
+    InitializeSettings();
+    ReadSettings();
+    ApplyScreenSettings();
+
+    GameObject[] res = Resources.LoadAll<GameObject>( "" );
+    foreach( GameObject go in res )
+      ResourceLookup.Add( go.name, go );
 
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
     {
@@ -227,13 +235,9 @@ public class Global : MonoBehaviour
       Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
     };
 
-    InitializeSettings();
-    ReadSettings();
-    ApplyScreenSettings();
-
-    GameObject[] res = Resources.LoadAll<GameObject>( "" );
-    foreach( GameObject go in res )
-      ResourceLookup.Add( go.name, go );
+    Controls = new Controls();
+    Controls.Enable();
+    Controls.GlobalActions.Menu.performed += ( obj ) => ShowMenu( !MenuShowing );
 
     StartCoroutine( InitializeRoutine() );
   }
@@ -251,8 +255,6 @@ public class Global : MonoBehaviour
       debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
     else
       debugText.text = CameraController.zOffset.ToString( "##.#" );
-
-    GameInputRemapper.InitializeControls();
 
     if( Camera.main.orthographic )
       Camera.main.orthographicSize = 2;
@@ -380,11 +382,11 @@ public class Global : MonoBehaviour
 
   void Update()
   {
-    #if DESTRUCTION_LIST
+#if DESTRUCTION_LIST
     for( int i = 0; i < DestructionList.Count; i++ )
       Destroy( DestructionList[i] );
     DestructionList.Clear();
-    #endif
+#endif
 
     Timer.UpdateTimers();
 
@@ -395,23 +397,7 @@ public class Global : MonoBehaviour
     {
       //prog = Mathf.MoveTowards( prog, progTarget, Time.unscaledDeltaTime * progressSpeed );
       //progress.fillAmount = prog;
-
-      if( GameInput.GetKey( "MoveRight" ) )
-        spinner.transform.localPosition += Vector3.right * spinnerMoveSpeed * Time.unscaledDeltaTime;
-      //inputLeft = Input.GetKey( Global.instance.icsCurrent.keyMap["MoveLeft"] );
     }
-
-    debugButtons.text = "";
-    for( int i = 0; i < 20; i++ )
-    {
-      //if( Input.GetKey( "joystick button " + i ) )
-      debugButtons.text += "Button " + i + "=" + Input.GetKey( "joystick button " + i ) + "\n";
-    }
-    for( int i = 0; i < 6; i++ )
-    {
-      debugButtons.text += "Axis " + i + "=" + Input.GetAxis( "Joy0Axis" + i ) + "\n";
-    }
-
 
 
     if( Mathf.Abs( Input.GetAxis( "Zoom" ) ) > 0 )
@@ -419,7 +405,6 @@ public class Global : MonoBehaviour
       if( Camera.main.orthographic )
       {
         CameraController.orthoTarget += Input.GetAxis( "Zoom" );
-        //Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
         debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
       }
       else
@@ -466,6 +451,7 @@ public class Global : MonoBehaviour
         CurrentPlayer.transform.position = FindSpawnPosition();
     }
 
+#if OLD_INPUT
     if( GameInput.UsingKeyboard )
     {
       CursorDelta += new Vector3( Input.GetAxis( "Cursor X" ), Input.GetAxis( "Cursor Y" ), 0 ) * cursorSensitivity;
@@ -489,12 +475,14 @@ public class Global : MonoBehaviour
       canvas.gameObject.SetActive( true );
 #endif
     }
+#endif
 
 #if UNITY_EDITOR_LINUX
     if( Input.GetKeyDown(KeyCode.Escape) )
     Cursor.lockState = CursorLockMode.None;
 #else
 #endif
+
     float H = 0;
     float S = 1;
     float V = 1;
@@ -516,35 +504,26 @@ public class Global : MonoBehaviour
   public Vector2 AimPosition;
   public Vector2 CursorWorldPosition;
 
+
   void LateUpdate()
   {
     if( !Updating )
       return;
 
+
     if( CurrentPlayer != null )
     {
-      if( GameInput.UsingKeyboard )
-      {
-        CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
-      }
-      else
-      {
-        if( positionalCursor )
-        {
-          CursorDelta += aimRaw * positionalCursorSpeed;
-          CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
-        }
-        else
-          CursorDelta = Vector3.Lerp( CursorDelta, aimRaw * cursorOuter, Mathf.Clamp01( gamepadCursorLerp * Time.deltaTime ) );
-      }
+      /*if( CursorPositional )*/
+      CursorDelta += (Vector3)Controls.BipedActions.Aim.ReadValue<Vector2>() * cursorSensitivity;
+      /*else
+      CursorDelta = (Vector3)Controls.BipedActions.Aim.ReadValue<Vector2>() * cursorSensitivity;*/
+      CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
 
       Cursor.gameObject.SetActive( CursorDelta.sqrMagnitude > cursorInner * cursorInner );
-
-
-      if( CursorPlayerRelative )
-        origin = CurrentPlayer.arm.position;
-      else
-        origin = CameraController.transform.position;
+      /*if( CursorPlayerRelative )*/
+      origin = CurrentPlayer.arm.position;
+      /*else
+        origin = CameraController.transform.position;*/
       origin.z = 0;
 
       if( AimSnap )
@@ -609,7 +588,10 @@ public class Global : MonoBehaviour
       {
         CursorAutoAim.gameObject.SetActive( false );
       }
-
+    }
+    else
+    {
+      Cursor.gameObject.SetActive( false );
     }
 
     CameraController.CameraLateUpdate();
@@ -710,8 +692,7 @@ public class Global : MonoBehaviour
       UnityEngine.Cursor.lockState = CursorLockMode.None;
       UnityEngine.Cursor.visible = true;
       EnableRaycaster( true );
-      GameInputRemapper.OnShow();
-    }
+}
     else
     {
       Unpause();
@@ -756,7 +737,7 @@ public class Global : MonoBehaviour
     yield return null;
   }
 
-  #if DESTRUCTION_LIST
+#if DESTRUCTION_LIST
   // This exists only because of a Unity crash bug when objects with active
   // Contacts are destroyed from within OnCollisionEnter2D()
   public void Destroy( GameObject go )
@@ -764,7 +745,7 @@ public class Global : MonoBehaviour
     go.SetActive( false );
     DestructionList.Add( go );
   }
-  #endif
+#endif
 
   public GameData gameData;
   public Dictionary<string, GameObject> ResourceLookup = new Dictionary<string, GameObject>();
@@ -975,7 +956,7 @@ public class Global : MonoBehaviour
     }
   }
 
-#region Settings
+  #region Settings
 
   void InitializeSettings()
   {
@@ -1142,6 +1123,6 @@ public class Global : MonoBehaviour
     ApplyScreenSettings();
   }
 
-#endregion
+  #endregion
 
 }

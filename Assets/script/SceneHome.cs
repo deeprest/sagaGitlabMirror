@@ -15,7 +15,6 @@ public class SceneHome : SceneScript
       return;
     }
 
-    //player.playerInput = false;
     drcainAnimator.Play( "drcain-talk" );
     Timer talk = new Timer( 3, null, delegate { drcainAnimator.Play( "drcain-idle" ); } );
     drcainJabber.Play( "the city is being attacked!" );

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if false
+
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
@@ -417,3 +419,5 @@ public class GameInputRemapper : MonoBehaviour
       EventSystem.current.SetSelectedGameObject( btn.gameObject, null );
   }
 }
+
+#endif
