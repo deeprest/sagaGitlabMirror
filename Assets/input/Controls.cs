@@ -118,6 +118,30 @@ public class Controls : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""ea778ef3-39b8-4cf4-8ded-d222be21a5ba"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Charge"",
+                    ""type"": ""Button"",
+                    ""id"": ""0de15a2d-4eb1-4c7f-88b8-4ad5c15ee7b1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Down"",
+                    ""type"": ""Button"",
+                    ""id"": ""e0eb1488-3fe2-4bc1-9139-5ce1cd2e5c7e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -285,6 +309,72 @@ public class Controls : IInputActionCollection
                     ""action"": ""Graphook"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""6b121056-1552-41a4-b584-cddc48d3fd04"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""1cfe2033-5730-4003-8ab9-c7bbbaec0a82"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""597adfb2-ba1c-4dea-be4f-cddf56e0d839"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8156ca34-3bd2-4e66-a3d4-b1e7bf7997ca"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Charge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f024a6aa-b0ca-46a1-8772-95f99be6d559"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Down"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8a3a97d3-ba40-4722-91f4-6774c5f2a55d"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Down"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -326,6 +416,9 @@ public class Controls : IInputActionCollection
         m_BipedActions_Dash = m_BipedActions.FindAction("Dash", throwIfNotFound: true);
         m_BipedActions_Jump = m_BipedActions.FindAction("Jump", throwIfNotFound: true);
         m_BipedActions_NextWeapon = m_BipedActions.FindAction("NextWeapon", throwIfNotFound: true);
+        m_BipedActions_Move = m_BipedActions.FindAction("Move", throwIfNotFound: true);
+        m_BipedActions_Charge = m_BipedActions.FindAction("Charge", throwIfNotFound: true);
+        m_BipedActions_Down = m_BipedActions.FindAction("Down", throwIfNotFound: true);
     }
 
     ~Controls()
@@ -416,6 +509,9 @@ public class Controls : IInputActionCollection
     private readonly InputAction m_BipedActions_Dash;
     private readonly InputAction m_BipedActions_Jump;
     private readonly InputAction m_BipedActions_NextWeapon;
+    private readonly InputAction m_BipedActions_Move;
+    private readonly InputAction m_BipedActions_Charge;
+    private readonly InputAction m_BipedActions_Down;
     public struct BipedActionsActions
     {
         private Controls m_Wrapper;
@@ -428,6 +524,9 @@ public class Controls : IInputActionCollection
         public InputAction @Dash => m_Wrapper.m_BipedActions_Dash;
         public InputAction @Jump => m_Wrapper.m_BipedActions_Jump;
         public InputAction @NextWeapon => m_Wrapper.m_BipedActions_NextWeapon;
+        public InputAction @Move => m_Wrapper.m_BipedActions_Move;
+        public InputAction @Charge => m_Wrapper.m_BipedActions_Charge;
+        public InputAction @Down => m_Wrapper.m_BipedActions_Down;
         public InputActionMap Get() { return m_Wrapper.m_BipedActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -461,6 +560,15 @@ public class Controls : IInputActionCollection
                 NextWeapon.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnNextWeapon;
                 NextWeapon.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnNextWeapon;
                 NextWeapon.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnNextWeapon;
+                Move.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMove;
+                Move.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMove;
+                Move.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMove;
+                Charge.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnCharge;
+                Charge.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnCharge;
+                Charge.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnCharge;
+                Down.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDown;
+                Down.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDown;
+                Down.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDown;
             }
             m_Wrapper.m_BipedActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -489,6 +597,15 @@ public class Controls : IInputActionCollection
                 NextWeapon.started += instance.OnNextWeapon;
                 NextWeapon.performed += instance.OnNextWeapon;
                 NextWeapon.canceled += instance.OnNextWeapon;
+                Move.started += instance.OnMove;
+                Move.performed += instance.OnMove;
+                Move.canceled += instance.OnMove;
+                Charge.started += instance.OnCharge;
+                Charge.performed += instance.OnCharge;
+                Charge.canceled += instance.OnCharge;
+                Down.started += instance.OnDown;
+                Down.performed += instance.OnDown;
+                Down.canceled += instance.OnDown;
             }
         }
     }
@@ -516,5 +633,8 @@ public class Controls : IInputActionCollection
         void OnDash(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnNextWeapon(InputAction.CallbackContext context);
+        void OnMove(InputAction.CallbackContext context);
+        void OnCharge(InputAction.CallbackContext context);
+        void OnDown(InputAction.CallbackContext context);
     }
 }

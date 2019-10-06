@@ -114,7 +114,6 @@ public class PlayerController : Character, IDamage
   [SerializeField] Weapon[] weapons;
   Timer shootRepeatTimer = new Timer();
   ParticleSystem chargeEffect = null;
-  float chargeAmount = 0;
   public float chargeMin = 0.3f;
   public float armRadius = 0.3f;
   Timer chargePulse = new Timer();
@@ -493,9 +492,9 @@ public class PlayerController : Character, IDamage
     if( chargeEffect != null )
     {
       audio.Stop();
-      audio.PlayOneShot( weapon.soundChargeShot );
-      if( chargeAmount > chargeMin )
+      if( (Time.time - chargeStart) > chargeMin )
       {
+        audio.PlayOneShot( weapon.soundChargeShot );
         Vector3 pos = arm.position + shoot.normalized * armRadius;
         if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
           weapon.ChargeVariant.FireWeapon( this, pos, shoot );
@@ -504,8 +503,6 @@ public class PlayerController : Character, IDamage
     StopCharge();
   }
 
-
-
   void BindControls()
   {
     Global.instance.Controls.BipedActions.Fire.performed += ( obj ) => inputFire = true;
@@ -513,48 +510,13 @@ public class PlayerController : Character, IDamage
     Global.instance.Controls.BipedActions.Jump.canceled += ( obj ) => inputJumpEnd = true;
     Global.instance.Controls.BipedActions.Dash.started += ( obj ) => inputDashStart = true;
     Global.instance.Controls.BipedActions.Dash.canceled += ( obj ) => inputDashEnd = true;
-
     Global.instance.Controls.BipedActions.Shield.started += ( obj ) => inputShield = true;
     Global.instance.Controls.BipedActions.Shield.canceled += ( obj ) => inputShield = false;
     Global.instance.Controls.BipedActions.Graphook.performed += ( obj ) => inputGraphook = true; ;
-
-    /*Global.instance.Controls.BipedActions.Move.performed += ( obj ) => {
-      float move = obj.ReadValue<float>();
-      if( move > 0 )
-        inputRight = true;
-      if( move < 0 )
-        inputLeft = true;
-    };*/
-    /*
-    if( GameInput.GetKeyDown( "Charge" ) )
-      inputChargeStart = true;
-    else
-    if( GameInput.GetKey( "Charge" ) )
-      inputCharge = true;
-    else
-    if( GameInput.GetKeyUp( "Charge" ) )
-      inputChargeEnd = true;
-
-    if( GameInput.GetKeyUp( "Down" ) )
-      hanging = false;
-
-    inputRight = GameInput.GetKey( "MoveRight" );
-    inputLeft = GameInput.GetKey( "MoveLeft" );
-
-    if( GameInput.GetKeyDown( "Dash" ) )
-      inputDashStart = true;
-    else if( GameInput.GetKeyUp( "Dash" ) )
-      inputDashEnd = true;
-
-    if( GameInput.GetKeyDown( "Jump" ) )
-      inputJumpStart = true;
-    else
-    if( GameInput.GetKeyUp( "Jump" ) )
-      inputJumpEnd = true;
-
-    if( GameInput.GetKeyDown( "NextWeapon" ) )
-      NextWeapon();
-      */
+    Global.instance.Controls.BipedActions.NextWeapon.performed += ( obj ) => NextWeapon();
+    Global.instance.Controls.BipedActions.Charge.performed += ( obj ) => inputChargeStart = true;
+    Global.instance.Controls.BipedActions.Charge.canceled += ( obj ) => inputChargeEnd = true;
+    Global.instance.Controls.BipedActions.Down.performed += ( obj ) => hanging = false;
 
     Global.instance.Controls.BipedActions.WorldSelect.performed += ( obj ) => {
       if( WorldSelection != null )
@@ -568,7 +530,6 @@ public class PlayerController : Character, IDamage
       if( WorldSelection != null )
       {
         WorldSelection.Select();
-        // move to Pickup? (IOC)
         if( WorldSelection is Pickup )
           AssignWeapon( ((Pickup)closestISelect).weapon );
       }
@@ -600,12 +561,13 @@ public class PlayerController : Character, IDamage
     arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, shoot ) );
 
-    /*Vector2 move = Global.instance.Controls.BipedActions.Move.ReadValue<Vector2>();
-    if( move.x > 0 )
+    // if player controlled
+    float move = Global.instance.Controls.BipedActions.Move.ReadValue<float>();
+    if( move > 0 )
       inputRight = true;
-    if( move.x < 0 )
+    if( move < 0 )
       inputLeft = true;
-      */
+
     if( inputFire && !shootRepeatTimer.IsActive )
       Shoot();
 
@@ -616,9 +578,6 @@ public class PlayerController : Character, IDamage
 
     if( inputChargeStart )
       StartCharge();
-
-    if( inputCharge && chargeEffect != null )
-      chargeAmount += Time.deltaTime;
 
     if( inputChargeEnd )
       ShootCharged();
@@ -898,6 +857,9 @@ public class PlayerController : Character, IDamage
     dashSmoke.Stop();
   }
 
+  float chargeStart;
+  GameObject chargeEffectGO;
+
   void StartCharge()
   {
     if( weapon.ChargeVariant != null )
@@ -911,8 +873,11 @@ public class PlayerController : Character, IDamage
         foreach( var sr in spriteRenderers )
           sr.material.SetColor( "_FlashColor", chargeColor );
         ChargePulseFlip();
-        GameObject geffect = Instantiate( weapon.ChargeEffect, transform );
-        chargeEffect = geffect.GetComponent<ParticleSystem>();
+        if( chargeEffectGO != null )
+          Destroy( chargeEffectGO );
+        chargeEffectGO = Instantiate( weapon.ChargeEffect, transform );
+        chargeEffect = chargeEffectGO.GetComponent<ParticleSystem>();
+        chargeStart = Time.time;
       } );
     }
   }
@@ -922,14 +887,13 @@ public class PlayerController : Character, IDamage
     if( chargeEffect != null )
     {
       audio2.Stop();
-      Destroy( chargeEffect.gameObject );
+      Destroy( chargeEffectGO );
     }
     chargeStartDelay.Stop( false );
     chargePulse.Stop( false );
     foreach( var sr in spriteRenderers )
       sr.material.SetFloat( "_FlashAmount", 0 );
     chargeEffect = null;
-    chargeAmount = 0;
   }
 
   void ChargePulseFlip()

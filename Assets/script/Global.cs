@@ -513,17 +513,10 @@ public class Global : MonoBehaviour
 
     if( CurrentPlayer != null )
     {
-      /*if( CursorPositional )*/
       CursorDelta += (Vector3)Controls.BipedActions.Aim.ReadValue<Vector2>() * cursorSensitivity;
-      /*else
-      CursorDelta = (Vector3)Controls.BipedActions.Aim.ReadValue<Vector2>() * cursorSensitivity;*/
       CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
-
       Cursor.gameObject.SetActive( CursorDelta.sqrMagnitude > cursorInner * cursorInner );
-      /*if( CursorPlayerRelative )*/
       origin = CurrentPlayer.arm.position;
-      /*else
-        origin = CameraController.transform.position;*/
       origin.z = 0;
 
       if( AimSnap )
