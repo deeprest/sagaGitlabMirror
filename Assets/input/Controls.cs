@@ -56,9 +56,25 @@ public class Controls : IInputActionCollection
             ""id"": ""d6ae1441-3532-4728-91ce-ffb7c481ad44"",
             ""actions"": [
                 {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""ea778ef3-39b8-4cf4-8ded-d222be21a5ba"",
+                    ""expectedControlType"": ""Dpad"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Aim"",
+                    ""type"": ""Value"",
+                    ""id"": ""9c7ce899-70d3-4d23-bada-d4c9ae6dcd70"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Fire"",
                     ""type"": ""Button"",
-                    ""id"": ""9c7ce899-70d3-4d23-bada-d4c9ae6dcd70"",
+                    ""id"": ""0f8d3974-ed11-452e-8a05-04f2e72ad7a6"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -66,16 +82,8 @@ public class Controls : IInputActionCollection
                 {
                     ""name"": ""Graphook"",
                     ""type"": ""Button"",
-                    ""id"": ""0f8d3974-ed11-452e-8a05-04f2e72ad7a6"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Aim"",
-                    ""type"": ""Value"",
                     ""id"": ""6dbe8df2-50f6-4b00-bc6e-c66715b6a2ae"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -120,14 +128,6 @@ public class Controls : IInputActionCollection
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Move"",
-                    ""type"": ""Value"",
-                    ""id"": ""ea778ef3-39b8-4cf4-8ded-d222be21a5ba"",
-                    ""expectedControlType"": ""Axis"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
                     ""name"": ""Charge"",
                     ""type"": ""Button"",
                     ""id"": ""0de15a2d-4eb1-4c7f-88b8-4ad5c15ee7b1"",
@@ -164,28 +164,6 @@ public class Controls : IInputActionCollection
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Fire"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""55094766-01aa-451d-946f-f7db7e95e361"",
-                    ""path"": ""<Gamepad>/rightStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""DefaultControlScheme"",
-                    ""action"": ""Aim"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6bd66471-2006-4a56-90a3-19c7988c7710"",
-                    ""path"": ""<Mouse>/delta"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""DefaultControlScheme"",
-                    ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -311,39 +289,6 @@ public class Controls : IInputActionCollection
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""1D Axis"",
-                    ""id"": ""6b121056-1552-41a4-b584-cddc48d3fd04"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""1cfe2033-5730-4003-8ab9-c7bbbaec0a82"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""597adfb2-ba1c-4dea-be4f-cddf56e0d839"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": """",
                     ""id"": ""8156ca34-3bd2-4e66-a3d4-b1e7bf7997ca"",
                     ""path"": ""<Mouse>/leftButton"",
@@ -375,6 +320,138 @@ public class Controls : IInputActionCollection
                     ""action"": ""Down"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""55094766-01aa-451d-946f-f7db7e95e361"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""DefaultControlScheme"",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6bd66471-2006-4a56-90a3-19c7988c7710"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""DefaultControlScheme"",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""b3ac1316-608f-41bb-9f2b-d41b09c1058a"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""d3f07979-0e2c-416b-a38f-c9fb5b3c1939"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""2f3c9569-b29c-4373-a73a-5b9ed21e0224"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""1acc43be-678d-409b-bb1d-4fd06c2f2c99"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""d61d60b6-9486-4b0f-b4fa-115c33ebf196"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""65ed0b02-90bc-4c06-a3c8-a34a9d32efe4"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""f1cff8fd-ce5f-489f-aba5-170b2cafcc8b"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""5e6c9c67-5c49-441e-8f51-616f9d5826e0"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""8a9544ee-efb0-477a-a7c3-7e2cc532b74c"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""3efd785c-980e-4dc0-9ec2-25bc92deff2b"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -408,15 +485,15 @@ public class Controls : IInputActionCollection
         m_GlobalActions_Menu = m_GlobalActions.FindAction("Menu", throwIfNotFound: true);
         // BipedActions
         m_BipedActions = asset.FindActionMap("BipedActions", throwIfNotFound: true);
+        m_BipedActions_Move = m_BipedActions.FindAction("Move", throwIfNotFound: true);
+        m_BipedActions_Aim = m_BipedActions.FindAction("Aim", throwIfNotFound: true);
         m_BipedActions_Fire = m_BipedActions.FindAction("Fire", throwIfNotFound: true);
         m_BipedActions_Graphook = m_BipedActions.FindAction("Graphook", throwIfNotFound: true);
-        m_BipedActions_Aim = m_BipedActions.FindAction("Aim", throwIfNotFound: true);
         m_BipedActions_WorldSelect = m_BipedActions.FindAction("WorldSelect", throwIfNotFound: true);
         m_BipedActions_Shield = m_BipedActions.FindAction("Shield", throwIfNotFound: true);
         m_BipedActions_Dash = m_BipedActions.FindAction("Dash", throwIfNotFound: true);
         m_BipedActions_Jump = m_BipedActions.FindAction("Jump", throwIfNotFound: true);
         m_BipedActions_NextWeapon = m_BipedActions.FindAction("NextWeapon", throwIfNotFound: true);
-        m_BipedActions_Move = m_BipedActions.FindAction("Move", throwIfNotFound: true);
         m_BipedActions_Charge = m_BipedActions.FindAction("Charge", throwIfNotFound: true);
         m_BipedActions_Down = m_BipedActions.FindAction("Down", throwIfNotFound: true);
     }
@@ -501,30 +578,30 @@ public class Controls : IInputActionCollection
     // BipedActions
     private readonly InputActionMap m_BipedActions;
     private IBipedActionsActions m_BipedActionsActionsCallbackInterface;
+    private readonly InputAction m_BipedActions_Move;
+    private readonly InputAction m_BipedActions_Aim;
     private readonly InputAction m_BipedActions_Fire;
     private readonly InputAction m_BipedActions_Graphook;
-    private readonly InputAction m_BipedActions_Aim;
     private readonly InputAction m_BipedActions_WorldSelect;
     private readonly InputAction m_BipedActions_Shield;
     private readonly InputAction m_BipedActions_Dash;
     private readonly InputAction m_BipedActions_Jump;
     private readonly InputAction m_BipedActions_NextWeapon;
-    private readonly InputAction m_BipedActions_Move;
     private readonly InputAction m_BipedActions_Charge;
     private readonly InputAction m_BipedActions_Down;
     public struct BipedActionsActions
     {
         private Controls m_Wrapper;
         public BipedActionsActions(Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_BipedActions_Move;
+        public InputAction @Aim => m_Wrapper.m_BipedActions_Aim;
         public InputAction @Fire => m_Wrapper.m_BipedActions_Fire;
         public InputAction @Graphook => m_Wrapper.m_BipedActions_Graphook;
-        public InputAction @Aim => m_Wrapper.m_BipedActions_Aim;
         public InputAction @WorldSelect => m_Wrapper.m_BipedActions_WorldSelect;
         public InputAction @Shield => m_Wrapper.m_BipedActions_Shield;
         public InputAction @Dash => m_Wrapper.m_BipedActions_Dash;
         public InputAction @Jump => m_Wrapper.m_BipedActions_Jump;
         public InputAction @NextWeapon => m_Wrapper.m_BipedActions_NextWeapon;
-        public InputAction @Move => m_Wrapper.m_BipedActions_Move;
         public InputAction @Charge => m_Wrapper.m_BipedActions_Charge;
         public InputAction @Down => m_Wrapper.m_BipedActions_Down;
         public InputActionMap Get() { return m_Wrapper.m_BipedActions; }
@@ -536,15 +613,18 @@ public class Controls : IInputActionCollection
         {
             if (m_Wrapper.m_BipedActionsActionsCallbackInterface != null)
             {
+                Move.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMove;
+                Move.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMove;
+                Move.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMove;
+                Aim.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnAim;
+                Aim.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnAim;
+                Aim.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnAim;
                 Fire.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnFire;
                 Fire.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnFire;
                 Fire.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnFire;
                 Graphook.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnGraphook;
                 Graphook.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnGraphook;
                 Graphook.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnGraphook;
-                Aim.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnAim;
-                Aim.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnAim;
-                Aim.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnAim;
                 WorldSelect.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnWorldSelect;
                 WorldSelect.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnWorldSelect;
                 WorldSelect.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnWorldSelect;
@@ -560,9 +640,6 @@ public class Controls : IInputActionCollection
                 NextWeapon.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnNextWeapon;
                 NextWeapon.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnNextWeapon;
                 NextWeapon.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnNextWeapon;
-                Move.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMove;
-                Move.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMove;
-                Move.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMove;
                 Charge.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnCharge;
                 Charge.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnCharge;
                 Charge.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnCharge;
@@ -573,15 +650,18 @@ public class Controls : IInputActionCollection
             m_Wrapper.m_BipedActionsActionsCallbackInterface = instance;
             if (instance != null)
             {
+                Move.started += instance.OnMove;
+                Move.performed += instance.OnMove;
+                Move.canceled += instance.OnMove;
+                Aim.started += instance.OnAim;
+                Aim.performed += instance.OnAim;
+                Aim.canceled += instance.OnAim;
                 Fire.started += instance.OnFire;
                 Fire.performed += instance.OnFire;
                 Fire.canceled += instance.OnFire;
                 Graphook.started += instance.OnGraphook;
                 Graphook.performed += instance.OnGraphook;
                 Graphook.canceled += instance.OnGraphook;
-                Aim.started += instance.OnAim;
-                Aim.performed += instance.OnAim;
-                Aim.canceled += instance.OnAim;
                 WorldSelect.started += instance.OnWorldSelect;
                 WorldSelect.performed += instance.OnWorldSelect;
                 WorldSelect.canceled += instance.OnWorldSelect;
@@ -597,9 +677,6 @@ public class Controls : IInputActionCollection
                 NextWeapon.started += instance.OnNextWeapon;
                 NextWeapon.performed += instance.OnNextWeapon;
                 NextWeapon.canceled += instance.OnNextWeapon;
-                Move.started += instance.OnMove;
-                Move.performed += instance.OnMove;
-                Move.canceled += instance.OnMove;
                 Charge.started += instance.OnCharge;
                 Charge.performed += instance.OnCharge;
                 Charge.canceled += instance.OnCharge;
@@ -625,15 +702,15 @@ public class Controls : IInputActionCollection
     }
     public interface IBipedActionsActions
     {
+        void OnMove(InputAction.CallbackContext context);
+        void OnAim(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnGraphook(InputAction.CallbackContext context);
-        void OnAim(InputAction.CallbackContext context);
         void OnWorldSelect(InputAction.CallbackContext context);
         void OnShield(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnNextWeapon(InputAction.CallbackContext context);
-        void OnMove(InputAction.CallbackContext context);
         void OnCharge(InputAction.CallbackContext context);
         void OnDown(InputAction.CallbackContext context);
     }

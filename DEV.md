@@ -7,15 +7,6 @@ story upfront
 polish lots
 add things arbitrarily
 
-
-# design priority
-1. laughter
-2. squeal with glee (cute)
-3. accomplishment (challenge)
-4. wonder (quality of presentation, discovery)
-5. intrigue (mystery, story)
-
-
 # todo
 - BOSS. punchy mech. grenadier. graphook foe.
 - music: intro, loop, battle.

@@ -534,6 +534,8 @@ public class PlayerController : Character, IDamage
           AssignWeapon( ((Pickup)closestISelect).weapon );
       }
     };
+
+    print( Global.instance.Controls.BipedActions.Aim.processors );
   }
 
   void ResetInput()
@@ -562,10 +564,10 @@ public class PlayerController : Character, IDamage
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, shoot ) );
 
     // if player controlled
-    float move = Global.instance.Controls.BipedActions.Move.ReadValue<float>();
-    if( move > 0 )
+    Vector2 move = Global.instance.Controls.BipedActions.Move.ReadValue<Vector2>();
+    if( move.x > 0 )
       inputRight = true;
-    if( move < 0 )
+    if( move.x < 0 )
       inputLeft = true;
 
     if( inputFire && !shootRepeatTimer.IsActive )
