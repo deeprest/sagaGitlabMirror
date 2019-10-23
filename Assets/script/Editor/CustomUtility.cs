@@ -40,6 +40,10 @@ public class CustomUtility : EditorWindow
     todo = File.ReadAllText( Application.dataPath + "/../todo" );
   }
 
+  bool buildToggleGroup = false;
+  bool buildMacOS = true;
+  bool buildLinux = true;
+
   int audioDoppler = 0;
   int audioDistanceMin = 1;
   int audioDistanceMax = 30;
@@ -94,24 +98,39 @@ public class CustomUtility : EditorWindow
     EditorGUILayout.Space();
     EditorGUI.ProgressBar( EditorGUILayout.GetControlRect( false, 30 ), progress, progressMessage );
 
+
+
     GUILayout.Label( "Build", EditorStyles.boldLabel );
+    buildMacOS = EditorGUILayout.ToggleLeft( "MacOS", buildMacOS );
+    buildLinux = EditorGUILayout.ToggleLeft( "Linux", buildLinux );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Build Release" ) )
     {
       if( BuildPipeline.isBuildingPlayer )
         return;
-      BuildPlayerOptions bpo = new BuildPlayerOptions();
-      bpo.target = BuildTarget.StandaloneOSX;
       List<string> buildnames = new List<string>();
       for( int i = 0; i < SceneManager.sceneCountInBuildSettings; i++ )
       {
         buildnames.Add( SceneUtility.GetScenePathByBuildIndex( i ) );
         //string sceneName = path.Substring( 0, path.Length - 6 ).Substring( path.LastIndexOf( '/' ) + 1 );
       }
+      BuildPlayerOptions bpo = new BuildPlayerOptions();
       bpo.scenes = buildnames.ToArray();  //new string[] { "Assets/zero.unity", "Assets/mmx-city.unity" };
       bpo.options = BuildOptions.CompressWithLz4; //BuildOptions.AutoRunPlayer;
-      bpo.locationPathName = Directory.GetParent( Application.dataPath ).FullName + "/SagaCity-" + Util.Timestamp().Replace( '.', '-' );
-      Debug.Log( bpo.locationPathName );
-      BuildPipeline.BuildPlayer( bpo );
+
+      if( buildMacOS )
+      {
+        bpo.target = BuildTarget.StandaloneOSX;
+        bpo.locationPathName = Directory.GetParent( Application.dataPath ).FullName + "/Saga-MacOS-" + Util.Timestamp().Replace( '.', '-' );
+        Debug.Log( bpo.locationPathName );
+        BuildPipeline.BuildPlayer( bpo );
+      }
+      if( buildLinux )
+      {
+        bpo.target = BuildTarget.StandaloneLinux64;
+        bpo.locationPathName = Directory.GetParent( Application.dataPath ).FullName + "/Saga-Linux-" + Util.Timestamp().Replace( '.', '-' );
+        Debug.Log( bpo.locationPathName );
+        BuildPipeline.BuildPlayer( bpo );
+      }
     }
 
 #if false

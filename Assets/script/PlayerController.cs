@@ -199,6 +199,15 @@ public class PlayerController : Character, IDamage
   //List<Pickup> highlightedPickups = new List<Pickup>();
   //List<Pickup> highlightedPickupsRemove = new List<Pickup>();
 
+  public void UnselectWorldSelection()
+  {
+    if( WorldSelection != null )
+    {
+      WorldSelection.Unselect();
+      WorldSelection = null;
+    }
+  }
+
   Component FindClosest( Vector3 position, Component[] cmps )
   {
     float distance = Mathf.Infinity;

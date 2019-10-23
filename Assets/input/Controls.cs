@@ -52,8 +52,172 @@ public class Controls : IInputActionCollection
             ]
         },
         {
-            ""name"": ""BipedActions"",
+            ""name"": ""MenuActions"",
             ""id"": ""d6ae1441-3532-4728-91ce-ffb7c481ad44"",
+            ""actions"": [
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Button"",
+                    ""id"": ""093b1a14-9986-43bd-ba26-fdc1003693fa"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Submit"",
+                    ""type"": ""Button"",
+                    ""id"": ""d80d6c91-51c4-400a-8444-d7405d8110e8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""a328d9b7-e09d-47a2-b2e7-778848eadcc3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""f0330c91-df57-476b-912b-1fdb15532724"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""65189adc-a478-42fd-a3ca-469c72584040"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""89a84f71-023c-4972-b9e9-c2dbcc3a4800"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""040f4f64-906f-4b49-961b-1fbc695369b0"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""29d3d5a9-5e61-4b84-9fec-49fcb26a42f0"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""f1a9682a-e174-4359-9cf7-6e3a8288abef"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""a8923858-66a3-48aa-87b7-e22c9fc9b75e"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""55218dea-f72d-4693-9484-2bab6f11dd92"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""1797878c-0f7e-416a-bb0b-d0d95e268cef"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""5cacf1a8-d185-4009-9b9a-1e6cae3367e1"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a1d6d9f8-7b18-4330-84dc-ec5e68e99148"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Submit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bb12337a-934d-40af-a6e4-d277553a44ab"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""BipedActions"",
+            ""id"": ""079bfb09-e935-42f6-9d7b-a2b980110245"",
             ""actions"": [
                 {
                     ""name"": ""Move"",
@@ -483,6 +647,11 @@ public class Controls : IInputActionCollection
         // GlobalActions
         m_GlobalActions = asset.FindActionMap("GlobalActions", throwIfNotFound: true);
         m_GlobalActions_Menu = m_GlobalActions.FindAction("Menu", throwIfNotFound: true);
+        // MenuActions
+        m_MenuActions = asset.FindActionMap("MenuActions", throwIfNotFound: true);
+        m_MenuActions_Move = m_MenuActions.FindAction("Move", throwIfNotFound: true);
+        m_MenuActions_Submit = m_MenuActions.FindAction("Submit", throwIfNotFound: true);
+        m_MenuActions_Cancel = m_MenuActions.FindAction("Cancel", throwIfNotFound: true);
         // BipedActions
         m_BipedActions = asset.FindActionMap("BipedActions", throwIfNotFound: true);
         m_BipedActions_Move = m_BipedActions.FindAction("Move", throwIfNotFound: true);
@@ -574,6 +743,55 @@ public class Controls : IInputActionCollection
         }
     }
     public GlobalActionsActions @GlobalActions => new GlobalActionsActions(this);
+
+    // MenuActions
+    private readonly InputActionMap m_MenuActions;
+    private IMenuActionsActions m_MenuActionsActionsCallbackInterface;
+    private readonly InputAction m_MenuActions_Move;
+    private readonly InputAction m_MenuActions_Submit;
+    private readonly InputAction m_MenuActions_Cancel;
+    public struct MenuActionsActions
+    {
+        private Controls m_Wrapper;
+        public MenuActionsActions(Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_MenuActions_Move;
+        public InputAction @Submit => m_Wrapper.m_MenuActions_Submit;
+        public InputAction @Cancel => m_Wrapper.m_MenuActions_Cancel;
+        public InputActionMap Get() { return m_Wrapper.m_MenuActions; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(MenuActionsActions set) { return set.Get(); }
+        public void SetCallbacks(IMenuActionsActions instance)
+        {
+            if (m_Wrapper.m_MenuActionsActionsCallbackInterface != null)
+            {
+                Move.started -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnMove;
+                Move.performed -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnMove;
+                Move.canceled -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnMove;
+                Submit.started -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnSubmit;
+                Submit.performed -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnSubmit;
+                Submit.canceled -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnSubmit;
+                Cancel.started -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnCancel;
+                Cancel.performed -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnCancel;
+                Cancel.canceled -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnCancel;
+            }
+            m_Wrapper.m_MenuActionsActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                Move.started += instance.OnMove;
+                Move.performed += instance.OnMove;
+                Move.canceled += instance.OnMove;
+                Submit.started += instance.OnSubmit;
+                Submit.performed += instance.OnSubmit;
+                Submit.canceled += instance.OnSubmit;
+                Cancel.started += instance.OnCancel;
+                Cancel.performed += instance.OnCancel;
+                Cancel.canceled += instance.OnCancel;
+            }
+        }
+    }
+    public MenuActionsActions @MenuActions => new MenuActionsActions(this);
 
     // BipedActions
     private readonly InputActionMap m_BipedActions;
@@ -699,6 +917,12 @@ public class Controls : IInputActionCollection
     public interface IGlobalActionsActions
     {
         void OnMenu(InputAction.CallbackContext context);
+    }
+    public interface IMenuActionsActions
+    {
+        void OnMove(InputAction.CallbackContext context);
+        void OnSubmit(InputAction.CallbackContext context);
+        void OnCancel(InputAction.CallbackContext context);
     }
     public interface IBipedActionsActions
     {

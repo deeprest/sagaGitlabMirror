@@ -61,8 +61,6 @@ public class WorldSelectable : MonoBehaviour
 }
 
 
-// TODO upgrade to 2019 and use new input system, or find something on asset store.
-
 public class Global : MonoBehaviour
 {
   public static Global instance;
@@ -237,9 +235,40 @@ public class Global : MonoBehaviour
 
     Controls = new Controls();
     Controls.Enable();
+    Controls.MenuActions.Disable();
+
     Controls.GlobalActions.Menu.performed += ( obj ) => ShowMenu( !MenuShowing );
 
+    Controls.MenuActions.Cancel.performed += ( obj ) => {
+      // todo back out to previous UI screen
+      // or if there is none, close diagetic UI
+      if( CurrentPlayer != null )
+        CurrentPlayer.UnselectWorldSelection();
+    };
+
     StartCoroutine( InitializeRoutine() );
+  }
+
+  public void DiageticMenuOn( PolygonCollider2D poly, GameObject InitiallySelected = null )
+  {
+    Controls.MenuActions.Enable();
+    Controls.BipedActions.Disable();
+    AssignCameraPoly( poly );
+    CameraController.EncompassBounds = true;
+    UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( InitiallySelected );
+    EnableRaycaster( false );
+  }
+
+  public void DiageticMenuOff()
+  {
+    Controls.MenuActions.Disable();
+    Controls.BipedActions.Enable();
+    SceneScript ss = GetSceneScript();
+    if( ss != null )
+      AssignCameraPoly( ss.sb );
+    CameraController.EncompassBounds = false;
+    UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( null );
+    EnableRaycaster( true );
   }
 
   IEnumerator InitializeRoutine()
@@ -685,7 +714,7 @@ public class Global : MonoBehaviour
       UnityEngine.Cursor.lockState = CursorLockMode.None;
       UnityEngine.Cursor.visible = true;
       EnableRaycaster( true );
-}
+    }
     else
     {
       Unpause();
@@ -1064,7 +1093,7 @@ public class Global : MonoBehaviour
     writer.WriteObjectEnd();
 
     writer.WriteObjectEnd(); // root end
-    print( settingsPath );
+    //print( settingsPath );
     File.WriteAllText( settingsPath, writer.ToString() );
   }
 

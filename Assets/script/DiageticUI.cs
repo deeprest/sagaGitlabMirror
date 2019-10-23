@@ -24,42 +24,25 @@ public class DiageticUI : WorldSelectable
   {
     animator.Play( "idle" );
     indicator.SetActive( false );
-    //Global.instance.CameraController.LerpTo( cameraTarget );
-    Global.instance.AssignCameraPoly( cameraTarget.GetComponent<PolygonCollider2D>() );
-    Global.instance.CameraController.EncompassBounds = true;
-
-    Global.instance.UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( InitiallySelected );
-    Global.instance.EnableRaycaster( false );
     raycaster.enabled = true;
-    Cursor.lockState = CursorLockMode.None;
-    Cursor.visible = true;
+    //Cursor.lockState = CursorLockMode.None;
+    //Cursor.visible = true;
+    Global.instance.DiageticMenuOn( cameraTarget.GetComponent<PolygonCollider2D>(), InitiallySelected  );
   }
 
   public override void Unselect()
   {
     animator.Play( "idle" );
     indicator.SetActive( true );
-    SceneScript ss = Global.instance.GetSceneScript();
-    if( ss != null )
-      Global.instance.AssignCameraPoly( ss.sb );
-    Global.instance.CameraController.EncompassBounds = false;
-
-    Cursor.lockState = CursorLockMode.Locked;
-    Cursor.visible = false;
-    // avoid selecting things after we've left the menu
-    Global.instance.UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( null );
-    Global.instance.EnableRaycaster( true );
     raycaster.enabled = false;
+    //Cursor.lockState = CursorLockMode.Locked;
+    //Cursor.visible = false;
+    Global.instance.DiageticMenuOff();
   }
 
   void Start()
   {
     animator.Play( "idle" );
   }
-
-
-
-
-
 
 }
