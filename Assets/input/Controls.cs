@@ -24,6 +24,38 @@ public class Controls : IInputActionCollection
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Slowmo"",
+                    ""type"": ""Button"",
+                    ""id"": ""49974937-36e1-472d-926d-d45aff2c4e41"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""b258d7cd-2c65-48b0-8b9b-cb2857978f71"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Screenshot"",
+                    ""type"": ""Button"",
+                    ""id"": ""4746dc49-83e3-4a85-92d5-190128af6873"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""CursorLockToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""06412df7-f38c-45d8-bfc5-13fb38f20fb9"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -48,6 +80,50 @@ public class Controls : IInputActionCollection
                     ""action"": ""Menu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1a33a736-bb4a-4db0-9c0b-4fff5c4c788d"",
+                    ""path"": ""<Keyboard>/o"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Slowmo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""002b3066-1dd4-4976-94aa-e0b637fad3cf"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f34c0a8a-1901-4f83-bce5-ff601f4d7645"",
+                    ""path"": ""<Keyboard>/f5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Screenshot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""eee96763-7ea4-4530-9f3e-84464d7219d7"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CursorLockToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -64,7 +140,7 @@ public class Controls : IInputActionCollection
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Submit"",
+                    ""name"": ""Accept"",
                     ""type"": ""Button"",
                     ""id"": ""d80d6c91-51c4-400a-8444-d7405d8110e8"",
                     ""expectedControlType"": """",
@@ -72,10 +148,26 @@ public class Controls : IInputActionCollection
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Cancel"",
+                    ""name"": ""Back"",
                     ""type"": ""Button"",
                     ""id"": ""a328d9b7-e09d-47a2-b2e7-778848eadcc3"",
                     ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Point"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""09af329b-034b-4f41-8462-ba48e6d1912f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Click"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""4622c770-fe84-4d29-9857-93d665d3a99e"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -198,7 +290,18 @@ public class Controls : IInputActionCollection
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Submit"",
+                    ""action"": ""Accept"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""aa97be3f-d7f3-4c1d-a032-6fa59f3e6405"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Accept"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -209,7 +312,40 @@ public class Controls : IInputActionCollection
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Cancel"",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b87e8c3f-c650-440b-b49c-0f253e0ba8cf"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1994ef24-627b-44c6-98b7-24acaf39abf1"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Point"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fe93e21c-10fa-442a-9d80-8e85188beb7d"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -304,6 +440,14 @@ public class Controls : IInputActionCollection
                     ""type"": ""Button"",
                     ""id"": ""e0eb1488-3fe2-4bc1-9139-5ce1cd2e5c7e"",
                     ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""DEV-Zoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""daad5be2-bb09-4201-939d-730f35d6594c"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -616,6 +760,17 @@ public class Controls : IInputActionCollection
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44331aa6-375c-49c0-b43f-aa7284b25f1f"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=0.5)"",
+                    ""groups"": """",
+                    ""action"": ""DEV-Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -647,11 +802,17 @@ public class Controls : IInputActionCollection
         // GlobalActions
         m_GlobalActions = asset.FindActionMap("GlobalActions", throwIfNotFound: true);
         m_GlobalActions_Menu = m_GlobalActions.FindAction("Menu", throwIfNotFound: true);
+        m_GlobalActions_Slowmo = m_GlobalActions.FindAction("Slowmo", throwIfNotFound: true);
+        m_GlobalActions_Pause = m_GlobalActions.FindAction("Pause", throwIfNotFound: true);
+        m_GlobalActions_Screenshot = m_GlobalActions.FindAction("Screenshot", throwIfNotFound: true);
+        m_GlobalActions_CursorLockToggle = m_GlobalActions.FindAction("CursorLockToggle", throwIfNotFound: true);
         // MenuActions
         m_MenuActions = asset.FindActionMap("MenuActions", throwIfNotFound: true);
         m_MenuActions_Move = m_MenuActions.FindAction("Move", throwIfNotFound: true);
-        m_MenuActions_Submit = m_MenuActions.FindAction("Submit", throwIfNotFound: true);
-        m_MenuActions_Cancel = m_MenuActions.FindAction("Cancel", throwIfNotFound: true);
+        m_MenuActions_Accept = m_MenuActions.FindAction("Accept", throwIfNotFound: true);
+        m_MenuActions_Back = m_MenuActions.FindAction("Back", throwIfNotFound: true);
+        m_MenuActions_Point = m_MenuActions.FindAction("Point", throwIfNotFound: true);
+        m_MenuActions_Click = m_MenuActions.FindAction("Click", throwIfNotFound: true);
         // BipedActions
         m_BipedActions = asset.FindActionMap("BipedActions", throwIfNotFound: true);
         m_BipedActions_Move = m_BipedActions.FindAction("Move", throwIfNotFound: true);
@@ -665,6 +826,7 @@ public class Controls : IInputActionCollection
         m_BipedActions_NextWeapon = m_BipedActions.FindAction("NextWeapon", throwIfNotFound: true);
         m_BipedActions_Charge = m_BipedActions.FindAction("Charge", throwIfNotFound: true);
         m_BipedActions_Down = m_BipedActions.FindAction("Down", throwIfNotFound: true);
+        m_BipedActions_DEVZoom = m_BipedActions.FindAction("DEV-Zoom", throwIfNotFound: true);
     }
 
     ~Controls()
@@ -715,11 +877,19 @@ public class Controls : IInputActionCollection
     private readonly InputActionMap m_GlobalActions;
     private IGlobalActionsActions m_GlobalActionsActionsCallbackInterface;
     private readonly InputAction m_GlobalActions_Menu;
+    private readonly InputAction m_GlobalActions_Slowmo;
+    private readonly InputAction m_GlobalActions_Pause;
+    private readonly InputAction m_GlobalActions_Screenshot;
+    private readonly InputAction m_GlobalActions_CursorLockToggle;
     public struct GlobalActionsActions
     {
         private Controls m_Wrapper;
         public GlobalActionsActions(Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Menu => m_Wrapper.m_GlobalActions_Menu;
+        public InputAction @Slowmo => m_Wrapper.m_GlobalActions_Slowmo;
+        public InputAction @Pause => m_Wrapper.m_GlobalActions_Pause;
+        public InputAction @Screenshot => m_Wrapper.m_GlobalActions_Screenshot;
+        public InputAction @CursorLockToggle => m_Wrapper.m_GlobalActions_CursorLockToggle;
         public InputActionMap Get() { return m_Wrapper.m_GlobalActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -732,6 +902,18 @@ public class Controls : IInputActionCollection
                 Menu.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMenu;
                 Menu.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMenu;
                 Menu.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMenu;
+                Slowmo.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnSlowmo;
+                Slowmo.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnSlowmo;
+                Slowmo.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnSlowmo;
+                Pause.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnPause;
+                Pause.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnPause;
+                Pause.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnPause;
+                Screenshot.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
+                Screenshot.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
+                Screenshot.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
+                CursorLockToggle.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnCursorLockToggle;
+                CursorLockToggle.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnCursorLockToggle;
+                CursorLockToggle.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnCursorLockToggle;
             }
             m_Wrapper.m_GlobalActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -739,6 +921,18 @@ public class Controls : IInputActionCollection
                 Menu.started += instance.OnMenu;
                 Menu.performed += instance.OnMenu;
                 Menu.canceled += instance.OnMenu;
+                Slowmo.started += instance.OnSlowmo;
+                Slowmo.performed += instance.OnSlowmo;
+                Slowmo.canceled += instance.OnSlowmo;
+                Pause.started += instance.OnPause;
+                Pause.performed += instance.OnPause;
+                Pause.canceled += instance.OnPause;
+                Screenshot.started += instance.OnScreenshot;
+                Screenshot.performed += instance.OnScreenshot;
+                Screenshot.canceled += instance.OnScreenshot;
+                CursorLockToggle.started += instance.OnCursorLockToggle;
+                CursorLockToggle.performed += instance.OnCursorLockToggle;
+                CursorLockToggle.canceled += instance.OnCursorLockToggle;
             }
         }
     }
@@ -748,15 +942,19 @@ public class Controls : IInputActionCollection
     private readonly InputActionMap m_MenuActions;
     private IMenuActionsActions m_MenuActionsActionsCallbackInterface;
     private readonly InputAction m_MenuActions_Move;
-    private readonly InputAction m_MenuActions_Submit;
-    private readonly InputAction m_MenuActions_Cancel;
+    private readonly InputAction m_MenuActions_Accept;
+    private readonly InputAction m_MenuActions_Back;
+    private readonly InputAction m_MenuActions_Point;
+    private readonly InputAction m_MenuActions_Click;
     public struct MenuActionsActions
     {
         private Controls m_Wrapper;
         public MenuActionsActions(Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_MenuActions_Move;
-        public InputAction @Submit => m_Wrapper.m_MenuActions_Submit;
-        public InputAction @Cancel => m_Wrapper.m_MenuActions_Cancel;
+        public InputAction @Accept => m_Wrapper.m_MenuActions_Accept;
+        public InputAction @Back => m_Wrapper.m_MenuActions_Back;
+        public InputAction @Point => m_Wrapper.m_MenuActions_Point;
+        public InputAction @Click => m_Wrapper.m_MenuActions_Click;
         public InputActionMap Get() { return m_Wrapper.m_MenuActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -769,12 +967,18 @@ public class Controls : IInputActionCollection
                 Move.started -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnMove;
                 Move.performed -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnMove;
                 Move.canceled -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnMove;
-                Submit.started -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnSubmit;
-                Submit.performed -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnSubmit;
-                Submit.canceled -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnSubmit;
-                Cancel.started -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnCancel;
-                Cancel.performed -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnCancel;
-                Cancel.canceled -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnCancel;
+                Accept.started -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnAccept;
+                Accept.performed -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnAccept;
+                Accept.canceled -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnAccept;
+                Back.started -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnBack;
+                Back.performed -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnBack;
+                Back.canceled -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnBack;
+                Point.started -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnPoint;
+                Point.performed -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnPoint;
+                Point.canceled -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnPoint;
+                Click.started -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnClick;
+                Click.performed -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnClick;
+                Click.canceled -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnClick;
             }
             m_Wrapper.m_MenuActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -782,12 +986,18 @@ public class Controls : IInputActionCollection
                 Move.started += instance.OnMove;
                 Move.performed += instance.OnMove;
                 Move.canceled += instance.OnMove;
-                Submit.started += instance.OnSubmit;
-                Submit.performed += instance.OnSubmit;
-                Submit.canceled += instance.OnSubmit;
-                Cancel.started += instance.OnCancel;
-                Cancel.performed += instance.OnCancel;
-                Cancel.canceled += instance.OnCancel;
+                Accept.started += instance.OnAccept;
+                Accept.performed += instance.OnAccept;
+                Accept.canceled += instance.OnAccept;
+                Back.started += instance.OnBack;
+                Back.performed += instance.OnBack;
+                Back.canceled += instance.OnBack;
+                Point.started += instance.OnPoint;
+                Point.performed += instance.OnPoint;
+                Point.canceled += instance.OnPoint;
+                Click.started += instance.OnClick;
+                Click.performed += instance.OnClick;
+                Click.canceled += instance.OnClick;
             }
         }
     }
@@ -807,6 +1017,7 @@ public class Controls : IInputActionCollection
     private readonly InputAction m_BipedActions_NextWeapon;
     private readonly InputAction m_BipedActions_Charge;
     private readonly InputAction m_BipedActions_Down;
+    private readonly InputAction m_BipedActions_DEVZoom;
     public struct BipedActionsActions
     {
         private Controls m_Wrapper;
@@ -822,6 +1033,7 @@ public class Controls : IInputActionCollection
         public InputAction @NextWeapon => m_Wrapper.m_BipedActions_NextWeapon;
         public InputAction @Charge => m_Wrapper.m_BipedActions_Charge;
         public InputAction @Down => m_Wrapper.m_BipedActions_Down;
+        public InputAction @DEVZoom => m_Wrapper.m_BipedActions_DEVZoom;
         public InputActionMap Get() { return m_Wrapper.m_BipedActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -864,6 +1076,9 @@ public class Controls : IInputActionCollection
                 Down.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDown;
                 Down.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDown;
                 Down.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDown;
+                DEVZoom.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDEVZoom;
+                DEVZoom.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDEVZoom;
+                DEVZoom.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDEVZoom;
             }
             m_Wrapper.m_BipedActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -901,6 +1116,9 @@ public class Controls : IInputActionCollection
                 Down.started += instance.OnDown;
                 Down.performed += instance.OnDown;
                 Down.canceled += instance.OnDown;
+                DEVZoom.started += instance.OnDEVZoom;
+                DEVZoom.performed += instance.OnDEVZoom;
+                DEVZoom.canceled += instance.OnDEVZoom;
             }
         }
     }
@@ -917,12 +1135,18 @@ public class Controls : IInputActionCollection
     public interface IGlobalActionsActions
     {
         void OnMenu(InputAction.CallbackContext context);
+        void OnSlowmo(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
+        void OnScreenshot(InputAction.CallbackContext context);
+        void OnCursorLockToggle(InputAction.CallbackContext context);
     }
     public interface IMenuActionsActions
     {
         void OnMove(InputAction.CallbackContext context);
-        void OnSubmit(InputAction.CallbackContext context);
-        void OnCancel(InputAction.CallbackContext context);
+        void OnAccept(InputAction.CallbackContext context);
+        void OnBack(InputAction.CallbackContext context);
+        void OnPoint(InputAction.CallbackContext context);
+        void OnClick(InputAction.CallbackContext context);
     }
     public interface IBipedActionsActions
     {
@@ -937,5 +1161,6 @@ public class Controls : IInputActionCollection
         void OnNextWeapon(InputAction.CallbackContext context);
         void OnCharge(InputAction.CallbackContext context);
         void OnDown(InputAction.CallbackContext context);
+        void OnDEVZoom(InputAction.CallbackContext context);
     }
 }

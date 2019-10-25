@@ -5,7 +5,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
+//using System.IO.Compression;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -141,16 +141,21 @@ public class Global : MonoBehaviour
   [Header( "UI" )]
   public GameObject UI;
   public GameObject MainMenu;
+  public GameObject MainMenuFirstSelected;
   [SerializeField] GameObject HUD;
   bool MenuShowing { get { return MainMenu.activeInHierarchy; } }
   public GameObject LoadingScreen;
   [SerializeField] Image fader;
   public GameObject ready;
-  // cursor
+  // cursor 
   public Transform Cursor;
   public float cursorOuter = 100;
   public float cursorInner = 50;
-  public Vector3 CursorDelta;
+  public Vector2 CursorDelta;
+  Vector2 cursorOrigin;
+  public float CursorFactor = 0.02f;
+  public Vector2 AimPosition;
+  public Vector2 CursorWorldPosition;
   public float cursorSensitivity = 1;
   public bool CursorPlayerRelative = true;
   Vector3 aimRaw;
@@ -186,12 +191,23 @@ public class Global : MonoBehaviour
   public Color shiftyColor = Color.red;
   [SerializeField] float colorShiftSpeed = 1;
   [SerializeField] Image shifty;
+  // spinner on loading screen
+  float progTarget = 0;
+  [SerializeField] GameObject spinner;
+  [SerializeField] float spinnerMoveSpeed = 1;
 
 #if DESTRUCTION_LIST
   // This exists only because of a Unity crash bug when objects with active
   // Contacts are destroyed from within OnCollisionEnter2D()
   List<GameObject> DestructionList = new List<GameObject>();
 #endif
+
+  [Header( "Audio" )]
+  public UnityEngine.Audio.AudioMixer mixer;
+  public UnityEngine.Audio.AudioMixerSnapshot snapSlowmo;
+  public UnityEngine.Audio.AudioMixerSnapshot snapNormal;
+  public float AudioFadeDuration = 0.1f;
+
 
   [RuntimeInitializeOnLoadMethod]
   static void RunOnStart()
@@ -219,11 +235,66 @@ public class Global : MonoBehaviour
     InitializeSettings();
     ReadSettings();
     ApplyScreenSettings();
+    InitializeControls();
+    StartCoroutine( InitializeRoutine() );
+  }
 
-    GameObject[] res = Resources.LoadAll<GameObject>( "" );
-    foreach( GameObject go in res )
-      ResourceLookup.Add( go.name, go );
+  void InitializeControls()
+  {
+    Controls = new Controls();
+    Controls.Enable();
+    Controls.MenuActions.Disable();
 
+    Controls.GlobalActions.Menu.performed += ( obj ) => ShowMenu( !MenuShowing );
+    Controls.GlobalActions.Pause.performed += ( obj ) => {
+      if( Paused )
+        Unpause();
+      else
+        Pause();
+    };
+    Controls.GlobalActions.Slowmo.performed += ( obj ) => {
+      if( Slowed )
+        NoSlow();
+      else
+        Slow();
+    };
+    Controls.GlobalActions.Screenshot.performed += ( obj ) => Screenshot();
+#if !UNITY_EDITOR
+    Controls.GlobalActions.CursorLockToggle.performed += (obj) => {
+      if( UnityEngine.Cursor.lockState == CursorLockMode.Locked )
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+      else
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+    };
+#endif
+    Controls.MenuActions.Back.performed += ( obj ) => {
+      // todo back out to previous UI screen...
+
+      // ...or if there is none, close diagetic UI
+      if( InDiagetic )
+      {
+        if( CurrentPlayer != null )
+          CurrentPlayer.UnselectWorldSelection();
+      }
+    };
+
+    // DEVELOPMENT
+    Controls.BipedActions.DEVZoom.performed += ( obj ) => {
+      if( Camera.main.orthographic )
+      {
+        CameraController.orthoTarget += obj.ReadValue<float>();
+        debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
+      }
+      else
+      {
+        CameraController.zOffset += obj.ReadValue<float>();
+        debugText.text = CameraController.zOffset.ToString( "##.#" );
+      }
+    };
+  }
+
+  IEnumerator InitializeRoutine()
+  {
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
     {
       Debug.Log( "scene loaded: " + arg0.name );
@@ -233,46 +304,10 @@ public class Global : MonoBehaviour
       Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
     };
 
-    Controls = new Controls();
-    Controls.Enable();
-    Controls.MenuActions.Disable();
+    GameObject[] res = Resources.LoadAll<GameObject>( "" );
+    foreach( GameObject go in res )
+      ResourceLookup.Add( go.name, go );
 
-    Controls.GlobalActions.Menu.performed += ( obj ) => ShowMenu( !MenuShowing );
-
-    Controls.MenuActions.Cancel.performed += ( obj ) => {
-      // todo back out to previous UI screen
-      // or if there is none, close diagetic UI
-      if( CurrentPlayer != null )
-        CurrentPlayer.UnselectWorldSelection();
-    };
-
-    StartCoroutine( InitializeRoutine() );
-  }
-
-  public void DiageticMenuOn( PolygonCollider2D poly, GameObject InitiallySelected = null )
-  {
-    Controls.MenuActions.Enable();
-    Controls.BipedActions.Disable();
-    AssignCameraPoly( poly );
-    CameraController.EncompassBounds = true;
-    UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( InitiallySelected );
-    EnableRaycaster( false );
-  }
-
-  public void DiageticMenuOff()
-  {
-    Controls.MenuActions.Disable();
-    Controls.BipedActions.Enable();
-    SceneScript ss = GetSceneScript();
-    if( ss != null )
-      AssignCameraPoly( ss.sb );
-    CameraController.EncompassBounds = false;
-    UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( null );
-    EnableRaycaster( true );
-  }
-
-  IEnumerator InitializeRoutine()
-  {
     ShowMenu( false );
 
     NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
@@ -405,10 +440,6 @@ public class Global : MonoBehaviour
     ScreenCapture.CaptureScreenshot( Application.persistentDataPath + "/" + now + ".png" );
   }
 
-  float progTarget = 0;
-  [SerializeField] GameObject spinner;
-  [SerializeField] float spinnerMoveSpeed = 1;
-
   void Update()
   {
 #if DESTRUCTION_LIST
@@ -428,49 +459,6 @@ public class Global : MonoBehaviour
       //progress.fillAmount = prog;
     }
 
-
-    if( Mathf.Abs( Input.GetAxis( "Zoom" ) ) > 0 )
-    {
-      if( Camera.main.orthographic )
-      {
-        CameraController.orthoTarget += Input.GetAxis( "Zoom" );
-        debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
-      }
-      else
-      {
-        CameraController.zOffset += Input.GetAxis( "Zoom" );
-        debugText.text = CameraController.zOffset.ToString( "##.#" );
-      }
-    }
-
-    if( Input.GetKeyDown( KeyCode.O ) )
-    {
-      if( Slowed )
-        Global.instance.NoSlow();
-      else
-        Global.instance.Slow();
-    }
-
-    if( Input.GetButtonDown( "Screenshot" ) )
-    {
-      Screenshot();
-    }
-#if !UNITY_EDITOR
-    if( Input.GetKeyDown( KeyCode.P ) )
-    {
-      if( Paused )
-        Unpause();
-      else
-        Pause();
-    }
-    if( Input.GetKeyDown( KeyCode.Escape ) )
-    {
-      if( UnityEngine.Cursor.lockState == CursorLockMode.Locked )
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
-      else
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-    }
-#endif
     if( Input.GetKeyDown( KeyCode.F1 ) )
     {
       Chopper chopper = FindObjectOfType<Chopper>();
@@ -528,12 +516,6 @@ public class Global : MonoBehaviour
     UnityEngine.Cursor.visible = !hasFocus;
   }
 
-  public Vector3 origin;
-  public float CursorFactor = 0.02f;
-  public Vector2 AimPosition;
-  public Vector2 CursorWorldPosition;
-
-
   void LateUpdate()
   {
     if( !Updating )
@@ -542,79 +524,96 @@ public class Global : MonoBehaviour
 
     if( CurrentPlayer != null )
     {
-      CursorDelta += (Vector3)Controls.BipedActions.Aim.ReadValue<Vector2>() * cursorSensitivity;
-      CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
-      Cursor.gameObject.SetActive( CursorDelta.sqrMagnitude > cursorInner * cursorInner );
-      origin = CurrentPlayer.arm.position;
-      origin.z = 0;
-
-      if( AimSnap )
+      if( InDiagetic )
       {
-        // set cursor
-        Cursor.gameObject.SetActive( true );
-        CursorSnapped.gameObject.SetActive( true );
-
-        float angle = Mathf.Atan2( CursorDelta.x, CursorDelta.y ) / Mathf.PI;
-        float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
-        Vector3 snapped = new Vector3( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ), 0 );
-        AimPosition = origin + snapped * SnapCursorDistance;
-        CursorSnapped.position = AimPosition;
-        CursorWorldPosition = origin + CursorDelta * CursorFactor;
+        CursorWorldPosition = Camera.main.ScreenToWorldPoint( UnityEngine.Input.mousePosition );
+        CursorDelta = (CursorWorldPosition - (Vector2)CurrentPlayer.arm.position) / CursorFactor;
+        AimPosition = CursorWorldPosition;
         Cursor.position = CursorWorldPosition;
       }
       else
       {
-        // set cursor
-        Cursor.gameObject.SetActive( true );
-        CursorSnapped.gameObject.SetActive( false );
+#if UNITY_WEBGL && !UNITY_EDITOR
+      Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * cursorSensitivity;
+      delta.y = -delta.y;
+      CursorDelta += delta;
+#else
+        CursorDelta += Controls.BipedActions.Aim.ReadValue<Vector2>() * cursorSensitivity;
+#endif
+        CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
+        Cursor.gameObject.SetActive( CursorDelta.sqrMagnitude > cursorInner * cursorInner );
+        cursorOrigin = CurrentPlayer.arm.position;
 
-        AimPosition = origin + CursorDelta * CursorFactor;
-        CursorWorldPosition = AimPosition;
-        //Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
-        Cursor.position = CursorWorldPosition;
-      }
-
-
-      if( AutoAim )
-      {
-        CursorWorldPosition = origin + CursorDelta * CursorFactor;
-        RaycastHit2D[] hits = Physics2D.CircleCastAll( CurrentPlayer.transform.position, AutoAimCircleRadius, CursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
-        float distance = Mathf.Infinity;
-        Transform closest = null;
-        foreach( var hit in hits )
+        if( AimSnap )
         {
-          float dist = Vector2.Distance( CursorWorldPosition, hit.transform.position );
-          if( dist < distance )
-          {
-            closest = hit.transform;
-            distance = dist;
-          }
-        }
+          // set cursor
+          Cursor.gameObject.SetActive( true );
+          CursorSnapped.gameObject.SetActive( true );
 
-        if( closest == null )
-        {
-          CursorAutoAim.gameObject.SetActive( false );
+          float angle = Mathf.Atan2( CursorDelta.x, CursorDelta.y ) / Mathf.PI;
+          float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
+          Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
+          AimPosition = cursorOrigin + snapped * SnapCursorDistance;
+          CursorSnapped.position = AimPosition;
+          CursorWorldPosition = cursorOrigin + CursorDelta * CursorFactor;
+          Cursor.position = CursorWorldPosition;
         }
         else
         {
-          CursorAutoAim.gameObject.SetActive( true );
-          // todo adjust for flight path 
-          //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
-          AimPosition = closest.position;
-          CursorAutoAim.position = AimPosition;
-        }
-        Cursor.position = CursorWorldPosition;
+          // set cursor
+          Cursor.gameObject.SetActive( true );
+          CursorSnapped.gameObject.SetActive( false );
 
-      }
-      else
-      {
-        CursorAutoAim.gameObject.SetActive( false );
+          AimPosition = cursorOrigin + CursorDelta * CursorFactor;
+          CursorWorldPosition = AimPosition;
+          //Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
+          Cursor.position = CursorWorldPosition;
+        }
+
+
+        if( AutoAim )
+        {
+          CursorWorldPosition = cursorOrigin + CursorDelta * CursorFactor;
+          RaycastHit2D[] hits = Physics2D.CircleCastAll( CurrentPlayer.transform.position, AutoAimCircleRadius, CursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
+          float distance = Mathf.Infinity;
+          Transform closest = null;
+          foreach( var hit in hits )
+          {
+            float dist = Vector2.Distance( CursorWorldPosition, hit.transform.position );
+            if( dist < distance )
+            {
+              closest = hit.transform;
+              distance = dist;
+            }
+          }
+
+          if( closest == null )
+          {
+            CursorAutoAim.gameObject.SetActive( false );
+          }
+          else
+          {
+            CursorAutoAim.gameObject.SetActive( true );
+            // todo adjust for flight path 
+            //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
+            AimPosition = closest.position;
+            CursorAutoAim.position = AimPosition;
+          }
+          Cursor.position = CursorWorldPosition;
+
+        }
+        else
+        {
+          CursorAutoAim.gameObject.SetActive( false );
+        }
       }
     }
     else
     {
       Cursor.gameObject.SetActive( false );
     }
+
+
 
     CameraController.CameraLateUpdate();
   }
@@ -649,18 +648,11 @@ public class Global : MonoBehaviour
     return Vector3.zero;
   }
 
-
-  [Header( "Audio" )]
-  public UnityEngine.Audio.AudioMixer mixer;
-  public UnityEngine.Audio.AudioMixerSnapshot snapSlowmo;
-  public UnityEngine.Audio.AudioMixerSnapshot snapNormal;
-  public float AudioFadeDuration = 0.1f;
-
   public void Slow()
   {
+    Slowed = true;
     Time.timeScale = Global.instance.slowtime;
     Time.fixedDeltaTime = 0.01f * Time.timeScale;
-    Slowed = true;
     mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
       snapNormal,
       snapSlowmo
@@ -672,9 +664,9 @@ public class Global : MonoBehaviour
 
   public void NoSlow()
   {
+    Slowed = false;
     Time.timeScale = 1;
     Time.fixedDeltaTime = 0.01f * Time.timeScale;
-    Slowed = false;
     Global.instance.mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
       Global.instance.snapNormal,
       Global.instance.snapSlowmo
@@ -714,6 +706,7 @@ public class Global : MonoBehaviour
       UnityEngine.Cursor.lockState = CursorLockMode.None;
       UnityEngine.Cursor.visible = true;
       EnableRaycaster( true );
+      UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( MainMenuFirstSelected );
     }
     else
     {
@@ -723,8 +716,34 @@ public class Global : MonoBehaviour
       UnityEngine.Cursor.lockState = CursorLockMode.Locked;
       UnityEngine.Cursor.visible = false;
       EnableRaycaster( false );
-      Input.ResetInputAxes();
+      //Input.ResetInputAxes();
     }
+  }
+
+  bool InDiagetic;
+
+  public void DiageticMenuOn( PolygonCollider2D poly, GameObject InitiallySelected = null )
+  {
+    InDiagetic = true;
+    Controls.MenuActions.Enable();
+    Controls.BipedActions.Disable();
+    AssignCameraPoly( poly );
+    CameraController.EncompassBounds = true;
+    UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( InitiallySelected );
+    UnityEngine.Cursor.lockState = CursorLockMode.None;
+  }
+
+  public void DiageticMenuOff()
+  {
+    InDiagetic = false;
+    Controls.MenuActions.Disable();
+    Controls.BipedActions.Enable();
+    SceneScript ss = GetSceneScript();
+    if( ss != null )
+      AssignCameraPoly( ss.sb );
+    CameraController.EncompassBounds = false;
+    UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( null );
+    UnityEngine.Cursor.lockState = CursorLockMode.Locked;
   }
 
   public void EnableRaycaster( bool enable = true )
@@ -978,7 +997,7 @@ public class Global : MonoBehaviour
     }
   }
 
-  #region Settings
+#region Settings
 
   void InitializeSettings()
   {
@@ -1145,6 +1164,6 @@ public class Global : MonoBehaviour
     ApplyScreenSettings();
   }
 
-  #endregion
+#endregion
 
 }

@@ -40,9 +40,10 @@ public class CustomUtility : EditorWindow
     todo = File.ReadAllText( Application.dataPath + "/../todo" );
   }
 
-  bool buildToggleGroup = false;
+  bool developmentBuild;
   bool buildMacOS = true;
   bool buildLinux = true;
+  bool buildWebGL = false;
 
   int audioDoppler = 0;
   int audioDistanceMin = 1;
@@ -98,12 +99,14 @@ public class CustomUtility : EditorWindow
     EditorGUILayout.Space();
     EditorGUI.ProgressBar( EditorGUILayout.GetControlRect( false, 30 ), progress, progressMessage );
 
-
-
     GUILayout.Label( "Build", EditorStyles.boldLabel );
-    buildMacOS = EditorGUILayout.ToggleLeft( "MacOS", buildMacOS );
-    buildLinux = EditorGUILayout.ToggleLeft( "Linux", buildLinux );
-    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Build Release" ) )
+    developmentBuild = EditorGUILayout.ToggleLeft( "Development Build", developmentBuild );
+    EditorGUILayout.BeginHorizontal();
+    buildMacOS = EditorGUILayout.ToggleLeft( "MacOS", buildMacOS, GUILayout.MaxWidth( 60 ) );
+    buildLinux = EditorGUILayout.ToggleLeft( "Linux", buildLinux, GUILayout.MaxWidth( 60 ) );
+    buildWebGL = EditorGUILayout.ToggleLeft( "WebGL", buildWebGL, GUILayout.MaxWidth( 60 ) );
+    EditorGUILayout.EndHorizontal();
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Build" ) )
     {
       if( BuildPipeline.isBuildingPlayer )
         return;
@@ -114,22 +117,46 @@ public class CustomUtility : EditorWindow
         //string sceneName = path.Substring( 0, path.Length - 6 ).Substring( path.LastIndexOf( '/' ) + 1 );
       }
       BuildPlayerOptions bpo = new BuildPlayerOptions();
-      bpo.scenes = buildnames.ToArray();  //new string[] { "Assets/zero.unity", "Assets/mmx-city.unity" };
-      bpo.options = BuildOptions.CompressWithLz4; //BuildOptions.AutoRunPlayer;
+      bpo.scenes = buildnames.ToArray();
+      if( developmentBuild )
+        bpo.options = BuildOptions.Development;
+      else
+        bpo.options = BuildOptions.CompressWithLz4;
 
       if( buildMacOS )
       {
+        bpo.targetGroup = BuildTargetGroup.Standalone;
         bpo.target = BuildTarget.StandaloneOSX;
-        bpo.locationPathName = Directory.GetParent( Application.dataPath ).FullName + "/Saga-MacOS-" + Util.Timestamp().Replace( '.', '-' );
-        Debug.Log( bpo.locationPathName );
+        string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/MacOS/";
+        Directory.CreateDirectory( outDir );
+        // the extension is replaced with ".app" by Unity
+        bpo.locationPathName = outDir += "Saga" + (developmentBuild ? "(DEV)" : "") + "." + Util.Timestamp() + ".extension";
         BuildPipeline.BuildPlayer( bpo );
+        Debug.Log( bpo.locationPathName );
       }
       if( buildLinux )
       {
+        bpo.targetGroup = BuildTargetGroup.Standalone;
         bpo.target = BuildTarget.StandaloneLinux64;
-        bpo.locationPathName = Directory.GetParent( Application.dataPath ).FullName + "/Saga-Linux-" + Util.Timestamp().Replace( '.', '-' );
-        Debug.Log( bpo.locationPathName );
+        string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/Linux";
+        outDir += "/Saga." + Util.Timestamp();
+        Directory.CreateDirectory( outDir );
+        bpo.locationPathName = outDir + "/saga" + (developmentBuild ? "(DEV)" : "") + ".x86_64";
         BuildPipeline.BuildPlayer( bpo );
+        Debug.Log( bpo.locationPathName );
+        // copy to shared folder
+        string shareDir = System.Environment.GetFolderPath( System.Environment.SpecialFolder.UserProfile ) + "/SHARE";
+        Util.DirectoryCopy( outDir, Path.Combine( shareDir, "Saga"+ (developmentBuild ? "(DEV)." : ".") + Util.Timestamp() ) );
+      }
+      if( buildWebGL )
+      {
+        bpo.targetGroup = BuildTargetGroup.WebGL;
+        bpo.target = BuildTarget.WebGL;
+        string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/WebGL";
+        Directory.CreateDirectory( outDir );
+        bpo.locationPathName = outDir + "/Saga" + (developmentBuild ? "(DEV)" : "") + "." + Util.Timestamp();
+        BuildPipeline.BuildPlayer( bpo );
+        Debug.Log( bpo.locationPathName );
       }
     }
 

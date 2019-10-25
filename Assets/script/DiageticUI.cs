@@ -25,8 +25,6 @@ public class DiageticUI : WorldSelectable
     animator.Play( "idle" );
     indicator.SetActive( false );
     raycaster.enabled = true;
-    //Cursor.lockState = CursorLockMode.None;
-    //Cursor.visible = true;
     Global.instance.DiageticMenuOn( cameraTarget.GetComponent<PolygonCollider2D>(), InitiallySelected  );
   }
 
@@ -35,14 +33,13 @@ public class DiageticUI : WorldSelectable
     animator.Play( "idle" );
     indicator.SetActive( true );
     raycaster.enabled = false;
-    //Cursor.lockState = CursorLockMode.Locked;
-    //Cursor.visible = false;
     Global.instance.DiageticMenuOff();
   }
 
   void Start()
   {
     animator.Play( "idle" );
+    raycaster.enabled = false;
   }
 
 }
