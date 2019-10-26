@@ -119,7 +119,7 @@ public class CustomUtility : EditorWindow
       BuildPlayerOptions bpo = new BuildPlayerOptions();
       bpo.scenes = buildnames.ToArray();
       if( developmentBuild )
-        bpo.options = BuildOptions.Development;
+        bpo.options = BuildOptions.Development | BuildOptions.AutoRunPlayer;
       else
         bpo.options = BuildOptions.CompressWithLz4;
 
@@ -130,7 +130,7 @@ public class CustomUtility : EditorWindow
         string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/MacOS/";
         Directory.CreateDirectory( outDir );
         // the extension is replaced with ".app" by Unity
-        bpo.locationPathName = outDir += "Saga" + (developmentBuild ? "(DEV)" : "") + "." + Util.Timestamp() + ".extension";
+        bpo.locationPathName = outDir += (developmentBuild ? "sagaDEV" : "Saga") + "." + Util.Timestamp() + ".extension";
         BuildPipeline.BuildPlayer( bpo );
         Debug.Log( bpo.locationPathName );
       }
@@ -141,12 +141,12 @@ public class CustomUtility : EditorWindow
         string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/Linux";
         outDir += "/Saga." + Util.Timestamp();
         Directory.CreateDirectory( outDir );
-        bpo.locationPathName = outDir + "/saga" + (developmentBuild ? "(DEV)" : "") + ".x86_64";
+        bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + ".x86_64";
         BuildPipeline.BuildPlayer( bpo );
         Debug.Log( bpo.locationPathName );
         // copy to shared folder
         string shareDir = System.Environment.GetFolderPath( System.Environment.SpecialFolder.UserProfile ) + "/SHARE";
-        Util.DirectoryCopy( outDir, Path.Combine( shareDir, "Saga"+ (developmentBuild ? "(DEV)." : ".") + Util.Timestamp() ) );
+        Util.DirectoryCopy( outDir, Path.Combine( shareDir, (developmentBuild ? "sagaDEV." : "Saga.") + Util.Timestamp() ) );
       }
       if( buildWebGL )
       {
@@ -154,7 +154,7 @@ public class CustomUtility : EditorWindow
         bpo.target = BuildTarget.WebGL;
         string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/WebGL";
         Directory.CreateDirectory( outDir );
-        bpo.locationPathName = outDir + "/Saga" + (developmentBuild ? "(DEV)" : "") + "." + Util.Timestamp();
+        bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + "." + Util.Timestamp();
         BuildPipeline.BuildPlayer( bpo );
         Debug.Log( bpo.locationPathName );
       }

@@ -766,7 +766,7 @@ public class Controls : IInputActionCollection
                     ""id"": ""44331aa6-375c-49c0-b43f-aa7284b25f1f"",
                     ""path"": ""<Mouse>/scroll/y"",
                     ""interactions"": """",
-                    ""processors"": ""Scale(factor=0.5)"",
+                    ""processors"": ""Scale(factor=0.1)"",
                     ""groups"": """",
                     ""action"": ""DEV-Zoom"",
                     ""isComposite"": false,

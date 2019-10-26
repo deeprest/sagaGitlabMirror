@@ -112,10 +112,6 @@ public class Global : MonoBehaviour
   public Dictionary<string, FloatValue> FloatSetting = new Dictionary<string, FloatValue>();
   public Dictionary<string, BoolValue> BoolSetting = new Dictionary<string, BoolValue>();
   // screen settings
-  bool Fullscreen;
-  int ScreenWidth;
-  int ScreenHeight;
-  float UIScale = 1;
   public GameObject ScreenSettingsPrompt;
   public Text ScreenSettingsCountdown;
   Timer ScreenSettingsCountdownTimer = new Timer();
@@ -173,6 +169,9 @@ public class Global : MonoBehaviour
   public float AutoAimDistance = 5;
   // status 
   public Image weaponIcon;
+  // settings
+  [SerializeField] GameObject InitialConfirmScreenSelectable;
+  public GameObject SettingsParent;
 
   [Header( "Input" )]
   public Controls Controls;
@@ -187,6 +186,7 @@ public class Global : MonoBehaviour
   [SerializeField] Image progress;
   [SerializeField] float progressSpeed = 0.5f;
 
+  [Header( "Misc" )]
   // color shift
   public Color shiftyColor = Color.red;
   [SerializeField] float colorShiftSpeed = 1;
@@ -234,6 +234,7 @@ public class Global : MonoBehaviour
     DontDestroyOnLoad( gameObject );
     InitializeSettings();
     ReadSettings();
+    //InitializeScreenSettings();
     ApplyScreenSettings();
     InitializeControls();
     StartCoroutine( InitializeRoutine() );
@@ -526,10 +527,12 @@ public class Global : MonoBehaviour
     {
       if( InDiagetic )
       {
+        /*
         CursorWorldPosition = Camera.main.ScreenToWorldPoint( UnityEngine.Input.mousePosition );
         CursorDelta = (CursorWorldPosition - (Vector2)CurrentPlayer.arm.position) / CursorFactor;
         AimPosition = CursorWorldPosition;
         Cursor.position = CursorWorldPosition;
+        */
       }
       else
       {
@@ -706,7 +709,7 @@ public class Global : MonoBehaviour
       UnityEngine.Cursor.lockState = CursorLockMode.None;
       UnityEngine.Cursor.visible = true;
       EnableRaycaster( true );
-      UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( MainMenuFirstSelected );
+      UI.GetComponent<EventSystem>().SetSelectedGameObject( MainMenuFirstSelected );
     }
     else
     {
@@ -729,8 +732,9 @@ public class Global : MonoBehaviour
     Controls.BipedActions.Disable();
     AssignCameraPoly( poly );
     CameraController.EncompassBounds = true;
-    UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( InitiallySelected );
-    UnityEngine.Cursor.lockState = CursorLockMode.None;
+    UI.GetComponent<EventSystem>().SetSelectedGameObject( InitiallySelected );
+    //UnityEngine.Cursor.lockState = CursorLockMode.None;
+    Cursor.gameObject.SetActive( false );
   }
 
   public void DiageticMenuOff()
@@ -742,8 +746,9 @@ public class Global : MonoBehaviour
     if( ss != null )
       AssignCameraPoly( ss.sb );
     CameraController.EncompassBounds = false;
-    UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( null );
-    UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+    UI.GetComponent<EventSystem>().SetSelectedGameObject( null );
+    //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+    Cursor.gameObject.SetActive( true );
   }
 
   public void EnableRaycaster( bool enable = true )
@@ -997,7 +1002,7 @@ public class Global : MonoBehaviour
     }
   }
 
-#region Settings
+  #region Settings
 
   void InitializeSettings()
   {
@@ -1020,21 +1025,19 @@ public class Global : MonoBehaviour
     }
 
     CreateBoolSetting( "Fullscreen", false, null );  //delegate ( bool value ) { Fullscreen = value; } );
-    CreateFloatSetting( "ScreenWidth", 1024, null );  //delegate ( float value ) { ScreenWidth = Mathf.FloorToInt( value ); } );
-    CreateFloatSetting( "ScreenHeight", 1024, null );  //delegate ( float value ) { ScreenHeight = Mathf.FloorToInt( value ); } );
-    CreateFloatSetting( "UIScale", 1, null );// delegate ( float value ) { UI.GetComponent<CanvasScaler>().scaleFactor = value; } );
+    CreateFloatSetting( "ScreenWidth", 1024, 256, 5160, null );  //delegate ( float value ) { ScreenWidth = Mathf.FloorToInt( value ); } );
+    CreateFloatSetting( "ScreenHeight", 1024, 256, 2160, null );  //delegate ( float value ) { ScreenHeight = Mathf.FloorToInt( value ); } );
+    CreateFloatSetting( "UIScale", 1, 0.1f, 4, null );// delegate ( float value ) { UI.GetComponent<CanvasScaler>().scaleFactor = value; } );
 
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
     CreateBoolSetting( "CursorInfluence", true, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
     CreateBoolSetting( "AimSnap", true, delegate ( bool value ) { AimSnap = value; } );
     CreateBoolSetting( "AutoAim", true, delegate ( bool value ) { AutoAim = value; } );
 
-    CreateFloatSetting( "CursorOuterRadius", 150, delegate ( float value ) { cursorOuter = value; } );
-    CreateFloatSetting( "CameraLerpAlpha", 50, delegate ( float value ) { CameraController.lerpAlpha = value; } );
-    CreateFloatSetting( "ThumbstickDeadzone", 10, delegate ( float value ) { deadZone = value; } );
+    CreateFloatSetting( "CursorOuterRadius", 150, 0, 300, delegate ( float value ) { cursorOuter = value; } );
+    CreateFloatSetting( "CameraLerpAlpha", 50, 0, 100, delegate ( float value ) { CameraController.lerpAlpha = value; } );
+    CreateFloatSetting( "ThumbstickDeadzone", 10, 0, .5f, delegate ( float value ) { deadZone = value; } );
 
-    ToggleTemplate.gameObject.SetActive( false );
-    SliderTemplate.gameObject.SetActive( false );
   }
 
   void CreateBoolSetting( string key, bool value, System.Action<bool> onChange )
@@ -1042,7 +1045,7 @@ public class Global : MonoBehaviour
     BoolValue bv;
     if( !BoolSetting.TryGetValue( key, out bv ) )
     {
-      GameObject go = Instantiate( ToggleTemplate, ToggleTemplate.transform.parent );
+      GameObject go = Instantiate( ToggleTemplate, SettingsParent.transform );
       SettingUI sss = go.GetComponent<SettingUI>();
       sss.isBool = true;
       bv = sss.boolValue;
@@ -1054,12 +1057,16 @@ public class Global : MonoBehaviour
     bv.Value = value;
   }
 
-  void CreateFloatSetting( string key, float value, System.Action<float> onChange )
+  void CreateFloatSetting( string key, float value, float min, float max, System.Action<float> onChange )
   {
     FloatValue bv;
     if( !FloatSetting.TryGetValue( key, out bv ) )
     {
-      GameObject go = Instantiate( SliderTemplate, SliderTemplate.transform.parent );
+      GameObject go = Instantiate( SliderTemplate, SettingsParent.transform );
+      Slider slider = go.GetComponentInChildren<Slider>();
+      slider.minValue = min;
+      slider.maxValue = max;
+
       SettingUI sss = go.GetComponent<SettingUI>();
       sss.isInteger = true;
       bv = sss.intValue;
@@ -1118,25 +1125,51 @@ public class Global : MonoBehaviour
 
   public void ApplyScreenSettings()
   {
-    Fullscreen = BoolSetting["Fullscreen"].Value;
-    ScreenWidth = (int)FloatSetting["ScreenWidth"].Value;
-    ScreenHeight = (int)FloatSetting["ScreenHeight"].Value;
-    UIScale = FloatSetting["UIScale"].Value;
-    Screen.SetResolution( ScreenWidth, ScreenHeight, Fullscreen );
-    UI.GetComponent<CanvasScaler>().scaleFactor = UIScale;
-
+#if UNITY_WEBGL
+    // let the web page determine the windowed size
+    if( BoolSetting["Fullscreen"].Value )
+      Screen.SetResolution( (int)FloatSetting["ScreenWidth"].Value, (int)FloatSetting["ScreenHeight"].Value, true );
+    else
+      Screen.fullScreen = false;
+#else
+    Screen.SetResolution( (int)FloatSetting["ScreenWidth"].Value, (int)FloatSetting["ScreenHeight"].Value, BoolSetting["Fullscreen"].Value );
+#endif
+    UI.GetComponent<CanvasScaler>().scaleFactor = FloatSetting["UIScale"].Value;
+    UI.GetComponent<EventSystem>().SetSelectedGameObject( MainMenuFirstSelected );
     ScreenSettingsPrompt.SetActive( false );
     ScreenSettingsCountdownTimer.Stop( false );
   }
 
+  struct ScreenSettings
+  {
+    public bool Fullscreen;
+    public int ScreenWidth;
+    public int ScreenHeight;
+    public float UIScale;
+  }
+  ScreenSettings CachedScreenSettings = new ScreenSettings();
+
+  /*8void InitializeScreenSettings()
+  {
+    CachedScreenSettings = new ScreenSettings
+    {
+      Fullscreen = BoolSetting["Fullscreen"].Value,
+      ScreenWidth = (int)FloatSetting["ScreenWidth"].Value,
+      ScreenHeight = (int)FloatSetting["ScreenHeight"].Value,
+      UIScale = FloatSetting["UIScale"].Value
+    };
+  }*/
+
+
   public void ScreenChangePrompt()
   {
-    Fullscreen = Screen.fullScreen;
-    ScreenWidth = Screen.width;
-    ScreenHeight = Screen.height;
-    // UIScale ?
+    CachedScreenSettings.Fullscreen = Screen.fullScreen;
+    CachedScreenSettings.ScreenWidth = Screen.width;
+    CachedScreenSettings.ScreenHeight = Screen.height;
+    CachedScreenSettings.UIScale = UI.GetComponent<CanvasScaler>().scaleFactor;
 
     ScreenSettingsPrompt.SetActive( true );
+    UI.GetComponent<EventSystem>().SetSelectedGameObject( FindFirstEnabledSelectable( ScreenSettingsPrompt ) );
     Screen.SetResolution( (int)FloatSetting["ScreenWidth"].Value, (int)FloatSetting["ScreenHeight"].Value, BoolSetting["Fullscreen"].Value );
     UI.GetComponent<CanvasScaler>().scaleFactor = FloatSetting["UIScale"].Value;
 
@@ -1156,14 +1189,29 @@ public class Global : MonoBehaviour
 
   public void RevertScreenSettings()
   {
-    BoolSetting["Fullscreen"].Value = Fullscreen;
-    FloatSetting["ScreenWidth"].Value = ScreenWidth;
-    FloatSetting["ScreenHeight"].Value = ScreenHeight;
-    FloatSetting["UIScale"].Value = UIScale;
+    BoolSetting["Fullscreen"].Value = CachedScreenSettings.Fullscreen;
+    FloatSetting["ScreenWidth"].Value = CachedScreenSettings.ScreenWidth;
+    FloatSetting["ScreenHeight"].Value = CachedScreenSettings.ScreenHeight;
+    FloatSetting["UIScale"].Value = CachedScreenSettings.UIScale;
 
     ApplyScreenSettings();
+    UI.GetComponent<EventSystem>().SetSelectedGameObject( FindFirstEnabledSelectable( MainMenu ) );
   }
 
-#endregion
+  #endregion
 
+  static GameObject FindFirstEnabledSelectable( GameObject gameObject )
+  {
+    GameObject go = null;
+    var selectables = gameObject.GetComponentsInChildren<Selectable>( true );
+    foreach( var selectable in selectables )
+    {
+      if( selectable.IsActive() && selectable.IsInteractable() )
+      {
+        go = selectable.gameObject;
+        break;
+      }
+    }
+    return go;
+  }
 }
