@@ -173,6 +173,7 @@ public class PlayerController : Character, IDamage
     weapon = wpn;
     Global.instance.weaponIcon.sprite = weapon.icon;
     Global.instance.SetCursor( weapon.cursor );
+    chargeStartDelay.Stop( false );
   }
 
   void NextWeapon()
