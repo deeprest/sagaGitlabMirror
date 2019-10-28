@@ -136,6 +136,7 @@ public class Global : MonoBehaviour
 
   [Header( "UI" )]
   public GameObject UI;
+  CanvasScaler CanvasScaler;
   public GameObject MainMenu;
   public GameObject MainMenuFirstSelected;
   [SerializeField] GameObject HUD;
@@ -154,7 +155,6 @@ public class Global : MonoBehaviour
   public Vector2 CursorWorldPosition;
   public float cursorSensitivity = 1;
   public bool CursorPlayerRelative = true;
-  Vector3 aimRaw;
   public float gamepadCursorLerp = 10;
   public bool CursorPositional = true;
   public float positionalCursorSpeed = 30;
@@ -232,9 +232,9 @@ public class Global : MonoBehaviour
     }
     instance = this;
     DontDestroyOnLoad( gameObject );
+    CanvasScaler = UI.GetComponent<CanvasScaler>();
     InitializeSettings();
     ReadSettings();
-    //InitializeScreenSettings();
     ApplyScreenSettings();
     InitializeControls();
     StartCoroutine( InitializeRoutine() );
@@ -261,13 +261,22 @@ public class Global : MonoBehaviour
     };
     Controls.GlobalActions.Screenshot.performed += ( obj ) => Screenshot();
 #if !UNITY_EDITOR
-    Controls.GlobalActions.CursorLockToggle.performed += (obj) => {
+    /*Controls.GlobalActions.CursorLockToggle.performed += (obj) => {
       if( UnityEngine.Cursor.lockState == CursorLockMode.Locked )
         UnityEngine.Cursor.lockState = CursorLockMode.None;
       else
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-    };
+    };*/
 #endif
+    Controls.GlobalActions.DEVRespawn.performed += (obj) => {
+      Chopper chopper = FindObjectOfType<Chopper>();
+      if( (!Application.isEditor || Global.instance.SimulatePlayer) && chopper != null )
+        ChopDrop();
+      else
+        CurrentPlayer.transform.position = FindSpawnPosition();
+    };
+
+
     Controls.MenuActions.Back.performed += ( obj ) => {
       // todo back out to previous UI screen...
 
@@ -460,41 +469,6 @@ public class Global : MonoBehaviour
       //progress.fillAmount = prog;
     }
 
-    if( Input.GetKeyDown( KeyCode.F1 ) )
-    {
-      Chopper chopper = FindObjectOfType<Chopper>();
-      if( (!Application.isEditor || Global.instance.SimulatePlayer) && chopper != null )
-        ChopDrop();
-      else
-        CurrentPlayer.transform.position = FindSpawnPosition();
-    }
-
-#if OLD_INPUT
-    if( GameInput.UsingKeyboard )
-    {
-      CursorDelta += new Vector3( Input.GetAxis( "Cursor X" ), Input.GetAxis( "Cursor Y" ), 0 ) * cursorSensitivity;
-    }
-    else
-    {
-      Vector3 raw = new Vector3( GameInput.GetAxisRaw( "AimX" ), -GameInput.GetAxisRaw( "AimY" ), 0 );
-      if( raw.sqrMagnitude > deadZone * deadZone )
-        aimRaw = raw;
-      else
-        aimRaw = Vector3.zero;
-    }
-
-    if( GameInput.GetKeyUp( "Menu" ) )
-    {
-      ShowMenu( !MenuShowing );
-#if UNITY_STANDALONE_LINUX
-      // hack: there is a Unity bug where the Canvas will not update when an object with a canvas renderer is disabled.
-      Canvas canvas = FindObjectOfType<Canvas>();
-      canvas.gameObject.SetActive( false );
-      canvas.gameObject.SetActive( true );
-#endif
-    }
-#endif
-
 #if UNITY_EDITOR_LINUX
     if( Input.GetKeyDown(KeyCode.Escape) )
     Cursor.lockState = CursorLockMode.None;
@@ -513,15 +487,14 @@ public class Global : MonoBehaviour
 
   void OnApplicationFocus( bool hasFocus )
   {
-    UnityEngine.Cursor.lockState = hasFocus ? CursorLockMode.Locked : CursorLockMode.None;
-    UnityEngine.Cursor.visible = !hasFocus;
+    //UnityEngine.Cursor.lockState = hasFocus ? CursorLockMode.Locked : CursorLockMode.None;
+    //UnityEngine.Cursor.visible = !hasFocus;
   }
 
   void LateUpdate()
   {
     if( !Updating )
       return;
-
 
     if( CurrentPlayer != null )
     {
@@ -537,10 +510,17 @@ public class Global : MonoBehaviour
       else
       {
 #if UNITY_WEBGL && !UNITY_EDITOR
-      Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * cursorSensitivity;
-      delta.y = -delta.y;
-      CursorDelta += delta;
+        Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * cursorSensitivity;
+        delta.y = -delta.y;
+        CursorDelta += delta;
 #else
+        /*currentDelta = UnityEngine.InputSystem.Mouse.current.delta.ReadValue();
+        if( currentDelta.magnitude > 0 )
+          Debug.LogFormat( "current {0} {1}", currentDelta.x, currentDelta.y );
+        Vector2 aim = Controls.BipedActions.Aim.ReadValue<Vector2>();
+        if( aim.magnitude > 0 )
+          Debug.LogFormat( "aim {0} {1}", aim.x, aim.y );*/
+
         CursorDelta += Controls.BipedActions.Aim.ReadValue<Vector2>() * cursorSensitivity;
 #endif
         CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
@@ -572,7 +552,6 @@ public class Global : MonoBehaviour
           //Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
           Cursor.position = CursorWorldPosition;
         }
-
 
         if( AutoAim )
         {
@@ -616,12 +595,8 @@ public class Global : MonoBehaviour
       Cursor.gameObject.SetActive( false );
     }
 
-
-
     CameraController.CameraLateUpdate();
   }
-
-
 
   public void SpawnPlayer()
   {
@@ -704,35 +679,39 @@ public class Global : MonoBehaviour
     if( show )
     {
       Pause();
+      if( ActiveDiagetic != null )
+        ActiveDiagetic.InteractableOff();
       MainMenu.SetActive( true );
       HUD.SetActive( false );
-      UnityEngine.Cursor.lockState = CursorLockMode.None;
+      //UnityEngine.Cursor.lockState = CursorLockMode.None;
       UnityEngine.Cursor.visible = true;
       EnableRaycaster( true );
-      UI.GetComponent<EventSystem>().SetSelectedGameObject( MainMenuFirstSelected );
+      EventSystem.current.SetSelectedGameObject( MainMenuFirstSelected );
     }
     else
     {
       Unpause();
+      if( ActiveDiagetic != null )
+        ActiveDiagetic.InteractableOn();
       MainMenu.SetActive( false );
       HUD.SetActive( true );
-      UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+      //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
       UnityEngine.Cursor.visible = false;
       EnableRaycaster( false );
-      //Input.ResetInputAxes();
     }
   }
 
   bool InDiagetic;
+  DiageticUI ActiveDiagetic;
 
-  public void DiageticMenuOn( PolygonCollider2D poly, GameObject InitiallySelected = null )
+  public void DiageticMenuOn( DiageticUI dui )
   {
     InDiagetic = true;
+    ActiveDiagetic = dui;
     Controls.MenuActions.Enable();
     Controls.BipedActions.Disable();
-    AssignCameraPoly( poly );
+    AssignCameraPoly( dui.CameraPoly );
     CameraController.EncompassBounds = true;
-    UI.GetComponent<EventSystem>().SetSelectedGameObject( InitiallySelected );
     //UnityEngine.Cursor.lockState = CursorLockMode.None;
     Cursor.gameObject.SetActive( false );
   }
@@ -740,13 +719,13 @@ public class Global : MonoBehaviour
   public void DiageticMenuOff()
   {
     InDiagetic = false;
+    ActiveDiagetic = null;
     Controls.MenuActions.Disable();
     Controls.BipedActions.Enable();
     SceneScript ss = GetSceneScript();
     if( ss != null )
       AssignCameraPoly( ss.sb );
     CameraController.EncompassBounds = false;
-    UI.GetComponent<EventSystem>().SetSelectedGameObject( null );
     //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
     Cursor.gameObject.SetActive( true );
   }
@@ -1024,10 +1003,11 @@ public class Global : MonoBehaviour
       }
     }
 
-    CreateBoolSetting( "Fullscreen", false, null );  //delegate ( bool value ) { Fullscreen = value; } );
-    CreateFloatSetting( "ScreenWidth", 1024, 256, 5160, null );  //delegate ( float value ) { ScreenWidth = Mathf.FloorToInt( value ); } );
-    CreateFloatSetting( "ScreenHeight", 1024, 256, 2160, null );  //delegate ( float value ) { ScreenHeight = Mathf.FloorToInt( value ); } );
-    CreateFloatSetting( "UIScale", 1, 0.1f, 4, null );// delegate ( float value ) { UI.GetComponent<CanvasScaler>().scaleFactor = value; } );
+    // screen settings are applied explicitly when user pushes button
+    CreateBoolSetting( "Fullscreen", false, null );  
+    CreateFloatSetting( "ScreenWidth", 1024, 256, 5160, null ); 
+    CreateFloatSetting( "ScreenHeight", 1024, 256, 2160, null );
+    CreateFloatSetting( "UIScale", 1, 0.1f, 4, null );
 
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
     CreateBoolSetting( "CursorInfluence", true, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
@@ -1134,8 +1114,8 @@ public class Global : MonoBehaviour
 #else
     Screen.SetResolution( (int)FloatSetting["ScreenWidth"].Value, (int)FloatSetting["ScreenHeight"].Value, BoolSetting["Fullscreen"].Value );
 #endif
-    UI.GetComponent<CanvasScaler>().scaleFactor = FloatSetting["UIScale"].Value;
-    UI.GetComponent<EventSystem>().SetSelectedGameObject( MainMenuFirstSelected );
+    CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
+    EventSystem.current.SetSelectedGameObject( MainMenuFirstSelected );
     ScreenSettingsPrompt.SetActive( false );
     ScreenSettingsCountdownTimer.Stop( false );
   }
@@ -1149,29 +1129,17 @@ public class Global : MonoBehaviour
   }
   ScreenSettings CachedScreenSettings = new ScreenSettings();
 
-  /*8void InitializeScreenSettings()
-  {
-    CachedScreenSettings = new ScreenSettings
-    {
-      Fullscreen = BoolSetting["Fullscreen"].Value,
-      ScreenWidth = (int)FloatSetting["ScreenWidth"].Value,
-      ScreenHeight = (int)FloatSetting["ScreenHeight"].Value,
-      UIScale = FloatSetting["UIScale"].Value
-    };
-  }*/
-
-
   public void ScreenChangePrompt()
   {
     CachedScreenSettings.Fullscreen = Screen.fullScreen;
     CachedScreenSettings.ScreenWidth = Screen.width;
     CachedScreenSettings.ScreenHeight = Screen.height;
-    CachedScreenSettings.UIScale = UI.GetComponent<CanvasScaler>().scaleFactor;
+    CachedScreenSettings.UIScale = CanvasScaler.scaleFactor;
 
     ScreenSettingsPrompt.SetActive( true );
-    UI.GetComponent<EventSystem>().SetSelectedGameObject( FindFirstEnabledSelectable( ScreenSettingsPrompt ) );
+    EventSystem.current.SetSelectedGameObject( FindFirstEnabledSelectable( ScreenSettingsPrompt ) );
     Screen.SetResolution( (int)FloatSetting["ScreenWidth"].Value, (int)FloatSetting["ScreenHeight"].Value, BoolSetting["Fullscreen"].Value );
-    UI.GetComponent<CanvasScaler>().scaleFactor = FloatSetting["UIScale"].Value;
+    CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
 
     TimerParams tp = new TimerParams
     {
@@ -1195,7 +1163,7 @@ public class Global : MonoBehaviour
     FloatSetting["UIScale"].Value = CachedScreenSettings.UIScale;
 
     ApplyScreenSettings();
-    UI.GetComponent<EventSystem>().SetSelectedGameObject( FindFirstEnabledSelectable( MainMenu ) );
+    EventSystem.current.SetSelectedGameObject( FindFirstEnabledSelectable( MainMenu ) );
   }
 
   #endregion

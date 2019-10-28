@@ -1,11 +1,12 @@
 // GENERATED AUTOMATICALLY FROM 'Assets/input/Controls.inputactions'
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public class Controls : IInputActionCollection
+public class Controls : IInputActionCollection, IDisposable
 {
     private InputActionAsset asset;
     public Controls()
@@ -53,6 +54,14 @@ public class Controls : IInputActionCollection
                     ""name"": ""CursorLockToggle"",
                     ""type"": ""Button"",
                     ""id"": ""06412df7-f38c-45d8-bfc5-13fb38f20fb9"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""DEV-Respawn"",
+                    ""type"": ""Button"",
+                    ""id"": ""cab80c60-97b6-4d13-a3a1-b86bc5188194"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -122,6 +131,17 @@ public class Controls : IInputActionCollection
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""CursorLockToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7e4a58d9-b12b-4af1-9579-5299f91b0375"",
+                    ""path"": ""<Keyboard>/f1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DEV-Respawn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -806,6 +826,7 @@ public class Controls : IInputActionCollection
         m_GlobalActions_Pause = m_GlobalActions.FindAction("Pause", throwIfNotFound: true);
         m_GlobalActions_Screenshot = m_GlobalActions.FindAction("Screenshot", throwIfNotFound: true);
         m_GlobalActions_CursorLockToggle = m_GlobalActions.FindAction("CursorLockToggle", throwIfNotFound: true);
+        m_GlobalActions_DEVRespawn = m_GlobalActions.FindAction("DEV-Respawn", throwIfNotFound: true);
         // MenuActions
         m_MenuActions = asset.FindActionMap("MenuActions", throwIfNotFound: true);
         m_MenuActions_Move = m_MenuActions.FindAction("Move", throwIfNotFound: true);
@@ -829,7 +850,7 @@ public class Controls : IInputActionCollection
         m_BipedActions_DEVZoom = m_BipedActions.FindAction("DEV-Zoom", throwIfNotFound: true);
     }
 
-    ~Controls()
+    public void Dispose()
     {
         UnityEngine.Object.Destroy(asset);
     }
@@ -881,6 +902,7 @@ public class Controls : IInputActionCollection
     private readonly InputAction m_GlobalActions_Pause;
     private readonly InputAction m_GlobalActions_Screenshot;
     private readonly InputAction m_GlobalActions_CursorLockToggle;
+    private readonly InputAction m_GlobalActions_DEVRespawn;
     public struct GlobalActionsActions
     {
         private Controls m_Wrapper;
@@ -890,6 +912,7 @@ public class Controls : IInputActionCollection
         public InputAction @Pause => m_Wrapper.m_GlobalActions_Pause;
         public InputAction @Screenshot => m_Wrapper.m_GlobalActions_Screenshot;
         public InputAction @CursorLockToggle => m_Wrapper.m_GlobalActions_CursorLockToggle;
+        public InputAction @DEVRespawn => m_Wrapper.m_GlobalActions_DEVRespawn;
         public InputActionMap Get() { return m_Wrapper.m_GlobalActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -914,6 +937,9 @@ public class Controls : IInputActionCollection
                 CursorLockToggle.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnCursorLockToggle;
                 CursorLockToggle.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnCursorLockToggle;
                 CursorLockToggle.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnCursorLockToggle;
+                DEVRespawn.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
+                DEVRespawn.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
+                DEVRespawn.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
             }
             m_Wrapper.m_GlobalActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -933,6 +959,9 @@ public class Controls : IInputActionCollection
                 CursorLockToggle.started += instance.OnCursorLockToggle;
                 CursorLockToggle.performed += instance.OnCursorLockToggle;
                 CursorLockToggle.canceled += instance.OnCursorLockToggle;
+                DEVRespawn.started += instance.OnDEVRespawn;
+                DEVRespawn.performed += instance.OnDEVRespawn;
+                DEVRespawn.canceled += instance.OnDEVRespawn;
             }
         }
     }
@@ -1139,6 +1168,7 @@ public class Controls : IInputActionCollection
         void OnPause(InputAction.CallbackContext context);
         void OnScreenshot(InputAction.CallbackContext context);
         void OnCursorLockToggle(InputAction.CallbackContext context);
+        void OnDEVRespawn(InputAction.CallbackContext context);
     }
     public interface IMenuActionsActions
     {

@@ -2,14 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class DiageticUI : WorldSelectable
 {
   [SerializeField] GraphicRaycaster raycaster;
-  [SerializeField] GameObject InitiallySelected;
   [SerializeField] Animator animator;
   [SerializeField] GameObject indicator;
   [SerializeField] GameObject cameraTarget;
+  public PolygonCollider2D CameraPoly { get { return cameraTarget.GetComponent<PolygonCollider2D>(); } }
+  public GameObject InitiallySelected;
+  GameObject selectedObject;
+
+  void Start()
+  {
+    animator.Play( "idle" );
+    raycaster.enabled = false;
+    InteractableOff();
+    selectedObject = InitiallySelected;
+  }
 
   public override void Highlight()
   {
@@ -25,7 +36,8 @@ public class DiageticUI : WorldSelectable
     animator.Play( "idle" );
     indicator.SetActive( false );
     raycaster.enabled = true;
-    Global.instance.DiageticMenuOn( cameraTarget.GetComponent<PolygonCollider2D>(), InitiallySelected  );
+    Global.instance.DiageticMenuOn( this );
+    InteractableOn();
   }
 
   public override void Unselect()
@@ -34,12 +46,27 @@ public class DiageticUI : WorldSelectable
     indicator.SetActive( true );
     raycaster.enabled = false;
     Global.instance.DiageticMenuOff();
+    InteractableOff();
   }
 
-  void Start()
+  public void InteractableOn()
   {
-    animator.Play( "idle" );
-    raycaster.enabled = false;
+    Selectable[] selectables = GetComponentsInChildren<Selectable>();
+    foreach( var sel in selectables )
+      sel.interactable = true;
+    EventSystem.current.SetSelectedGameObject( selectedObject );
   }
+
+  public void InteractableOff()
+  {
+    // warning: get the currentSelectedGameObject before setting interactable to false!
+    selectedObject = EventSystem.current.currentSelectedGameObject;
+    if( selectedObject == null || !selectedObject.transform.IsChildOf( transform ) )
+      selectedObject = InitiallySelected;
+    Selectable[] selectables = GetComponentsInChildren<Selectable>();
+    foreach( var sel in selectables )
+      sel.interactable = false;
+  }
+
 
 }
