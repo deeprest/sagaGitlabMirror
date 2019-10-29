@@ -140,6 +140,7 @@ public class Global : MonoBehaviour
   public GameObject MainMenu;
   public GameObject MainMenuFirstSelected;
   [SerializeField] GameObject HUD;
+  DiageticUI ActiveDiagetic;
   bool MenuShowing { get { return MainMenu.activeInHierarchy; } }
   public GameObject LoadingScreen;
   [SerializeField] Image fader;
@@ -237,74 +238,7 @@ public class Global : MonoBehaviour
     ReadSettings();
     ApplyScreenSettings();
     InitializeControls();
-    StartCoroutine( InitializeRoutine() );
-  }
 
-  void InitializeControls()
-  {
-    Controls = new Controls();
-    Controls.Enable();
-    Controls.MenuActions.Disable();
-
-    Controls.GlobalActions.Menu.performed += ( obj ) => ShowMenu( !MenuShowing );
-    Controls.GlobalActions.Pause.performed += ( obj ) => {
-      if( Paused )
-        Unpause();
-      else
-        Pause();
-    };
-    Controls.GlobalActions.Slowmo.performed += ( obj ) => {
-      if( Slowed )
-        NoSlow();
-      else
-        Slow();
-    };
-    Controls.GlobalActions.Screenshot.performed += ( obj ) => Screenshot();
-#if !UNITY_EDITOR
-    /*Controls.GlobalActions.CursorLockToggle.performed += (obj) => {
-      if( UnityEngine.Cursor.lockState == CursorLockMode.Locked )
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
-      else
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-    };*/
-#endif
-    Controls.GlobalActions.DEVRespawn.performed += (obj) => {
-      Chopper chopper = FindObjectOfType<Chopper>();
-      if( (!Application.isEditor || Global.instance.SimulatePlayer) && chopper != null )
-        ChopDrop();
-      else
-        CurrentPlayer.transform.position = FindSpawnPosition();
-    };
-
-
-    Controls.MenuActions.Back.performed += ( obj ) => {
-      // todo back out to previous UI screen...
-
-      // ...or if there is none, close diagetic UI
-      if( InDiagetic )
-      {
-        if( CurrentPlayer != null )
-          CurrentPlayer.UnselectWorldSelection();
-      }
-    };
-
-    // DEVELOPMENT
-    Controls.BipedActions.DEVZoom.performed += ( obj ) => {
-      if( Camera.main.orthographic )
-      {
-        CameraController.orthoTarget += obj.ReadValue<float>();
-        debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
-      }
-      else
-      {
-        CameraController.zOffset += obj.ReadValue<float>();
-        debugText.text = CameraController.zOffset.ToString( "##.#" );
-      }
-    };
-  }
-
-  IEnumerator InitializeRoutine()
-  {
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
     {
       Debug.Log( "scene loaded: " + arg0.name );
@@ -358,8 +292,70 @@ public class Global : MonoBehaviour
     else
     {
       music.Play();
-      yield return LoadSceneRoutine( "home", true, true, false );
+      StartCoroutine( LoadSceneRoutine( "home", true, true, false ) );
     }
+  }
+
+  void InitializeControls()
+  {
+    Controls = new Controls();
+    Controls.Enable();
+    Controls.MenuActions.Disable();
+
+    Controls.GlobalActions.Menu.performed += ( obj ) => ShowMenu( !MenuShowing );
+    Controls.GlobalActions.Pause.performed += ( obj ) => {
+      if( Paused )
+        Unpause();
+      else
+        Pause();
+    };
+    Controls.GlobalActions.Slowmo.performed += ( obj ) => {
+      if( Slowed )
+        NoSlow();
+      else
+        Slow();
+    };
+    Controls.GlobalActions.Screenshot.performed += ( obj ) => Screenshot();
+#if !UNITY_EDITOR
+    /*Controls.GlobalActions.CursorLockToggle.performed += (obj) => {
+      if( UnityEngine.Cursor.lockState == CursorLockMode.Locked )
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+      else
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+    };*/
+#endif
+    Controls.GlobalActions.DEVRespawn.performed += ( obj ) => {
+      Chopper chopper = FindObjectOfType<Chopper>();
+      if( (!Application.isEditor || Global.instance.SimulatePlayer) && chopper != null )
+        ChopDrop();
+      else
+        CurrentPlayer.transform.position = FindSpawnPosition();
+    };
+
+    Controls.MenuActions.Back.performed += ( obj ) => {
+      // todo back out to previous UI screen...
+
+      // ...or if there is none, close diagetic UI
+      if( ActiveDiagetic != null )
+      {
+        if( CurrentPlayer != null )
+          CurrentPlayer.UnselectWorldSelection();
+      }
+    };
+
+    // DEVELOPMENT
+    Controls.BipedActions.DEVZoom.performed += ( obj ) => {
+      if( Camera.main.orthographic )
+      {
+        CameraController.orthoTarget += obj.ReadValue<float>();
+        debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
+      }
+      else
+      {
+        CameraController.zOffset += obj.ReadValue<float>();
+        debugText.text = CameraController.zOffset.ToString( "##.#" );
+      }
+    };
   }
 
   public void LoadScene( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true )
@@ -487,8 +483,8 @@ public class Global : MonoBehaviour
 
   void OnApplicationFocus( bool hasFocus )
   {
-    //UnityEngine.Cursor.lockState = hasFocus ? CursorLockMode.Locked : CursorLockMode.None;
-    //UnityEngine.Cursor.visible = !hasFocus;
+    UnityEngine.Cursor.lockState = hasFocus ? CursorLockMode.Locked : CursorLockMode.None;
+    UnityEngine.Cursor.visible = !hasFocus;
   }
 
   void LateUpdate()
@@ -498,7 +494,7 @@ public class Global : MonoBehaviour
 
     if( CurrentPlayer != null )
     {
-      if( InDiagetic )
+      if( ActiveDiagetic != null )
       {
         /*
         CursorWorldPosition = Camera.main.ScreenToWorldPoint( UnityEngine.Input.mousePosition );
@@ -701,12 +697,10 @@ public class Global : MonoBehaviour
     }
   }
 
-  bool InDiagetic;
-  DiageticUI ActiveDiagetic;
+
 
   public void DiageticMenuOn( DiageticUI dui )
   {
-    InDiagetic = true;
     ActiveDiagetic = dui;
     Controls.MenuActions.Enable();
     Controls.BipedActions.Disable();
@@ -718,7 +712,6 @@ public class Global : MonoBehaviour
 
   public void DiageticMenuOff()
   {
-    InDiagetic = false;
     ActiveDiagetic = null;
     Controls.MenuActions.Disable();
     Controls.BipedActions.Enable();
@@ -1004,8 +997,8 @@ public class Global : MonoBehaviour
     }
 
     // screen settings are applied explicitly when user pushes button
-    CreateBoolSetting( "Fullscreen", false, null );  
-    CreateFloatSetting( "ScreenWidth", 1024, 256, 5160, null ); 
+    CreateBoolSetting( "Fullscreen", false, null );
+    CreateFloatSetting( "ScreenWidth", 1024, 256, 5160, null );
     CreateFloatSetting( "ScreenHeight", 1024, 256, 2160, null );
     CreateFloatSetting( "UIScale", 1, 0.1f, 4, null );
 

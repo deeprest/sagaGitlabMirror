@@ -515,7 +515,8 @@ public class PlayerController : Character, IDamage
 
   void BindControls()
   {
-    Global.instance.Controls.BipedActions.Fire.performed += ( obj ) => inputFire = true;
+    Global.instance.Controls.BipedActions.Fire.started += ( obj ) => inputFire = true;
+    Global.instance.Controls.BipedActions.Fire.canceled += ( obj ) => inputFire = false;
     Global.instance.Controls.BipedActions.Jump.started += ( obj ) => inputJumpStart = true;
     Global.instance.Controls.BipedActions.Jump.canceled += ( obj ) => inputJumpEnd = true;
     Global.instance.Controls.BipedActions.Dash.started += ( obj ) => inputDashStart = true;
@@ -524,7 +525,7 @@ public class PlayerController : Character, IDamage
     Global.instance.Controls.BipedActions.Shield.canceled += ( obj ) => inputShield = false;
     Global.instance.Controls.BipedActions.Graphook.performed += ( obj ) => inputGraphook = true; ;
     Global.instance.Controls.BipedActions.NextWeapon.performed += ( obj ) => NextWeapon();
-    Global.instance.Controls.BipedActions.Charge.performed += ( obj ) => inputChargeStart = true;
+    Global.instance.Controls.BipedActions.Charge.started += ( obj ) => inputChargeStart = true;
     Global.instance.Controls.BipedActions.Charge.canceled += ( obj ) => inputChargeEnd = true;
     Global.instance.Controls.BipedActions.Down.performed += ( obj ) => hanging = false;
 
@@ -544,13 +545,11 @@ public class PlayerController : Character, IDamage
           AssignWeapon( ((Pickup)closestISelect).weapon );
       }
     };
-
-    print( Global.instance.Controls.BipedActions.Aim.processors );
   }
 
   void ResetInput()
   {
-    inputFire = false;
+    //inputFire = false;
     inputRight = false;
     inputLeft = false;
     inputJumpStart = false;

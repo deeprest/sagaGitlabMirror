@@ -629,6 +629,17 @@ public class Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""9034cb0f-33c4-4b97-a8ac-826ca8762534"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Charge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""f024a6aa-b0ca-46a1-8772-95f99be6d559"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",

@@ -642,9 +642,9 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 0
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 30
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -2621,16 +2621,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 5771714087888481633, guid: 476a3428e08db49ce89c3027e41692ca,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 114329875613515752}
-    - target: {fileID: 5771714087888481633, guid: 476a3428e08db49ce89c3027e41692ca,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: RevertScreenSettings
-      objectReference: {fileID: 0}
     - target: {fileID: 4458828900160421201, guid: 476a3428e08db49ce89c3027e41692ca,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -2641,6 +2631,16 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 114329875613515752}
+    - target: {fileID: 5771714087888481633, guid: 476a3428e08db49ce89c3027e41692ca,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 114329875613515752}
+    - target: {fileID: 5771714087888481633, guid: 476a3428e08db49ce89c3027e41692ca,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: RevertScreenSettings
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 476a3428e08db49ce89c3027e41692ca, type: 3}
 --- !u!1 &9164698905892685137 stripped
