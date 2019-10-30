@@ -982,8 +982,6 @@ public class Global : MonoBehaviour
     // use existing UI objects, if they exist
     foreach( var s in settings )
     {
-      if( s.gameObject.GetInstanceID() == ToggleTemplate.GetInstanceID() || s.gameObject.GetInstanceID() == SliderTemplate.GetInstanceID() )
-        continue;
       if( s.isInteger )
       {
         s.intValue.Init();
@@ -996,6 +994,7 @@ public class Global : MonoBehaviour
       }
     }
 
+    previousSelectable = MainMenuFirstSelected.GetComponent<Selectable>();
     // screen settings are applied explicitly when user pushes button
     CreateBoolSetting( "Fullscreen", false, null );
     CreateFloatSetting( "ScreenWidth", 1024, 256, 5160, null );
@@ -1013,6 +1012,19 @@ public class Global : MonoBehaviour
 
   }
 
+  Selectable previousSelectable;
+
+  void NextNav( Selectable selectable )
+  {
+    Navigation previousNav = previousSelectable.navigation;
+    previousNav.selectOnDown = selectable;
+    previousSelectable.navigation = previousNav;
+    Navigation thisNav = selectable.navigation;
+    thisNav.selectOnUp = previousSelectable;
+    selectable.navigation = thisNav;
+    previousSelectable = selectable;
+  }
+
   void CreateBoolSetting( string key, bool value, System.Action<bool> onChange )
   {
     BoolValue bv;
@@ -1025,9 +1037,11 @@ public class Global : MonoBehaviour
       bv.name = key;
       bv.Init();
       BoolSetting.Add( key, bv );
+
     }
     bv.onValueChanged = onChange;
     bv.Value = value;
+    NextNav( bv.toggle );
   }
 
   void CreateFloatSetting( string key, float value, float min, float max, System.Action<float> onChange )
@@ -1046,9 +1060,11 @@ public class Global : MonoBehaviour
       bv.name = key;
       bv.Init();
       FloatSetting.Add( key, bv );
+
     }
     bv.onValueChanged = onChange;
     bv.Value = value;
+    NextNav( bv.slider );
   }
 
   void ReadSettings()
