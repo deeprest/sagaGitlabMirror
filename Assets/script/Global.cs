@@ -53,7 +53,6 @@ public class GlobalEditor : Editor
 
 public class WorldSelectable : MonoBehaviour
 {
-  //public bool IsSelected;
   public virtual void Highlight() { }
   public virtual void Unhighlight() { }
   public virtual void Select() { }
@@ -137,11 +136,11 @@ public class Global : MonoBehaviour
   [Header( "UI" )]
   public GameObject UI;
   CanvasScaler CanvasScaler;
-  public GameObject MainMenu;
+  public UIScreen MainMenu;
   public GameObject MainMenuFirstSelected;
   [SerializeField] GameObject HUD;
   DiageticUI ActiveDiagetic;
-  bool MenuShowing { get { return MainMenu.activeInHierarchy; } }
+  bool MenuShowing { get { return MainMenu.gameObject.activeInHierarchy; } }
   public GameObject LoadingScreen;
   [SerializeField] Image fader;
   public GameObject ready;
@@ -173,6 +172,7 @@ public class Global : MonoBehaviour
   // settings
   [SerializeField] GameObject InitialConfirmScreenSelectable;
   public GameObject SettingsParent;
+  public UIScreen ConfirmDialog;
 
   [Header( "Input" )]
   public Controls Controls;
@@ -336,11 +336,9 @@ public class Global : MonoBehaviour
       // todo back out to previous UI screen...
 
       // ...or if there is none, close diagetic UI
-      if( ActiveDiagetic != null )
-      {
-        if( CurrentPlayer != null )
-          CurrentPlayer.UnselectWorldSelection();
-      }
+      if( ActiveDiagetic != null && !MenuShowing && CurrentPlayer != null )
+        CurrentPlayer.UnselectWorldSelection();
+
     };
 
     // DEVELOPMENT
@@ -356,6 +354,7 @@ public class Global : MonoBehaviour
         debugText.text = CameraController.zOffset.ToString( "##.#" );
       }
     };
+
   }
 
   public void LoadScene( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true )
@@ -672,32 +671,45 @@ public class Global : MonoBehaviour
 
   void ShowMenu( bool show )
   {
+    if( ScreenSettingsCountdownTimer.IsActive )
+      return;
     if( show )
     {
       Pause();
       if( ActiveDiagetic != null )
+      {
         ActiveDiagetic.InteractableOff();
-      MainMenu.SetActive( true );
+      }
+      else
+      {
+        Controls.MenuActions.Enable();
+        Controls.BipedActions.Disable();
+      }
+      MainMenu.Select();
       HUD.SetActive( false );
       //UnityEngine.Cursor.lockState = CursorLockMode.None;
       UnityEngine.Cursor.visible = true;
       EnableRaycaster( true );
-      EventSystem.current.SetSelectedGameObject( MainMenuFirstSelected );
     }
     else
     {
       Unpause();
-      if( ActiveDiagetic != null )
-        ActiveDiagetic.InteractableOn();
-      MainMenu.SetActive( false );
+      MainMenu.Unselect();
       HUD.SetActive( true );
       //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
       UnityEngine.Cursor.visible = false;
       EnableRaycaster( false );
+      if( ActiveDiagetic != null )
+      {
+        ActiveDiagetic.InteractableOn();
+      }
+      else
+      {
+        Controls.BipedActions.Enable();
+        Controls.MenuActions.Disable();
+      }
     }
   }
-
-
 
   public void DiageticMenuOn( DiageticUI dui )
   {
@@ -978,7 +990,7 @@ public class Global : MonoBehaviour
 
   void InitializeSettings()
   {
-    SettingUI[] settings = MainMenu.GetComponentsInChildren<SettingUI>( true );
+    SettingUI[] settings = MainMenu.gameObject.GetComponentsInChildren<SettingUI>( true );
     // use existing UI objects, if they exist
     foreach( var s in settings )
     {
@@ -993,22 +1005,23 @@ public class Global : MonoBehaviour
         BoolSetting.Add( s.boolValue.name, s.boolValue );
       }
     }
-
+    // "Apply Screen Settings" is first button
     previousSelectable = MainMenuFirstSelected.GetComponent<Selectable>();
     // screen settings are applied explicitly when user pushes button
     CreateBoolSetting( "Fullscreen", false, null );
-    CreateFloatSetting( "ScreenWidth", 1024, 256, 5160, null );
-    CreateFloatSetting( "ScreenHeight", 1024, 256, 2160, null );
-    CreateFloatSetting( "UIScale", 1, 0.1f, 4, null );
+    CreateFloatSetting( "ScreenWidth", 1024, 256, 5160, 0.05f, null );
+    CreateFloatSetting( "ScreenHeight", 1024, 256, 2160, 0.05f, null );
+    CreateFloatSetting( "UIScale", 1, 0.1f, 4, 0.05f, null );
 
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
     CreateBoolSetting( "CursorInfluence", true, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
     CreateBoolSetting( "AimSnap", true, delegate ( bool value ) { AimSnap = value; } );
     CreateBoolSetting( "AutoAim", true, delegate ( bool value ) { AutoAim = value; } );
 
-    CreateFloatSetting( "CursorOuterRadius", 150, 0, 300, delegate ( float value ) { cursorOuter = value; } );
-    CreateFloatSetting( "CameraLerpAlpha", 50, 0, 100, delegate ( float value ) { CameraController.lerpAlpha = value; } );
-    CreateFloatSetting( "ThumbstickDeadzone", 10, 0, .5f, delegate ( float value ) { deadZone = value; } );
+    CreateFloatSetting( "CursorOuterRadius", 150, 0, 300, 0.1f, delegate ( float value ) { cursorOuter = value; } );
+    CreateFloatSetting( "CameraLerpAlpha", 50, 0, 100, 0.1f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
+    CreateFloatSetting( "ThumbstickDeadzone", 10, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
+    CreateFloatSetting( "CursorSensitivity", 1, 0, 10, 0.02f, delegate ( float value ) { cursorSensitivity = value; } );
 
   }
 
@@ -1044,7 +1057,7 @@ public class Global : MonoBehaviour
     NextNav( bv.toggle );
   }
 
-  void CreateFloatSetting( string key, float value, float min, float max, System.Action<float> onChange )
+  void CreateFloatSetting( string key, float value, float min, float max, float normalizedStep, System.Action<float> onChange )
   {
     FloatValue bv;
     if( !FloatSetting.TryGetValue( key, out bv ) )
@@ -1064,6 +1077,7 @@ public class Global : MonoBehaviour
     }
     bv.onValueChanged = onChange;
     bv.Value = value;
+    bv.slider.normalizedStep = normalizedStep;
     NextNav( bv.slider );
   }
 
@@ -1124,9 +1138,8 @@ public class Global : MonoBehaviour
     Screen.SetResolution( (int)FloatSetting["ScreenWidth"].Value, (int)FloatSetting["ScreenHeight"].Value, BoolSetting["Fullscreen"].Value );
 #endif
     CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
-    EventSystem.current.SetSelectedGameObject( MainMenuFirstSelected );
-    ScreenSettingsPrompt.SetActive( false );
     ScreenSettingsCountdownTimer.Stop( false );
+    ConfirmDialog.Unselect();
   }
 
   struct ScreenSettings
@@ -1145,8 +1158,7 @@ public class Global : MonoBehaviour
     CachedScreenSettings.ScreenHeight = Screen.height;
     CachedScreenSettings.UIScale = CanvasScaler.scaleFactor;
 
-    ScreenSettingsPrompt.SetActive( true );
-    EventSystem.current.SetSelectedGameObject( FindFirstEnabledSelectable( ScreenSettingsPrompt ) );
+    ConfirmDialog.Select();
     Screen.SetResolution( (int)FloatSetting["ScreenWidth"].Value, (int)FloatSetting["ScreenHeight"].Value, BoolSetting["Fullscreen"].Value );
     CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
 
@@ -1170,9 +1182,7 @@ public class Global : MonoBehaviour
     FloatSetting["ScreenWidth"].Value = CachedScreenSettings.ScreenWidth;
     FloatSetting["ScreenHeight"].Value = CachedScreenSettings.ScreenHeight;
     FloatSetting["UIScale"].Value = CachedScreenSettings.UIScale;
-
     ApplyScreenSettings();
-    EventSystem.current.SetSelectedGameObject( FindFirstEnabledSelectable( MainMenu ) );
   }
 
   #endregion
@@ -1191,4 +1201,7 @@ public class Global : MonoBehaviour
     }
     return go;
   }
+
+
+
 }

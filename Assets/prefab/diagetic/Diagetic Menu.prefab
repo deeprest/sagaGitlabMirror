@@ -494,11 +494,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef9136493e0064f1390d9a2f4382325b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  raycaster: {fileID: 1025104320}
   InitiallySelected: {fileID: 1132333145988869456}
+  raycaster: {fileID: 1025104320}
   animator: {fileID: 8270019299072384806}
   indicator: {fileID: 2612339524971725278}
   cameraTarget: {fileID: 5383780811586245162}
+  InitiallySelected: {fileID: 1132333145988869456}
 --- !u!1 &708363305703460988
 GameObject:
   m_ObjectHideFlags: 0
@@ -811,18 +812,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4499670401242508162}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &2612339524971725278
 GameObject:
   m_ObjectHideFlags: 0
