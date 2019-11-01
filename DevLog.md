@@ -33,3 +33,13 @@ deployment
 + xbuster + charge
 * multi-shot, variants
 + bouncy grenade
+
+
++ new input system. gamepad, linux. Keys: O, P
++ customutility build buttons: macos and linux
++ webgl issues: intial video mode is borked; mousewheel does not work;
++ bug: menu elements navigate to diagetic in world
++ gamepad shoot hold does not charge
++ menu navigation
++ cursor sensitivity setting
++ confirm screen settings dialog nav issue

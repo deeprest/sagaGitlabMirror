@@ -110,6 +110,7 @@ public class Global : MonoBehaviour
   string settingsPath { get { return Application.persistentDataPath + "/" + "settings.json"; } }
   public Dictionary<string, FloatValue> FloatSetting = new Dictionary<string, FloatValue>();
   public Dictionary<string, BoolValue> BoolSetting = new Dictionary<string, BoolValue>();
+  public Dictionary<string, StringValue> StringSetting = new Dictionary<string, StringValue>();
   // screen settings
   public GameObject ScreenSettingsPrompt;
   public Text ScreenSettingsCountdown;
@@ -988,12 +989,21 @@ public class Global : MonoBehaviour
 
   #region Settings
 
+  string[] resolutions = { "640x360", "640x400", "1024x512", "1280x720", "1280x800" ,"2560x1600" };
+  int ResolutionWidth;
+  int ResolutionHeight;
+
   void InitializeSettings()
   {
     SettingUI[] settings = MainMenu.gameObject.GetComponentsInChildren<SettingUI>( true );
     // use existing UI objects, if they exist
     foreach( var s in settings )
     {
+      if( s.isString )
+      {
+        s.stringValue.Init();
+        StringSetting.Add( s.stringValue.name, s.stringValue );
+      }
       if( s.isInteger )
       {
         s.intValue.Init();
@@ -1005,12 +1015,19 @@ public class Global : MonoBehaviour
         BoolSetting.Add( s.boolValue.name, s.boolValue );
       }
     }
-    // "Apply Screen Settings" is first button
+    // "Apply Screen Settings" is first button 
     previousSelectable = MainMenuFirstSelected.GetComponent<Selectable>();
     // screen settings are applied explicitly when user pushes button
     CreateBoolSetting( "Fullscreen", false, null );
-    CreateFloatSetting( "ScreenWidth", 1024, 256, 5160, 0.05f, null );
-    CreateFloatSetting( "ScreenHeight", 1024, 256, 2160, 0.05f, null );
+    CreateStringSetting( "Resolution", "1280x800", null );
+    CreateFloatSetting( "ResolutionSlider", 0, 0, resolutions.Length - 1, 1.0f / (resolutions.Length - 1), delegate ( float value )
+        {
+          string Resolution = resolutions[Mathf.FloorToInt( Mathf.Clamp( value, 0, resolutions.Length - 1 ) )];
+          string[] tokens = Resolution.Split( new char[] { 'x' } );
+          ResolutionWidth = int.Parse( tokens[0].Trim() );
+          ResolutionHeight = int.Parse( tokens[1].Trim() );
+          StringSetting["Resolution"].Value = ResolutionWidth.ToString()+"x"+ResolutionHeight.ToString();
+        } );
     CreateFloatSetting( "UIScale", 1, 0.1f, 4, 0.05f, null );
 
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
@@ -1020,13 +1037,13 @@ public class Global : MonoBehaviour
 
     CreateFloatSetting( "CursorOuterRadius", 150, 0, 300, 0.1f, delegate ( float value ) { cursorOuter = value; } );
     CreateFloatSetting( "CameraLerpAlpha", 50, 0, 100, 0.1f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
-    CreateFloatSetting( "ThumbstickDeadzone", 10, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
-    CreateFloatSetting( "CursorSensitivity", 1, 0, 10, 0.02f, delegate ( float value ) { cursorSensitivity = value; } );
+    //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
+    CreateFloatSetting( "CursorSensitivity", 3, 0, 6, 0.05f, delegate ( float value ) { cursorSensitivity = value; } );
 
   }
 
   Selectable previousSelectable;
-
+  // explicit UI navigation
   void NextNav( Selectable selectable )
   {
     Navigation previousNav = previousSelectable.navigation;
@@ -1050,7 +1067,6 @@ public class Global : MonoBehaviour
       bv.name = key;
       bv.Init();
       BoolSetting.Add( key, bv );
-
     }
     bv.onValueChanged = onChange;
     bv.Value = value;
@@ -1063,23 +1079,40 @@ public class Global : MonoBehaviour
     if( !FloatSetting.TryGetValue( key, out bv ) )
     {
       GameObject go = Instantiate( SliderTemplate, SettingsParent.transform );
-      Slider slider = go.GetComponentInChildren<Slider>();
-      slider.minValue = min;
-      slider.maxValue = max;
-
       SettingUI sss = go.GetComponent<SettingUI>();
       sss.isInteger = true;
       bv = sss.intValue;
       bv.name = key;
       bv.Init();
       FloatSetting.Add( key, bv );
-
     }
+    bv.slider.normalizedStep = normalizedStep;
+    bv.slider.minValue = min;
+    bv.slider.maxValue = max;
     bv.onValueChanged = onChange;
     bv.Value = value;
-    bv.slider.normalizedStep = normalizedStep;
     NextNav( bv.slider );
   }
+
+  void CreateStringSetting( string key, string value, System.Action<string> onChange )
+  {
+    StringValue val;
+    if( !StringSetting.TryGetValue( key, out val ) )
+    {
+      GameObject go = Instantiate( SliderTemplate, SettingsParent.transform );
+      SettingUI sss = go.GetComponent<SettingUI>();
+      sss.isString = true;
+      val = sss.stringValue;
+      val.name = key;
+      val.Init();
+      StringSetting.Add( key, val );
+    }
+    val.onValueChanged = onChange;
+    val.Value = value;
+    if( val.inputField != null )
+      NextNav( val.inputField );
+  }
+
 
   void ReadSettings()
   {
@@ -1094,10 +1127,13 @@ public class Global : MonoBehaviour
       }
 
       foreach( var pair in BoolSetting )
-        pair.Value.Value = JsonUtil.Read<bool>( pair.Value.Value, json, "settings", pair.Key );
+        pair.Value.Value = JsonUtil.Read( pair.Value.Value, json, "settings", pair.Key );
 
       foreach( var pair in FloatSetting )
-        pair.Value.Value = JsonUtil.Read<float>( pair.Value.Value, json, "settings", pair.Key );
+        pair.Value.Value = JsonUtil.Read( pair.Value.Value, json, "settings", pair.Key );
+
+      foreach( var pair in StringSetting )
+        pair.Value.Value = JsonUtil.Read( pair.Value.Value, json, "settings", pair.Key );
     }
   }
 
@@ -1109,6 +1145,11 @@ public class Global : MonoBehaviour
 
     writer.WritePropertyName( "settings" );
     writer.WriteObjectStart();
+    foreach( var pair in StringSetting )
+    {
+      writer.WritePropertyName( pair.Key );
+      writer.Write( pair.Value.Value );
+    }
     foreach( var pair in FloatSetting )
     {
       writer.WritePropertyName( pair.Key );
@@ -1128,14 +1169,17 @@ public class Global : MonoBehaviour
 
   public void ApplyScreenSettings()
   {
+    string[] tokens = StringSetting["Resolution"].Value.Split( new char[] { 'x' } );
+    ResolutionWidth = int.Parse( tokens[0].Trim() );
+    ResolutionHeight = int.Parse( tokens[1].Trim() );
 #if UNITY_WEBGL
     // let the web page determine the windowed size
     if( BoolSetting["Fullscreen"].Value )
-      Screen.SetResolution( (int)FloatSetting["ScreenWidth"].Value, (int)FloatSetting["ScreenHeight"].Value, true );
+      Screen.SetResolution( ResolutionWidth, ResolutionHeight, true );
     else
       Screen.fullScreen = false;
 #else
-    Screen.SetResolution( (int)FloatSetting["ScreenWidth"].Value, (int)FloatSetting["ScreenHeight"].Value, BoolSetting["Fullscreen"].Value );
+    Screen.SetResolution( ResolutionWidth, ResolutionHeight, BoolSetting["Fullscreen"].Value );
 #endif
     CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
     ScreenSettingsCountdownTimer.Stop( false );
@@ -1145,8 +1189,7 @@ public class Global : MonoBehaviour
   struct ScreenSettings
   {
     public bool Fullscreen;
-    public int ScreenWidth;
-    public int ScreenHeight;
+    public string Resolution;
     public float UIScale;
   }
   ScreenSettings CachedScreenSettings = new ScreenSettings();
@@ -1154,12 +1197,11 @@ public class Global : MonoBehaviour
   public void ScreenChangePrompt()
   {
     CachedScreenSettings.Fullscreen = Screen.fullScreen;
-    CachedScreenSettings.ScreenWidth = Screen.width;
-    CachedScreenSettings.ScreenHeight = Screen.height;
+    CachedScreenSettings.Resolution = Screen.width.ToString() + "x" + Screen.height.ToString();
     CachedScreenSettings.UIScale = CanvasScaler.scaleFactor;
 
     ConfirmDialog.Select();
-    Screen.SetResolution( (int)FloatSetting["ScreenWidth"].Value, (int)FloatSetting["ScreenHeight"].Value, BoolSetting["Fullscreen"].Value );
+    Screen.SetResolution( ResolutionWidth, ResolutionHeight, BoolSetting["Fullscreen"].Value );
     CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
 
     TimerParams tp = new TimerParams
@@ -1179,8 +1221,7 @@ public class Global : MonoBehaviour
   public void RevertScreenSettings()
   {
     BoolSetting["Fullscreen"].Value = CachedScreenSettings.Fullscreen;
-    FloatSetting["ScreenWidth"].Value = CachedScreenSettings.ScreenWidth;
-    FloatSetting["ScreenHeight"].Value = CachedScreenSettings.ScreenHeight;
+    StringSetting["Resolution"].Value = CachedScreenSettings.Resolution;
     FloatSetting["UIScale"].Value = CachedScreenSettings.UIScale;
     ApplyScreenSettings();
   }
