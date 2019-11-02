@@ -87,6 +87,15 @@ public class Timer
     OnComplete = param.CompleteDelegate;
   }
 
+  public void Start( float duration )
+  {
+    active = true;
+    NewTimers.Add( this );
+    StartTime = time;
+    Duration = duration;
+    repeat = false;
+  }
+
   public void Start( float duration, System.Action<Timer> UpdateDelegate, System.Action CompleteDelegate )
   {
     active = true;

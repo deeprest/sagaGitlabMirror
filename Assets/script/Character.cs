@@ -23,7 +23,6 @@ public class Character : MonoBehaviour, IDamage
   public float contactSeparation = 0.01f;
 
   public List<Transform> IgnoreCollideObjects;
-
   protected bool collideRight = false;
   protected bool collideLeft = false;
   protected bool collideTop = false;
@@ -32,12 +31,37 @@ public class Character : MonoBehaviour, IDamage
   protected RaycastHit2D hitRight;
   protected RaycastHit2D hitLeft;
 
+  [Header( "Pathing" )]
+  public bool HasPath = false;
+  public float WaypointRadii = 0.1f;
+  public float DestinationRadius = 0.3f;
+  public Vector3 DestinationPosition;
+  public System.Action OnPathEnd;
+  public System.Action OnPathCancel;
+  public NavMeshPath nvp;
+  float PathEventTime;
+  public List<Vector3>.Enumerator waypointEnu;
+  public List<Vector3> waypoint = new List<Vector3>();
+  public List<LineSegment> debugPath = new List<LineSegment>();
+  int AgentTypeID;
+  public string AgentTypeName = "Small";
+  public Vector2 MoveDirection;
+  // sidestep
+  public bool SidestepAvoidance = true;
+  bool DefaultSidestepAvoidance = true;
+  float SidestepLast;
+  Vector2 Sidestep;
+  RaycastHit2D[] RaycastHits;
+
+  [Header("Damage")]
   public bool CanTakeDamage = true;
   public int health = 5;
   public GameObject explosion;
   public AudioClip soundHit;
   public bool CanHitPush = true;
   public float hitPush = 4;
+  public float hitPushDuration = 2;
+  public Vector2 pushVelocity = Vector2.zero;
   // FLASH
   Timer flashTimer = new Timer();
   public float flashInterval = 0.05f;
@@ -47,10 +71,14 @@ public class Character : MonoBehaviour, IDamage
 
   public Damage ContactDamage;
 
-  protected System.Action UpdateLogic;
+  // "collision" impedes this object's movement
   protected System.Action UpdateCollision;
-  protected System.Action UpdatePosition;
+  // "hit" inflicts damage on others
   protected System.Action UpdateHit;
+  // integrate forces into position
+  protected System.Action UpdatePosition;
+  // brains!!
+  protected System.Action UpdateLogic;
 
   public virtual void PreSceneTransition() { }
   public virtual void PostSceneTransition() { }
@@ -106,9 +134,20 @@ public class Character : MonoBehaviour, IDamage
     }
   }
 
+  Timer pushTimer = new Timer();
+
+  public void Push( Vector2 pVelocity, float duration )
+  {
+    pushVelocity = pVelocity;
+    pushTimer.Stop( false );
+    pushTimer.Start( duration );
+  }
 
   protected void BasicPosition()
   {
+    if( pushTimer.IsActive )
+      velocity = pushVelocity;
+
     if( UseGravity )
       velocity.y += -Global.Gravity * Time.deltaTime;
 
@@ -214,8 +253,11 @@ public class Character : MonoBehaviour, IDamage
     if( !CanTakeDamage || health <= 0 )
       return false;
     health -= d.amount;
-    if( CanHitPush )
-      velocity += (body.position - d.point) * hitPush;
+    //if( CanHitPush )
+    //{
+    //  Push( (body.position - d.point), hitPushDuration );
+    //  //velocity += (body.position - d.point) * hitPush;
+    //}
     if( health <= 0 )
     {
       flashTimer.Stop( false );
@@ -225,57 +267,28 @@ public class Character : MonoBehaviour, IDamage
     {
       if( soundHit != null )
         Global.instance.AudioOneShot( soundHit, transform.position );
-
       // color pulse
       flip = false;
-      //renderer.material.SetFloat( "_FlashAmount", flashOn );
       foreach( var sr in spriteRenderers )
         sr.material.SetFloat( "_FlashAmount", flashOn );
       flashTimer.Start( flashCount * 2, flashInterval, delegate ( Timer t )
       {
         flip = !flip;
         if( flip )
-          //renderer.material.SetFloat( "_FlashAmount", flashOn );
           foreach( var sr in spriteRenderers )
             sr.material.SetFloat( "_FlashAmount", flashOn );
         else
           foreach( var sr in spriteRenderers )
             sr.material.SetFloat( "_FlashAmount", 0 );
-        //renderer.material.SetFloat( "_FlashAmount", 0 );
       }, delegate
       {
         foreach( var sr in spriteRenderers )
           sr.material.SetFloat( "_FlashAmount", 0 );
-        //renderer.material.SetFloat( "_FlashAmount", 0 );
       } );
-
     }
     return true;
   }
-
-
-  [Header( "Pathing" )]
-  public bool HasPath = false;
-  public float WaypointRadii = 0.1f;
-  public float DestinationRadius = 0.3f;
-  public Vector3 DestinationPosition;
-  public System.Action OnPathEnd;
-  public System.Action OnPathCancel;
-  public NavMeshPath nvp;
-  float PathEventTime;
-  public List<Vector3>.Enumerator waypointEnu;
-  public List<Vector3> waypoint = new List<Vector3>();
-  public List<LineSegment> debugPath = new List<LineSegment>();
-  int AgentTypeID;
-  public string AgentTypeName = "Small";
-  public Vector2 MoveDirection;
-  // sidestep
-  public bool SidestepAvoidance = true;
-  bool DefaultSidestepAvoidance = true;
-  float SidestepLast;
-  Vector2 Sidestep;
-  RaycastHit2D[] RaycastHits;
-
+  #region Pathing
   protected void UpdatePath()
   {
     if( HasPath )
@@ -444,6 +457,6 @@ public class Character : MonoBehaviour, IDamage
     }
     return false;
   }
-
+#endregion
 
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
+// todo brains and pawns
 /*
 // todo PlayerController -> PlayerPawn
 // Separate inputs from actions.
@@ -54,7 +54,6 @@ public class Pawn : Character, IDamage
 }
 */
 
-// todo rename to PlayerPawn
 public class PlayerController : Character, IDamage
 {
   new public AudioSource audio;
@@ -102,7 +101,6 @@ public class PlayerController : Character, IDamage
   [SerializeField] bool dashing;
   public bool hanging { get; set; }
 
-  public Vector2 push = Vector2.zero;
   float dashStart;
   float jumpStart;
   float landStart;
@@ -773,9 +771,9 @@ public class PlayerController : Character, IDamage
     }
     else
     {
-      velocity += push;
-      // vertical push is one-time instantaneous only (so far only damage does this)
-      push.y = 0;
+      velocity += pushVelocity;
+      // push is an instantaneous acceleration (so far only damage does this)
+      pushVelocity.y = 0;
     }
 
     animator.Play( anim );
@@ -786,18 +784,18 @@ public class PlayerController : Character, IDamage
     if( collideRight )
     {
       velocity.x = Mathf.Min( velocity.x, 0 );
-      push.x = Mathf.Min( push.x, 0 );
+      pushVelocity.x = Mathf.Min( pushVelocity.x, 0 );
     }
     if( collideLeft )
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
-      push.x = Mathf.Max( push.x, 0 );
+      pushVelocity.x = Mathf.Max( pushVelocity.x, 0 );
     }
     // "onGround" is not the same as "collideFeet"
     if( onGround )
     {
       velocity.y = Mathf.Max( velocity.y, 0 );
-      push.x -= (push.x * friction) * Time.deltaTime;
+      pushVelocity.x -= (pushVelocity.x * friction) * Time.deltaTime;
     }
     if( collideTop )
     {
@@ -951,16 +949,18 @@ public class PlayerController : Character, IDamage
 
     float sign = Mathf.Sign( d.instigator.position.x - transform.position.x );
     facingRight = sign > 0;
-    push.y = damageLift;
+    //push.y = damageLift;
     velocity.y = 0;
     arm.gameObject.SetActive( false );
     takingDamage = true;
     invulnerable = true;
     animator.Play( "damage" );
+
+    Push( new Vector2( -sign * damagePushAmount, damageLift ), damageDuration );
+
     damageTimer.Start( damageDuration, (System.Action<Timer>)delegate ( Timer t )
     {
-      this.push.x = -sign * this.damagePushAmount;
-
+      //push.x = -sign * damagePushAmount;
     }, delegate ()
     {
       takingDamage = false;
