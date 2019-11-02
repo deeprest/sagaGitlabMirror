@@ -14,11 +14,12 @@ public class SceneCity : SceneScript
 
     Global.instance.ChopDrop();
     //Global.instance.ready.SetActive( true );
-
     Global.instance.Controls.BipedActions.Disable();
+    Global.instance.Controls.BipedActions.Aim.Enable();
+    Global.instance.Controls.BipedActions.Fire.Enable();
     new Timer( 5, delegate
     {
-      Global.instance.Controls.BipedActions.Enable();
+      Global.instance.CurrentPlayer.inputRight = true;
     }, delegate
     {
       Global.instance.Controls.BipedActions.Enable();

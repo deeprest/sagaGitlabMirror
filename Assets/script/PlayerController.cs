@@ -260,7 +260,7 @@ public class PlayerController : Character, IDamage
     }
 
     pups.Clear();
-    hits = Physics2D.CircleCastAll( transform.position, selectRange, Vector2.zero, 0, LayerMask.GetMask( new string[] { "pickup" } ) );
+    hits = Physics2D.CircleCastAll( transform.position, selectRange, Vector2.zero, 0, LayerMask.GetMask( new string[] { "worldselect" } ) );
     foreach( var hit in hits )
     {
       WorldSelectable pup = hit.transform.GetComponent<WorldSelectable>();
