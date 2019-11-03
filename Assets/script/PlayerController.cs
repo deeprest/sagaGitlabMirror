@@ -166,6 +166,30 @@ public class PlayerController : Character, IDamage
     weapon = weapons[CurrentWeaponIndex];
   }
 
+  public override void PreSceneTransition()
+  {
+    StopCharge();
+    StopGrap();
+    // "pack" the graphook with this gameobject
+    graphookTip.transform.parent = gameObject.transform;
+    grapCableRender.transform.parent = gameObject.transform;
+  }
+
+  public override void PostSceneTransition()
+  {
+
+  }
+
+  void OnDestroy()
+  {
+    damageTimer.Stop( false );
+    damagePulseTimer.Stop( false );
+    shootRepeatTimer.Stop( false );
+    chargePulse.Stop( false );
+    chargeSoundLoopDelay.Stop( false );
+    chargeStartDelay.Stop( false );
+  }
+
   void AssignWeapon( Weapon wpn )
   {
     weapon = wpn;
@@ -179,17 +203,6 @@ public class PlayerController : Character, IDamage
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % weapons.Length;
     AssignWeapon( weapons[CurrentWeaponIndex] );
   }
-
-  void OnDestroy()
-  {
-    damageTimer.Stop( false );
-    damagePulseTimer.Stop( false );
-    shootRepeatTimer.Stop( false );
-    chargePulse.Stop( false );
-    chargeSoundLoopDelay.Stop( false );
-    chargeStartDelay.Stop( false );
-  }
-
 
   [SerializeField] float selectRange = 3;
   WorldSelectable closestISelect;
@@ -540,10 +553,22 @@ public class PlayerController : Character, IDamage
       {
         WorldSelection.Select();
         if( WorldSelection is Pickup )
-          AssignWeapon( ((Pickup)closestISelect).weapon );
+        {
+          Pickup pickup = (Pickup)closestISelect;
+          if( pickup.weapon != null )
+            AssignWeapon( ((Pickup)closestISelect).weapon );
+          else if( pickup.ability != null )
+          {
+            secondary = pickup.ability;
+            secondary.Activate( this );
+          }
+        }
       }
     };
   }
+
+  public Transform armMount;
+  [SerializeField] Ability secondary;
 
   void ResetInput()
   {
@@ -980,18 +1005,6 @@ public class PlayerController : Character, IDamage
     return true;
   }
 
-  public override void PreSceneTransition()
-  {
-    StopCharge();
-    StopGrap();
-    // "pack" the graphook with this gameobject
-    graphookTip.transform.parent = gameObject.transform;
-    grapCableRender.transform.parent = gameObject.transform;
-  }
 
-  public override void PostSceneTransition()
-  {
-
-  }
 
 }

@@ -59,7 +59,7 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
 
     //Team team = Global.instance.gameData.FindTeam( TeamName );
     //if( team != null )
-      //Global.instance.AssignTeam( gameObject, team );
+    //Global.instance.AssignTeam( gameObject, team );
   }
 
   void OnEnable()
@@ -111,9 +111,9 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
     if( ChooseRandomPrefab )
       index = randy.Next( 0, SpawnPrefab.Count );
     else
-      index = ( index + 1 >= SpawnPrefab.Count ) ? 0 : index + 1;
+      index = (index + 1 >= SpawnPrefab.Count) ? 0 : index + 1;
 
-    GameObject prefab = SpawnPrefab[ index ];
+    GameObject prefab = SpawnPrefab[index];
     if( prefab == null )
     {
       Debug.LogError( "Spawn point has null objects in list " + name );
@@ -134,11 +134,13 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
           return;
       }
 
-      Vector3 pos = transform.position + Random.insideUnitSphere * SpawnRadius;
-      pos.y = 0;
+      Vector3 pos = new Vector3();
       if( SpawnPointLocal != null )
         pos = SpawnPointLocal.position;
-
+      else
+        pos = transform.position;
+      pos += Random.insideUnitSphere * SpawnRadius;
+      pos.z = 0;
       GameObject go = Global.instance.Spawn( prefab, pos, Quaternion.identity, null, true, true );
 
       /*if( MyTeam != null )
@@ -204,4 +206,3 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
   }
   */
 }
-  

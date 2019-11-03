@@ -54,11 +54,12 @@ public class Character : MonoBehaviour, IDamage
   Vector2 Sidestep;
   RaycastHit2D[] RaycastHits;
 
-  [Header("Damage")]
+  [Header( "Damage" )]
   public bool CanTakeDamage = true;
   public int health = 5;
   public GameObject explosion;
   public AudioClip soundHit;
+  public GameObject spawnWhenDead;
 
   // FLASH
   Timer flashTimer = new Timer();
@@ -244,6 +245,8 @@ public class Character : MonoBehaviour, IDamage
     Instantiate( explosion, transform.position, Quaternion.identity );
     //Global.instance.Destroy( gameObject );
     Destroy( gameObject );
+    if( spawnWhenDead != null )
+      Instantiate( spawnWhenDead, transform.position, Quaternion.identity );
   }
 
   public bool TakeDamage( Damage d )
@@ -450,6 +453,6 @@ public class Character : MonoBehaviour, IDamage
     }
     return false;
   }
-#endregion
+  #endregion
 
 }
