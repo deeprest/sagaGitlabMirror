@@ -8,18 +8,26 @@ polish lots
 add things arbitrarily
 
 # todo
-- BOSS. punchy mech. grenadier. graphook foe.
-- music: intro, loop, battle.
-- Menu with control options (and remap)
 - gamepad controls; camera, button to shoot or autoaim
-
-- hide arm while not shooting
+- BOSS. punchy mech. grenadier. graphook foe.
+- mech pathing
 - wall jump minimum anim duration
 - double tap wall jump pushes away from wall
 - add dash anim effect
 - add spark effect to wall jump
 
+- SHIELD:
+- reflect projectiles
+- absorb damage
+
+## low priority
+- Menu with control options (and remap)
 - use state machine for enemies? how capable are the bots? They already pathfind and sidestep.
+- music: intro, loop, battle.
+- hide arm while not shooting
+- (design) save/load game; player status, serializedobjects, UI interface
+- detect cmd-f fullscreen switch and update setting
+- UNITYbug: cursor movement in last direction when shoot
 
 # ideas
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)

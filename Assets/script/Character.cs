@@ -16,6 +16,7 @@ public class Character : MonoBehaviour, IDamage
 
   public bool UseGravity = true;
   public Vector2 velocity = Vector2.zero;
+  public Vector2 pushVelocity = Vector2.zero;
   public Vector2 inertia = Vector2.zero;
   public float friction = 0.05f;
   public float airFriction = 0.05f;
@@ -58,10 +59,7 @@ public class Character : MonoBehaviour, IDamage
   public int health = 5;
   public GameObject explosion;
   public AudioClip soundHit;
-  public bool CanHitPush = true;
-  public float hitPush = 4;
-  public float hitPushDuration = 2;
-  public Vector2 pushVelocity = Vector2.zero;
+
   // FLASH
   Timer flashTimer = new Timer();
   public float flashInterval = 0.05f;
@@ -253,11 +251,6 @@ public class Character : MonoBehaviour, IDamage
     if( !CanTakeDamage || health <= 0 )
       return false;
     health -= d.amount;
-    //if( CanHitPush )
-    //{
-    //  Push( (body.position - d.point), hitPushDuration );
-    //  //velocity += (body.position - d.point) * hitPush;
-    //}
     if( health <= 0 )
     {
       flashTimer.Stop( false );

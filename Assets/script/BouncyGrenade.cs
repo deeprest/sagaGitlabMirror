@@ -42,9 +42,10 @@ public class BouncyGrenade : Projectile
         Damage dmg = Instantiate( ContactDamage );
         dmg.instigator = transform;
         dmg.point = hit.point;
-        dam.TakeDamage( dmg );
+        if( dam.TakeDamage( dmg ) )
+          Boom();
+
       }
-      Boom();
     }
   }
 

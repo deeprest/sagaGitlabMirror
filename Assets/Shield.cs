@@ -5,6 +5,7 @@ using UnityEngine;
 public class Shield : MonoBehaviour, IDamage
 {
   public AudioClip soundHit;
+  public Damage damage;
   public float lightIntensity;
   public Light light;
   public Renderer sr;
@@ -40,7 +41,8 @@ public class Shield : MonoBehaviour, IDamage
     Character chr = d.instigator.GetComponent<Character>();
     if( chr != null )
     {
-      chr.TakeDamage( new Damage( transform, DamageType.Generic, 1 ) );
+      if( damage != null )
+        chr.TakeDamage( damage );
       chr.Push( hitPushSpeed * ((Vector2)(d.instigator.transform.position - transform.position)).normalized, hitPushDuration );
     }
 
