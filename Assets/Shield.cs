@@ -45,6 +45,11 @@ public class Shield : MonoBehaviour, IDamage
         chr.TakeDamage( damage );
       chr.Push( hitPushSpeed * ((Vector2)(d.instigator.transform.position - transform.position)).normalized, hitPushDuration );
     }
+    Projectile projectile = d.instigator.GetComponent<Projectile>();
+    if( projectile != null )
+    {
+      projectile.velocity = Vector3.Reflect( projectile.velocity, transform.up );
+    }
 
     return false;
   }

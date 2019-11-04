@@ -137,6 +137,18 @@ TextureImporter:
   - first:
       213: -40758920138920377
     second: airbot-prop-base
+  - first:
+      213: -7302615292981491278
+    second: shield
+  - first:
+      213: -2815675528446383981
+    second: turret-base
+  - first:
+      213: 5676291742216020630
+    second: turret-base-broken
+  - first:
+      213: -3537209902276502839
+    second: turret-cannon
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -1155,7 +1167,7 @@ TextureImporter:
         width: 9
         height: 9
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1163,6 +1175,90 @@ TextureImporter:
       bones: []
       spriteID: 27529fc77b3d044e2bdc69a5adb8a4f1
       internalID: -40758920138920377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shield
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 218
+        width: 26
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a63725f370ba84d29b6666ec1b23beb9
+      internalID: -7302615292981491278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: turret-base
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 112
+        width: 32
+        height: 23
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f4a13b4cb23a14c67ae4bcf96947e764
+      internalID: -2815675528446383981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: turret-base-broken
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 96
+        width: 32
+        height: 12
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 32ca18b9b07ee4e3bb9fbf12430a8504
+      internalID: 5676291742216020630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: turret-cannon
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 68
+        width: 43
+        height: 24
+      alignment: 9
+      pivot: {x: 0.7311579, y: 0.5157874}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 445cf60e90b354f9aa4a71d0f2cbd6f9
+      internalID: -3537209902276502839
       vertices: []
       indices: 
       edges: []

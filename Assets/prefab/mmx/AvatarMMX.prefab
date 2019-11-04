@@ -4920,6 +4920,7 @@ MonoBehaviour:
   health: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
+  spawnWhenDead: {fileID: 0}
   flashInterval: 0.05
   flashCount: 5
   ContactDamage: {fileID: 0}
@@ -4991,7 +4992,7 @@ MonoBehaviour:
   grapShotSound: {fileID: 8300000, guid: 714bd8ea9667041e99bb9a12a950f4f3, type: 3}
   grapHitSound: {fileID: 8300000, guid: 55037177bb692440ebfcf4e001cef0aa, type: 3}
   armMount: {fileID: 605154778494882277}
-  secondaryGameobject: {fileID: 0}
+  secondary: {fileID: 0}
 --- !u!212 &212107818795109166
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5369,18 +5370,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.007204056, y: 0.0072040334}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.625, y: 0.203125}
+    oldSize: {x: 0.40625, y: 0.171875}
     newSize: {x: 0.3125, y: 0.09375}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.6, y: 0.1}
+  m_Size: {x: 0.38748085, y: 0.12521417}
   m_EdgeRadius: 0
 --- !u!212 &394507305719372179
 SpriteRenderer:
@@ -5417,10 +5418,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300060, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
+  m_SortingLayerID: 1643776171
+  m_SortingLayer: 1
+  m_SortingOrder: 10
+  m_Sprite: {fileID: -7302615292981491278, guid: 64314a0420c93471b9990c7b9f080a39,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

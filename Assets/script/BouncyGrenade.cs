@@ -44,7 +44,6 @@ public class BouncyGrenade : Projectile
         dmg.point = hit.point;
         if( dam.TakeDamage( dmg ) )
           Boom();
-
       }
     }
   }

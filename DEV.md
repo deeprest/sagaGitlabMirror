@@ -8,17 +8,19 @@ polish lots
 add things arbitrarily
 
 # todo
-- gamepad controls; camera, button to shoot or autoaim
-- BOSS. punchy mech. grenadier. graphook foe.
+- SHIELD:
+  - reflect projectiles
+  - absorb damage
+
+- punchy mech
++ grenade foe
+- graphook foe
 - mech pathing
 - wall jump minimum anim duration
 - double tap wall jump pushes away from wall
 - add dash anim effect
 - add spark effect to wall jump
 
-- SHIELD:
-- reflect projectiles
-- absorb damage
 
 ## low priority
 - Menu with control options (and remap)
