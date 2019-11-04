@@ -1,17 +1,4 @@
-# Design Mistakes to Avoid
-starting too big
-onboarding player, ease of learning mechanics
-idea commitment
-overly rigid design
-story upfront
-polish lots
-add things arbitrarily
-
 # todo
-- SHIELD:
-  - reflect projectiles
-  - absorb damage
-
 - punchy mech
 + grenade foe
 - graphook foe
@@ -31,7 +18,7 @@ add things arbitrarily
 - detect cmd-f fullscreen switch and update setting
 - UNITYbug: cursor movement in last direction when shoot
 
-# ideas
+## ideas
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
 - weapon ideas:  doublewhammy/triple, rockets, seeking missiles, beam, stickybomb, invisible
 - powerups: speedboost, slowtime, reflective shield, supercharge
@@ -48,12 +35,22 @@ add things arbitrarily
 - subway. fast travel or GTA2 style train?
 - character model 3d. linear animations
 
-# bugs
+## bugs
 - release build screen fade in on level transition gets stuck
 - reproducible: charge particles on after transition. reset player state on level transition
 - reproducible: jump up wall sprite glitch
 
-**DESIGN**
+
+# DESIGN
+## Design Mistakes to Avoid
+starting too big
+onboarding player, ease of learning mechanics
+idea commitment
+overly rigid design
+story upfront
+polish lots
+add things arbitrarily
+
 primary = xbuster, grenade, flame
 primary charge = charged blast
 secondary = graphook, shield, slowmo
@@ -61,7 +58,7 @@ secondary = graphook, shield, slowmo
 ? Abilities: persistent, temporary, limited. Ex: persistent shields, temporary powerup, limited ammo.
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
 
-# keep
+## keep
 special case inertia
 dash feels good
 wall jump
@@ -72,7 +69,7 @@ collect weapons from defeated bosses
 destroying enemies is satisfying
 safety timer after taking damage
 
-# changes
+## changes
 only shoot forward -> aiming
 teleportation -> airdrop from chopper
 character/robot styles
