@@ -8,7 +8,7 @@ public class Shield : MonoBehaviour, IDamage
   public Damage damage;
   public float lightIntensity;
   public Light light;
-  public Renderer sr;
+  public SpriteRenderer sr;
   public float pulseDuration = 1;
   Timer pulseTimer = new Timer();
   public float hitPushSpeed = 1;
@@ -18,6 +18,11 @@ public class Shield : MonoBehaviour, IDamage
   {
     sr.material.SetFloat( "_FlashAmount", 0 );
     light.intensity = 0;
+  }
+
+  void Update()
+  {
+    sr.flipX = transform.up.x < 0;
   }
 
   public bool TakeDamage( Damage d )

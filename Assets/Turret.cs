@@ -34,7 +34,7 @@ public class Turret : Character
         // orientation is facing right
         cannon.rotation = Quaternion.RotateTowards( cannon.rotation, Quaternion.Euler( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( delta.y, delta.x ) ), rotspeed * Time.deltaTime );
         RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Global.DefaultProjectileCollideLayers ) );
-        if( hit.transform != null && hit.transform == Global.instance.CurrentPlayer.transform )
+        if( hit.transform != null && hit.transform.IsChildOf( Global.instance.CurrentPlayer.transform ) )
         {
           if( !shootRepeatTimer.IsActive )
             Shoot( delta );
