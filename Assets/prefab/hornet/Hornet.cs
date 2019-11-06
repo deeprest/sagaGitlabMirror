@@ -74,8 +74,8 @@ public class Hornet : Character
         }
         return;
       }
-      Vector2 pos = (Vector2)transform.position;
-      Vector2 player = (Vector2)Global.instance.CurrentPlayer.transform.position;
+      Vector2 pos = transform.position;
+      Vector2 player = Global.instance.CurrentPlayer.transform.position;
       Vector2 tpos = player + Vector2.up * up + Vector2.right * over;
       //Debug.DrawLine( player, tpos, Color.white );
       // hover above surface
@@ -104,7 +104,8 @@ public class Hornet : Character
         }
 
         // guns
-        //if( Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Global.NoShootLayers )) )
+        RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Global.DefaultProjectileCollideLayers ) );
+        if( hit.transform != null && hit.transform.IsChildOf( Global.instance.CurrentPlayer.transform ) )
         {
           if( player.x < transform.position.x && player.y < transform.position.y )
           {

@@ -29,18 +29,21 @@ public class Weapon : ScriptableObject
     }
     else if( projectileCount > 1 )
     {
-      float inc = spread / (projectileCount-1);
+      float inc = spread / (projectileCount - 1);
       float val = -spread * 0.5f;
+      bool anyFired = false;
       for( int i = 0; i < projectileCount; i++ )
       {
-        FireWeaponProjectile( instigator, ProjectilePrefab, pos, shoot + Vector3.Cross( shoot, Vector3.forward ) * val, false );
+        if( FireWeaponProjectile( instigator, ProjectilePrefab, pos, shoot + Vector3.Cross( shoot, Vector3.forward ) * val, false ) )
+          anyFired = true;
         val += inc;
       }
-      Global.instance.AudioOneShot( ProjectilePrefab.StartSound, pos );
+      if( anyFired )
+        Global.instance.AudioOneShot( ProjectilePrefab.StartSound, pos );
     }
   }
 
-  void FireWeaponProjectile( Character instigator, Projectile projectile, Vector3 pos, Vector3 shoot, bool playSound = true )
+  bool FireWeaponProjectile( Character instigator, Projectile projectile, Vector3 pos, Vector3 shoot, bool playSound = true )
   {
     Collider2D col = Physics2D.OverlapCircle( pos, projectile.circle.radius, LayerMask.GetMask( Global.ProjectileNoShootLayers ) );
     if( col == null )
@@ -56,7 +59,9 @@ public class Weapon : ScriptableObject
       //sr.color = Global.instance.shiftyColor;
       if( playSound )
         Global.instance.AudioOneShot( ProjectilePrefab.StartSound, pos );
+      return true;
     }
+    return false;
   }
 }
 
