@@ -23,6 +23,7 @@ public class Hornet : Character
   Vector2 tvel;
   Timer wheelDrop = new Timer();
   [SerializeField] float wheelDropInterval = 3;
+  [SerializeField] int wheelDropsRemaining = 6;
   [SerializeField] Transform drop;
   [SerializeField] GameObject dropPrefab;
 
@@ -94,8 +95,9 @@ public class Hornet : Character
           transform.rotation = Quaternion.RotateTowards( transform.rotation, Quaternion.Euler( 0, 0, Mathf.Clamp( velocity.x, -topspeedrot, topspeedrot ) * -rot ), rotspeed * Time.deltaTime );
         }
         // drop wheels
-        if( velocity.x > 0 && !wheelDrop.IsActive )
+        if( wheelDropsRemaining > 0 && velocity.x > 0 && !wheelDrop.IsActive )
         {
+          wheelDropsRemaining--;
           wheelDrop.Start( wheelDropInterval, null, null );
           GameObject go = Global.instance.Spawn( dropPrefab, drop.position, Quaternion.identity );
           Physics2D.IgnoreCollision( go.GetComponent<Collider2D>(), GetComponent<Collider2D>() );
