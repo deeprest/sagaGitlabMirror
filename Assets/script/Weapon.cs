@@ -29,6 +29,7 @@ public class Weapon : ScriptableObject
     }
     else if( projectileCount > 1 )
     {
+      // multiple projectiles, with spread
       float inc = spread / (projectileCount - 1);
       float val = -spread * 0.5f;
       bool anyFired = false;
@@ -54,11 +55,16 @@ public class Weapon : ScriptableObject
       p.velocity = shoot.normalized * (p.speed + speedIncrease);
       foreach( var c in instigator.colliders )
         Physics2D.IgnoreCollision( p.circle, c );
-      //SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
-      //if( sr != null )
-      //sr.color = Global.instance.shiftyColor;
       if( playSound )
         Global.instance.AudioOneShot( ProjectilePrefab.StartSound, pos );
+      // silly
+      SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
+      if( sr != null )
+        sr.color = Global.instance.shiftyColor;
+      Light light = go.GetComponentInChildren<Light>();
+      if( light != null )
+        light.color = Global.instance.shiftyColor;
+
       return true;
     }
     return false;

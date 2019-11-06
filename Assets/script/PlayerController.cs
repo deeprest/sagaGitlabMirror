@@ -236,6 +236,23 @@ public class PlayerController : Character, IDamage
     return closest;
   }
 
+  Component FindSmallestAngle( Vector3 position, Vector3 direction, Component[] cmps )
+  {
+    float angle = Mathf.Infinity;
+    Component closest = null;
+    foreach( var cmp in cmps )
+    {
+      float dist = Vector3.Angle( cmp.transform.position - position, direction );
+      if( dist < angle )
+      {
+        closest = cmp;
+        angle = dist;
+      }
+    }
+    return closest;
+  }
+
+
 
   Vector2 wallSlideNormal;
 
@@ -271,7 +288,7 @@ public class PlayerController : Character, IDamage
     }
 
     pups.Clear();
-    hits = Physics2D.CircleCastAll( transform.position, selectRange, Vector2.zero, 0, LayerMask.GetMask( new string[] { "worldselect" } ) );
+    hits = Physics2D.CircleCastAll( transform.position, selectRange, Vector3.zero, 0, LayerMask.GetMask( new string[] { "worldselect" } ) );
     foreach( var hit in hits )
     {
       WorldSelectable pup = hit.transform.GetComponent<WorldSelectable>();
@@ -285,7 +302,8 @@ public class PlayerController : Character, IDamage
         }*/
       }
     }
-    WorldSelectable closest = (WorldSelectable)FindClosest( transform.position, pups.ToArray() );
+    //WorldSelectable closest = (WorldSelectable)FindClosest( transform.position, pups.ToArray() );
+    WorldSelectable closest = (WorldSelectable)FindSmallestAngle( transform.position, shoot, pups.ToArray() );
     if( closest == null )
     {
       if( closestISelect != null )

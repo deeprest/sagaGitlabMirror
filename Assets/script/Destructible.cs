@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Destructible : Character
 {
+  [Header( "Destructible" )]
+  public UnityEngine.Events.UnityEvent onDestruct;
+
   void Start()
   {
     CharacterStart();
@@ -11,6 +14,12 @@ public class Destructible : Character
     UpdateHit = null;
     UpdateCollision = null;
     UpdatePosition = null;
+  }
+
+  protected override void Die()
+  {
+    base.Die();
+    onDestruct.Invoke();
   }
 
 }

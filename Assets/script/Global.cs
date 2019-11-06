@@ -157,7 +157,6 @@ public class Global : MonoBehaviour
   public float cursorSensitivity = 1;
   public bool CursorPlayerRelative = true;
   public float gamepadCursorLerp = 10;
-  public bool CursorPositional = true;
   public float positionalCursorSpeed = 30;
   public float cursorScale = 4;
   public bool AimSnap;
