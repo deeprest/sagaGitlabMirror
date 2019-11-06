@@ -54,6 +54,8 @@ public class Shield : MonoBehaviour, IDamage
     if( projectile != null )
     {
       projectile.velocity = Vector3.Reflect( projectile.velocity, transform.up );
+      if( projectile.velocity.magnitude < 0.1f )
+        print( "proj vel " + projectile.velocity.magnitude );
     }
 
     return false;

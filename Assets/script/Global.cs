@@ -337,7 +337,10 @@ public class Global : MonoBehaviour
       if( (!Application.isEditor || Global.instance.SimulatePlayer) && chopper != null )
         ChopDrop();
       else
+      {
         CurrentPlayer.transform.position = FindSpawnPosition();
+        CurrentPlayer.velocity = Vector2.zero;
+      }
     };
 
     Controls.MenuActions.Back.performed += ( obj ) => {

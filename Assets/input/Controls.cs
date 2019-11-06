@@ -534,7 +534,7 @@ public class Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""DefaultControlScheme"",
                     ""action"": ""Shield"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -618,6 +618,17 @@ public class Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""27a52f98-ad5e-4c8b-8962-b0d44c3b54d4"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""DefaultControlScheme"",
+                    ""action"": ""Graphook"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""8156ca34-3bd2-4e66-a3d4-b1e7bf7997ca"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
@@ -666,7 +677,7 @@ public class Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""DefaultControlScheme"",
+                    ""groups"": """",
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -798,6 +809,17 @@ public class Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Mouse>/scroll/y"",
                     ""interactions"": """",
                     ""processors"": ""Scale(factor=0.1)"",
+                    ""groups"": """",
+                    ""action"": ""DEV-Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bd7888e5-dec7-4c73-8ea1-e6a6b38577b2"",
+                    ""path"": ""<Gamepad>/leftStick/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DEV-Zoom"",
                     ""isComposite"": false,

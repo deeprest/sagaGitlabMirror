@@ -105,13 +105,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 52551216486609045}
-  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.5, y: -0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.491, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3604313625396497800}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7674903736374466933
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,6 +201,10 @@ MonoBehaviour:
   rotspeed: 100
   shotOrigin: {fileID: 4063886550480080537}
   weapon: {fileID: 11400000, guid: 67bfd1773b4494e27874dbed922b0f43, type: 2}
+  min: -90
+  max: 90
+  maxShootAngle: 5
+  debugShoot: 1
 --- !u!212 &4083742519420547586
 SpriteRenderer:
   m_ObjectHideFlags: 0
