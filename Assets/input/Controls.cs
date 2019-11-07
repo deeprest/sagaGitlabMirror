@@ -19,6 +19,14 @@ public class Controls : IInputActionCollection, IDisposable
             ""id"": ""8a6bf452-3efb-41a3-8194-b811718b7ee7"",
             ""actions"": [
                 {
+                    ""name"": ""DetectInputType"",
+                    ""type"": ""Button"",
+                    ""id"": ""0db8ffb9-5a14-4281-adce-bfaec801389f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Menu"",
                     ""type"": ""Button"",
                     ""id"": ""66a096f1-81ee-4428-9710-33581b3aa5d1"",
@@ -142,6 +150,28 @@ public class Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DEV-Respawn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""06f2a596-acf7-4f39-8f9d-c47f8109c794"",
+                    ""path"": ""<Gamepad>/*"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DetectInputType"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7e0e33ce-4408-4d79-9de1-a1a189c0b079"",
+                    ""path"": ""<Keyboard>/*"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""DefaultControlScheme"",
+                    ""action"": ""DetectInputType"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -501,7 +531,7 @@ public class Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""DefaultControlScheme"",
                     ""action"": ""WorldSelect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -673,22 +703,22 @@ public class Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""55094766-01aa-451d-946f-f7db7e95e361"",
-                    ""path"": ""<Gamepad>/rightStick"",
+                    ""id"": ""6bd66471-2006-4a56-90a3-19c7988c7710"",
+                    ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""DefaultControlScheme"",
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""6bd66471-2006-4a56-90a3-19c7988c7710"",
-                    ""path"": ""<Mouse>/delta"",
+                    ""id"": ""55094766-01aa-451d-946f-f7db7e95e361"",
+                    ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""DefaultControlScheme"",
+                    ""groups"": """",
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -854,6 +884,7 @@ public class Controls : IInputActionCollection, IDisposable
 }");
         // GlobalActions
         m_GlobalActions = asset.FindActionMap("GlobalActions", throwIfNotFound: true);
+        m_GlobalActions_DetectInputType = m_GlobalActions.FindAction("DetectInputType", throwIfNotFound: true);
         m_GlobalActions_Menu = m_GlobalActions.FindAction("Menu", throwIfNotFound: true);
         m_GlobalActions_Slowmo = m_GlobalActions.FindAction("Slowmo", throwIfNotFound: true);
         m_GlobalActions_Pause = m_GlobalActions.FindAction("Pause", throwIfNotFound: true);
@@ -930,6 +961,7 @@ public class Controls : IInputActionCollection, IDisposable
     // GlobalActions
     private readonly InputActionMap m_GlobalActions;
     private IGlobalActionsActions m_GlobalActionsActionsCallbackInterface;
+    private readonly InputAction m_GlobalActions_DetectInputType;
     private readonly InputAction m_GlobalActions_Menu;
     private readonly InputAction m_GlobalActions_Slowmo;
     private readonly InputAction m_GlobalActions_Pause;
@@ -940,6 +972,7 @@ public class Controls : IInputActionCollection, IDisposable
     {
         private Controls m_Wrapper;
         public GlobalActionsActions(Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @DetectInputType => m_Wrapper.m_GlobalActions_DetectInputType;
         public InputAction @Menu => m_Wrapper.m_GlobalActions_Menu;
         public InputAction @Slowmo => m_Wrapper.m_GlobalActions_Slowmo;
         public InputAction @Pause => m_Wrapper.m_GlobalActions_Pause;
@@ -955,6 +988,9 @@ public class Controls : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_GlobalActionsActionsCallbackInterface != null)
             {
+                DetectInputType.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDetectInputType;
+                DetectInputType.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDetectInputType;
+                DetectInputType.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDetectInputType;
                 Menu.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMenu;
                 Menu.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMenu;
                 Menu.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMenu;
@@ -977,6 +1013,9 @@ public class Controls : IInputActionCollection, IDisposable
             m_Wrapper.m_GlobalActionsActionsCallbackInterface = instance;
             if (instance != null)
             {
+                DetectInputType.started += instance.OnDetectInputType;
+                DetectInputType.performed += instance.OnDetectInputType;
+                DetectInputType.canceled += instance.OnDetectInputType;
                 Menu.started += instance.OnMenu;
                 Menu.performed += instance.OnMenu;
                 Menu.canceled += instance.OnMenu;
@@ -1196,6 +1235,7 @@ public class Controls : IInputActionCollection, IDisposable
     }
     public interface IGlobalActionsActions
     {
+        void OnDetectInputType(InputAction.CallbackContext context);
         void OnMenu(InputAction.CallbackContext context);
         void OnSlowmo(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);

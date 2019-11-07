@@ -6,6 +6,14 @@
             "id": "8a6bf452-3efb-41a3-8194-b811718b7ee7",
             "actions": [
                 {
+                    "name": "DetectInputType",
+                    "type": "Button",
+                    "id": "0db8ffb9-5a14-4281-adce-bfaec801389f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Menu",
                     "type": "Button",
                     "id": "66a096f1-81ee-4428-9710-33581b3aa5d1",
@@ -129,6 +137,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "DEV-Respawn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "06f2a596-acf7-4f39-8f9d-c47f8109c794",
+                    "path": "<Gamepad>/*",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DetectInputType",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7e0e33ce-4408-4d79-9de1-a1a189c0b079",
+                    "path": "<Keyboard>/*",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "DefaultControlScheme",
+                    "action": "DetectInputType",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -488,7 +518,7 @@
                     "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "DefaultControlScheme",
                     "action": "WorldSelect",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -660,22 +690,22 @@
                 },
                 {
                     "name": "",
-                    "id": "55094766-01aa-451d-946f-f7db7e95e361",
-                    "path": "<Gamepad>/rightStick",
+                    "id": "6bd66471-2006-4a56-90a3-19c7988c7710",
+                    "path": "<Mouse>/delta",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "DefaultControlScheme",
                     "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "6bd66471-2006-4a56-90a3-19c7988c7710",
-                    "path": "<Mouse>/delta",
+                    "id": "55094766-01aa-451d-946f-f7db7e95e361",
+                    "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
-                    "groups": "DefaultControlScheme",
+                    "groups": "",
                     "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false

@@ -8,6 +8,7 @@ using System.IO;
 //using System.IO.Compression;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.AI;
@@ -303,11 +304,48 @@ public class Global : MonoBehaviour
     }
   }
 
+  public bool UsingGamepad;
+
+  public string ReplaceWithControlNames( string source )
+  {
+    string outstr = "";
+    string[] tokens = source.Split( new char[] { '[' } );
+    foreach( var tok in tokens )
+    {
+      if( tok.Contains( "]" ) )
+      {
+        string[] ugh = tok.Split( new char[] { ']' } );
+        if( ugh.Length > 2 )
+          return "BAD FORMAT";
+        int inputTypeIndex = UsingGamepad ? 1 : 0;
+        // warning!! controls must be in correct order per-action: keyboard+mouse first, then gamepad
+        InputAction ia = Controls.BipedActions.Get().FindAction( ugh[0] );
+        if( ia == null )
+          ia = Controls.MenuActions.Get().FindAction( ugh[0] );
+        if( ia == null )
+          return "ACTION NOT FOUND: "+ugh[0];
+        InputControl ic = ia.controls[inputTypeIndex];
+        if( ic.shortDisplayName != null )
+          outstr += ic.shortDisplayName;
+        else
+          outstr += ic.name.ToUpper();
+        outstr += ugh[1];
+      }
+      else
+        outstr += tok;
+    }
+    return outstr;
+  }
+
   void InitializeControls()
   {
     Controls = new Controls();
     Controls.Enable();
     Controls.MenuActions.Disable();
+
+    Controls.GlobalActions.DetectInputType.performed += ( obj ) => {
+      UsingGamepad = obj.control.path.Contains( "Gamepad" );
+    };
 
     Controls.GlobalActions.Menu.performed += ( obj ) => ShowMenu( !MenuShowing );
     Controls.GlobalActions.Pause.performed += ( obj ) => {

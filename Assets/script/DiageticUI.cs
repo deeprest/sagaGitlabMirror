@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-
+using UnityEngine.InputSystem;
 
 
 public class DiageticUI : WorldSelectable
 {
   [SerializeField] GraphicRaycaster raycaster;
   [SerializeField] Animator animator;
-  [SerializeField] GameObject indicator;
+  [SerializeField] Text instruction;
+  [SerializeField] string inactiveInstruction;
+  [SerializeField] string activeInstruction;
   [SerializeField] GameObject cameraTarget;
   public PolygonCollider2D CameraPoly { get { return cameraTarget.GetComponent<PolygonCollider2D>(); } }
   public GameObject InitiallySelected;
@@ -22,6 +24,7 @@ public class DiageticUI : WorldSelectable
     raycaster.enabled = false;
     InteractableOff();
     selectedObject = InitiallySelected;
+    instruction.text = Global.instance.ReplaceWithControlNames( inactiveInstruction );
   }
 
   public override void Highlight()
@@ -36,7 +39,7 @@ public class DiageticUI : WorldSelectable
   public override void Select()
   {
     animator.Play( "idle" );
-    indicator.SetActive( false );
+    instruction.text = Global.instance.ReplaceWithControlNames( activeInstruction );
     raycaster.enabled = true;
     Global.instance.DiageticMenuOn( this );
     InteractableOn();
@@ -45,7 +48,7 @@ public class DiageticUI : WorldSelectable
   public override void Unselect()
   {
     animator.Play( "idle" );
-    indicator.SetActive( true );
+    instruction.text = Global.instance.ReplaceWithControlNames( inactiveInstruction );
     raycaster.enabled = false;
     Global.instance.DiageticMenuOff();
     InteractableOff();
