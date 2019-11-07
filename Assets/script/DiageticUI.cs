@@ -24,16 +24,19 @@ public class DiageticUI : WorldSelectable
     raycaster.enabled = false;
     InteractableOff();
     selectedObject = InitiallySelected;
-    instruction.text = Global.instance.ReplaceWithControlNames( inactiveInstruction );
+    instruction.gameObject.SetActive( false );
   }
 
   public override void Highlight()
   {
     animator.Play( "highlight" );
+    instruction.gameObject.SetActive( true );
+    instruction.text = Global.instance.ReplaceWithControlNames( inactiveInstruction );
   }
   public override void Unhighlight()
   {
     animator.Play( "idle" );
+    instruction.gameObject.SetActive( false );
   }
 
   public override void Select()

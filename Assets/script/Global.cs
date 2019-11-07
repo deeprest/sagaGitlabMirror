@@ -305,8 +305,9 @@ public class Global : MonoBehaviour
   }
 
   public bool UsingGamepad;
+  public Color ControlNameColor = Color.red;
 
-  public string ReplaceWithControlNames( string source )
+  public string ReplaceWithControlNames( string source)
   {
     string outstr = "";
     string[] tokens = source.Split( new char[] { '[' } );
@@ -325,16 +326,19 @@ public class Global : MonoBehaviour
         if( ia == null )
           return "ACTION NOT FOUND: "+ugh[0];
         InputControl ic = ia.controls[inputTypeIndex];
+        string controlName = "BAD NAME";
         if( ic.shortDisplayName != null )
-          outstr += ic.shortDisplayName;
+          controlName = ic.shortDisplayName;
         else
-          outstr += ic.name.ToUpper();
+          controlName = ic.name.ToUpper();
+        outstr += "<color=#" + ColorUtility.ToHtmlStringRGB( ControlNameColor ) + ">" + controlName + "</color>";
         outstr += ugh[1];
       }
       else
         outstr += tok;
     }
     return outstr;
+
   }
 
   void InitializeControls()
@@ -345,6 +349,7 @@ public class Global : MonoBehaviour
 
     Controls.GlobalActions.DetectInputType.performed += ( obj ) => {
       UsingGamepad = obj.control.path.Contains( "Gamepad" );
+      print( obj.control.path );
     };
 
     Controls.GlobalActions.Menu.performed += ( obj ) => ShowMenu( !MenuShowing );
