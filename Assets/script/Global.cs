@@ -1265,7 +1265,7 @@ public class Global : MonoBehaviour
       duration = 10,
       UpdateDelegate = delegate ( Timer obj )
       {
-        ScreenSettingsCountdown.text = "Accept changes or revert in " + (10 - obj.ProgressSeconds).ToString( "0" ) + " seconds";
+        ScreenSettingsCountdown.text = "Accept changes or revert in <color=orange>" + (10 - obj.ProgressSeconds).ToString( "0" ) + "</color> seconds";
       },
       CompleteDelegate = RevertScreenSettings
     };
