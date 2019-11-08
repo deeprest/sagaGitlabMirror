@@ -292,30 +292,6 @@ public class CustomUtility : EditorWindow
     }
 
 
-    /*GUILayout.Label( "AnimFix", EditorStyles.boldLabel );
-    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Apply" ) )
-    {
-      ans = new List<AnimSequence>();
-      string[] guids = AssetDatabase.FindAssets( "t:AnimSequence" );
-      foreach( string guid in guids )
-      {
-        AnimSequence seq = AssetDatabase.LoadAssetAtPath<AnimSequence>( AssetDatabase.GUIDToAssetPath( guid ) );
-        ans.Add( seq );
-      }
-      StartJob( "Applying...", ans.Count, delegate()
-      {
-        AnimSequence seq = ans[ index ];
-        Debug.Log( "modified: " + seq.name + " " + index, seq );
-        seq.frames = new AnimFrame[seq.frames.Length];
-        for( int i = 0; i < seq.frames.Length; i++ )
-        {
-          seq.frames[ i ].sprite = seq.frames[i];
-        }
-
-      }, null );
-    }*/
-
-
     GUILayout.Label( "Character", EditorStyles.boldLabel );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Select Player Character" ) )
       if( Application.isPlaying )
@@ -341,37 +317,39 @@ public class CustomUtility : EditorWindow
 
   }
 
+}
 
-  void ClearGroundImages()
+#if false
+void ClearGroundImages()
+{
+  string[] dirs = Directory.GetDirectories( Application.persistentDataPath );
+  foreach( var dir in dirs )
   {
-    string[] dirs = Directory.GetDirectories( Application.persistentDataPath );
-    foreach( var dir in dirs )
+    Debug.Log( dir );
+    string[] files = Directory.GetFiles( dir, "*.png" );
+    foreach( var f in files )
     {
-      Debug.Log( dir );
-      string[] files = Directory.GetFiles( dir, "*.png" );
-      foreach( var f in files )
-      {
-        File.Delete( f );
-      }
-    }
-  }
-
-  void ClearGroundOverlayImages()
-  {
-    string[] dirs = Directory.GetDirectories( Application.persistentDataPath );
-    foreach( var dir in dirs )
-    {
-      Debug.Log( dir );
-      string[] files = Directory.GetFiles( dir, "*-dirt.png" );
-      foreach( var f in files )
-      {
-        File.Delete( f );
-      }
+      File.Delete( f );
     }
   }
 }
 
-#if false
+void ClearGroundOverlayImages()
+{
+  string[] dirs = Directory.GetDirectories( Application.persistentDataPath );
+  foreach( var dir in dirs )
+  {
+    Debug.Log( dir );
+    string[] files = Directory.GetFiles( dir, "*-dirt.png" );
+    foreach( var f in files )
+    {
+      File.Delete( f );
+    }
+  }
+}
+
+
+
 // I wrote this for someone on the Unity forums
 public class ProgressUpdateExample : EditorWindow
 {

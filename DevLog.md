@@ -4,12 +4,10 @@ Unity is great for static levels
 chose to use no 2d physics. just want collision detection. Used boxcast for directional response.
 sprite animations (not in legacy animation, and not using state machine)
 multi-part sprite characters, animation frames
-normal maps. cannot use sprite atlas
-lighting
+normal maps. cannot use sprite atlas. lighting
 deployment
 
-
-- dialogue box (inprogress)
+- dialogue box
 
 # Enemies
 + navmesh + sidestep

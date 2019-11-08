@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Shield : MonoBehaviour, IDamage
 {
+  public AudioSource source;
   public AudioClip soundHit;
   public Damage damage;
   public float lightIntensity;
@@ -28,7 +29,11 @@ public class Shield : MonoBehaviour, IDamage
   public bool TakeDamage( Damage d )
   {
     if( soundHit != null )
-      Global.instance.AudioOneShot( soundHit, transform.position );
+    {
+      source.clip = soundHit;
+      source.Play();
+      //Global.instance.AudioOneShot( soundHit, transform.position );
+    }
 
     sr.material.SetFloat( "_FlashAmount", 1 );
     light.intensity = lightIntensity;

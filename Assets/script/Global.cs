@@ -171,13 +171,13 @@ public class Global : MonoBehaviour
   // status 
   public Image weaponIcon;
   // settings
-  [SerializeField] GameObject InitialConfirmScreenSelectable;
   public GameObject SettingsParent;
   public UIScreen ConfirmDialog;
 
   [Header( "Input" )]
   public Controls Controls;
-
+  public bool UsingGamepad;
+  public Color ControlNameColor = Color.red;
 
   [Header( "Debug" )]
   [SerializeField] Text debugFPS;
@@ -189,6 +189,8 @@ public class Global : MonoBehaviour
   [SerializeField] float progressSpeed = 0.5f;
 
   [Header( "Misc" )]
+  Timer fpsTimer;
+  int frames;
   // color shift
   public Color shiftyColor = Color.red;
   [SerializeField] float colorShiftSpeed = 1;
@@ -197,6 +199,9 @@ public class Global : MonoBehaviour
   float progTarget = 0;
   [SerializeField] GameObject spinner;
   [SerializeField] float spinnerMoveSpeed = 1;
+
+  public GameData gameData;
+  public Dictionary<string, GameObject> ResourceLookup = new Dictionary<string, GameObject>();
 
 #if DESTRUCTION_LIST
   // This exists only because of a Unity crash bug when objects with active
@@ -209,6 +214,15 @@ public class Global : MonoBehaviour
   public UnityEngine.Audio.AudioMixerSnapshot snapSlowmo;
   public UnityEngine.Audio.AudioMixerSnapshot snapNormal;
   public float AudioFadeDuration = 0.1f;
+
+  [Header( "Speech" )]
+  public GameObject SpeechBubble;
+  public Text SpeechText;
+  public Image SpeechIcon;
+  CharacterIdentity SpeechCharacter;
+  int SpeechPriority = 0;
+  public float SpeechRange = 8;
+  Timer SpeechTimer = new Timer();
 
 
   [RuntimeInitializeOnLoadMethod]
@@ -224,9 +238,6 @@ public class Global : MonoBehaviour
     Global.instance.WriteSettings();
     return true;
   }
-
-  Timer fpsTimer;
-  int frames;
 
   void Awake()
   {
@@ -262,10 +273,11 @@ public class Global : MonoBehaviour
     foreach( var mesh in meshSurfaces )
       AgentType[NavMesh.GetSettingsNameFromID( mesh.agentTypeID )] = mesh.agentTypeID;
 
-    fpsTimer = new Timer( int.MaxValue, 1, delegate ( Timer tmr ) {
+    fpsTimer = new Timer( int.MaxValue, 1, delegate ( Timer tmr )
+    {
       debugFPS.text = frames.ToString();
       frames = 0;
-       }, null );
+    }, null );
 
     if( Camera.main.orthographic )
       debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
@@ -302,12 +314,21 @@ public class Global : MonoBehaviour
       music.Play();
       StartCoroutine( LoadSceneRoutine( "home", true, true, false ) );
     }
+
+    SpeechBubble.SetActive( false );
   }
 
-  public bool UsingGamepad;
-  public Color ControlNameColor = Color.red;
+#if UNITY_EDITOR
+  void Start()
+  {
+    // workaround for Unity Editor bug where AudioMixer.SetFloat() does not work in Awake()
+    FloatSetting["MasterVolume"].UnityBugWorkaround();
+    FloatSetting["MusicVolume"].UnityBugWorkaround();
+    FloatSetting["SFXVolume"].UnityBugWorkaround();
+  }
+#endif
 
-  public string ReplaceWithControlNames( string source)
+  public string ReplaceWithControlNames( string source )
   {
     string outstr = "";
     string[] tokens = source.Split( new char[] { '[' } );
@@ -324,7 +345,7 @@ public class Global : MonoBehaviour
         if( ia == null )
           ia = Controls.MenuActions.Get().FindAction( ugh[0] );
         if( ia == null )
-          return "ACTION NOT FOUND: "+ugh[0];
+          return "ACTION NOT FOUND: " + ugh[0];
         InputControl ic = ia.controls[inputTypeIndex];
         string controlName = "BAD NAME";
         if( ic.shortDisplayName != null )
@@ -349,7 +370,7 @@ public class Global : MonoBehaviour
 
     Controls.GlobalActions.DetectInputType.performed += ( obj ) => {
       UsingGamepad = obj.control.path.Contains( "Gamepad" );
-      print( obj.control.path );
+      //print( obj.control.path );
     };
 
     Controls.GlobalActions.Menu.performed += ( obj ) => ShowMenu( !MenuShowing );
@@ -375,14 +396,15 @@ public class Global : MonoBehaviour
     };*/
 #endif
     Controls.GlobalActions.DEVRespawn.performed += ( obj ) => {
-      Chopper chopper = FindObjectOfType<Chopper>();
+      mixer.SetFloat( "MasterVolume", -13.3f );
+      /*Chopper chopper = FindObjectOfType<Chopper>();
       if( (!Application.isEditor || Global.instance.SimulatePlayer) && chopper != null )
         ChopDrop();
       else
       {
         CurrentPlayer.transform.position = FindSpawnPosition();
         CurrentPlayer.velocity = Vector2.zero;
-      }
+      }*/
     };
 
     Controls.MenuActions.Back.performed += ( obj ) => {
@@ -534,7 +556,6 @@ public class Global : MonoBehaviour
     shifty.color = shiftyColor;
   }
 
-
   void OnApplicationFocus( bool hasFocus )
   {
     UnityEngine.Cursor.lockState = hasFocus ? CursorLockMode.Locked : CursorLockMode.None;
@@ -676,10 +697,20 @@ public class Global : MonoBehaviour
     return Vector3.zero;
   }
 
+  float DbFromNormalizedVolume( float normalizedVolume )
+  {
+    return (1 - Mathf.Sqrt( normalizedVolume )) * -80f;
+  }
+
+  float NormalizedVolumeFromDb( float db )
+  {
+    return Mathf.Pow( -((db / -80f) - 1f), 2f );
+  }
+
   public void Slow()
   {
     Slowed = true;
-    Time.timeScale = Global.instance.slowtime;
+    Time.timeScale = slowtime;
     Time.fixedDeltaTime = 0.01f * Time.timeScale;
     mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
       snapNormal,
@@ -695,9 +726,9 @@ public class Global : MonoBehaviour
     Slowed = false;
     Time.timeScale = 1;
     Time.fixedDeltaTime = 0.01f * Time.timeScale;
-    Global.instance.mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
-      Global.instance.snapNormal,
-      Global.instance.snapSlowmo
+    mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
+      snapNormal,
+      snapSlowmo
     }, new float[] {
       1,
       0
@@ -832,9 +863,6 @@ public class Global : MonoBehaviour
   }
 #endif
 
-  public GameData gameData;
-  public Dictionary<string, GameObject> ResourceLookup = new Dictionary<string, GameObject>();
-
   public GameObject Spawn( string resourceName, Vector3 position, Quaternion rotation, Transform parent = null, bool limit = true, bool initialize = true )
   {
     // allow the lookup to check the name replacement table
@@ -881,7 +909,7 @@ public class Global : MonoBehaviour
   public void AudioOneShot( AudioClip clip, Vector3 position )
   {
     // independent, temporary positional sound object
-    GameObject go = GameObject.Instantiate( audioOneShotPrefab, position, Quaternion.identity );
+    GameObject go = Instantiate( audioOneShotPrefab, position, Quaternion.identity );
     AudioSource source = go.GetComponent<AudioSource>();
     source.PlayOneShot( clip );
     new Timer( clip.length, null, delegate
@@ -951,17 +979,6 @@ public class Global : MonoBehaviour
     };
     fadeTimer.Start( tp );
   }
-
-  [Header( "Speech" )]
-  public GameObject SpeechBubble;
-  public Text SpeechText;
-  public Image SpeechIcon;
-  CharacterIdentity SpeechCharacter;
-  int SpeechPriority = 0;
-  public float SpeechRange = 8;
-  Timer SpeechTimer = new Timer();
-
-
 
   public void Speak( CharacterIdentity character, string text, float timeout, int priority = 0 )
   {
@@ -1043,7 +1060,7 @@ public class Global : MonoBehaviour
 
   #region Settings
 
-  string[] resolutions = { "640x360", "640x400", "1024x512", "1280x720", "1280x800" ,"1920x1080" };
+  string[] resolutions = { "640x360", "640x400", "1024x512", "1280x720", "1280x800", "1920x1080" };
   int ResolutionWidth;
   int ResolutionHeight;
 
@@ -1075,24 +1092,37 @@ public class Global : MonoBehaviour
     CreateBoolSetting( "Fullscreen", false, null );
     CreateStringSetting( "Resolution", "1280x800", null );
     CreateFloatSetting( "ResolutionSlider", 0, 0, resolutions.Length - 1, 1.0f / (resolutions.Length - 1), delegate ( float value )
-        {
-          string Resolution = resolutions[Mathf.FloorToInt( Mathf.Clamp( value, 0, resolutions.Length - 1 ) )];
-          string[] tokens = Resolution.Split( new char[] { 'x' } );
-          ResolutionWidth = int.Parse( tokens[0].Trim() );
-          ResolutionHeight = int.Parse( tokens[1].Trim() );
-          StringSetting["Resolution"].Value = ResolutionWidth.ToString()+"x"+ResolutionHeight.ToString();
-        } );
+    {
+      string Resolution = resolutions[Mathf.FloorToInt( Mathf.Clamp( value, 0, resolutions.Length - 1 ) )];
+      string[] tokens = Resolution.Split( new char[] { 'x' } );
+      ResolutionWidth = int.Parse( tokens[0].Trim() );
+      ResolutionHeight = int.Parse( tokens[1].Trim() );
+      StringSetting["Resolution"].Value = ResolutionWidth.ToString() + "x" + ResolutionHeight.ToString();
+    } );
     CreateFloatSetting( "UIScale", 1, 0.1f, 4, 0.05f, null );
+
+    CreateFloatSetting( "MasterVolume", 0.5f, 0, 1, 0.05f, delegate ( float value )
+    {
+      mixer.SetFloat( "MasterVolume", DbFromNormalizedVolume( value ) );
+    } );
+    CreateFloatSetting( "MusicVolume", 0.5f, 0, 1, 0.05f, delegate ( float value )
+    {
+      mixer.SetFloat( "MusicVolume", DbFromNormalizedVolume( value ) );
+    } );
+    CreateFloatSetting( "SFXVolume", 0.5f, 0, 1, 0.05f, delegate ( float value )
+    {
+      mixer.SetFloat( "SFXVolume", DbFromNormalizedVolume( value ) );
+    } );
 
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
     CreateBoolSetting( "CursorInfluence", true, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
-    CreateBoolSetting( "AimSnap", true, delegate ( bool value ) { AimSnap = value; } );
-    CreateBoolSetting( "AutoAim", true, delegate ( bool value ) { AutoAim = value; } );
+    CreateBoolSetting( "AimSnap", false, delegate ( bool value ) { AimSnap = value; } );
+    CreateBoolSetting( "AutoAim", false, delegate ( bool value ) { AutoAim = value; } );
 
     CreateFloatSetting( "CursorOuterRadius", 150, 0, 300, 0.1f, delegate ( float value ) { cursorOuter = value; } );
-    CreateFloatSetting( "CameraLerpAlpha", 50, 0, 100, 0.1f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
+    CreateFloatSetting( "CameraLerpAlpha", 20, 0, 50, 0.01f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
-    CreateFloatSetting( "CursorSensitivity", 3, 0, 6, 0.05f, delegate ( float value ) { cursorSensitivity = value; } );
+    CreateFloatSetting( "CursorSensitivity", 3, 0, 10, 0.05f, delegate ( float value ) { cursorSensitivity = value; } );
 
   }
 
