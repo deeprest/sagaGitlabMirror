@@ -57,14 +57,13 @@ public class Weapon : ScriptableObject
         Physics2D.IgnoreCollision( p.circle, c );
       if( playSound )
         Global.instance.AudioOneShot( ProjectilePrefab.StartSound, pos );
-      // silly
-      SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
+      // color shifting for no reason
+      /*SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
       if( sr != null )
         sr.color = Global.instance.shiftyColor;
       Light light = go.GetComponentInChildren<Light>();
       if( light != null )
-        light.color = Global.instance.shiftyColor;
-
+        light.color = Global.instance.shiftyColor;*/
       return true;
     }
     return false;

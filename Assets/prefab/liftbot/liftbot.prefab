@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 9109282300699132467}
   - component: {fileID: 3047422316451110554}
   m_Layer: 13
-  m_Name: lift
+  m_Name: liftbot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,6 +87,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -170,23 +171,13 @@ MonoBehaviour:
   spriteRenderers: []
   UseGravity: 0
   velocity: {x: 0, y: 0}
+  pushVelocity: {x: 0, y: 0}
   inertia: {x: 0, y: 0}
   friction: 0.05
   airFriction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
-  CollideLayers:
-  - Default
-  DamageLayers:
-  - character
-  CanTakeDamage: 0
-  health: 5
-  explosion: {fileID: 0}
-  soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
-  hitPush: 4
-  flashInterval: 0.05
-  flashCount: 5
-  ContactDamage: {fileID: 0}
+  IgnoreCollideObjects: []
   HasPath: 0
   WaypointRadii: 0.1
   DestinationRadius: 0.3
@@ -194,7 +185,17 @@ MonoBehaviour:
   waypoint: []
   debugPath: []
   AgentTypeName: Small
-  WaypointVector: {x: 0, y: 0}
+  MoveDirection: {x: 0, y: 0}
+  SidestepAvoidance: 0
+  CanTakeDamage: 0
+  health: 5
+  explosion: {fileID: 0}
+  soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
+  spawnChance: 1
+  spawnWhenDead: {fileID: 0}
+  flashInterval: 0.05
+  flashCount: 5
+  ContactDamage: {fileID: 0}
   sightRange: 6
   flySpeed: 1
   targetOffset: 0.5
@@ -255,6 +256,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

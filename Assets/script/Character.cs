@@ -59,6 +59,7 @@ public class Character : MonoBehaviour, IDamage
   public int health = 5;
   public GameObject explosion;
   public AudioClip soundHit;
+  public int spawnChance = 1;
   public GameObject spawnWhenDead;
 
   // FLASH
@@ -245,7 +246,7 @@ public class Character : MonoBehaviour, IDamage
     Instantiate( explosion, transform.position, Quaternion.identity );
     //Global.instance.Destroy( gameObject );
     Destroy( gameObject );
-    if( spawnWhenDead != null )
+    if( spawnWhenDead != null && Random.Range( 0, spawnChance ) == 0 )
       Instantiate( spawnWhenDead, transform.position, Quaternion.identity );
   }
 
@@ -401,6 +402,7 @@ public class Character : MonoBehaviour, IDamage
 
   public bool SetPath( Vector3 TargetPosition, System.Action onArrival = null )
   {
+    // WARNING!! DO NOT set path from within Start(). The nav meshes are not guaranteed to exist during Start()
     OnPathEnd = onArrival;
 
     Vector3 EndPosition = TargetPosition;

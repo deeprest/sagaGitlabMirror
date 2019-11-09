@@ -579,6 +579,7 @@ public class PlayerController : Character, IDamage
           {
             secondary = pickup.ability;
             secondary.Activate( this );
+            Destroy( pickup.gameObject );
           }
         }
       }

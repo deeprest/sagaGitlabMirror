@@ -13,6 +13,8 @@ public class Liftbot : Character
   Timer hitPauseTimer;
   bool hitpause = false;
   const float small = 0.1f;
+  int pathIndex = 0;
+  Vector3[] path;
 
   void Start()
   {
@@ -23,31 +25,21 @@ public class Liftbot : Character
     hitPauseTimer = new Timer();
     CanTakeDamage = false;
     path = new Vector3[] { transform.position, transform.position + Vector3.up * 5 };
-    PathLoop();
   }
-
-  int pathIndex = 0;
-  Vector3[] path;
 
   void PathLoop()
   {
-    SetPath( path[pathIndex], PathLoop );
+    if( !SetPath( path[pathIndex], PathLoop ) )
+    {
+      //Debug.Log( "Liftbot set path failed.", this );
+    }
     pathIndex = ++pathIndex % path.Length;
   }
 
   void UpdateAirbot()
   {
-    /*if( Global.instance.CurrentPlayer != null )
-    {
-      if( !hitpause )
-        target = Global.instance.CurrentPlayer.transform.position + Vector3.up * targetOffset;
-      Vector3 delta = target - transform.position;
-      if( delta.sqrMagnitude < small * small )
-        WaypointVector = Vector3.zero;
-      else if( delta.sqrMagnitude < sightRange * sightRange )
-        SetPath( Global.instance.CurrentPlayer.transform.position );
-      //velocity = delta.normalized * flySpeed;
-    }*/
+    if( !HasPath )
+      PathLoop();
     UpdatePath();
     velocity = MoveDirection.normalized * flySpeed;
   }
@@ -80,5 +72,6 @@ public class Liftbot : Character
   protected override void Die()
   {
     base.Die();
+    // todo
   }
 }

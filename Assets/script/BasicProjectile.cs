@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BasicProjectile : Projectile
+public class BasicProjectile : Projectile, IDamage
 {
   public float HitTimeout = 0.1f;
   public new Light light;
@@ -9,6 +9,7 @@ public class BasicProjectile : Projectile
   Timer timeoutTimer;
   int HitCount;
   public int DieAfterHitCount;
+  public bool AlignRotationToVelocity = true;
 
   void OnDestroy()
   {
@@ -26,8 +27,8 @@ public class BasicProjectile : Projectile
       if( gameObject != null )
         Destroy( gameObject );
     } );
-
-    transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( velocity.normalized.y, velocity.normalized.x ) ) );
+    if( AlignRotationToVelocity )
+      transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( velocity.normalized.y, velocity.normalized.x ) ) );
   }
 
   void Hit( Vector3 position )
@@ -52,7 +53,7 @@ public class BasicProjectile : Projectile
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
-        Damage dmg = Instantiate<Damage>( ContactDamage );
+        Damage dmg = Instantiate( ContactDamage );
         dmg.instigator = transform;
         dmg.point = hit.point;
         if( dam.TakeDamage( dmg ) )
@@ -74,8 +75,13 @@ public class BasicProjectile : Projectile
       velocity += constantAcceleration * Time.deltaTime;
       transform.position += velocity * Time.deltaTime;
     }
-    //SpriteRenderer sr = GetComponent<SpriteRenderer>();
-    //sr.color = Global.instance.shiftyColor;
-    //light.color = Global.instance.shiftyColor;
+    /*SpriteRenderer sr = GetComponent<SpriteRenderer>();
+    sr.color = Global.instance.shiftyColor;
+    light.color = Global.instance.shiftyColor;*/
+  }
+
+  public bool TakeDamage( Damage damage )
+  {
+    return true;
   }
 }

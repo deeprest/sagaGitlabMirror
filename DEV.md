@@ -20,6 +20,7 @@
 - anti-cluster and friendly-fire test for hornets
 
 ## low priority
+- music scene switch
 - control rebinding
 - consolidate more sprites into bigsheet
 - hide arm while not shooting

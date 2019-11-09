@@ -256,11 +256,11 @@ public class Global : MonoBehaviour
 
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
     {
-      Debug.Log( "scene loaded: " + arg0.name );
+      //Debug.Log( "scene loaded: " + arg0.name );
     };
     SceneManager.activeSceneChanged += delegate ( Scene arg0, Scene arg1 )
     {
-      Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
+      //Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
     };
 
     GameObject[] res = Resources.LoadAll<GameObject>( "" );
@@ -322,9 +322,9 @@ public class Global : MonoBehaviour
   void Start()
   {
     // workaround for Unity Editor bug where AudioMixer.SetFloat() does not work in Awake()
-    FloatSetting["MasterVolume"].UnityBugWorkaround();
-    FloatSetting["MusicVolume"].UnityBugWorkaround();
-    FloatSetting["SFXVolume"].UnityBugWorkaround();
+    mixer.SetFloat( "MasterVolume", DbFromNormalizedVolume( FloatSetting["MasterVolume"].Value ) );
+    mixer.SetFloat( "MusicVolume", DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value ) );
+    mixer.SetFloat( "SFXVolume", DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
   }
 #endif
 

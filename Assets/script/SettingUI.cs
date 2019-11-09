@@ -71,14 +71,6 @@ public class FloatValue
       }
     }
   }
-#if UNITY_EDITOR
-  public void UnityBugWorkaround()
-  {
-    if( onValueChanged != null )
-      onValueChanged.Invoke( _value );
-    updateView( _value );
-  }
-#endif
 
   public System.Action<float> updateView;
   public System.Action<float> onValueChanged;
