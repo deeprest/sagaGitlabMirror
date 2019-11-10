@@ -62,7 +62,16 @@ public class CustomUtility : EditorWindow
   List<string> scenes;
   List<GameObject> gos;
   List<AnimSequence> ans;
+  List<string> assetPaths;
   int layer;
+
+  string replaceName;
+  GameObject replacePrefab;
+  bool replaceInScene;
+  Sprite sprite;
+  Material material;
+  string subobjectName;
+  string[] guids;
 
   void StartJob( string message, int count, System.Action update, System.Action done )
   {
@@ -285,12 +294,113 @@ public class CustomUtility : EditorWindow
         }
 
       },
-        delegate ()
-        {
-          AssetDatabase.SaveAssets();
-        } );
+        AssetDatabase.SaveAssets );
     }
 
+    GUILayout.Label( "Replace Common Settings", EditorStyles.boldLabel );
+    replaceName = EditorGUILayout.TextField( "Replace Assets (blank for scene objects)", replaceName );
+    subobjectName = EditorGUILayout.TextField( "SubobjectName", subobjectName );
+
+    GUILayout.Label( "Replace Object with Prefab in Scene", EditorStyles.boldLabel );
+    replaceInScene = EditorGUILayout.Toggle( "Replace in Scene", replaceInScene );
+    replacePrefab = (GameObject)EditorGUILayout.ObjectField( "Replace Prefab", replacePrefab, typeof( GameObject ), false, GUILayout.MinWidth( 50 ) );
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Replace GameObjects with Prefabs" ) )
+    {
+      int count;
+      if( replaceInScene )
+      {
+        gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
+        count = gos.Count;
+      }
+      else
+      {
+        assetPaths = new List<string>();
+        guids = AssetDatabase.FindAssets( replaceName + " t:prefab" );
+        foreach( string guid in guids )
+          assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
+        count = assetPaths.Count;
+      }
+      StartJob( "Searching...", count, delegate ()
+      {
+        GameObject go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
+        for( int i = 0; i < go.transform.childCount; i++ )
+        {
+          Transform tf = go.transform.GetChild( i );
+          if( tf.name.StartsWith( subobjectName ) )
+          {
+            GameObject ngo = (GameObject)PrefabUtility.InstantiatePrefab( replacePrefab, tf.parent );
+            ngo.transform.position = tf.position;
+            ngo.transform.rotation = tf.rotation;
+            SpriteRenderer sr = ngo.GetComponent<SpriteRenderer>();
+            SpriteRenderer tfsr = tf.GetComponent<SpriteRenderer>();
+            if( sr != null && tfsr != null )
+              sr.size = tfsr.size;
+            PrefabUtility.RecordPrefabInstancePropertyModifications( ngo.transform );
+            PrefabUtility.RecordPrefabInstancePropertyModifications( sr );
+            DestroyImmediate( tf.gameObject );
+          }
+        }
+        PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
+        PrefabUtility.UnloadPrefabContents( go );
+      },
+      null );
+    }
+
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "PREFAB TEST" ) )
+    {
+      string path = AssetDatabase.GUIDToAssetPath( AssetDatabase.FindAssets( "underground-0" )[0] );
+      GameObject go = PrefabUtility.LoadPrefabContents( path );
+
+      /*
+      GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>( AssetDatabase.GUIDToAssetPath( AssetDatabase.FindAssets( "underground-0" )[0] ) );
+      GameObject go = (GameObject)PrefabUtility.InstantiatePrefab( prefab );
+      */
+      Transform tf = go.transform.Find( "goof" );
+      GameObject ngo = (GameObject)PrefabUtility.InstantiatePrefab( replacePrefab, tf.parent );
+      ngo.transform.position = tf.position;
+      ngo.transform.rotation = tf.rotation;
+      PrefabUtility.RecordPrefabInstancePropertyModifications( ngo.GetComponent<Transform>() );
+      /*     
+      PrefabUtility.ApplyPrefabInstance( go, InteractionMode.AutomatedAction );
+      GameObject.DestroyImmediate( go );
+      */
+
+      PrefabUtility.SaveAsPrefabAsset( go, path );
+      PrefabUtility.UnloadPrefabContents( go );
+    }
+
+    GUILayout.Label( "Spritefix", EditorStyles.boldLabel );
+    sprite = (Sprite)EditorGUILayout.ObjectField( "Sprite", sprite, typeof( Sprite ), false );
+    material = (Material)EditorGUILayout.ObjectField( "Material", material, typeof( Material ), false );
+
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Fix Sprites" ) )
+    {
+      gos = new List<GameObject>();
+      string[] guids = AssetDatabase.FindAssets( replaceName );
+      foreach( string guid in guids )
+      {
+        GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>( AssetDatabase.GUIDToAssetPath( guid ) );
+        gos.Add( go );
+      }
+      StartJob( "Searching...", gos.Count, delegate ()
+      {
+        GameObject go = gos[index];
+        for( int i = 0; i < go.transform.childCount; i++ )
+        {
+          Transform tf = go.transform.GetChild( i );
+          if( tf.name.StartsWith( subobjectName ) )
+          {
+            SpriteRenderer sr = tf.GetComponent<SpriteRenderer>();
+            if( sr != null )
+            {
+              sr.sprite = sprite;
+              sr.material = material;
+            }
+          }
+        }
+      },
+      AssetDatabase.SaveAssets );
+    }
 
     GUILayout.Label( "Character", EditorStyles.boldLabel );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Select Player Character" ) )

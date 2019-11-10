@@ -133,7 +133,7 @@ TextureImporter:
     second: ventcover
   - first:
       213: 21300086
-    second: bigsheet_1
+    second: wall-0
   - first:
       213: -40758920138920377
     second: airbot-prop-base
@@ -245,6 +245,15 @@ TextureImporter:
   - first:
       213: -2043452391472899933
     second: floor-0-tophalf
+  - first:
+      213: 2745213288169252008
+    second: hit-0
+  - first:
+      213: -3559593793220969280
+    second: hit-1
+  - first:
+      213: -2996089620741188469
+    second: hit-2
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -1234,7 +1243,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bigsheet_1
+      name: wall-0
       rect:
         serializedVersion: 2
         x: 1664
@@ -1913,8 +1922,8 @@ TextureImporter:
         y: 669
         width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1934,8 +1943,8 @@ TextureImporter:
         y: 717
         width: 32
         height: 72
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1955,11 +1964,15 @@ TextureImporter:
         y: 733
         width: 96
         height: 56
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: 1, y: -11}
+        - {x: 1, y: 13}
+        - {x: 29, y: 13}
+        - {x: 29, y: -11}
       tessellationDetail: 0
       bones: []
       spriteID: 5baa43dc50c324289a3b1a989f4262ef
@@ -2027,6 +2040,69 @@ TextureImporter:
       bones: []
       spriteID: d5edb37cc4606414f9923a2c123ecb6b
       internalID: -2043452391472899933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hit-0
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 66
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b51dbd89365094187919ec20e81c7696
+      internalID: 2745213288169252008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hit-1
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 66
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f657e724502cd4ad5943dea5a94c488e
+      internalID: -3559593793220969280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hit-2
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 65
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0379549154ce84b789592e10727369ca
+      internalID: -2996089620741188469
       vertices: []
       indices: 
       edges: []

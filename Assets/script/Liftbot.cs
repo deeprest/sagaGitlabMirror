@@ -43,7 +43,12 @@ public class Liftbot : Character
     UpdatePath();
     velocity = MoveDirection.normalized * flySpeed;
   }
-
+#if KINEMATIC
+  private void FixedUpdate()
+  {
+    body.MovePosition( ugh + velocity * Time.fixedDeltaTime );
+  }
+#endif
 
   void AirbotHit()
   {

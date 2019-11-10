@@ -68,7 +68,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6a2648f69ce4948a9852f1ae71e1bd17, type: 2}
+  - {fileID: 2100000, guid: d905710c44976415991cc7aff39cfb39, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -89,12 +89,13 @@ SpriteRenderer:
   m_SortingLayerID: 1445702261
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b852c4d2216af4dd48b6e429a2346604, type: 3}
+  m_Sprite: {fileID: -4289353735146823145, guid: 64314a0420c93471b9990c7b9f080a39,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 0.125, y: 0.09375}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -144,6 +145,7 @@ MonoBehaviour:
   light: {fileID: 108267418089597158}
   constantAcceleration: {x: 0, y: 0, z: 0}
   DieAfterHitCount: 1
+  AlignRotationToVelocity: 1
 --- !u!1 &1921470626033100
 GameObject:
   m_ObjectHideFlags: 0

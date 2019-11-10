@@ -238,8 +238,16 @@ public class Character : MonoBehaviour, IDamage
         break;
       }
     }
-    transform.position = (Vector3)(adjust - boxOffset);
+#if KINEMATIC
+    ugh = adjust - boxOffset;
+#else
+    transform.position = adjust - boxOffset;
+#endif
   }
+
+#if KINEMATIC
+  public Vector2 ugh;
+#endif
 
   protected virtual void Die()
   {

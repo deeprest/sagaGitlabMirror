@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5643395027088075971}
   - component: {fileID: 5643395028136895801}
   m_Layer: 17
-  m_Name: AIRBOT SPAWNER
+  m_Name: spawner airbots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -166,6 +166,7 @@ MonoBehaviour:
   health: 10
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
+  spawnChance: 1
   spawnWhenDead: {fileID: 0}
   flashInterval: 0.05
   flashCount: 5

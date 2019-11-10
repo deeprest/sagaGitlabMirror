@@ -1,5 +1,4 @@
-﻿#define ANIM
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -150,7 +149,9 @@ public class PlayerController : Character, IDamage
   {
     //Collider2D shieldCollider = Shield.GetComponent<Collider2D>();
     //Physics2D.IgnoreCollision( box, shieldCollider );
-
+#if KINEMATIC
+    body.useFullKinematicContacts = true;
+#endif
     BindControls();
   }
 
@@ -434,7 +435,11 @@ public class PlayerController : Character, IDamage
       }
     }
 
+#if KINEMATIC
+    ugh = adjust;
+#else
     transform.position = adjust;
+#endif
   }
 
   void Shoot()
@@ -608,10 +613,9 @@ public class PlayerController : Character, IDamage
   {
     if( Global.Paused )
       return;
-
+      
     shoot = Global.instance.AimPosition - (Vector2)arm.position;
     shoot.z = 0;
-    arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, shoot ) );
 
     // if player controlled
@@ -626,7 +630,13 @@ public class PlayerController : Character, IDamage
 
     if( inputGraphook )
       ShootGraphook();
-
+#if KINEMATIC
+    if( grapPulling )
+      velocity = Vector3.zero;
+    else
+      // must have input (or push) to move horizontally, so allow no persistent horizontal velocity
+      velocity.x = 0;
+#endif
     Shield.SetActive( inputShield );
 
     if( inputChargeStart )
@@ -820,6 +830,8 @@ public class PlayerController : Character, IDamage
       pushVelocity.y = 0;
     }
 
+    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
+    arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     animator.Play( anim );
 
     // add gravity before velocity limits
@@ -850,18 +862,17 @@ public class PlayerController : Character, IDamage
       velocity = Vector3.zero;
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    transform.position += (Vector3)velocity * Time.deltaTime;
-    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
 
+#if !KINEMATIC
+    transform.position += (Vector3)velocity * Time.deltaTime;
     if( grapPulling )
       velocity = Vector3.zero;
     else
       // must have input (or push) to move horizontally, so allow no persistent horizontal velocity
       velocity.x = 0;
-
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
-    //body.MovePosition( transform.position );
+#endif
 
     bool oldGround = onGround;
     onGround = collideBottom || (collideLeft && collideRight);
@@ -873,8 +884,15 @@ public class PlayerController : Character, IDamage
     }
 
     ResetInput();
-
   }
+
+#if KINEMATIC
+  private void FixedUpdate()
+  {
+    UpdateCollision( Time.fixedDeltaTime );
+    body.MovePosition( ugh + velocity * Time.fixedDeltaTime );
+  }
+#endif
 
   void StartJump()
   {

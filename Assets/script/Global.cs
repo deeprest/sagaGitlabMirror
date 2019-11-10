@@ -396,15 +396,14 @@ public class Global : MonoBehaviour
     };*/
 #endif
     Controls.GlobalActions.DEVRespawn.performed += ( obj ) => {
-      mixer.SetFloat( "MasterVolume", -13.3f );
-      /*Chopper chopper = FindObjectOfType<Chopper>();
+      Chopper chopper = FindObjectOfType<Chopper>();
       if( (!Application.isEditor || Global.instance.SimulatePlayer) && chopper != null )
         ChopDrop();
       else
       {
         CurrentPlayer.transform.position = FindSpawnPosition();
         CurrentPlayer.velocity = Vector2.zero;
-      }*/
+      }
     };
 
     Controls.MenuActions.Back.performed += ( obj ) => {
