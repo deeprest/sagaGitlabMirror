@@ -497,7 +497,7 @@ public class Controls : IInputActionCollection, IDisposable
                     ""name"": ""DEV-Zoom"",
                     ""type"": ""Value"",
                     ""id"": ""daad5be2-bb09-4201-939d-730f35d6594c"",
-                    ""expectedControlType"": ""Axis"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -838,7 +838,7 @@ public class Controls : IInputActionCollection, IDisposable
                     ""id"": ""44331aa6-375c-49c0-b43f-aa7284b25f1f"",
                     ""path"": ""<Mouse>/scroll/y"",
                     ""interactions"": """",
-                    ""processors"": ""Scale(factor=0.1)"",
+                    ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DEV-Zoom"",
                     ""isComposite"": false,
@@ -849,7 +849,7 @@ public class Controls : IInputActionCollection, IDisposable
                     ""id"": ""bd7888e5-dec7-4c73-8ea1-e6a6b38577b2"",
                     ""path"": ""<Gamepad>/leftStick/y"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""StickDeadzone(min=0.5,max=1)"",
                     ""groups"": """",
                     ""action"": ""DEV-Zoom"",
                     ""isComposite"": false,

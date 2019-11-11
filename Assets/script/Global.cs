@@ -330,6 +330,7 @@ public class Global : MonoBehaviour
 
   public string ReplaceWithControlNames( string source )
   {
+    // todo support composites
     string outstr = "";
     string[] tokens = source.Split( new char[] { '[' } );
     foreach( var tok in tokens )
@@ -342,10 +343,9 @@ public class Global : MonoBehaviour
         int inputTypeIndex = UsingGamepad ? 1 : 0;
         // warning!! controls must be in correct order per-action: keyboard+mouse first, then gamepad
         InputAction ia = Controls.BipedActions.Get().FindAction( ugh[0] );
-        if( ia == null )
-          ia = Controls.MenuActions.Get().FindAction( ugh[0] );
-        if( ia == null )
-          return "ACTION NOT FOUND: " + ugh[0];
+        if( ia == null ) ia = Controls.MenuActions.Get().FindAction( ugh[0] );
+        if( ia == null ) ia = Controls.GlobalActions.Get().FindAction( ugh[0] );
+        if( ia == null ) return "ACTION NOT FOUND: " + ugh[0];
         InputControl ic = ia.controls[inputTypeIndex];
         string controlName = "BAD NAME";
         if( ic.shortDisplayName != null )

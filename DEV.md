@@ -131,11 +131,23 @@ Not arbitrary static points.
 ["20XX"](https://store.steampowered.com/app/322110/20XX/)
 
 
-## random
-jack basswards
-bran slapmuffin
-dert mcderples
-Slappy McTicklemonster
+# Features
+## accessibly
+- Linux, MacOS, Windows?
+- runs smoothly on lower-spec machines
+- (single player) no internet connection required to play.
+- remap controls
+## is not commercialized
+- no ads. You pay with you soul.
+- no microtransactions.
+- no in-game currency to compulsively accumulate.
+## does not use addiction mechanics
+- no achievements to leave you feeling underachieving.
+- no trophies to falsely prop up your ego.
+## not too complex. you have a life.
+- no complicated technology/skill tree
+- no story to ignore or lore to forget
+
 
 
 ## where to release/announce demo
@@ -160,7 +172,14 @@ twitter
 reddit
 
 
-# Intro stage (demo)
-Has xbuster. Can gain other weapons from enemies. chopdrop. After boss is defeated (END OF DEMO HERE), a large explosion engulfs the player.
-# The Lab
-The player awakens in the lab, newly-rebuilt. The attending mechanic explains that the explosion destroyed your body but not your core. He has given you a new body but could not retrieve your weapons.
+# random
+Can gain other weapons from enemies.
+Chopdrop instead of teleportation.
+death -> You emerge from corpse as a small spiderbot that can gain control of other machines.
+death -> The player awakens in the lab, newly-rebuilt. The attending mechanic explains that the explosion destroyed your body but not your core. He has given you a new body but could not retrieve your weapons.
+
+## random 'names'
+jack basswards
+bran slapmuffin
+dert mcderples
+Slappy McTicklemonster

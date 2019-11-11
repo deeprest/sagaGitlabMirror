@@ -416,7 +416,6 @@ public class PlayerController : Character, IDamage
         hitLeft = hit;
         adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
         wallSlideNormal = hit.normal;
-        velocity.y += hit.normal.y;
         break;
       }
     }
