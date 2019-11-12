@@ -1207,8 +1207,8 @@ TextureImporter:
       name: hq-bg
       rect:
         serializedVersion: 2
-        x: 1414
-        y: 445
+        x: 520
+        y: 96
         width: 240
         height: 192
       alignment: 0
@@ -1228,8 +1228,8 @@ TextureImporter:
       name: floor-0
       rect:
         serializedVersion: 2
-        x: 1920
-        y: 720
+        x: 0
+        y: 448
         width: 64
         height: 64
       alignment: 0
@@ -1246,53 +1246,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bigsheet_wallL
-      rect:
-        serializedVersion: 2
-        x: 1406
-        y: 444
-        width: 8
-        height: 192
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e061ecc9693064b47b670c630f6ea521
-      internalID: 21300078
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: bigsheet_1wallR
-      rect:
-        serializedVersion: 2
-        x: 1654
-        y: 444
-        width: 8
-        height: 192
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9e08478f8cf494204a6a3c7bddb5e58c
-      internalID: 21300080
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: crawlspace
       rect:
         serializedVersion: 2
-        x: 1984
-        y: 720
+        x: 64
+        y: 448
         width: 32
         height: 32
       alignment: 0
@@ -1312,8 +1270,8 @@ TextureImporter:
       name: ventcover
       rect:
         serializedVersion: 2
-        x: 2016
-        y: 720
+        x: 96
+        y: 448
         width: 32
         height: 32
       alignment: 0
@@ -1333,13 +1291,13 @@ TextureImporter:
       name: wall-0
       rect:
         serializedVersion: 2
-        x: 1664
-        y: 444
-        width: 192
+        x: 768
+        y: 96
+        width: 77
         height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 3, y: 9, z: 3, w: 2}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -1460,11 +1418,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 173
-        y: 153
+        y: 147
         width: 48
-        height: 26
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        height: 32
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1483,7 +1441,7 @@ TextureImporter:
         x: 177
         y: 92
         width: 40
-        height: 13
+        height: 15
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1502,12 +1460,12 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 181
-        y: 105
+        y: 136
         width: 32
-        height: 48
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 4, z: 0, w: 4}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -1585,8 +1543,8 @@ TextureImporter:
       name: sh-0
       rect:
         serializedVersion: 2
-        x: 1361
-        y: 165
+        x: 518
+        y: 5
         width: 36
         height: 38
       alignment: 0
@@ -1606,8 +1564,8 @@ TextureImporter:
       name: sh-1
       rect:
         serializedVersion: 2
-        x: 1361
-        y: 124
+        x: 566
+        y: 5
         width: 36
         height: 38
       alignment: 0
@@ -1627,8 +1585,8 @@ TextureImporter:
       name: sh-2
       rect:
         serializedVersion: 2
-        x: 1361
-        y: 83
+        x: 614
+        y: 5
         width: 36
         height: 38
       alignment: 0
@@ -1648,8 +1606,8 @@ TextureImporter:
       name: sh-3
       rect:
         serializedVersion: 2
-        x: 1361
-        y: 42
+        x: 662
+        y: 5
         width: 36
         height: 38
       alignment: 0
@@ -1669,8 +1627,8 @@ TextureImporter:
       name: sh-4
       rect:
         serializedVersion: 2
-        x: 1361
-        y: 1
+        x: 710
+        y: 5
         width: 36
         height: 38
       alignment: 0
@@ -2005,8 +1963,8 @@ TextureImporter:
       name: highway-pillar
       rect:
         serializedVersion: 2
-        x: 1665
-        y: 669
+        x: 304
+        y: 384
         width: 32
         height: 32
       alignment: 2
@@ -2026,8 +1984,8 @@ TextureImporter:
       name: highway-pillar-top
       rect:
         serializedVersion: 2
-        x: 1665
-        y: 717
+        x: 304
+        y: 432
         width: 32
         height: 72
       alignment: 2
@@ -2047,8 +2005,8 @@ TextureImporter:
       name: highway
       rect:
         serializedVersion: 2
-        x: 1699
-        y: 733
+        x: 208
+        y: 448
         width: 96
         height: 56
       alignment: 2
@@ -2072,8 +2030,8 @@ TextureImporter:
       name: highway-lamp-large
       rect:
         serializedVersion: 2
-        x: 1858
-        y: 639
+        x: 481
+        y: 368
         width: 31
         height: 145
       alignment: 7
@@ -2093,8 +2051,8 @@ TextureImporter:
       name: highway-lamp-small
       rect:
         serializedVersion: 2
-        x: 1841
-        y: 639
+        x: 464
+        y: 368
         width: 16
         height: 87
       alignment: 7
@@ -2114,8 +2072,8 @@ TextureImporter:
       name: floor-0-tophalf
       rect:
         serializedVersion: 2
-        x: 1920
-        y: 752
+        x: 0
+        y: 480
         width: 64
         height: 32
       alignment: 0

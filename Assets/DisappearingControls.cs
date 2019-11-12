@@ -23,7 +23,7 @@ public class DisappearingControls : MonoBehaviour
       action.performed += iacc;
     }
     public string text;
-    public int count = 3;
+    public int count = 5;
     public InputAction action;
     public System.Action<InputAction.CallbackContext> iacc;
   }
@@ -44,7 +44,7 @@ public class DisappearingControls : MonoBehaviour
         GameObject go = Instantiate( template, parent );
         Text txt = go.GetComponent<Text>();
         txt.text = Global.instance.ReplaceWithControlNames( pair.Value.text );
-        txt.color = Color.Lerp( Color.white, Color.black, 1.0f / pair.Value.count );
+        txt.color = Color.Lerp( Color.white, Color.grey, 1.0f / pair.Value.count );
       }
     }
     foreach( var obj in Removal )

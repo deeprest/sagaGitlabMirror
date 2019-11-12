@@ -70,6 +70,7 @@ public class CustomUtility : EditorWindow
   bool replaceInScene;
   bool fixSpriteInScene;
   string fixSpriteName;
+  string fixSpriteSubobjectName;
   Sprite sprite;
   Material material;
   string subobjectName;
@@ -349,7 +350,8 @@ public class CustomUtility : EditorWindow
 
     GUILayout.Label( "Fix Sprite", EditorStyles.boldLabel );
     fixSpriteInScene = EditorGUILayout.Toggle( "In Scene", fixSpriteInScene );
-    fixSpriteName = EditorGUILayout.TextField( "Find Sprite Object", fixSpriteName );
+    fixSpriteName = EditorGUILayout.TextField( "Find Prefabs/Scene Objects", fixSpriteName );
+    fixSpriteSubobjectName = EditorGUILayout.TextField( "SubobjectName", fixSpriteSubobjectName );
     sprite = (Sprite)EditorGUILayout.ObjectField( "Replace Sprite", sprite, typeof( Sprite ), false );
     material = (Material)EditorGUILayout.ObjectField( "Replace Material", material, typeof( Material ), false );
 
@@ -364,7 +366,7 @@ public class CustomUtility : EditorWindow
       else
       {
         assetPaths = new List<string>();
-        guids = AssetDatabase.FindAssets( replaceName + " t:prefab" );
+        guids = AssetDatabase.FindAssets( fixSpriteName + " t:prefab" );
         foreach( string guid in guids )
           assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
         count = assetPaths.Count;
@@ -379,7 +381,7 @@ public class CustomUtility : EditorWindow
         Transform[] tfs = go.GetComponentsInChildren<Transform>();
         foreach( var tf in tfs )
         {
-          if( subobjectName.Length == 0 || tf.name.StartsWith( subobjectName ) )
+          if( fixSpriteSubobjectName.Length == 0 || tf.name.StartsWith( fixSpriteSubobjectName ) )
           {
             SpriteRenderer sr = tf.GetComponent<SpriteRenderer>();
             if( sr != null )

@@ -1,6 +1,5 @@
 ﻿#pragma warning disable 414
 //#define DESTRUCTION_LIST
-//#define OLD_INPUT
 
 using System.Collections;
 using System.Collections.Generic;
@@ -21,8 +20,6 @@ using UnityEditor;
 public class GlobalEditor : Editor
 {
   Global obj;
-
-
   public override void OnInspectorGUI()
   {
     //screenshotInterval = EditorGUILayout.IntField( "Screenshot Interval", screenshotInterval );
@@ -191,6 +188,7 @@ public class Global : MonoBehaviour
   [Header( "Misc" )]
   Timer fpsTimer;
   int frames;
+  float zoomDelta = 0;
   // color shift
   public Color shiftyColor = Color.red;
   [SerializeField] float colorShiftSpeed = 1;
@@ -322,9 +320,9 @@ public class Global : MonoBehaviour
   void Start()
   {
     // workaround for Unity Editor bug where AudioMixer.SetFloat() does not work in Awake()
-    mixer.SetFloat( "MasterVolume", DbFromNormalizedVolume( FloatSetting["MasterVolume"].Value ) );
-    mixer.SetFloat( "MusicVolume", DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value ) );
-    mixer.SetFloat( "SFXVolume", DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
+    mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( FloatSetting["MasterVolume"].Value ) );
+    mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value ) );
+    mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
   }
 #endif
 
@@ -346,6 +344,8 @@ public class Global : MonoBehaviour
         if( ia == null ) ia = Controls.MenuActions.Get().FindAction( ugh[0] );
         if( ia == null ) ia = Controls.GlobalActions.Get().FindAction( ugh[0] );
         if( ia == null ) return "ACTION NOT FOUND: " + ugh[0];
+        if( ia.controls.Count <= inputTypeIndex )
+          return "BAD CONTROL INDEX";
         InputControl ic = ia.controls[inputTypeIndex];
         string controlName = "BAD NAME";
         if( ic.shortDisplayName != null )
@@ -369,8 +369,10 @@ public class Global : MonoBehaviour
     Controls.MenuActions.Disable();
 
     Controls.GlobalActions.DetectInputType.performed += ( obj ) => {
-      UsingGamepad = obj.control.path.Contains( "Gamepad" );
-      //print( obj.control.path );
+      bool newvalue = obj.control.path.Contains( "Gamepad" );
+      if( newvalue!= UsingGamepad )
+        print( "UsingGamepad new value: "+ newvalue.ToString() + " " + obj.control.path );
+      UsingGamepad = newvalue;
     };
 
     Controls.GlobalActions.Menu.performed += ( obj ) => ShowMenu( !MenuShowing );
@@ -416,20 +418,9 @@ public class Global : MonoBehaviour
     };
 
     // DEVELOPMENT
-    Controls.BipedActions.DEVZoom.performed += ( obj ) => {
-      if( Camera.main.orthographic )
-      {
-        CameraController.orthoTarget += obj.ReadValue<float>();
-        CameraController.orthoTarget = Mathf.Clamp( CameraController.orthoTarget, 1, 10 );
-        debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
-      }
-      else
-      {
-        CameraController.zOffset += obj.ReadValue<float>();
-        debugText.text = CameraController.zOffset.ToString( "##.#" );
-      }
+    Controls.BipedActions.DEVZoom.started += ( obj ) => {
+      zoomDelta += obj.ReadValue<float>();
     };
-
   }
 
   public void LoadScene( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true )
@@ -553,6 +544,24 @@ public class Global : MonoBehaviour
     H += colorShiftSpeed * Time.unscaledDeltaTime;
     shiftyColor = Color.HSVToRGB( H, 1, 1 );
     shifty.color = shiftyColor;
+
+    if( Camera.main.orthographic )
+    {
+      if( Mathf.Abs( zoomDelta ) > 0 )
+      {
+        CameraController.orthoTarget += zoomDelta * Time.deltaTime;
+        CameraController.orthoTarget = Mathf.Clamp( CameraController.orthoTarget, 1, 10 );
+        FloatSetting["Zoom"].Value = CameraController.orthoTarget;
+      }
+      debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
+    }
+    else
+    {
+      CameraController.zOffset += zoomDelta * Time.deltaTime;
+      debugText.text = CameraController.zOffset.ToString( "##.#" );
+    }
+    zoomDelta = 0;
+
   }
 
   void OnApplicationFocus( bool hasFocus )
@@ -696,15 +705,7 @@ public class Global : MonoBehaviour
     return Vector3.zero;
   }
 
-  float DbFromNormalizedVolume( float normalizedVolume )
-  {
-    return (1 - Mathf.Sqrt( normalizedVolume )) * -80f;
-  }
 
-  float NormalizedVolumeFromDb( float db )
-  {
-    return Mathf.Pow( -((db / -80f) - 1f), 2f );
-  }
 
   public void Slow()
   {
@@ -1102,15 +1103,15 @@ public class Global : MonoBehaviour
 
     CreateFloatSetting( "MasterVolume", 0.5f, 0, 1, 0.05f, delegate ( float value )
     {
-      mixer.SetFloat( "MasterVolume", DbFromNormalizedVolume( value ) );
+      mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) );
     } );
     CreateFloatSetting( "MusicVolume", 0.5f, 0, 1, 0.05f, delegate ( float value )
     {
-      mixer.SetFloat( "MusicVolume", DbFromNormalizedVolume( value ) );
+      mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) );
     } );
     CreateFloatSetting( "SFXVolume", 0.5f, 0, 1, 0.05f, delegate ( float value )
     {
-      mixer.SetFloat( "SFXVolume", DbFromNormalizedVolume( value ) );
+      mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) );
     } );
 
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
@@ -1120,9 +1121,9 @@ public class Global : MonoBehaviour
 
     CreateFloatSetting( "CursorOuterRadius", 150, 0, 300, 0.1f, delegate ( float value ) { cursorOuter = value; } );
     CreateFloatSetting( "CameraLerpAlpha", 20, 0, 50, 0.01f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
-    //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
     CreateFloatSetting( "CursorSensitivity", 3, 0, 10, 0.05f, delegate ( float value ) { cursorSensitivity = value; } );
-
+    CreateFloatSetting( "Zoom", 3, 1, 5, 0.05f, delegate ( float value ) { CameraController.orthoTarget = value; } );
+    //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
   }
 
   Selectable previousSelectable;

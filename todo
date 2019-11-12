@@ -1,6 +1,6 @@
 + fix dialogue box
 + fix nav meshes
-- UI show controls until pressed. Support kb+m and gamepad.
++ UI show controls until pressed. Support kb+m and gamepad.
 - wall jump minimum anim duration
 - double tap wall jump pushes away from wall
 - add dash anim effect
@@ -8,3 +8,4 @@
 - reduce audiooneshot calls to avoid dropout
 - fix nav mesh obstacles in city scene
 - fix long slide clipping
+- remove pathfinding from lift, just use points+radius

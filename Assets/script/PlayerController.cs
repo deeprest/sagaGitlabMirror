@@ -115,7 +115,6 @@ public class PlayerController : Character, IDamage
   public float armRadius = 0.3f;
   Timer chargePulse = new Timer();
   Timer chargeStartDelay = new Timer();
-  Timer chargeSoundLoopDelay = new Timer();
   public float chargeDelay = 0.2f;
   public bool chargePulseOn = true;
   public float chargePulseInterval = 0.1f;
@@ -186,9 +185,13 @@ public class PlayerController : Character, IDamage
     damageTimer.Stop( false );
     damagePulseTimer.Stop( false );
     shootRepeatTimer.Stop( false );
-    chargePulse.Stop( false );
-    chargeSoundLoopDelay.Stop( false );
+    if( chargeEffect != null )
+    {
+      audio2.Stop();
+      Destroy( chargeEffectGO );
+    }
     chargeStartDelay.Stop( false );
+    chargePulse.Stop( false );
   }
 
   void AssignWeapon( Weapon wpn )
@@ -196,7 +199,7 @@ public class PlayerController : Character, IDamage
     weapon = wpn;
     Global.instance.weaponIcon.sprite = weapon.icon;
     Global.instance.SetCursor( weapon.cursor );
-    chargeStartDelay.Stop( false );
+    StopCharge();
   }
 
   void NextWeapon()

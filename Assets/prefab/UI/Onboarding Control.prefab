@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6069765938115241587}
   - component: {fileID: 2063728800772025914}
   m_Layer: 5
-  m_Name: template
+  m_Name: Onboarding Control
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6162806466137389010
 CanvasRenderer:
@@ -66,12 +66,12 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 197eacf5c22d14d05b9f34cf21fd96f2, type: 3}
-    m_FontSize: 20
+    m_FontSize: 16
     m_FontStyle: 0
-    m_BestFit: 1
+    m_BestFit: 0
     m_MinSize: 0
-    m_MaxSize: 40
-    m_Alignment: 4
+    m_MaxSize: 62
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_MinWidth: 80
   m_MinHeight: 20
   m_PreferredWidth: 240
-  m_PreferredHeight: 40
+  m_PreferredHeight: 20
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1

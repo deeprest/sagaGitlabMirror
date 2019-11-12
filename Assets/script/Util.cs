@@ -6,10 +6,15 @@ using UnityEngine;
 
 public static class Util
 {
-/*  public static void Log(string message, [System.Runtime.CompilerServices.CallerFilePath] string filePath = "", [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+  public static float DbFromNormalizedVolume( float normalizedVolume )
   {
-    Debug.Log( lineNumber + " " + message );
-  }*/
+    return (1 - Mathf.Sqrt( normalizedVolume )) * -80f;
+  }
+
+  public static float NormalizedVolumeFromDb( float db )
+  {
+    return Mathf.Pow( -((db / -80f) - 1f), 2f );
+  }
 
   public static float NormalizeAngle( float angle )
   {
@@ -46,11 +51,7 @@ public static class Util
     DirectoryInfo dir = new DirectoryInfo( sourceDirName );
 
     if( !dir.Exists )
-    {
-      throw new DirectoryNotFoundException(
-          "Source directory does not exist or could not be found: "
-          + sourceDirName );
-    }
+      throw new DirectoryNotFoundException( "Source directory does not exist or could not be found: " + sourceDirName );
 
     DirectoryInfo[] dirs = dir.GetDirectories();
     // If the destination directory doesn't exist, create it.
