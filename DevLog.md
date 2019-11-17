@@ -24,8 +24,8 @@ deployment
 
 # Abilities
 + grappling hook
-- shield (inprogress)
-- slowmo (inprogress)
++ shield
+- slowmo
 
 # Weapons
 + xbuster + charge

@@ -1,5 +1,5 @@
 # done (add to devlog)
-+ text on dui should reflect rebindable controls
++ text on dui should list controls
 + grenade foe
 
 # todo
@@ -13,7 +13,7 @@
 - turrets only aim when target is visible
 - add airbot prop ability
 - add ability icon to hud
-- fix dev zoom
++ fix dev zoom
 - fix glitchy sprite shader for grenade mech on linux
 - level 2 charged shot
 - enemies should react to projectiles in proximity
@@ -159,10 +159,7 @@ pixeljoint or tigsource (to find artist for full project)
 itch.io
 GOG
 Steam
-## target platforms
-1. Linux
-2. MacOS
-3. PS4
+
 # announcements
 tigsource forums
 gamejolt

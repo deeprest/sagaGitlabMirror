@@ -134,7 +134,7 @@ public class Character : MonoBehaviour, IDamage
     }
   }
 
-  Timer pushTimer = new Timer();
+  protected Timer pushTimer = new Timer();
 
   public void Push( Vector2 pVelocity, float duration )
   {
@@ -146,6 +146,7 @@ public class Character : MonoBehaviour, IDamage
   protected void BasicPosition()
   {
     if( pushTimer.IsActive )
+      //velocity += pushVelocity * Time.deltaTime;
       velocity = pushVelocity;
 
     if( UseGravity )

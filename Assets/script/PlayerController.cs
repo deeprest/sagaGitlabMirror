@@ -73,11 +73,15 @@ public class PlayerController : Character, IDamage
   public float moveVel = 2;
   public float jumpVel = 5;
   public float dashVel = 5;
+  public float wallJumpUpVel = 1;
+  public float wallJumpPushVelocity = 0.3f;
+  public float wallJumpPushDuration = 0.2f;
   // durations
   public float jumpDuration = 0.4f;
   public float dashDuration = 1;
   public float landDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
+  public float jumpRepeatDuration = 0.3f;
   // input / control
   public bool inputRight;
   public bool inputLeft;
@@ -612,11 +616,16 @@ public class PlayerController : Character, IDamage
     inputGraphook = false;
   }
 
+  // todo call Update directly from global
+  // todo use timers
+  // todo instead of assigning animation every frame, only change when needed
+  // todo refactor logic: inputs, collision, velocity, state vars, timers -> state vars, anims, velocity
   void Update()
   {
     if( Global.Paused )
       return;
-      
+
+    // INPUTS
     shoot = Global.instance.AimPosition - (Vector2)arm.position;
     shoot.z = 0;
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, shoot ) );
@@ -628,18 +637,19 @@ public class PlayerController : Character, IDamage
     if( move.x < 0 )
       inputLeft = true;
 
+    // WEAPONS / ABILITIES
     if( inputFire && !shootRepeatTimer.IsActive )
       Shoot();
 
     if( inputGraphook )
       ShootGraphook();
-#if KINEMATIC
+
     if( grapPulling )
       velocity = Vector3.zero;
     else
       // must have input (or push) to move horizontally, so allow no persistent horizontal velocity
       velocity.x = 0;
-#endif
+
     Shield.SetActive( inputShield );
 
     if( inputChargeStart )
@@ -712,13 +722,21 @@ public class PlayerController : Character, IDamage
       {
         if( onGround || (inputRight && collideRight) || (inputLeft && collideLeft) )
         {
-          StartJump();
+          if( Time.time - jumpStart >= jumpRepeatDuration )
+          {
+            StartJump();
+            if( collideRight )
+              Push( Vector2.left * wallJumpPushVelocity + Vector2.up * wallJumpUpVel, wallJumpPushDuration );
+            if( collideLeft )
+              Push( Vector2.right * wallJumpPushVelocity + Vector2.up * wallJumpUpVel, wallJumpPushDuration );
+          }
         }
       }
       if( inputJumpEnd )
         StopJump();
 
     }
+
     if( velocity.y < 0 )
       jumping = false;
 
@@ -828,9 +846,8 @@ public class PlayerController : Character, IDamage
     }
     else
     {
-      velocity += pushVelocity;
-      // push is an instantaneous acceleration (so far only damage does this)
-      pushVelocity.y = 0;
+      if( pushTimer.IsActive )
+        velocity = pushVelocity;
     }
 
     transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
@@ -867,12 +884,9 @@ public class PlayerController : Character, IDamage
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
 
 #if !KINEMATIC
+
     transform.position += (Vector3)velocity * Time.deltaTime;
-    if( grapPulling )
-      velocity = Vector3.zero;
-    else
-      // must have input (or push) to move horizontally, so allow no persistent horizontal velocity
-      velocity.x = 0;
+
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
 #endif
