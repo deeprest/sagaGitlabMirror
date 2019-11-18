@@ -4938,13 +4938,13 @@ MonoBehaviour:
   jumpVel: 5
   dashVel: 3
   wallJumpUpVel: 5
-  wallJumpPushVelocity: 1
+  wallJumpPushVelocity: 1.5
   wallJumpPushDuration: 0.1
   jumpDuration: 0.4
+  jumpRepeatInterval: 0.1
   dashDuration: 0.5
   landDuration: 0.1
   wallSlideFactor: 8
-  jumpRepeatDuration: 0.2
   inputRight: 0
   inputLeft: 0
   inputJumpStart: 0
@@ -4960,6 +4960,8 @@ MonoBehaviour:
   facingRight: 0
   onGround: 0
   jumping: 0
+  walljumping: 0
+  wallsliding: 0
   landing: 0
   dashing: 0
   weapon: {fileID: 11400000, guid: fd374035a3d2a4dfab5b20e9cd75ba10, type: 2}
@@ -4974,6 +4976,8 @@ MonoBehaviour:
   chargePulseOn: 1
   chargePulseInterval: 0.05
   chargeColor: {r: 0, g: 0.796, b: 1, a: 1}
+  armMount: {fileID: 605154778494882277}
+  secondary: {fileID: 0}
   soundJump: {fileID: 8300000, guid: 3634bba7cfee0409cb0ba088753bc669, type: 3}
   soundDash: {fileID: 8300000, guid: fa292f5f0979c4ce49e47c2a103a585b, type: 3}
   soundDamage: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
@@ -4996,8 +5000,6 @@ MonoBehaviour:
   grapPulling: 0
   grapShotSound: {fileID: 8300000, guid: 714bd8ea9667041e99bb9a12a950f4f3, type: 3}
   grapHitSound: {fileID: 8300000, guid: 55037177bb692440ebfcf4e001cef0aa, type: 3}
-  armMount: {fileID: 605154778494882277}
-  secondary: {fileID: 0}
 --- !u!212 &212107818795109166
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5362,7 +5364,7 @@ MonoBehaviour:
   light: {fileID: 9213469889036348575}
   sr: {fileID: 394507305719372179}
   pulseDuration: 1
-  hitPushSpeed: 10
+  hitPushSpeed: 500
   hitPushDuration: 0.2
 --- !u!61 &3521304662830707932
 BoxCollider2D:
@@ -5776,7 +5778,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7712610510604089020}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.5}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3889579691691170944}
@@ -5835,7 +5837,7 @@ Light:
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}

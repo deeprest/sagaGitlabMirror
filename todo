@@ -1,11 +1,8 @@
-+ fix dialogue box
-+ fix nav meshes
-+ UI show controls until pressed. Support kb+m and gamepad.
 - game feel: wall jump
-- double tap wall jump pushes away from wall
-- add dash anim effect
-- add spark effect to wall jump
-- reduce audiooneshot calls to avoid dropout
-- fix nav mesh obstacles in city scene
-- fix long slide clipping
-- remove pathfinding from lift, just use points+radius
+  - walljump anim
+  - camera horizontal range
+  - double tap wall jump pushes away from wall
+fix:
+- projectiles get stuck on invulnerable player
+- projectiles get stuck on shield
+- projectiles should never penetrate shield

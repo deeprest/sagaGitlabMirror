@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// todo brains and pawns
 /*
+// todo brains and pawns
 // todo PlayerController -> PlayerPawn
 // Separate inputs from actions.
 // Bind the same action functions to input delegates driven by an AI brain.
@@ -13,6 +13,7 @@ public class PawnController
 {
   public Pawn pawn;
   public virtual void Initialize() { }
+  public virtual void Update() { }
 }
 
 public class NewPlayerController : PawnController
@@ -26,7 +27,7 @@ public class NewPlayerController : PawnController
 
 public class AIController : PawnController
 {
-  public void Update()
+  public override void Update()
   {
     // logic drives inputs
 
@@ -51,6 +52,34 @@ public class Pawn : Character, IDamage
     // shoot
   }
 }
+
+/*
+// todo call Update directly from global
+// todo use timers
+// todo instead of assigning animation every frame, only change when needed
+// todo refactor logic: inputs, collision, velocity, state vars, timers -> state vars, anims, velocity
+
+inputs
+collision flags
+logic for changing state
+
+result of current state ->
+animation state
+velocity
+position
+collision update
+
+state
+  onground
+  facingRight
+  takingdamage
+  aim / shoot
+  jumping
+  wallslide
+  dash
+  graphook
+  shield
+
 */
 
 public class PlayerController : Character, IDamage
@@ -74,14 +103,15 @@ public class PlayerController : Character, IDamage
   public float jumpVel = 5;
   public float dashVel = 5;
   public float wallJumpUpVel = 1;
-  public float wallJumpPushVelocity = 0.3f;
+  public float wallJumpPushVelocity = 0.7f;
   public float wallJumpPushDuration = 0.2f;
   // durations
   public float jumpDuration = 0.4f;
+  public float jumpRepeatInterval = 0.1f;
   public float dashDuration = 1;
   public float landDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
-  public float jumpRepeatDuration = 0.3f;
+  //public float jumpRepeatDuration = 0.3f;
   // input / control
   public bool inputRight;
   public bool inputLeft;
@@ -100,14 +130,18 @@ public class PlayerController : Character, IDamage
   [SerializeField] bool facingRight = true;
   [SerializeField] bool onGround;
   [SerializeField] bool jumping;
+  [SerializeField] bool walljumping;
+  [SerializeField] bool wallsliding;
   [SerializeField] bool landing;
   [SerializeField] bool dashing;
   public bool hanging { get; set; }
 
-  float dashStart;
-  float jumpStart;
-  float landStart;
   Vector3 hitBottomNormal;
+  Timer dashTimer = new Timer();
+  Timer jumpTimer = new Timer();
+  Timer jumpRepeatTimer = new Timer();
+  Timer landTimer = new Timer();
+  Timer walljumpTimer = new Timer();
 
   [Header( "Weapon" )]
   public Weapon weapon;
@@ -123,6 +157,8 @@ public class PlayerController : Character, IDamage
   public bool chargePulseOn = true;
   public float chargePulseInterval = 0.1f;
   public Color chargeColor = Color.white;
+  public Transform armMount;
+  [SerializeField] Ability secondary;
 
   public AudioClip soundJump;
   public AudioClip soundDash;
@@ -598,9 +634,6 @@ public class PlayerController : Character, IDamage
     };
   }
 
-  public Transform armMount;
-  [SerializeField] Ability secondary;
-
   void ResetInput()
   {
     //inputFire = false;
@@ -616,10 +649,6 @@ public class PlayerController : Character, IDamage
     inputGraphook = false;
   }
 
-  // todo call Update directly from global
-  // todo use timers
-  // todo instead of assigning animation every frame, only change when needed
-  // todo refactor logic: inputs, collision, velocity, state vars, timers -> state vars, anims, velocity
   void Update()
   {
     if( Global.Paused )
@@ -637,18 +666,29 @@ public class PlayerController : Character, IDamage
     if( move.x < 0 )
       inputLeft = true;
 
+
+    string anim = "idle";
+    wallsliding = false;
+    bool previousGround = onGround;
+    onGround = collideBottom || (collideLeft && collideRight);
+    if( onGround && !previousGround )
+    {
+      landing = true;
+      landTimer.Start( landDuration, null, delegate { landing = false; } );
+    }
+    // must have input (or push) to move horizontally, so allow no persistent horizontal velocity
+    if( grapPulling )
+      velocity = Vector3.zero;
+    else if( !(inputRight || inputLeft) )
+      velocity.x = 0;
+
+
     // WEAPONS / ABILITIES
     if( inputFire && !shootRepeatTimer.IsActive )
       Shoot();
 
     if( inputGraphook )
       ShootGraphook();
-
-    if( grapPulling )
-      velocity = Vector3.zero;
-    else
-      // must have input (or push) to move horizontally, so allow no persistent horizontal velocity
-      velocity.x = 0;
 
     Shield.SetActive( inputShield );
 
@@ -658,10 +698,15 @@ public class PlayerController : Character, IDamage
     if( inputChargeEnd )
       ShootCharged();
 
-    if( !takingDamage )
+    if( takingDamage )
+    {
+      velocity.y = 0;
+    }
+    else
     {
       if( inputRight )
       {
+        facingRight = true;
         // move along floor if angled downwards
         Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.forward );
         if( onGround && hitnormalCross.y < 0 )
@@ -671,11 +716,11 @@ public class PlayerController : Character, IDamage
           velocity.x = moveVel;
         if( !facingRight && onGround )
           StopDash();
-        facingRight = true;
       }
 
       if( inputLeft )
       {
+        facingRight = false;
         // move along floor if angled downwards
         Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.back );
         if( onGround && hitnormalCross.y < 0 )
@@ -685,149 +730,91 @@ public class PlayerController : Character, IDamage
           velocity.x = -moveVel;
         if( facingRight && onGround )
           StopDash();
-        facingRight = false;
       }
 
-      if( inputDashStart )
-      {
-        if( onGround || collideLeft || collideRight )
-        {
-          StartDash();
-        }
-      }
-      if( inputDashEnd )
-      {
-        if( !jumping )
-          StopDash();
-      }
+      if( inputDashStart && (onGround || collideLeft || collideRight) )
+        StartDash();
+
+      if( inputDashEnd && !jumping )
+        StopDash();
+
       if( dashing )
       {
-        if( facingRight )
+        if( onGround && !previousGround )
+        {
+          StopDash();
+        }
+        else if( facingRight )
         {
           if( onGround || inputRight )
             velocity.x = dashVel;
-          if( onGround && Time.time - dashStart >= dashDuration )
+          if( (onGround || collideRight) && !dashTimer.IsActive )
             StopDash();
         }
         else
         {
           if( onGround || inputLeft )
             velocity.x = -dashVel;
-          if( onGround && Time.time - dashStart >= dashDuration )
+          if( (onGround || collideLeft) && !dashTimer.IsActive )
             StopDash();
         }
       }
 
-      if( inputJumpStart )
+
+      if( collideRight && inputRight && hitRight.normal.y >= 0 )
       {
-        if( onGround || (inputRight && collideRight) || (inputLeft && collideLeft) )
+        if( inputJumpStart )
         {
-          if( Time.time - jumpStart >= jumpRepeatDuration )
-          {
-            StartJump();
-            if( collideRight )
-              Push( Vector2.left * wallJumpPushVelocity + Vector2.up * wallJumpUpVel, wallJumpPushDuration );
-            if( collideLeft )
-              Push( Vector2.right * wallJumpPushVelocity + Vector2.up * wallJumpUpVel, wallJumpPushDuration );
-          }
+          walljumping = true;
+          velocity.y = wallJumpUpVel;
+          Push( Vector2.left * (inputDashStart ? dashVel : wallJumpPushVelocity), wallJumpPushDuration );
+          jumpRepeatTimer.Start( jumpRepeatInterval );
+          walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
+        }
+        else if( !jumping && !onGround && velocity.y < 0 )
+        {
+          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
+          wallsliding = true;
+          dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
+          if( !dashSmoke.isPlaying )
+            dashSmoke.Play();
         }
       }
+      else if( collideLeft && inputLeft && hitLeft.normal.y >= 0 )
+      {
+        if( inputJumpStart )
+        {
+          walljumping = true;
+          velocity.y = wallJumpUpVel;
+          Push( Vector2.right * (inputDashStart ? dashVel : wallJumpPushVelocity), wallJumpPushDuration );
+          jumpRepeatTimer.Start( jumpRepeatInterval );
+          walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
+        }
+        else if( !jumping && inputLeft && !onGround && velocity.y < 0 )
+        {
+          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
+          wallsliding = true;
+          dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
+          if( !dashSmoke.isPlaying )
+            dashSmoke.Play();
+        }
+      }
+      else if( onGround && inputJumpStart )
+        StartJump();
+
       if( inputJumpEnd )
         StopJump();
-
     }
 
     if( velocity.y < 0 )
+    {
       jumping = false;
-
-    if( jumping && (Time.time - jumpStart >= jumpDuration) )
-      jumping = false;
-
-    if( landing && (Time.time - landStart >= landDuration) )
-      landing = false;
-
-    string anim = "idle";
-
-    if( jumping )
-      anim = "jump";
-    else
-    if( onGround )
-    {
-      if( dashing )
-        anim = "dash";
-      else
-      if( inputRight || inputLeft )
-        anim = "run";
-      else
-      if( landing )
-        anim = "land";
-    }
-    else
-    if( !jumping )
-      anim = "fall";
-
-    // hack reset rotation in case there is no wall slide
-    transform.rotation = Quaternion.Euler( 0, 0, 0 );
-
-    if( collideRight )
-    {
-      if( inputRight && hitRight.normal.y >= 0 )
-      {
-        if( jumping )
-        {
-          anim = "walljump";
-        }
-        else
-        if( inputRight && !onGround && velocity.y < 0 )
-        {
-          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
-          anim = "wallslide";
-          dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
-          if( !dashSmoke.isPlaying )
-            dashSmoke.Play();
-          transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( wallSlideNormal.y, -wallSlideNormal.x ) );
-        }
-      }
-      else
-      {
-        dashSmoke.Stop();
-      }
+      walljumping = false;
+      walljumpTimer.Stop( false );
     }
 
-    if( collideLeft )
-    {
-      if( inputLeft && hitLeft.normal.y >= 0 )
-      {
-        if( jumping )
-        {
-          anim = "walljump";
-        }
-        else
-        if( inputLeft && !onGround && velocity.y < 0 )
-        {
-          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
-          anim = "wallslide";
-          dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
-          if( !dashSmoke.isPlaying )
-            dashSmoke.Play();
-
-          transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( -wallSlideNormal.y, wallSlideNormal.x ) );
-        }
-      }
-      else
-      {
-        dashSmoke.Stop();
-      }
-    }
-
-    if( !(onGround || collideLeft || collideRight) )
+    if( !((onGround && dashing) || wallsliding) )
       dashSmoke.Stop();
-
-    if( takingDamage )
-    {
-      anim = "damage";
-      velocity.y = 0;
-    }
 
     if( grapPulling )
     {
@@ -847,12 +834,8 @@ public class PlayerController : Character, IDamage
     else
     {
       if( pushTimer.IsActive )
-        velocity = pushVelocity;
+        velocity.x = pushVelocity.x;
     }
-
-    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
-    arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
-    animator.Play( anim );
 
     // add gravity before velocity limits
     velocity.y -= Global.Gravity * Time.deltaTime;
@@ -884,21 +867,43 @@ public class PlayerController : Character, IDamage
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
 
 #if !KINEMATIC
-
     transform.position += (Vector3)velocity * Time.deltaTime;
-
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
 #endif
 
-    bool oldGround = onGround;
-    onGround = collideBottom || (collideLeft && collideRight);
-    if( onGround && !oldGround )
+    if( takingDamage )
+      anim = "damage";
+    else if( walljumping )
+      anim = "walljump";
+    else if( jumping )
+      anim = "jump";
+    else if( wallsliding )
+      anim = "wallslide";
+    else if( onGround )
     {
-      StopDash();
-      landing = true;
-      landStart = Time.time;
+      if( dashing )
+        anim = "dash";
+      else if( inputRight || inputLeft )
+        anim = "run";
+      else if( landing )
+        anim = "land";
+      else
+        anim = "idle";
     }
+    else if( !jumping )
+      anim = "fall";
+
+    animator.Play( anim );
+    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
+    arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
+    if( wallsliding && collideRight )
+      transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( wallSlideNormal.y, -wallSlideNormal.x ) );
+    else if( wallsliding && collideLeft )
+      transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( -wallSlideNormal.y, wallSlideNormal.x ) );
+    else
+      transform.rotation = Quaternion.Euler( 0, 0, 0 );
+
 
     ResetInput();
   }
@@ -914,7 +919,8 @@ public class PlayerController : Character, IDamage
   void StartJump()
   {
     jumping = true;
-    jumpStart = Time.time;
+    jumpTimer.Start( jumpDuration, null, StopJump );
+    jumpRepeatTimer.Start( jumpRepeatInterval );
     velocity.y = jumpVel;
     audio.PlayOneShot( soundJump );
     dashSmoke.Stop();
@@ -924,6 +930,7 @@ public class PlayerController : Character, IDamage
   {
     jumping = false;
     velocity.y = Mathf.Min( velocity.y, 0 );
+    jumpTimer.Stop( false );
   }
 
   void StartDash()
@@ -931,7 +938,7 @@ public class PlayerController : Character, IDamage
     if( !dashing )
     {
       dashing = true;
-      dashStart = Time.time;
+      dashTimer.Start( dashDuration );
       if( onGround )
         audio.PlayOneShot( soundDash, 0.5f );
       dashSmoke.transform.localPosition = new Vector3( -0.38f, -0.22f, 0 );
@@ -943,6 +950,7 @@ public class PlayerController : Character, IDamage
   {
     dashing = false;
     dashSmoke.Stop();
+    dashTimer.Stop( false );
   }
 
   float chargeStart;
@@ -1034,9 +1042,8 @@ public class PlayerController : Character, IDamage
     takingDamage = true;
     invulnerable = true;
     animator.Play( "damage" );
-
     Push( new Vector2( -sign * damagePushAmount, damageLift ), damageDuration );
-
+    StopGrap();
     damageTimer.Start( damageDuration, (System.Action<Timer>)delegate ( Timer t )
     {
       //push.x = -sign * damagePushAmount;

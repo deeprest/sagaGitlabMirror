@@ -1,33 +1,32 @@
 # done (add to devlog)
 + text on dui should list controls
 + grenade foe
++ fix dev zoom
 
 # todo
-- punchy mech
-- graphook foe
-- mech pathing
-- projectiles get stuck on invulnerable player
-- projectiles get stuck on shield
-- projectiles should never penetrate shield
-- airbots drop prop every time
-- turrets only aim when target is visible
+- control rebinding
+- reduce audiooneshot calls to avoid dropout
+- fix long slide clipping
+- remove pathfinding from lift, just use points+radius
 - add airbot prop ability
 - add ability icon to hud
-+ fix dev zoom
-- fix glitchy sprite shader for grenade mech on linux
-- level 2 charged shot
-- enemies should react to projectiles in proximity
-- anti-cluster and friendly-fire test for hornets
-
-## low priority
-- music scene switch
-- control rebinding
-- consolidate more sprites into bigsheet
 - hide arm while not shooting
+- TURRETS only aim when target is visible
+- MECH. pathing
+
+## lower priority
+- music scene switch
+- add dash anim effect
+- add spark effect to wall jump
+- fix nav mesh obstacles in city scene
+- consolidate more sprites into bigsheet
 - detect cmd-f fullscreen switch and update setting
+- fix glitchy sprite shader for grenade mech on linux
 - UNITY-bug: cursor movement in last direction when shoot
 
 ## ideas
+- graphook foe
+- enemies should react to projectiles in proximity
 - (design) save/load game; player status, serializedobjects, UI interface
 - use state machine for enemies? how capable are the bots? They already pathfind and sidestep.
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)

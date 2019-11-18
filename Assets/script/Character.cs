@@ -146,7 +146,6 @@ public class Character : MonoBehaviour, IDamage
   protected void BasicPosition()
   {
     if( pushTimer.IsActive )
-      //velocity += pushVelocity * Time.deltaTime;
       velocity = pushVelocity;
 
     if( UseGravity )
