@@ -26,7 +26,23 @@ public class AudioLoopEditor : Editor
 [CreateAssetMenu]
 public class AudioLoop : ScriptableObject
 {
-  public AudioClip clip;
-  public float loopStart;
-  public float loopFadeOut;
+  public AudioClip intro;
+  public AudioClip loop;
+  public float introDelay = 1;
+
+  public void Play( AudioSource introSource, AudioSource source )
+  {
+    introSource.playOnAwake = false;
+    introSource.priority = source.priority;
+    introSource.volume = source.volume;
+
+    introSource.loop = false;
+    introSource.clip = intro;
+    introSource.PlayScheduled( AudioSettings.dspTime + introDelay );
+
+    source.loop = true;
+    source.clip = loop;
+    source.PlayScheduled( AudioSettings.dspTime + introDelay + intro.length );
+
+  }
 }

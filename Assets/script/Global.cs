@@ -117,7 +117,9 @@ public class Global : MonoBehaviour
   [Header( "References" )]
   [SerializeField] string InitialSceneName;
   public CameraController CameraController;
-  [SerializeField] AudioSource music;
+  [SerializeField] AudioSource musicLoopSource;
+  [SerializeField] AudioSource musicIntroSource;
+  [SerializeField] AudioLoop musicLoop;
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
@@ -291,7 +293,6 @@ public class Global : MonoBehaviour
     if( Application.isEditor && !SimulatePlayer )
     {
       LoadingScreen.SetActive( false );
-      music.Play();
       fader.color = Color.clear;
       //yield return new WaitForSecondsRealtime( 1 );
       Updating = true;
@@ -310,22 +311,23 @@ public class Global : MonoBehaviour
     }
     else
     {
-      music.Play();
       StartCoroutine( LoadSceneRoutine( "home", true, true, false ) );
     }
 
     SpeechBubble.SetActive( false );
   }
 
-#if UNITY_EDITOR
   void Start()
   {
+#if UNITY_EDITOR
     // workaround for Unity Editor bug where AudioMixer.SetFloat() does not work in Awake()
     mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( FloatSetting["MasterVolume"].Value ) );
     mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value ) );
     mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
-  }
 #endif
+
+    musicLoop.Play( musicIntroSource, musicLoopSource );
+  }
 
   public string ReplaceWithControlNames( string source )
   {
@@ -371,8 +373,8 @@ public class Global : MonoBehaviour
 
     Controls.GlobalActions.DetectInputType.performed += ( obj ) => {
       bool newvalue = obj.control.path.Contains( "Gamepad" );
-      if( newvalue!= UsingGamepad )
-        print( "UsingGamepad new value: "+ newvalue.ToString() + " " + obj.control.path );
+      if( newvalue != UsingGamepad )
+        print( "UsingGamepad new value: " + newvalue.ToString() + " " + obj.control.path );
       UsingGamepad = newvalue;
     };
 
