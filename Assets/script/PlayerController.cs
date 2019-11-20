@@ -55,7 +55,6 @@ public class Pawn : Character, IDamage
 
 /*
 // todo call Update directly from global
-// todo use timers
 // todo instead of assigning animation every frame, only change when needed
 // todo refactor logic: inputs, collision, velocity, state vars, timers -> state vars, anims, velocity
 
@@ -99,10 +98,9 @@ public class PlayerController : Character, IDamage
   const float corner = 0.707f;
 
   // velocities
-  public float moveVel = 2;
+  public float moveVel = 1.5f;
   public float jumpVel = 5;
-  public float dashVel = 5;
-  public float wallJumpUpVel = 1;
+  public float dashVel = 3;
   public float wallJumpPushVelocity = 0.7f;
   public float wallJumpPushDuration = 0.2f;
   // durations
@@ -111,7 +109,6 @@ public class PlayerController : Character, IDamage
   public float dashDuration = 1;
   public float landDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
-  //public float jumpRepeatDuration = 0.3f;
   // input / control
   public bool inputRight;
   public bool inputLeft;
@@ -135,8 +132,8 @@ public class PlayerController : Character, IDamage
   [SerializeField] bool landing;
   [SerializeField] bool dashing;
   public bool hanging { get; set; }
-
   Vector3 hitBottomNormal;
+  Vector2 wallSlideNormal;
   Timer dashTimer = new Timer();
   Timer jumpTimer = new Timer();
   Timer jumpRepeatTimer = new Timer();
@@ -160,12 +157,10 @@ public class PlayerController : Character, IDamage
   public Transform armMount;
   [SerializeField] Ability secondary;
 
+  [Header("Sound")]
   public AudioClip soundJump;
   public AudioClip soundDash;
   public AudioClip soundDamage;
-
-  //  public Vector2 rightFoot;
-  //  public Vector2 leftFoot;
 
   [Header( "Damage" )]
   [SerializeField] float damageDuration = 0.5f;
@@ -182,6 +177,23 @@ public class PlayerController : Character, IDamage
 
   [Header( "Shield" )]
   public GameObject Shield;
+
+  [Header( "Graphook" )]
+  [SerializeField] GameObject graphookTip;
+  [SerializeField] SpriteRenderer grapCableRender;
+  public float grapDistance = 10;
+  public float grapSpeed = 5;
+  public float grapTimeout = 5;
+  public float grapPullSpeed = 10;
+  public float grapStopDistance = 0.1f;
+  Timer grapTimer = new Timer();
+  Timer grapPullTimer = new Timer();
+  Vector2 grapSize;
+  Vector3 graphitpos;
+  public bool grapShooting;
+  public bool grapPulling;
+  public AudioClip grapShotSound;
+  public AudioClip grapHitSound;
 
 
   void Awake()
@@ -295,10 +307,6 @@ public class PlayerController : Character, IDamage
     }
     return closest;
   }
-
-
-
-  Vector2 wallSlideNormal;
 
   new void UpdateCollision( float dT )
   {
@@ -492,23 +500,6 @@ public class PlayerController : Character, IDamage
     if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
       weapon.FireWeapon( this, pos, shoot );
   }
-
-  [Header( "Graphook" )]
-  [SerializeField] GameObject graphookTip;
-  [SerializeField] SpriteRenderer grapCableRender;
-  public float grapDistance = 10;
-  public float grapSpeed = 5;
-  public float grapTimeout = 5;
-  public float grapPullSpeed = 10;
-  public float grapStopDistance = 0.1f;
-  Timer grapTimer = new Timer();
-  Timer grapPullTimer = new Timer();
-  Vector2 grapSize;
-  Vector3 graphitpos;
-  public bool grapShooting;
-  public bool grapPulling;
-  public AudioClip grapShotSound;
-  public AudioClip grapHitSound;
 
   void ShootGraphook()
   {
@@ -766,7 +757,7 @@ public class PlayerController : Character, IDamage
         if( inputJumpStart )
         {
           walljumping = true;
-          velocity.y = wallJumpUpVel;
+          velocity.y = jumpVel;
           Push( Vector2.left * (inputDashStart ? dashVel : wallJumpPushVelocity), wallJumpPushDuration );
           jumpRepeatTimer.Start( jumpRepeatInterval );
           walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
@@ -785,7 +776,7 @@ public class PlayerController : Character, IDamage
         if( inputJumpStart )
         {
           walljumping = true;
-          velocity.y = wallJumpUpVel;
+          velocity.y = jumpVel;
           Push( Vector2.right * (inputDashStart ? dashVel : wallJumpPushVelocity), wallJumpPushDuration );
           jumpRepeatTimer.Start( jumpRepeatInterval );
           walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );

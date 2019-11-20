@@ -6,15 +6,15 @@
 # todo
 - control rebinding
 - reduce audiooneshot calls to avoid dropout
-- fix long slide clipping
 - remove pathfinding from lift, just use points+radius
+- fix long slide clipping
 - add airbot prop ability
-- add ability icon to hud
 - hide arm while not shooting
 - TURRETS only aim when target is visible
 - MECH. pathing
 
 ## lower priority
+- add ability icon to hud
 - music scene switch
 - add dash anim effect
 - add spark effect to wall jump
@@ -28,7 +28,7 @@
 - graphook foe
 - enemies should react to projectiles in proximity
 - (design) save/load game; player status, serializedobjects, UI interface
-- use state machine for enemies? how capable are the bots? They already pathfind and sidestep.
+- use state machine for enemies? how capable are the bots? They currently pathfind and sidestep.
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
 - weapon ideas:  doublewhammy/triple, rockets, seeking missiles, beam, stickybomb, invisible
 - powerups: speedboost, slowtime, reflective shield, supercharge
@@ -44,10 +44,9 @@
 - enemy creature that collects parts and builds onto itself
 - subway. fast travel or GTA2 style train?
 
-## bugs
+## bugs / issues
 - release build screen fade in on level transition gets stuck
 - reproducible: charge particles on after transition. reset player state on level transition
-- reproducible: jump up wall sprite glitch
 
 
 # DESIGN
@@ -108,7 +107,6 @@ Consistent with instruments in the music.
 3. music
 energy. melody.
 
-
 In my opinion, Megaman X1-X3 suffers from the same problems: small viewing area, can only shoot forward, enemies respawn immediately out of sight, levels are static.
 Megaman X4 is bad enough that I never played another MMX game again. I've watched gameplay videos to keep up to date with the MMX games, but it seems the franchise never improved.
 
@@ -148,7 +146,6 @@ Not arbitrary static points.
 - no story to ignore or lore to forget
 
 
-
 ## where to release/announce demo
 gamejolt
 sprites.co.uk forums
@@ -166,7 +163,6 @@ indiegamesplus
 itch.io devlog
 twitter
 reddit
-
 
 # random
 Can gain other weapons from enemies.
