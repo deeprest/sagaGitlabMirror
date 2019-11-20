@@ -3,14 +3,16 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f70065a8d63941feaad937e3363da66, type: 3}
   m_Name: ready
   m_EditorClassIdentifier: 
+  UseFrames: 0
   fps: 20
   loop: 0
   loopStartIndex: 0
@@ -49,5 +51,4 @@ MonoBehaviour:
   - {fileID: 21300022, guid: b3258cd0d2c9d4dd1b7e111c736ff388, type: 3}
   - {fileID: 21300022, guid: b3258cd0d2c9d4dd1b7e111c736ff388, type: 3}
   - {fileID: 0}
-  UseFrames: 0
   frames: []
