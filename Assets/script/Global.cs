@@ -217,6 +217,7 @@ public class Global : MonoBehaviour
   public GameObject SpeechBubble;
   public Text SpeechText;
   public Image SpeechIcon;
+  public Animator SpeechAnimator;
   CharacterIdentity SpeechCharacter;
   int SpeechPriority = 0;
   public float SpeechRange = 8;
@@ -1014,6 +1015,9 @@ public class Global : MonoBehaviour
       SpeechBubble.SetActive( false );
       SpeechCharacter = null;
     } );
+
+    SpeechAnimator.runtimeAnimatorController = character.animationController;
+    SpeechAnimator.Play( "talk" );
   }
 
   public SceneScript GetSceneScript()

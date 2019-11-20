@@ -1044,7 +1044,7 @@ public class PlayerController : Character, IDamage
     animator.Play( "damage" );
     Push( new Vector2( -sign * damagePushAmount, damageLift ), damageDuration );
     StopGrap();
-    damageTimer.Start( damageDuration, (System.Action<Timer>)delegate ( Timer t )
+    damageTimer.Start( damageDuration, delegate ( Timer t )
     {
       //push.x = -sign * damagePushAmount;
     }, delegate ()
