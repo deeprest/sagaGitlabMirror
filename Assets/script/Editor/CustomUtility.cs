@@ -112,6 +112,15 @@ public class CustomUtility : EditorWindow
     EditorGUI.ProgressBar( EditorGUILayout.GetControlRect( false, 30 ), progress, progressMessage );
 
     GUILayout.Label( "Build", EditorStyles.boldLabel );
+    /*if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Run WebGL Build" ) )
+    {
+      string path = EditorUtility.OpenFolderPanel( "Select WebGL build folder", "", "" );
+      if( path.Length != 0 )
+      {
+        Debug.Log( path );
+        Util.Execute( new Util.Command { cmd = "exec /usr/local/bin/static", args = "", dir = path }, true );
+      }
+    }*/
     developmentBuild = EditorGUILayout.ToggleLeft( "Development Build", developmentBuild );
     EditorGUILayout.BeginHorizontal();
     buildMacOS = EditorGUILayout.ToggleLeft( "MacOS", buildMacOS, GUILayout.MaxWidth( 60 ) );

@@ -4,7 +4,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-//using System.IO.Compression;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -13,6 +12,7 @@ using UnityEngine.UI;
 using UnityEngine.AI;
 using LitJson;
 using Ionic.Zip;
+using System.Runtime.InteropServices;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -40,7 +40,7 @@ public class GlobalEditor : Editor
   {
     obj.ScreenshotTimer.Start( obj.screenshotInterval, null, delegate
     {
-      obj.Screenshot();
+      Util.Screenshot();
       StartTimer();
     } );
   }
@@ -147,14 +147,12 @@ public class Global : MonoBehaviour
   public GameObject ready;
   // cursor 
   public Transform Cursor;
-  public float cursorOuter = 100;
-  public float cursorInner = 50;
   public Vector2 CursorDelta;
   Vector2 cursorOrigin;
-  public float CursorFactor = 0.02f;
+  public float CursorOuter = 1;
   public Vector2 AimPosition;
   public Vector2 CursorWorldPosition;
-  public float cursorSensitivity = 1;
+  public float CursorSensitivity = 1;
   public bool CursorPlayerRelative = true;
   public float gamepadCursorLerp = 10;
   public float positionalCursorSpeed = 30;
@@ -294,7 +292,6 @@ public class Global : MonoBehaviour
     {
       LoadingScreen.SetActive( false );
       fader.color = Color.clear;
-      //yield return new WaitForSecondsRealtime( 1 );
       Updating = true;
       ss = GetSceneScript();
       if( ss != null )
@@ -327,6 +324,8 @@ public class Global : MonoBehaviour
 #endif
 
     musicLoop.Play( musicIntroSource, musicLoopSource );
+    // hack settings are read before player is created, so set player settings here.
+    FloatSetting["PlayerSpeedFactor"].Value = FloatSetting["PlayerSpeedFactor"].Value;
   }
 
   public string ReplaceWithControlNames( string source )
@@ -362,7 +361,6 @@ public class Global : MonoBehaviour
         outstr += tok;
     }
     return outstr;
-
   }
 
   void InitializeControls()
@@ -391,7 +389,7 @@ public class Global : MonoBehaviour
       else
         Slow();
     };
-    Controls.GlobalActions.Screenshot.performed += ( obj ) => Screenshot();
+    Controls.GlobalActions.Screenshot.performed += ( obj ) => Util.Screenshot();
 #if !UNITY_EDITOR
     /*Controls.GlobalActions.CursorLockToggle.performed += (obj) => {
       if( UnityEngine.Cursor.lockState == CursorLockMode.Locked )
@@ -504,16 +502,6 @@ public class Global : MonoBehaviour
     Updating = true;
   }
 
-  public void Screenshot()
-  {
-    string now = System.DateTime.Now.Year.ToString() +
-                   System.DateTime.Now.Month.ToString( "D2" ) +
-                   System.DateTime.Now.Day.ToString( "D2" ) + "." +
-                   System.DateTime.Now.Minute.ToString( "D2" ) +
-                   System.DateTime.Now.Second.ToString( "D2" );
-    ScreenCapture.CaptureScreenshot( Application.persistentDataPath + "/" + now + ".png" );
-  }
-
   void Update()
   {
 #if DESTRUCTION_LIST
@@ -592,7 +580,7 @@ public class Global : MonoBehaviour
       else
       {
 #if UNITY_WEBGL && !UNITY_EDITOR
-        Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * cursorSensitivity;
+        Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
         delta.y = -delta.y;
         CursorDelta += delta;
 #else
@@ -603,10 +591,9 @@ public class Global : MonoBehaviour
         if( aim.magnitude > 0 )
           Debug.LogFormat( "aim {0} {1}", aim.x, aim.y );*/
 
-        CursorDelta += Controls.BipedActions.Aim.ReadValue<Vector2>() * cursorSensitivity;
+        CursorDelta += Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
 #endif
-        CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
-        Cursor.gameObject.SetActive( CursorDelta.sqrMagnitude > cursorInner * cursorInner );
+        CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * CursorOuter ), 0.1f );
         cursorOrigin = CurrentPlayer.arm.position;
 
         if( AimSnap )
@@ -620,7 +607,7 @@ public class Global : MonoBehaviour
           Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
           AimPosition = cursorOrigin + snapped * SnapCursorDistance;
           CursorSnapped.position = AimPosition;
-          CursorWorldPosition = cursorOrigin + CursorDelta * CursorFactor;
+          CursorWorldPosition = cursorOrigin + CursorDelta;
           Cursor.position = CursorWorldPosition;
         }
         else
@@ -629,7 +616,7 @@ public class Global : MonoBehaviour
           Cursor.gameObject.SetActive( true );
           CursorSnapped.gameObject.SetActive( false );
 
-          AimPosition = cursorOrigin + CursorDelta * CursorFactor;
+          AimPosition = cursorOrigin + CursorDelta;
           CursorWorldPosition = AimPosition;
           //Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
           Cursor.position = CursorWorldPosition;
@@ -637,7 +624,7 @@ public class Global : MonoBehaviour
 
         if( AutoAim )
         {
-          CursorWorldPosition = cursorOrigin + CursorDelta * CursorFactor;
+          CursorWorldPosition = cursorOrigin + CursorDelta;
           RaycastHit2D[] hits = Physics2D.CircleCastAll( CurrentPlayer.transform.position, AutoAimCircleRadius, CursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
           float distance = Mathf.Infinity;
           Transform closest = null;
@@ -797,6 +784,10 @@ public class Global : MonoBehaviour
         Controls.BipedActions.Enable();
         Controls.MenuActions.Disable();
       }
+#if UNITY_WEBGL && !UNITY_EDITOR
+      // cannot write settings on exit in webgl builds, so write them here
+      WriteSettings();
+#endif
     }
   }
 
@@ -1125,11 +1116,12 @@ public class Global : MonoBehaviour
     CreateBoolSetting( "AimSnap", false, delegate ( bool value ) { AimSnap = value; } );
     CreateBoolSetting( "AutoAim", false, delegate ( bool value ) { AutoAim = value; } );
 
-    CreateFloatSetting( "CursorOuterRadius", 150, 0, 300, 0.1f, delegate ( float value ) { cursorOuter = value; } );
+    CreateFloatSetting( "CursorOuter", 1, 0, 1, 0.05f, delegate ( float value ) { CursorOuter = value; } );
+    CreateFloatSetting( "CursorSensitivity", 0.5f, 0, 1, 0.05f, delegate ( float value ) { CursorSensitivity = value; } );
     CreateFloatSetting( "CameraLerpAlpha", 20, 0, 50, 0.01f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
-    CreateFloatSetting( "CursorSensitivity", 3, 0, 10, 0.05f, delegate ( float value ) { cursorSensitivity = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 0.05f, delegate ( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
+    CreateFloatSetting( "PlayerSpeedFactor", 1, 1, 2, 0.1f, delegate ( float value ) { if( CurrentPlayer != null ) CurrentPlayer.speedFactor = value; } );
   }
 
   Selectable previousSelectable;
@@ -1255,7 +1247,16 @@ public class Global : MonoBehaviour
     writer.WriteObjectEnd(); // root end
     //print( settingsPath );
     File.WriteAllText( settingsPath, writer.ToString() );
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    FileSync();
+#endif
   }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+  [DllImport( "__Internal" )]
+  private static extern void FileSync();
+#endif
 
   public void ApplyScreenSettings()
   {

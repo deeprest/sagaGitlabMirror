@@ -20,7 +20,6 @@ public class Pickup : WorldSelectable
   protected bool collideBottom = false;
   protected RaycastHit2D[] hits;
 
-
   public override void Highlight()
   {
     animator.Play( "highlight" );
@@ -41,10 +40,11 @@ public class Pickup : WorldSelectable
     animator.Play( "idle" );
   }
 
-
   void Update()
   {
     BoxCollision();
+
+    velocity.y -= Global.Gravity * Time.deltaTime;
 
     if( collideTop )
     {
@@ -63,12 +63,10 @@ public class Pickup : WorldSelectable
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
     }
-    velocity.y -= Global.Gravity * Time.deltaTime;
+
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     transform.position += (Vector3)velocity * Time.deltaTime;
   }
-
-
 
   void BoxCollision()
   {

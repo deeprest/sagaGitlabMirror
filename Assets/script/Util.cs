@@ -35,6 +35,17 @@ public static class Util
       System.DateTime.Now.Minute.ToString( "D2" );
   }
 
+  public static void Screenshot()
+  {
+    string now = System.DateTime.Now.Year.ToString() +
+                   System.DateTime.Now.Month.ToString( "D2" ) +
+                   System.DateTime.Now.Day.ToString( "D2" ) + "." +
+                   System.DateTime.Now.Hour.ToString( "D2" ) +
+                   System.DateTime.Now.Minute.ToString( "D2" ) +
+                   System.DateTime.Now.Second.ToString( "D2" );
+    ScreenCapture.CaptureScreenshot( Application.persistentDataPath + "/" + now + ".png" );
+  }
+
   public static Vector2 Project2D( Vector2 a, Vector2 b )
   {
     return new Vector2( (Vector2.Dot( a, b ) / (b.x * b.x + b.y * b.y)) * b.x, (Vector2.Dot( a, b ) / (b.x * b.x + b.y * b.y)) * b.y );
@@ -77,6 +88,52 @@ public static class Util
         DirectoryCopy( subdir.FullName, temppath, copySubDirs );
       }
     }
+  }
+
+  public class Command
+  {
+    public string cmd;
+    public string args;
+    public string dir;
+  }
+  public class CommandResult
+  {
+    public string stdout;
+    public string stderr;
+    public int returnCode;
+  }
+
+  public static void ExecuteCommands( Command[] cmds, bool shell = false )
+  {
+    foreach( Command c in cmds )
+      Execute( c, shell );
+  }
+
+  public static CommandResult Execute( Command c, bool shell = false )
+  {
+    Debug.Log( "Running... " + c.cmd + " " + c.args + " in " + c.dir );
+    System.Diagnostics.ProcessStartInfo start = new System.Diagnostics.ProcessStartInfo();
+    start.UseShellExecute = shell;
+    start.RedirectStandardOutput = !shell;
+    start.RedirectStandardError = !shell;
+    start.FileName = c.cmd; //"/usr/bin/python";
+    start.Arguments = c.args;
+    start.WorkingDirectory = c.dir;
+
+    CommandResult res = new CommandResult();
+    System.Diagnostics.Process process = System.Diagnostics.Process.Start( start );
+    if( shell )
+    {
+      res.stdout = process.StandardOutput.ReadToEnd();
+      res.stderr = process.StandardError.ReadToEnd();
+      process.WaitForExit();
+      Debug.Log( res.stdout );
+      if( res.stderr.Length > 0 )
+        Debug.LogError( res.stderr );
+
+      res.returnCode = process.ExitCode;
+    }
+    return res;
   }
 }
 

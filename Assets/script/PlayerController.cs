@@ -88,27 +88,30 @@ public class PlayerController : Character, IDamage
   public ParticleSystem dashSmoke;
   public Transform arm;
 
-  // settings
-  public float raydown = 0.2f;
-  public float downOffset = 0.16f;
+  const float raydown = 0.2f;
+  const float downOffset = 0.12f;
   // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
   public Vector2 headbox = new Vector2( .1f, .1f );
-  public float headboxy = -0.1f;
-  public float downslopefudge = 0f;
+  const float headboxy = -0.1f;
+  const float downslopefudge = 0.2f;
   const float corner = 0.707f;
 
+  [Header( "Setting" )]
+  public float speedFactor = 1;
   // velocities
   public float moveVel = 1.5f;
   public float jumpVel = 5;
   public float dashVel = 3;
-  public float wallJumpPushVelocity = 0.7f;
-  public float wallJumpPushDuration = 0.2f;
+  public float wallJumpPushVelocity = 1.5f;
+  public float wallJumpPushDuration = 0.1f;
   // durations
   public float jumpDuration = 0.4f;
   public float jumpRepeatInterval = 0.1f;
   public float dashDuration = 1;
   public float landDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
+
+  [Header("Input")]
   // input / control
   public bool inputRight;
   public bool inputLeft;
@@ -123,6 +126,8 @@ public class PlayerController : Character, IDamage
   public bool inputShield;
   public bool inputFire;
   Vector3 shoot;
+
+  [Header("State")]
   // state
   [SerializeField] bool facingRight = true;
   [SerializeField] bool onGround;
@@ -702,9 +707,9 @@ public class PlayerController : Character, IDamage
         Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.forward );
         if( onGround && hitnormalCross.y < 0 )
           // add a small downward vector for curved surfaces
-          velocity = hitnormalCross * moveVel + Vector3.down * downslopefudge;
+          velocity = hitnormalCross * moveVel * speedFactor + Vector3.down * downslopefudge;
         else
-          velocity.x = moveVel;
+          velocity.x = moveVel * speedFactor;
         if( !facingRight && onGround )
           StopDash();
       }
@@ -716,9 +721,9 @@ public class PlayerController : Character, IDamage
         Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.back );
         if( onGround && hitnormalCross.y < 0 )
           // add a small downward vector for curved surfaces
-          velocity = hitnormalCross * moveVel + Vector3.down * downslopefudge;
+          velocity = hitnormalCross * moveVel * speedFactor + Vector3.down * downslopefudge;
         else
-          velocity.x = -moveVel;
+          velocity.x = -moveVel * speedFactor;
         if( facingRight && onGround )
           StopDash();
       }
@@ -738,14 +743,14 @@ public class PlayerController : Character, IDamage
         else if( facingRight )
         {
           if( onGround || inputRight )
-            velocity.x = dashVel;
+            velocity.x = dashVel * speedFactor;
           if( (onGround || collideRight) && !dashTimer.IsActive )
             StopDash();
         }
         else
         {
           if( onGround || inputLeft )
-            velocity.x = -dashVel;
+            velocity.x = -dashVel * speedFactor;
           if( (onGround || collideLeft) && !dashTimer.IsActive )
             StopDash();
         }
@@ -757,7 +762,7 @@ public class PlayerController : Character, IDamage
         if( inputJumpStart )
         {
           walljumping = true;
-          velocity.y = jumpVel;
+          velocity.y = jumpVel * speedFactor;
           Push( Vector2.left * (inputDashStart ? dashVel : wallJumpPushVelocity), wallJumpPushDuration );
           jumpRepeatTimer.Start( jumpRepeatInterval );
           walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
@@ -776,7 +781,7 @@ public class PlayerController : Character, IDamage
         if( inputJumpStart )
         {
           walljumping = true;
-          velocity.y = jumpVel;
+          velocity.y = jumpVel * speedFactor;
           Push( Vector2.right * (inputDashStart ? dashVel : wallJumpPushVelocity), wallJumpPushDuration );
           jumpRepeatTimer.Start( jumpRepeatInterval );
           walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
@@ -912,7 +917,7 @@ public class PlayerController : Character, IDamage
     jumping = true;
     jumpTimer.Start( jumpDuration, null, StopJump );
     jumpRepeatTimer.Start( jumpRepeatInterval );
-    velocity.y = jumpVel;
+    velocity.y = jumpVel * speedFactor;
     audio.PlayOneShot( soundJump );
     dashSmoke.Stop();
   }
