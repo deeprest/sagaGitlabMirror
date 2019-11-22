@@ -99,6 +99,15 @@ public class PlayerController : Character, IDamage
 
   [Header( "Setting" )]
   public float speedFactor = 1;
+  public float SpeedFactor
+  {
+    get { return speedFactor; }
+    set
+    {
+      speedFactor = value;
+      animator.speed = value;
+    }
+  }
   // velocities
   public float moveVel = 1.5f;
   public float jumpVel = 5;
@@ -112,7 +121,7 @@ public class PlayerController : Character, IDamage
   public float landDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
 
-  [Header("Input")]
+  [Header( "Input" )]
   // input / control
   public bool inputRight;
   public bool inputLeft;
@@ -128,7 +137,7 @@ public class PlayerController : Character, IDamage
   public bool inputFire;
   Vector3 shoot;
 
-  [Header("State")]
+  [Header( "State" )]
   // state
   [SerializeField] bool facingRight = true;
   [SerializeField] bool onGround;
@@ -163,7 +172,7 @@ public class PlayerController : Character, IDamage
   public Transform armMount;
   [SerializeField] Ability secondary;
 
-  [Header("Sound")]
+  [Header( "Sound" )]
   public AudioClip soundJump;
   public AudioClip soundDash;
   public AudioClip soundDamage;
@@ -942,7 +951,7 @@ public class PlayerController : Character, IDamage
       dashSmoke.Play();
       if( onGround )
       {
-        GameObject go = Instantiate( dashflashPrefab, transform.position + new Vector3(facingRight?-0.25f:0.25f, -0.25f, 0), Quaternion.identity);
+        GameObject go = Instantiate( dashflashPrefab, transform.position + new Vector3( facingRight ? -0.25f : 0.25f, -0.25f, 0 ), Quaternion.identity );
         go.transform.localScale = facingRight ? Vector3.one : new Vector3( -1, 1, 1 );
       }
     }
