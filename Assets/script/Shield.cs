@@ -63,7 +63,6 @@ public class Shield : MonoBehaviour, IDamage
       Vector2 pos = transform.position + Vector3.Project( (Vector3)d.point - transform.position, transform.right );
       projectile.velocity = Vector3.Reflect( projectile.velocity, transform.up );
       projectile.transform.position = pos + projectile.velocity.normalized * projectile.circle.radius * 2;
-      Debug.DrawLine( d.point, projectile.velocity, Color.red );
     }
 
     return false;

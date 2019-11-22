@@ -62,15 +62,17 @@ public class BasicProjectile : Projectile, IDamage
           if( HitCount >= DieAfterHitCount )
           {
             Hit( hit.point );
+            return;
           }
         }
       }
       else
       {
         Hit( hit.point );
+        return;
       }
     }
-    else
+    //else
     {
       velocity += constantAcceleration * Time.fixedDeltaTime;
       transform.position += (Vector3)velocity * Time.fixedDeltaTime;

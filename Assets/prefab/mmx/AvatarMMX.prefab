@@ -98,7 +98,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4628035983201072
 Transform:
   m_ObjectHideFlags: 0
@@ -107,7 +107,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1361865905516568}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.36, y: -0.2, z: 0}
+  m_LocalPosition: {x: -0.323, y: -0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4857518412556878}
@@ -4928,6 +4928,8 @@ MonoBehaviour:
   audio: {fileID: 82117261715149456}
   audio2: {fileID: 82627251547920718}
   dashSmoke: {fileID: 198502029244883790}
+  dashflashPrefab: {fileID: 8084430867303457385, guid: c98c1e30c637a4aa7b76b48386862633,
+    type: 3}
   arm: {fileID: 4897319614591276}
   headbox: {x: 0.1, y: 0.1}
   speedFactor: 1
@@ -5354,6 +5356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 114555753213364338}
+  collider: {fileID: 0}
   source: {fileID: 5659821489148023790}
   soundHit: {fileID: 8300000, guid: 74baea719e21e419cbf02dfd10d88643, type: 3}
   damage: {fileID: 0}
@@ -5377,7 +5380,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.05}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}

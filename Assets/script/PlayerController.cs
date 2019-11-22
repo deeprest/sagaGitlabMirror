@@ -86,6 +86,7 @@ public class PlayerController : Character, IDamage
   new public AudioSource audio;
   public AudioSource audio2;
   public ParticleSystem dashSmoke;
+  public GameObject dashflashPrefab;
   public Transform arm;
 
   const float raydown = 0.2f;
@@ -939,6 +940,11 @@ public class PlayerController : Character, IDamage
         audio.PlayOneShot( soundDash, 0.5f );
       dashSmoke.transform.localPosition = new Vector3( -0.38f, -0.22f, 0 );
       dashSmoke.Play();
+      if( onGround )
+      {
+        GameObject go = Instantiate( dashflashPrefab, transform.position + new Vector3(facingRight?-0.25f:0.25f, -0.25f, 0), Quaternion.identity);
+        go.transform.localScale = facingRight ? Vector3.one : new Vector3( -1, 1, 1 );
+      }
     }
   }
 
