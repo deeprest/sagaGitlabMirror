@@ -12,7 +12,7 @@ public class Projectile : MonoBehaviour
   public float raycastDistance = 0.2f;
   public float timeout = 2;
   //Timer timeoutTimer;
-  public Vector3 velocity;
+  public Vector2 velocity;
 
 
   public AudioClip StartSound;

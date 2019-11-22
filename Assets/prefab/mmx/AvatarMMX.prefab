@@ -98,7 +98,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4628035983201072
 Transform:
   m_ObjectHideFlags: 0
@@ -4929,15 +4929,11 @@ MonoBehaviour:
   audio2: {fileID: 82627251547920718}
   dashSmoke: {fileID: 198502029244883790}
   arm: {fileID: 4897319614591276}
-  raydown: 0.2
-  downOffset: 0.12
   headbox: {x: 0.1, y: 0.1}
-  headboxy: -0.1
-  downslopefudge: 0.2
+  speedFactor: 1
   moveVel: 1.5
   jumpVel: 5
   dashVel: 3
-  wallJumpUpVel: 5
   wallJumpPushVelocity: 1.5
   wallJumpPushDuration: 0.1
   jumpDuration: 0.4
@@ -4988,7 +4984,6 @@ MonoBehaviour:
   damageLift: 2
   damagePushAmount: 1
   Shield: {fileID: 2937676852495435558}
-  selectRange: 0.5
   graphookTip: {fileID: 4836708145371954099}
   grapCableRender: {fileID: 525432861771323797}
   grapDistance: 10
@@ -5000,6 +4995,7 @@ MonoBehaviour:
   grapPulling: 0
   grapShotSound: {fileID: 8300000, guid: 714bd8ea9667041e99bb9a12a950f4f3, type: 3}
   grapHitSound: {fileID: 8300000, guid: 55037177bb692440ebfcf4e001cef0aa, type: 3}
+  selectRange: 0.5
 --- !u!212 &212107818795109166
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5357,6 +5353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0a61802b15c64c288d3f0eae0cf68c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  character: {fileID: 114555753213364338}
   source: {fileID: 5659821489148023790}
   soundHit: {fileID: 8300000, guid: 74baea719e21e419cbf02dfd10d88643, type: 3}
   damage: {fileID: 0}
@@ -5366,6 +5363,7 @@ MonoBehaviour:
   pulseDuration: 1
   hitPushSpeed: 10
   hitPushDuration: 0.2
+  reflectOffset: 0.1
 --- !u!61 &3521304662830707932
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5379,7 +5377,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.007204056, y: 0.0072040334}
+  m_Offset: {x: 0, y: -0.05}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -5390,7 +5388,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.38748085, y: 0.12521417}
+  m_Size: {x: 0.4, y: 0.1}
   m_EdgeRadius: 0
 --- !u!212 &394507305719372179
 SpriteRenderer:

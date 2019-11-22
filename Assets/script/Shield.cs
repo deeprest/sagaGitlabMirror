@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Shield : MonoBehaviour, IDamage
 {
+  [SerializeField] Character character;
+  [SerializeField] Collider2D collider;
   public AudioSource source;
   public AudioClip soundHit;
   public Damage damage;
@@ -58,11 +60,14 @@ public class Shield : MonoBehaviour, IDamage
     Projectile projectile = d.instigator.GetComponent<Projectile>();
     if( projectile != null )
     {
+      Vector2 pos = transform.position + Vector3.Project( (Vector3)d.point - transform.position, transform.right );
       projectile.velocity = Vector3.Reflect( projectile.velocity, transform.up );
-      if( projectile.velocity.magnitude < 0.1f )
-        print( "proj vel " + projectile.velocity.magnitude );
+      projectile.transform.position = pos + projectile.velocity.normalized * projectile.circle.radius * 2;
+      Debug.DrawLine( d.point, projectile.velocity, Color.red );
     }
 
     return false;
   }
+  public float reflectOffset = 0.1f;
+
 }

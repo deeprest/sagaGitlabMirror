@@ -5,7 +5,7 @@ public class BasicProjectile : Projectile, IDamage
 {
   public float HitTimeout = 0.1f;
   public new Light light;
-  public Vector3 constantAcceleration;
+  public Vector2 constantAcceleration;
   Timer timeoutTimer;
   int HitCount;
   public int DieAfterHitCount;
@@ -45,7 +45,7 @@ public class BasicProjectile : Projectile, IDamage
     } );
   }
 
-  void Update()
+  void FixedUpdate()
   {
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( Global.DefaultProjectileCollideLayers ) );
     if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator )) )
@@ -72,8 +72,8 @@ public class BasicProjectile : Projectile, IDamage
     }
     else
     {
-      velocity += constantAcceleration * Time.deltaTime;
-      transform.position += velocity * Time.deltaTime;
+      velocity += constantAcceleration * Time.fixedDeltaTime;
+      transform.position += (Vector3)velocity * Time.fixedDeltaTime;
     }
     /*SpriteRenderer sr = GetComponent<SpriteRenderer>();
     sr.color = Global.instance.shiftyColor;
