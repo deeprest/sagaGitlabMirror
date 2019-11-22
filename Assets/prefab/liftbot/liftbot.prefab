@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4874249801477483448}
   - component: {fileID: 9109282300699132467}
   - component: {fileID: 3047422316451110554}
-  m_Layer: 13
+  m_Layer: 0
   m_Name: liftbot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -188,7 +188,7 @@ MonoBehaviour:
   MoveDirection: {x: 0, y: 0}
   SidestepAvoidance: 0
   CanTakeDamage: 0
-  health: 5
+  health: 1
   explosion: {fileID: 0}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
   spawnChance: 1
@@ -210,7 +210,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9203506422267389143}
   - component: {fileID: 6252819446673198804}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: flash
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -258,8 +258,9 @@ public class Character : MonoBehaviour, IDamage
       Instantiate( spawnWhenDead, transform.position, Quaternion.identity );
   }
 
-  public bool TakeDamage( Damage d )
+  public virtual bool TakeDamage( Damage d )
   {
+    // dead characters will not absorb projectiles
     if( !CanTakeDamage || health <= 0 )
       return false;
     health -= d.amount;

@@ -127,8 +127,8 @@ public class Global : MonoBehaviour
 
   [Header( "Transient (Assigned at runtime)" )]
   public bool Updating = false;
-  public PolygonCollider2D CameraPoly;
-  public UnityEngine.Bounds CameraPolyBounds;
+  public Collider2D CameraPoly;
+  public UnityEngine.Bounds CameraBounds;
   [System.NonSerialized] public SceneScript ss;
   public PlayerController CurrentPlayer;
   [SerializeField] Chopper chopper;
@@ -1018,13 +1018,22 @@ public class Global : MonoBehaviour
     return FindObjectOfType<SceneScript>();
   }
 
-  public void AssignCameraPoly( PolygonCollider2D poly )
+  public void AssignCameraPoly( Collider2D collider )
   {
-    CameraPoly = poly;
-    // camera poly bounds points are local to polygon
-    CameraPolyBounds = new Bounds();
-    foreach( var p in CameraPoly.points )
-      CameraPolyBounds.Encapsulate( p );
+    CameraPoly = collider;
+    if( collider is PolygonCollider2D )
+    {
+      PolygonCollider2D poly = collider as PolygonCollider2D;
+      // camera poly bounds points are local to polygon
+      CameraBounds = new Bounds();
+      foreach( var p in poly.points )
+        CameraBounds.Encapsulate( p );
+    }
+    else if( collider is BoxCollider2D )
+    {
+      BoxCollider2D box = collider as BoxCollider2D;
+      CameraBounds = box.bounds;
+    }
   }
 
 

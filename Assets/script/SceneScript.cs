@@ -15,15 +15,15 @@ public class SceneScript : MonoBehaviour
     Global.instance.Controls.BipedActions.Disable();
   }
 
-  public void ReplaceCameraPoly( PolygonCollider2D poly )
+  public void ReplaceCameraPoly( Collider2D collider )
   {
-    Global.instance.AssignCameraPoly( poly );
+    Global.instance.AssignCameraPoly( collider );
     Global.instance.CameraController.EncompassBounds = false;
   }
 
-  public void ReplaceCameraPolyEncompass( PolygonCollider2D poly )
+  public void ReplaceCameraPolyEncompass( Collider2D collider )
   {
-    Global.instance.AssignCameraPoly( poly );
+    Global.instance.AssignCameraPoly( collider );
     Global.instance.CameraController.EncompassBounds = true;
   }
 

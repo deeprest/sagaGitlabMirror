@@ -60,9 +60,14 @@ public class Shield : MonoBehaviour, IDamage
     Projectile projectile = d.instigator.GetComponent<Projectile>();
     if( projectile != null )
     {
+      // Instantiate the projectile because the original has called Physics2D.IgnoreCollision() and cannot be undone.
       Vector2 pos = transform.position + Vector3.Project( (Vector3)d.point - transform.position, transform.right );
-      projectile.velocity = Vector3.Reflect( projectile.velocity, transform.up );
-      projectile.transform.position = pos + projectile.velocity.normalized * projectile.circle.radius * 2;
+      GameObject go = Instantiate( projectile.gameObject, pos, Quaternion.identity );
+      Projectile newProjectile = go.GetComponent<Projectile>();
+      newProjectile.instigator = character.transform;
+      newProjectile.velocity = Vector3.Reflect( newProjectile.velocity, transform.up );
+      newProjectile.transform.position = pos + newProjectile.velocity.normalized * projectile.circle.radius * 2;
+      Destroy( projectile.gameObject );
     }
 
     return false;

@@ -171,7 +171,7 @@ public class PlayerController : Character, IDamage
   [Header( "Damage" )]
   [SerializeField] float damageDuration = 0.5f;
   bool takingDamage;
-  bool invulnerable;
+  bool damagePassThrough;
   Timer damageTimer = new Timer();
   public Color damagePulseColor = Color.white;
   bool damagePulseOn;
@@ -1027,9 +1027,9 @@ public class PlayerController : Character, IDamage
     } );
   }
 
-  new public bool TakeDamage( Damage d )
+  public override bool TakeDamage( Damage d )
   {
-    if( invulnerable )
+    if( !CanTakeDamage || damagePassThrough )
       return false;
 
     //StopCharge();
@@ -1042,7 +1042,7 @@ public class PlayerController : Character, IDamage
     velocity.y = 0;
     arm.gameObject.SetActive( false );
     takingDamage = true;
-    invulnerable = true;
+    damagePassThrough = true;
     animator.Play( "damage" );
     Push( new Vector2( -sign * damagePushAmount, damageLift ), damageDuration );
     StopGrap();
@@ -1061,7 +1061,7 @@ public class PlayerController : Character, IDamage
         //animator.material.SetFloat( "_FlashAmount", 0 );
         foreach( var sr in spriteRenderers )
           sr.enabled = true;
-        invulnerable = false;
+        damagePassThrough = false;
         damagePulseTimer.Stop( false );
       } );
     } );

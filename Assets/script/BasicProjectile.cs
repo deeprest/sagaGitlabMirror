@@ -47,6 +47,9 @@ public class BasicProjectile : Projectile, IDamage
 
   void FixedUpdate()
   {
+    if( AlignRotationToVelocity )
+      transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( velocity.normalized.y, velocity.normalized.x ) ) );
+
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( Global.DefaultProjectileCollideLayers ) );
     if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator )) )
     {
