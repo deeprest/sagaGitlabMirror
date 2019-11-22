@@ -1,7 +1,5 @@
 # done (add to devlog)
-+ text on dui should list controls
-+ grenade foe
-+ fix dev zoom
+
 
 # todo
 - control rebinding

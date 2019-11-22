@@ -570,7 +570,7 @@ MonoBehaviour:
     type: 3}
   Updating: 0
   CameraPoly: {fileID: 0}
-  CameraPolyBounds:
+  CameraBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   CurrentPlayer: {fileID: 0}
@@ -583,13 +583,11 @@ MonoBehaviour:
   fader: {fileID: 5111060840001965675}
   ready: {fileID: 0}
   Cursor: {fileID: 4406899554773648766}
-  cursorOuter: 150
-  cursorInner: 10
   CursorDelta: {x: 0, y: 0}
-  CursorFactor: 0.02
+  CursorOuter: 1
   AimPosition: {x: 0, y: 0}
   CursorWorldPosition: {x: 0, y: 0}
-  cursorSensitivity: 3
+  CursorSensitivity: 1
   CursorPlayerRelative: 1
   gamepadCursorLerp: 10
   positionalCursorSpeed: 20
@@ -648,10 +646,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 10
   DopplerLevel: 0
-  MinDistance: 1
-  MaxDistance: 30
+  MinDistance: 2
+  MaxDistance: 15
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -745,10 +743,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 10
   DopplerLevel: 0
-  MinDistance: 1
-  MaxDistance: 30
+  MinDistance: 2
+  MaxDistance: 15
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0

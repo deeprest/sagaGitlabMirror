@@ -220,8 +220,7 @@ public class CustomUtility : EditorWindow
     }
 #endif
 
-#if false
-    GUILayout.Space( 10 );
+    /*GUILayout.Space( 10 );
     GUILayout.Label( "Audio Sources", EditorStyles.boldLabel );
     audioDistanceMin = EditorGUILayout.IntField( "audioDistanceMin", audioDistanceMin );
     audioDistanceMax = EditorGUILayout.IntField( "audioDistanceMax", audioDistanceMax );
@@ -247,8 +246,7 @@ public class CustomUtility : EditorWindow
         ass.rolloffMode = audioRolloff;
         ass.dopplerLevel = audioDoppler;
       }, null );
-    }
-#endif
+    }*/
 
     GUILayout.Space( 10 );
     GUILayout.Label( "Generic Utils", EditorStyles.boldLabel );

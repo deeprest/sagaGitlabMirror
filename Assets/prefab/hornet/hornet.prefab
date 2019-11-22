@@ -472,6 +472,7 @@ MonoBehaviour:
   health: 30
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
+  spawnChance: 1
   spawnWhenDead: {fileID: 0}
   flashInterval: 0.05
   flashCount: 1
@@ -493,6 +494,7 @@ MonoBehaviour:
   explosionRange: 1
   junk: {fileID: 1678155047526447402, guid: 8a88163a7c52c4dc9b6808a920402663, type: 3}
   wheelDropInterval: 3
+  wheelDropsRemaining: 6
   drop: {fileID: 6813992315022888228}
   dropPrefab: {fileID: 1094346900350558, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
   weapon: {fileID: 11400000, guid: 67bfd1773b4494e27874dbed922b0f43, type: 2}
@@ -576,10 +578,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 0
-  MinDistance: 1
-  MaxDistance: 20
+  MinDistance: 2
+  MaxDistance: 15
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0

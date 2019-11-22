@@ -105,7 +105,7 @@ public class PlayerController : Character, IDamage
     set
     {
       speedFactor = value;
-      animator.speed = value;
+      //animator.speed = value;
     }
   }
   // velocities
