@@ -24,7 +24,7 @@ public class Timeout : MonoBehaviour
 			}
 		}
 
-		if( duration>0 && Time.time - timeStart > duration)
+		if( Time.time - timeStart >= duration)
 		{
 			return true;
 		}

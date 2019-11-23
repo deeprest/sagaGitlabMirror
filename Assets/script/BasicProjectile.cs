@@ -3,13 +3,13 @@ using System.Collections;
 
 public class BasicProjectile : Projectile, IDamage
 {
-  public float HitTimeout = 0.1f;
   public new Light light;
   public Vector2 constantAcceleration;
   Timer timeoutTimer;
   int HitCount;
   public int DieAfterHitCount;
   public bool AlignRotationToVelocity = true;
+  [SerializeField] GameObject hitPrefab;
 
   void OnDestroy()
   {
@@ -33,16 +33,15 @@ public class BasicProjectile : Projectile, IDamage
 
   void Hit( Vector3 position )
   {
-    transform.position = position;
     enabled = false;
+    transform.position = position;
+    velocity = Vector2.zero;
     light.enabled = false;
-    animator.Play( "hit" );
-    timeoutTimer.Stop( false );
-    timeoutTimer = new Timer( HitTimeout, null, delegate
-    {
-      if( gameObject != null )
-        Destroy( gameObject );
-    } );
+    /*animator.Play( "hit" );*/
+    Destroy( gameObject );
+
+    if( hitPrefab != null )
+      Instantiate( hitPrefab, transform.position, transform.rotation );
   }
 
   void FixedUpdate()
@@ -75,11 +74,10 @@ public class BasicProjectile : Projectile, IDamage
         return;
       }
     }
-    //else
-    {
-      velocity += constantAcceleration * Time.fixedDeltaTime;
-      transform.position += (Vector3)velocity * Time.fixedDeltaTime;
-    }
+
+    velocity += constantAcceleration * Time.fixedDeltaTime;
+    transform.position += (Vector3)velocity * Time.fixedDeltaTime;
+
     /*SpriteRenderer sr = GetComponent<SpriteRenderer>();
     sr.color = Global.instance.shiftyColor;
     light.color = Global.instance.shiftyColor;*/
@@ -87,6 +85,7 @@ public class BasicProjectile : Projectile, IDamage
 
   public bool TakeDamage( Damage damage )
   {
+    Hit( damage.point );
     return true;
   }
 }

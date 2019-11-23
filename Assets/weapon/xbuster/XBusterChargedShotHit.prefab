@@ -9,12 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4978265925886940}
-  - component: {fileID: 58790195297255388}
   - component: {fileID: 212190135428314220}
   - component: {fileID: 5939929030331309525}
-  - component: {fileID: 1348559947617791152}
+  - component: {fileID: 2166814182677518198}
   m_Layer: 11
-  m_Name: XBusterChargedShot
+  m_Name: XBusterChargedShotHit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,22 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &58790195297255388
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1227316525270448}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.15, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.14
 --- !u!212 &212190135428314220
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -120,7 +103,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1348559947617791152
+--- !u!114 &2166814182677518198
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -129,23 +112,36 @@ MonoBehaviour:
   m_GameObject: {fileID: 1227316525270448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a90403ec0b3214e1d8f1ed4734b901ff, type: 3}
+  m_Script: {fileID: 11500000, guid: c73fc4152377f42699f7dbef37ed6441, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 5939929030331309525}
-  circle: {fileID: 58790195297255388}
-  instigator: {fileID: 0}
-  ContactDamage: {fileID: 11400000, guid: b3bd6ce166ee84adda74f0bf4aeb7f4f, type: 2}
-  speed: 8
-  raycastDistance: 0.2
-  timeout: 2
-  velocity: {x: 0, y: 0}
-  StartSound: {fileID: 8300000, guid: b1e338616507f47219c2415cb2fe710e, type: 3}
-  light: {fileID: 108978219168736568}
-  constantAcceleration: {x: 0, y: 0}
-  DieAfterHitCount: 3
-  AlignRotationToVelocity: 1
-  hitPrefab: {fileID: 1227316525270448, guid: 8502be2ec83e7477f9e68cc42950b764, type: 3}
+  ps: {fileID: 0}
+  duration: 0
+  OnTimeout:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5939929030331309525}
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: hit
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2166814182677518198}
+        m_MethodName: Die
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0.2
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1694659970105638
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,7 +167,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694659970105638}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.12, y: 0, z: -0.1}
+  m_LocalPosition: {x: 0.12, y: 0, z: -0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4978265925886940}

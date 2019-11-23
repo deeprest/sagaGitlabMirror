@@ -37,7 +37,7 @@ public class Turret : Character
       if( delta.sqrMagnitude < sightRange * sightRange )
       {
         Transform target = null;
-        RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Global.DefaultProjectileCollideLayers ) );
+        RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Global.TurretSightLayers ) );
         if( hit.transform.root == Global.instance.CurrentPlayer.transform )
           target = hit.transform;
         if( target == null )
