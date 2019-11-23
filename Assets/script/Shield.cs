@@ -16,6 +16,7 @@ public class Shield : MonoBehaviour, IDamage
   Timer pulseTimer = new Timer();
   public float hitPushSpeed = 1;
   public float hitPushDuration = 1;
+  public float reflectOffset = 0.1f;
 
   void Awake()
   {
@@ -72,6 +73,6 @@ public class Shield : MonoBehaviour, IDamage
 
     return false;
   }
-  public float reflectOffset = 0.1f;
+
 
 }

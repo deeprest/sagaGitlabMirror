@@ -40,6 +40,7 @@ public class Liftbot : Character
     UpdateLogic = UpdateAirbot;
     UpdateHit = null;
     UpdateCollision = BoxCollision;
+    UpdatePosition = null;
     origin = transform.position;
   }
 
@@ -47,7 +48,7 @@ public class Liftbot : Character
   {
     if( path.Length > 0 )
     {
-      if( Vector3.Distance( transform.position, origin + path[pathIndex]) < small )
+      if( Vector3.Distance( transform.position, origin + path[pathIndex] ) < small )
         pathIndex = ++pathIndex % path.Length;
       MoveDirection = origin + path[pathIndex] - (Vector2)transform.position;
       velocity = MoveDirection.normalized * flySpeed;
@@ -57,12 +58,38 @@ public class Liftbot : Character
       velocity = Vector2.zero;
     }
   }
-#if KINEMATIC
+
   private void FixedUpdate()
   {
-    body.MovePosition( ugh + velocity * Time.fixedDeltaTime );
+    if( pushTimer.IsActive )
+      velocity = pushVelocity;
+
+    if( UseGravity )
+      velocity.y += -Global.Gravity * Time.fixedDeltaTime;
+
+    if( collideTop )
+    {
+      velocity.y = Mathf.Min( velocity.y, 0 );
+    }
+    if( collideBottom )
+    {
+      velocity.x -= (velocity.x * friction) * Time.fixedDeltaTime;
+      velocity.y = Mathf.Max( velocity.y, 0 );
+    }
+    if( collideRight )
+    {
+      velocity.x = Mathf.Min( velocity.x, 0 );
+    }
+    if( collideLeft )
+    {
+      velocity.x = Mathf.Max( velocity.x, 0 );
+    }
+
+    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
+    velocity -= (velocity * airFriction) * Time.fixedDeltaTime;
+    transform.position += (Vector3)velocity * Time.fixedDeltaTime;
+
   }
-#endif
 
   public override bool TakeDamage( Damage d )
   {

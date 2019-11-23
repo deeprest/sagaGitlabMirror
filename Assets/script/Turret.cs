@@ -33,24 +33,33 @@ public class Turret : Character
       Vector2 pos = cannon.position;
       Vector2 player = Global.instance.CurrentPlayer.transform.position;
       Vector2 delta = player - pos;
-      Debug.DrawLine( player, pos, Color.white );
+      Debug.DrawLine( player, pos, Color.red );
       if( delta.sqrMagnitude < sightRange * sightRange )
       {
-        Vector2 local = transform.worldToLocalMatrix.MultiplyVector( delta );
-        // keep cannon between -90 and 90 degrees relative to turret base
-        float angle = Mathf.Clamp( Util.NormalizeAngle( Mathf.Rad2Deg * Mathf.Atan2( local.y, local.x ) - 90 ), min, max );
-        // todo prevent cannon from rotating outside of 180 degree range 
-        //cannon.rotation = Quaternion.RotateTowards( cannon.rotation, Quaternion.Euler( 0, 0, angle ) * transform.localToWorldMatrix.rotation, rotspeed * Time.deltaTime );
-        cannon.rotation = Quaternion.Euler( 0, 0, angle ) * transform.localToWorldMatrix.rotation;
-        Vector2 aim = cannon.transform.up;
+        Transform target = null;
         RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Global.DefaultProjectileCollideLayers ) );
-        if( hit.transform != null && hit.transform.IsChildOf( Global.instance.CurrentPlayer.transform ) )
+        if( hit.transform.root == Global.instance.CurrentPlayer.transform )
+          target = hit.transform;
+        if( target == null )
         {
-          if( debugShoot )
-            if( Vector2.Angle( delta, aim ) < maxShootAngle )
-              if( !shootRepeatTimer.IsActive )
-                Shoot( aim );
+          cannon.rotation = Quaternion.RotateTowards( cannon.rotation, Quaternion.Euler( 0, 0, 0 ) * transform.localToWorldMatrix.rotation, rotspeed * Time.deltaTime );
         }
+        else
+        {
+          Vector2 local = transform.worldToLocalMatrix.MultiplyVector( delta );
+          // todo prevent cannon from rotating outside of 180 degree range 
+          float angle = Mathf.Clamp( Util.NormalizeAngle( Mathf.Rad2Deg * Mathf.Atan2( local.y, local.x ) - 90 ), min, max );
+          cannon.rotation = Quaternion.RotateTowards( cannon.rotation, Quaternion.Euler( 0, 0, angle ) * transform.localToWorldMatrix.rotation, rotspeed * Time.deltaTime );
+          Vector2 aim = cannon.transform.up;
+          if( target != null && target.IsChildOf( Global.instance.CurrentPlayer.transform ) )
+          {
+            if( debugShoot )
+              if( Vector2.Angle( delta, aim ) < maxShootAngle )
+                if( !shootRepeatTimer.IsActive )
+                  Shoot( aim );
+          }
+        }
+
       }
     }
   }
