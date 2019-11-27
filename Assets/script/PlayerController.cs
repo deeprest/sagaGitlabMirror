@@ -503,6 +503,10 @@ public class PlayerController : Character, IDamage
 
   void Shoot()
   {
+    if( !weapon.fullAuto )
+      inputFire = false;
+    if( weapon==null || shootRepeatTimer.IsActive )
+      return;
     shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector3 pos = arm.position + shoot.normalized * armRadius;
     if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
@@ -675,7 +679,7 @@ public class PlayerController : Character, IDamage
       velocity.x = 0;
 
     // WEAPONS / ABILITIES
-    if( inputFire && !shootRepeatTimer.IsActive )
+    if( inputFire )
       Shoot();
 
     if( inputGraphook )

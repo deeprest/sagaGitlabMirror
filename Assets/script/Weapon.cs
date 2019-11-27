@@ -9,6 +9,7 @@ public class Weapon : ScriptableObject
   public Sprite cursor;
 
   public Projectile ProjectilePrefab;
+  public bool fullAuto;
   public float shootInterval = 0.1f;
   public float speedIncrease;
   public int projectileCount = 1;

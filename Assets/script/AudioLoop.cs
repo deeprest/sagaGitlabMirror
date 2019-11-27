@@ -28,7 +28,7 @@ public class AudioLoop : ScriptableObject
 {
   public AudioClip intro;
   public AudioClip loop;
-  public float introDelay = 1;
+  public float introDelay = 0.2f;
 
   public void Play( AudioSource introSource, AudioSource source )
   {
@@ -43,6 +43,5 @@ public class AudioLoop : ScriptableObject
     source.loop = true;
     source.clip = loop;
     source.PlayScheduled( AudioSettings.dspTime + introDelay + intro.length );
-
   }
 }
