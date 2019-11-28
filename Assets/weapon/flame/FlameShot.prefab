@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 58790195297255388}
   - component: {fileID: 212190135428314220}
   - component: {fileID: 4025981189729564986}
-  - component: {fileID: 7307074303829369182}
-  m_Layer: 11
+  - component: {fileID: 2774323745444708940}
+  m_Layer: 18
   m_Name: FlameShot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &7307074303829369182
+--- !u!114 &2774323745444708940
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -129,23 +129,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 1227316525270448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a90403ec0b3214e1d8f1ed4734b901ff, type: 3}
+  m_Script: {fileID: 11500000, guid: f6d5114abfa924b39bcb902b734174c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 4025981189729564986}
   circle: {fileID: 58790195297255388}
   instigator: {fileID: 0}
-  ContactDamage: {fileID: 11400000, guid: 9ee6504c4d3a34696b22db80eccab972, type: 2}
+  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
   speed: 5
   raycastDistance: 0.2
   timeout: 1
-  velocity: {x: 0, y: 0, z: 0}
-  StartSound: {fileID: 8300000, guid: ec22311f57e264c6999aa70be70d1f4b, type: 3}
-  HitTimeout: 0.1
+  velocity: {x: 0, y: 0}
+  StartSound: {fileID: 8300000, guid: cbffe7b46517146f38091b456340f652, type: 3}
   light: {fileID: 108267418089597158}
-  constantAcceleration: {x: 0, y: 5, z: 0}
+  constantAcceleration: {x: 0, y: 5}
   DieAfterHitCount: 0
-  AlignRotationToVelocity: 0
+  AlignRotationToVelocity: 1
+  hitPrefab: {fileID: 0}
 --- !u!1 &1921470626033100
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,8 +156,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4658682313527278}
   - component: {fileID: 108267418089597158}
-  m_Layer: 0
-  m_Name: Point light (2)
+  m_Layer: 18
+  m_Name: light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -171,7 +171,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1921470626033100}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4978265925886940}
@@ -188,8 +188,8 @@ Light:
   serializedVersion: 9
   m_Type: 2
   m_Color: {r: 0.972, g: 0.81031287, b: 0.38588402, a: 1}
-  m_Intensity: 0.5
-  m_Range: 4
+  m_Intensity: 1
+  m_Range: 1
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.802082
   m_CookieSize: 10

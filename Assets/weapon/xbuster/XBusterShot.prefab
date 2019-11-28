@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 58790195297255388}
   - component: {fileID: 212190135428314220}
   - component: {fileID: 4025981189729564986}
-  - component: {fileID: 3586802189887110494}
+  - component: {fileID: 4831291083865458239}
   m_Layer: 11
   m_Name: XBusterShot
   m_TagString: Untagged
@@ -120,7 +120,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &3586802189887110494
+--- !u!114 &4831291083865458239
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -129,7 +129,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1227316525270448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a90403ec0b3214e1d8f1ed4734b901ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 623c33749afb44d32889ba3fb0c1fbb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 4025981189729564986}
@@ -141,7 +141,6 @@ MonoBehaviour:
   timeout: 3
   velocity: {x: 0, y: 0}
   StartSound: {fileID: 8300000, guid: 1c1f59a9693c44e518b4ee356051971f, type: 3}
-  HitTimeout: 0.1
   light: {fileID: 108267418089597158}
   constantAcceleration: {x: 0, y: 0}
   DieAfterHitCount: 1

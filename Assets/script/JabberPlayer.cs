@@ -27,7 +27,7 @@ public class JabberPlayerEditor : Editor
 #endif
 
 
-//[ExecuteInEditMode]
+[ExecuteInEditMode]
 public class JabberPlayer : MonoBehaviour
 {
   public AudioSource audioSource;

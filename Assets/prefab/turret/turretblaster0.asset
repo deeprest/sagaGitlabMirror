@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 04394a018bd0446538c88f8afb7a48be, type: 3}
-  m_Name: XBuster-3a
+  m_Name: turretblaster0
   m_EditorClassIdentifier: 
-  icon: {fileID: 5567256653479224138, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
-  cursor: {fileID: 21300000, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
+  icon: {fileID: 21300010, guid: 2e8eacdd3e43640128e983b2e109c322, type: 3}
+  cursor: {fileID: 0}
   ProjectilePrefab: {fileID: 4831291083865458239, guid: 45580d8375fe04b5e95e71c4c3a90978,
     type: 3}
   fullAuto: 0
-  shootInterval: 0.1
+  shootInterval: 0.5
   speedIncrease: 0
-  projectileCount: 3
-  spread: 0.1
-  ChargeVariant: {fileID: 11400000, guid: 72d29ed476d5b4aa189ef3588718516d, type: 2}
+  projectileCount: 1
+  spread: 0.5
+  ChargeVariant: {fileID: 0}
   ChargeEffect: {fileID: 1114664079986530, guid: 04c57cdcd3d8942de9066c51471bd6c6,
     type: 3}
   soundCharge: {fileID: 8300000, guid: 463f9d4c8e7ff4385b99c01babc3cdd5, type: 3}

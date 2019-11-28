@@ -583,7 +583,7 @@ public class Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0a7a2a72-f465-4804-b4ea-0167400c9146"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -605,7 +605,7 @@ public class Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a1816db8-1011-4465-831c-9f094d661dcf"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -642,17 +642,6 @@ public class Controls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Graphook"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""27a52f98-ad5e-4c8b-8962-b0d44c3b54d4"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""DefaultControlScheme"",
                     ""action"": ""Graphook"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

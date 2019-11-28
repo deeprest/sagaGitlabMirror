@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BasicProjectile : Projectile, IDamage
+public class FlameProjectile : Projectile, IDamage
 {
   public new Light light;
   public Vector2 constantAcceleration;
@@ -18,10 +18,6 @@ public class BasicProjectile : Projectile, IDamage
 
   void Start()
   {
-    // let the weapon play the sound instead
-    /*if( StartSound != null )
-      Global.instance.AudioOneShot( StartSound, transform.position );*/
-
     timeoutTimer = new Timer( timeout, null, delegate ()
     {
       if( gameObject != null )
@@ -49,7 +45,7 @@ public class BasicProjectile : Projectile, IDamage
     if( AlignRotationToVelocity )
       transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( velocity.normalized.y, velocity.normalized.x ) ) );
 
-    RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( Global.DefaultProjectileCollideLayers ) );
+    RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( Global.FlameProjectileCollideLayers ) );
     if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator )) )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
@@ -77,10 +73,6 @@ public class BasicProjectile : Projectile, IDamage
 
     velocity += constantAcceleration * Time.fixedDeltaTime;
     transform.position += (Vector3)velocity * Time.fixedDeltaTime;
-
-    /*SpriteRenderer sr = GetComponent<SpriteRenderer>();
-    sr.color = Global.instance.shiftyColor;
-    light.color = Global.instance.shiftyColor;*/
   }
 
   public bool TakeDamage( Damage damage )

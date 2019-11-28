@@ -97,10 +97,11 @@ public class Global : MonoBehaviour
   public static string[] CharacterSidestepLayers = { "character", "enemy" };
   public static string[] CharacterDamageLayers = { "character" };
   public static string[] TriggerLayers = { "trigger", "triggerAndCollision" };
-  public static string[] DefaultProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" };
-  // check first before spawning to avoid colliding with these layers on the first frame
   public static string[] ProjectileNoShootLayers = { "Default" };
-  public static string[] BouncyGrenadeCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile", "destructible" };
+  public static string[] DefaultProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade", "flameProjectile" };
+  public static string[] FlameProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" };
+  // check first before spawning to avoid colliding with these layers on the first frame
+  public static string[] BouncyGrenadeCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" };
   public static string[] TurretSightLayers = { "Default", "character", "triggerAndCollision", "destructible" };
 
   [Header( "Settings" )]
