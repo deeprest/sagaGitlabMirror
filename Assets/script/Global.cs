@@ -330,6 +330,17 @@ public class Global : MonoBehaviour
     FloatSetting["PlayerSpeedFactor"].Value = FloatSetting["PlayerSpeedFactor"].Value;
   }
 
+  public void PlayMusicLoop( AudioLoop al )
+  {
+    al.Play( musicIntroSource, musicLoopSource );
+  }
+
+  public void StopMusic()
+  {
+    musicIntroSource.Stop();
+    musicLoopSource.Stop();
+  }
+
   public string ReplaceWithControlNames( string source )
   {
     // todo support composites

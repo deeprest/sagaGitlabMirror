@@ -505,7 +505,7 @@ public class PlayerController : Character, IDamage
   {
     if( !weapon.fullAuto )
       inputFire = false;
-    if( weapon==null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
+    if( weapon == null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
       return;
     if( weapon.HasInterval )
       shootRepeatTimer.Start( weapon.shootInterval, null, null );
@@ -834,7 +834,7 @@ public class PlayerController : Character, IDamage
     }
 
     if( !grapPulling && pushTimer.IsActive )
-        velocity.x = pushVelocity.x;
+      velocity.x = pushVelocity.x;
 
     // add gravity before velocity limits
     velocity.y -= Global.Gravity * Time.deltaTime;
@@ -893,6 +893,7 @@ public class PlayerController : Character, IDamage
 
     animator.Play( anim );
     transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
+    renderer.material.SetInt( "_FlipX", facingRight ? 0 : 1 );
     arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, shoot ) );
     if( wallsliding && collideRight )
@@ -906,42 +907,42 @@ public class PlayerController : Character, IDamage
     ResetInput();
   }
 
-/*
-  private void FixedUpdate()
-  {
-    // add gravity before velocity limits
-    velocity.y -= Global.Gravity * Time.fixedDeltaTime;
-    // limit velocity before adding to position
-    if( collideRight )
+  /*
+    private void FixedUpdate()
     {
-      velocity.x = Mathf.Min( velocity.x, 0 );
-      pushVelocity.x = Mathf.Min( pushVelocity.x, 0 );
-    }
-    if( collideLeft )
-    {
-      velocity.x = Mathf.Max( velocity.x, 0 );
-      pushVelocity.x = Mathf.Max( pushVelocity.x, 0 );
-    }
-    // "onGround" is not the same as "collideFeet"
-    if( onGround )
-    {
-      velocity.y = Mathf.Max( velocity.y, 0 );
-      pushVelocity.x -= (pushVelocity.x * friction) * Time.fixedDeltaTime;
-    }
-    if( collideTop )
-    {
-      velocity.y = Mathf.Min( velocity.y, 0 );
-    }
+      // add gravity before velocity limits
+      velocity.y -= Global.Gravity * Time.fixedDeltaTime;
+      // limit velocity before adding to position
+      if( collideRight )
+      {
+        velocity.x = Mathf.Min( velocity.x, 0 );
+        pushVelocity.x = Mathf.Min( pushVelocity.x, 0 );
+      }
+      if( collideLeft )
+      {
+        velocity.x = Mathf.Max( velocity.x, 0 );
+        pushVelocity.x = Mathf.Max( pushVelocity.x, 0 );
+      }
+      // "onGround" is not the same as "collideFeet"
+      if( onGround )
+      {
+        velocity.y = Mathf.Max( velocity.y, 0 );
+        pushVelocity.x -= (pushVelocity.x * friction) * Time.fixedDeltaTime;
+      }
+      if( collideTop )
+      {
+        velocity.y = Mathf.Min( velocity.y, 0 );
+      }
 
-    if( hanging )
-      velocity = Vector3.zero;
+      if( hanging )
+        velocity = Vector3.zero;
 
-    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
+      velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
 
-    transform.position += (Vector3)velocity * Time.fixedDeltaTime;
-    UpdateCollision( Time.fixedDeltaTime );
-  }
-*/
+      transform.position += (Vector3)velocity * Time.fixedDeltaTime;
+      UpdateCollision( Time.fixedDeltaTime );
+    }
+  */
 
   void StartJump()
   {
