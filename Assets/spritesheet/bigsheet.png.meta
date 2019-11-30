@@ -371,6 +371,15 @@ TextureImporter:
   - first:
       213: 8403158408130972853
     second: dashflash4
+  - first:
+      213: -161763649789766391
+    second: laser0
+  - first:
+      213: 6808946762823891067
+    second: laser1
+  - first:
+      213: -3286991494595303340
+    second: laser2
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -429,8 +438,8 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
+    maxTextureSize: 1024
+    resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -441,8 +450,8 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
+    maxTextureSize: 1024
+    resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -453,8 +462,8 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
+    maxTextureSize: 1024
+    resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -1363,12 +1372,12 @@ TextureImporter:
       name: shield
       rect:
         serializedVersion: 2
-        x: 151
-        y: 218
+        x: 152
+        y: 217
         width: 26
         height: 11
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -2955,6 +2964,69 @@ TextureImporter:
       bones: []
       spriteID: 0463e576d94d24b60a942a68dcce53a4
       internalID: 8403158408130972853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: laser0
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 39
+        width: 12
+        height: 2
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ce53a9d1596940659f304c168b07e48
+      internalID: -161763649789766391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: laser1
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 39
+        width: 12
+        height: 2
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7137d5024d8f4f3f8505372f57a0fd4
+      internalID: 6808946762823891067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: laser2
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 39
+        width: 12
+        height: 2
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f6398c3363964ad49bdb757c3d26621
+      internalID: -3286991494595303340
       vertices: []
       indices: 
       edges: []

@@ -12,10 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04394a018bd0446538c88f8afb7a48be, type: 3}
   m_Name: BouncyGrenade
   m_EditorClassIdentifier: 
+  weaponType: 0
   icon: {fileID: -8228090621009924599, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   cursor: {fileID: 21300002, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
   ProjectilePrefab: {fileID: 3263175227881446763, guid: 0740cbfa3cecc4d17b2eea47f40fd8d5,
     type: 3}
+  StartSound: {fileID: 8300000, guid: 20e667e89d46a47beba73825a6c36a76, type: 3}
+  fullAuto: 0
+  HasInterval: 1
   shootInterval: 0.1
   speedIncrease: 0
   projectileCount: 1

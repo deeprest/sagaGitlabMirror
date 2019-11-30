@@ -1,33 +1,38 @@
 # done (add to devlog)
++ TURRETS only aim when target is visible
 
 # todo
-- control rebinding
-- reduce audiooneshot calls to avoid dropout
 - remove pathfinding from lift, just use points+radius
 - fix long slide clipping
 - add airbot prop ability
 - hide arm while not shooting
-- TURRETS only aim when target is visible
-- MECH. pathing
+
+## bugs / issues
+- reduce audiooneshot calls to avoid dropout
+- release build screen fade in on level transition gets stuck
+- reproducible: charge particles on after transition. reset player state on level transition
+- minor shield single frame flip issue
+- minor liftbot shake issue
+- wheelbot box collider hits corners
+- fix glitchy sprite shader for mech on linux
+- UNITY bug: webgl audio loop Unity bug
+- UNITY bug: cursor movement in last direction when shoot
 
 ## lower priority
+- fix nav mesh obstacles in city scene
 - add ability icon to hud
 - music scene switch
 - add dash anim effect
 - add spark effect to wall jump
-- fix nav mesh obstacles in city scene
 - consolidate more sprites into bigsheet
 - detect cmd-f fullscreen switch and update setting
-- fix glitchy sprite shader for grenade mech on linux
-- UNITY-bug: cursor movement in last direction when shoot
 
 ## ideas
 - graphook foe
-- enemies should react to projectiles in proximity
-- (design) save/load game; player status, serializedobjects, UI interface
-- use state machine for enemies? how capable are the bots? They currently pathfind and sidestep.
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
-- weapon ideas:  doublewhammy/triple, rockets, seeking missiles, beam, stickybomb, invisible
+- FSM: enemies should react to projectiles in proximity
+- SERIALIZEDOBJECT: (design) save/load game; player status, serializedobjects
+- weapon ideas: +bouncygrenade, +multishot, rockets, seeking missiles, beam/laser, stickybomb/magnet, invisible/cloaking
 - powerups: speedboost, slowtime, reflective shield, supercharge
 - permanent mods: run speed, wall slide speed, dash duration, rapid shot, extra projectiles
 - 4 color buttons: change weapon, menu, interact, use item/powerup
@@ -35,16 +40,9 @@
 - idea: z-doors/manifold-doors to other rooms that exist in the same space. keep all objects live, allow enemies to enter doors.
 - idea: AI ability to navigate/traverse environment to follow player/attack. First pathfind, then plot out movement using "movement-nodes"
 - wall slide at angle in and out. building exterior
-- ceiling claw climbing
-- dash with claw slash
-- serialize dead robot parts
+- claw: ceiling claw climbing. dash with claw slash
 - enemy creature that collects parts and builds onto itself
-- subway. fast travel or GTA2 style train?
-
-## bugs / issues
-- release build screen fade in on level transition gets stuck
-- reproducible: charge particles on after transition. reset player state on level transition
-
+- city subway. fast travel or GTA2 style train?
 
 # DESIGN
 ## Design Mistakes to Avoid

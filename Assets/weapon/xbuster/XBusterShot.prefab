@@ -134,15 +134,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 4025981189729564986}
   circle: {fileID: 58790195297255388}
+  weapon: {fileID: 0}
   instigator: {fileID: 0}
   ContactDamage: {fileID: 11400000, guid: 601397d903e4744ad818ea898f162fff, type: 2}
   speed: 10
   raycastDistance: 0.2
   timeout: 3
   velocity: {x: 0, y: 0}
-  StartSound: {fileID: 8300000, guid: 1c1f59a9693c44e518b4ee356051971f, type: 3}
   light: {fileID: 108267418089597158}
-  constantAcceleration: {x: 0, y: 0}
   DieAfterHitCount: 1
   AlignRotationToVelocity: 1
   hitPrefab: {fileID: 1227316525270448, guid: 501808a31aa284cf4a2ffd0c05c1e0c9, type: 3}

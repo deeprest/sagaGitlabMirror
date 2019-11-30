@@ -39,7 +39,7 @@ public class BouncyGrenade : Projectile, IDamage
   void FixedUpdate()
   {
     RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius + radiusFudge, velocity, raycastDistance, LayerMask.GetMask( Global.BouncyGrenadeCollideLayers ) );
-    if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator )) )
+    if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator.transform )) && !ignore.Contains( hit.transform ) )
     {
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )

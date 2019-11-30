@@ -505,9 +505,10 @@ public class PlayerController : Character, IDamage
   {
     if( !weapon.fullAuto )
       inputFire = false;
-    if( weapon==null || shootRepeatTimer.IsActive )
+    if( weapon==null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
       return;
-    shootRepeatTimer.Start( weapon.shootInterval, null, null );
+    if( weapon.HasInterval )
+      shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector3 pos = arm.position + shoot.normalized * armRadius;
     if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
       weapon.FireWeapon( this, pos, shoot );
@@ -671,6 +672,12 @@ public class PlayerController : Character, IDamage
 
     string anim = "idle";
     bool previousGround = onGround;
+    onGround = collideBottom || (collideLeft && collideRight);
+    if( onGround && !previousGround )
+    {
+      landing = true;
+      landTimer.Start( landDuration, null, delegate { landing = false; } );
+    }
     wallsliding = false;
     // must have input (or push) to move horizontally, so allow no persistent horizontal velocity (without push)
     if( grapPulling )
@@ -861,13 +868,6 @@ public class PlayerController : Character, IDamage
     transform.position += (Vector3)velocity * Time.deltaTime;
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
-
-    onGround = collideBottom || (collideLeft && collideRight);
-    if( onGround && !previousGround )
-    {
-      landing = true;
-      landTimer.Start( landDuration, null, delegate { landing = false; } );
-    }
 
     if( takingDamage )
       anim = "damage";

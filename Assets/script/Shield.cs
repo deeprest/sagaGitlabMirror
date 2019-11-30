@@ -65,10 +65,22 @@ public class Shield : MonoBehaviour, IDamage
       Vector2 pos = transform.position + Vector3.Project( (Vector3)d.point - transform.position, transform.right );
       GameObject go = Instantiate( projectile.gameObject, pos, Quaternion.identity );
       Projectile newProjectile = go.GetComponent<Projectile>();
-      newProjectile.instigator = character.transform;
+      if( character != null )
+        newProjectile.instigator = character;
       newProjectile.velocity = Vector3.Reflect( newProjectile.velocity, transform.up );
-      newProjectile.transform.position = pos + newProjectile.velocity.normalized * projectile.circle.radius * 2;
-      Destroy( projectile.gameObject );
+      newProjectile.transform.position = pos;
+      newProjectile.ignore.Add( transform );
+
+      switch( projectile.weapon.weaponType )
+      {
+        case Weapon.WeaponType.Projectile:
+        Destroy( projectile.gameObject );
+        break;
+
+        case Weapon.WeaponType.Laser:
+        break;
+      }
+
     }
 
     return false;
