@@ -1,24 +1,25 @@
 # done (add to devlog)
 + TURRETS only aim when target is visible
++ bottom of wall jump issue
 
 # todo
 - remove pathfinding from lift, just use points+radius
 - fix long slide clipping
 - add airbot prop ability
-- hide arm while not shooting
 
 ## bugs / issues
+- minor liftbot shake issue
 - reduce audiooneshot calls to avoid dropout
 - release build screen fade in on level transition gets stuck
 - reproducible: charge particles on after transition. reset player state on level transition
 - minor shield single frame flip issue
-- minor liftbot shake issue
 - wheelbot box collider hits corners
 - fix glitchy sprite shader for mech on linux
 - UNITY bug: webgl audio loop Unity bug
 - UNITY bug: cursor movement in last direction when shoot
 
 ## lower priority
+- hide arm while not shooting
 - fix nav mesh obstacles in city scene
 - add ability icon to hud
 - music scene switch

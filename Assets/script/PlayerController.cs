@@ -89,8 +89,8 @@ public class PlayerController : Character, IDamage
   public GameObject dashflashPrefab;
   public Transform arm;
 
-  const float raydown = 0.2f;
-  const float downOffset = 0.12f;
+  public float raydown = 0.2f;
+  public float downOffset = 0.12f;
   // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
   public Vector2 headbox = new Vector2( .1f, .1f );
   const float headboxy = -0.1f;
@@ -447,7 +447,7 @@ public class PlayerController : Character, IDamage
         collideBottom = true;
         adjust.y = hit.point.y + box.size.y * 0.5f + downOffset;
         hitBottomNormal = hit.normal;
-
+        // moving platforms
         Character cha = hit.transform.GetComponent<Character>();
         if( cha != null )
           adjust.y += cha.velocity.y * dT;
@@ -653,6 +653,8 @@ public class PlayerController : Character, IDamage
     inputGraphook = false;
   }
 
+  bool previousGround = false;
+
   void Update()
   {
     if( Global.Paused )
@@ -671,8 +673,7 @@ public class PlayerController : Character, IDamage
 
 
     string anim = "idle";
-    bool previousGround = onGround;
-    onGround = collideBottom || (collideLeft && collideRight);
+    //bool previousGround = onGround;
     if( onGround && !previousGround )
     {
       landing = true;
@@ -762,6 +763,12 @@ public class PlayerController : Character, IDamage
         }
       }
 
+      if( onGround && inputJumpStart )
+        StartJump();
+      else
+      if( inputJumpEnd )
+        StopJump();
+      else
       if( collideRight && inputRight && hitRight.normal.y >= 0 )
       {
         if( inputJumpStart )
@@ -772,7 +779,7 @@ public class PlayerController : Character, IDamage
           jumpRepeatTimer.Start( jumpRepeatInterval );
           walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
         }
-        else if( !jumping && !onGround && velocity.y < 0 )
+        else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
         {
           velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           wallsliding = true;
@@ -791,7 +798,7 @@ public class PlayerController : Character, IDamage
           jumpRepeatTimer.Start( jumpRepeatInterval );
           walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
         }
-        else if( !jumping && inputLeft && !onGround && velocity.y < 0 )
+        else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
         {
           velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           wallsliding = true;
@@ -800,11 +807,7 @@ public class PlayerController : Character, IDamage
             dashSmoke.Play();
         }
       }
-      else if( onGround && inputJumpStart )
-        StartJump();
 
-      if( inputJumpEnd )
-        StopJump();
     }
 
     if( velocity.y < 0 )
@@ -833,11 +836,19 @@ public class PlayerController : Character, IDamage
         velocity = grapDelta.normalized * grapPullSpeed;
     }
 
-    if( !grapPulling && pushTimer.IsActive )
-      velocity.x = pushVelocity.x;
+
 
     // add gravity before velocity limits
     velocity.y -= Global.Gravity * Time.deltaTime;
+    // grap force
+    if( !grapPulling && pushTimer.IsActive )
+      velocity.x = pushVelocity.x;
+
+    if( hanging )
+      velocity = Vector3.zero;
+
+    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
+
     // limit velocity before adding to position
     if( collideRight )
     {
@@ -860,14 +871,13 @@ public class PlayerController : Character, IDamage
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
 
-    if( hanging )
-      velocity = Vector3.zero;
-
-    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-
     transform.position += (Vector3)velocity * Time.deltaTime;
+
     // update collision flags, and adjust position before render
-    UpdateCollision( Time.deltaTime );
+    //UpdateCollision( Time.deltaTime );
+
+
+
 
     if( takingDamage )
       anim = "damage";
@@ -907,42 +917,14 @@ public class PlayerController : Character, IDamage
     ResetInput();
   }
 
-  /*
-    private void FixedUpdate()
-    {
-      // add gravity before velocity limits
-      velocity.y -= Global.Gravity * Time.fixedDeltaTime;
-      // limit velocity before adding to position
-      if( collideRight )
-      {
-        velocity.x = Mathf.Min( velocity.x, 0 );
-        pushVelocity.x = Mathf.Min( pushVelocity.x, 0 );
-      }
-      if( collideLeft )
-      {
-        velocity.x = Mathf.Max( velocity.x, 0 );
-        pushVelocity.x = Mathf.Max( pushVelocity.x, 0 );
-      }
-      // "onGround" is not the same as "collideFeet"
-      if( onGround )
-      {
-        velocity.y = Mathf.Max( velocity.y, 0 );
-        pushVelocity.x -= (pushVelocity.x * friction) * Time.fixedDeltaTime;
-      }
-      if( collideTop )
-      {
-        velocity.y = Mathf.Min( velocity.y, 0 );
-      }
 
-      if( hanging )
-        velocity = Vector3.zero;
+  private void FixedUpdate()
+  {
+    previousGround = onGround;
+    UpdateCollision( Time.fixedDeltaTime );
+    onGround = collideBottom || (collideLeft && collideRight);
+  }
 
-      velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-
-      transform.position += (Vector3)velocity * Time.fixedDeltaTime;
-      UpdateCollision( Time.fixedDeltaTime );
-    }
-  */
 
   void StartJump()
   {

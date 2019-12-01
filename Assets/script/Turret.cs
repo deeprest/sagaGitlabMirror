@@ -33,7 +33,6 @@ public class Turret : Character
       Vector2 pos = cannon.position;
       Vector2 player = Global.instance.CurrentPlayer.transform.position;
       Vector2 delta = player - pos;
-      Debug.DrawLine( player, pos, Color.red );
       if( delta.sqrMagnitude < sightRange * sightRange )
       {
         Transform target = null;

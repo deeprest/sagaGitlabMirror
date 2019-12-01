@@ -4903,7 +4903,7 @@ MonoBehaviour:
   inertia: {x: 0, y: 0}
   friction: 8
   airFriction: 0.05
-  raylength: 0.01
+  raylength: 0.05
   contactSeparation: 0.01
   IgnoreCollideObjects:
   - {fileID: 0}
@@ -5695,6 +5695,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7218030405460944365, guid: 42d92b0b34bf9407e8c70e5e53c747a7,
+        type: 3}
+      propertyPath: character
+      value: 
+      objectReference: {fileID: 114555753213364338}
     - target: {fileID: 5145832829430101564, guid: 42d92b0b34bf9407e8c70e5e53c747a7,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

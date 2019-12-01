@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1200, y: 1000}
+  m_SizeDelta: {x: 417.47, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3989671509996354706
 CanvasRenderer:
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 6149174353125300860}
   - component: {fileID: 1030097670794925992}
   m_Layer: 0
-  m_Name: instruction
+  m_Name: text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -143,7 +143,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -80, y: -80}
+  m_SizeDelta: {x: -80, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6149174353125300860
 MonoBehaviour:
@@ -159,7 +159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -170,23 +170,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 185
-    m_Alignment: 0
-    m_AlignByGeometry: 1
+    m_Alignment: 4
+    m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '- wall jump minimum anim duration
-
-    - double tap wall jump pushes away from wall
-
-    - add dash anim effect
-
-    - add spark effect to wall jump
-
-    - reduce audiooneshot calls to avoid dropout
-
-    - fix nav mesh obstacles in city scene'
+  m_Text: signs do not lie
 --- !u!222 &1030097670794925992
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -206,7 +196,7 @@ GameObject:
   - component: {fileID: 8408425422518579388}
   - component: {fileID: 8517692444710378138}
   m_Layer: 16
-  m_Name: Todo Board
+  m_Name: Sign
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -265,13 +255,13 @@ SpriteRenderer:
   m_SortingLayerID: 1188755409
   m_SortingLayer: -1
   m_SortingOrder: -10
-  m_Sprite: {fileID: -3456579625240441705, guid: 64314a0420c93471b9990c7b9f080a39,
+  m_Sprite: {fileID: -2043017983467968750, guid: 64314a0420c93471b9990c7b9f080a39,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 2.53, y: 2.2}
+  m_Size: {x: 1, y: 0.25}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

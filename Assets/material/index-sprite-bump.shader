@@ -76,7 +76,10 @@
      o.Albedo = lerp( c.rgb, _Tint.rgb, _TintAmount );
     float3 norm = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
     if( _FlipX )
+    {
       norm.x = -norm.x;
+      norm.y = -norm.y;
+    }
     o.Normal = norm;
      o.Metallic = _Metallic * (1.0 - tex2D( _MetallicTex, IN.uv_MainTex ));
      o.Smoothness = _Glossiness;
