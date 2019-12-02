@@ -327,8 +327,7 @@ public class PlayerController : Character, IDamage
     collideTop = false;
     collideBottom = false;
 
-    RaycastHit2D[] hits;
-
+    //RaycastHit2D[] hits;
     hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( Global.TriggerLayers ) );
     foreach( var hit in hits )
     {
