@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: explosion
-  m_Shader: {fileID: 4800000, guid: 9b03fe816c4814a36b735a89263872f3, type: 3}
+  m_Shader: {fileID: 4800000, guid: 35356541c0ab54e2f9c3425f8121ddec, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA _EMISSION
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
@@ -75,6 +75,8 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EmissiveAmount: 0.5
+    - _FlashAmount: 0
+    - _FlipX: 0
     - _GlossMapScale: 0.181
     - _Glossiness: 0
     - _GlossyReflections: 1
@@ -85,12 +87,15 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _TintAmount: 0
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
     - _BlendColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FlashColor: {r: 1, g: 1, b: 1, a: 1}
     - _IndexColor: {r: 1, g: 0, b: 0, a: 1}
     - _IndexColor2: {r: 1, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - _Tint: {r: 1, g: 1, b: 1, a: 1}

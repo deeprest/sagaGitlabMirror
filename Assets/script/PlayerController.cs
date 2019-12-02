@@ -89,8 +89,8 @@ public class PlayerController : Character, IDamage
   public GameObject dashflashPrefab;
   public Transform arm;
 
-  public float raydown = 0.2f;
-  public float downOffset = 0.12f;
+  const float raydown = 0.2f;
+  const float downOffset = 0.12f;
   // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
   public Vector2 headbox = new Vector2( .1f, .1f );
   const float headboxy = -0.1f;
@@ -653,8 +653,6 @@ public class PlayerController : Character, IDamage
     inputGraphook = false;
   }
 
-  bool previousGround = false;
-
   void Update()
   {
     if( Global.Paused )
@@ -673,7 +671,8 @@ public class PlayerController : Character, IDamage
 
 
     string anim = "idle";
-    //bool previousGround = onGround;
+    bool previousGround = onGround;
+    onGround = collideBottom || (collideLeft && collideRight);
     if( onGround && !previousGround )
     {
       landing = true;
@@ -847,8 +846,6 @@ public class PlayerController : Character, IDamage
     if( hanging )
       velocity = Vector3.zero;
 
-    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-
     // limit velocity before adding to position
     if( collideRight )
     {
@@ -870,14 +867,10 @@ public class PlayerController : Character, IDamage
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
-
+    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     transform.position += (Vector3)velocity * Time.deltaTime;
-
     // update collision flags, and adjust position before render
-    //UpdateCollision( Time.deltaTime );
-
-
-
+    UpdateCollision( Time.deltaTime );
 
     if( takingDamage )
       anim = "damage";
@@ -917,14 +910,14 @@ public class PlayerController : Character, IDamage
     ResetInput();
   }
 
-
+  /*
   private void FixedUpdate()
   {
     previousGround = onGround;
     UpdateCollision( Time.fixedDeltaTime );
     onGround = collideBottom || (collideLeft && collideRight);
   }
-
+  */
 
   void StartJump()
   {

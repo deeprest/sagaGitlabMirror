@@ -12,6 +12,8 @@ public class Turret : Character
   Timer shootRepeatTimer = new Timer();
   [SerializeField] Transform shotOrigin;
   [SerializeField] Weapon weapon;
+  [SerializeField] Transform sightOrigin;
+  [SerializeField] float sightStartRadius = 0.5f;
 
   [SerializeField] float min = -90;
   [SerializeField] float max = 90;
@@ -36,15 +38,17 @@ public class Turret : Character
       if( delta.sqrMagnitude < sightRange * sightRange )
       {
         Transform target = null;
-        RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Global.TurretSightLayers ) );
+        RaycastHit2D hit = Physics2D.Linecast( (Vector2)sightOrigin.position + delta.normalized*sightStartRadius, player, LayerMask.GetMask( Global.TurretSightLayers ) );
         if( hit.transform.root == Global.instance.CurrentPlayer.transform )
           target = hit.transform;
         if( target == null )
         {
           cannon.rotation = Quaternion.RotateTowards( cannon.rotation, Quaternion.Euler( 0, 0, 0 ) * transform.localToWorldMatrix.rotation, rotspeed * Time.deltaTime );
+          animator.Play( "idle" );
         }
         else
         {
+          animator.Play( "alert" );
           Vector2 local = transform.worldToLocalMatrix.MultiplyVector( delta );
           // todo prevent cannon from rotating outside of 180 degree range 
           float angle = Mathf.Clamp( Util.NormalizeAngle( Mathf.Rad2Deg * Mathf.Atan2( local.y, local.x ) - 90 ), min, max );

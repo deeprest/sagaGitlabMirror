@@ -68,7 +68,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: d905710c44976415991cc7aff39cfb39, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -134,13 +134,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 5939929030331309525}
   circle: {fileID: 58790195297255388}
+  weapon: {fileID: 0}
   instigator: {fileID: 0}
   ContactDamage: {fileID: 11400000, guid: b3bd6ce166ee84adda74f0bf4aeb7f4f, type: 2}
   speed: 8
   raycastDistance: 0.2
   timeout: 2
   velocity: {x: 0, y: 0}
-  StartSound: {fileID: 8300000, guid: b1e338616507f47219c2415cb2fe710e, type: 3}
+  ignore: []
   light: {fileID: 108978219168736568}
   DieAfterHitCount: 3
   AlignRotationToVelocity: 1
