@@ -17,8 +17,8 @@ public class TriggerEvent : MonoBehaviour, ITrigger
     }
   }
 
-  public void LoadScene( Object arg )
+  public void LoadScene( string arg )
   {
-    Global.instance.LoadScene( arg.name );
+    Global.instance.LoadScene( arg );
   }
 }

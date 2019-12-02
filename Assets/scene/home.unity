@@ -5404,7 +5404,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300004, guid: eefa2060554ab451fb52f8390b7c3072,
+      objectReference: {fileID: 21300002, guid: eefa2060554ab451fb52f8390b7c3072,
         type: 3}
     - target: {fileID: 61107250239624328, guid: 6cf2753ada0e449deae9680e3cda5dae,
         type: 3}
@@ -5473,14 +5473,13 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1347174659}
         m_MethodName: LoadScene
-        m_Mode: 2
+        m_Mode: 5
         m_Arguments:
-          m_ObjectArgument: {fileID: 102900000, guid: 2b52838fbf4db4d5d86d276826f529eb,
-            type: 3}
+          m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: city-highway
+          m_StringArgument: gen
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &1414357043
@@ -5794,7 +5793,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300006, guid: eefa2060554ab451fb52f8390b7c3072,
+      objectReference: {fileID: 21300002, guid: eefa2060554ab451fb52f8390b7c3072,
         type: 3}
     - target: {fileID: 61107250239624328, guid: 6cf2753ada0e449deae9680e3cda5dae,
         type: 3}
@@ -5863,10 +5862,9 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1424527582}
         m_MethodName: LoadScene
-        m_Mode: 2
+        m_Mode: 5
         m_Arguments:
-          m_ObjectArgument: {fileID: 102900000, guid: 819d0f3d034cd4a8c90fba45d32d8bd9,
-            type: 3}
+          m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
