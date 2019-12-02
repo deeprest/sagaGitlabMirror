@@ -25,6 +25,10 @@ public class Door : MonoBehaviour, ITrigger
   public UnityEngine.Events.UnityEvent onEnter;
   public UnityEngine.Events.UnityEvent onExit;
 
+  void OnDestroy()
+  {
+    timer.Stop( false );
+  }
 
   public void Trigger( Transform instigator )
   {
