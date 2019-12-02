@@ -106,7 +106,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 52551216486609045}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.491, z: 0}
+  m_LocalPosition: {x: 0, y: 0.313, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3604313625396497800}
@@ -156,6 +156,7 @@ GameObject:
   - component: {fileID: 416081150457209015}
   - component: {fileID: 993720593254393847}
   - component: {fileID: 591998084805524476}
+  - component: {fileID: 7595769896330164111}
   m_Layer: 10
   m_Name: turret
   m_TagString: Untagged
@@ -233,7 +234,7 @@ MonoBehaviour:
   small: 0.1
   rotspeed: 100
   shotOrigin: {fileID: 4063886550480080537}
-  weapon: {fileID: 11400000, guid: 67bfd1773b4494e27874dbed922b0f43, type: 2}
+  weapon: {fileID: 11400000, guid: a8ad658bd78184cb1b60f1ad0e4f28fe, type: 2}
   sightOrigin: {fileID: 3330343523650736551}
   sightStartRadius: 0.5
   min: -90
@@ -356,6 +357,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!208 &7595769896330164111
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7674903736374466933}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.25, y: 0.18, z: 0.1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.18, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &8857430277333958295
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,8 +4,8 @@ using System.Collections;
 public class BouncyGrenade : Projectile, IDamage
 {
   public GameObject explosion;
-  Timer timeoutTimer;
-  Timer pulseTimer;
+  Timer timeoutTimer = new Timer();
+  Timer pulseTimer = new Timer();
   [SerializeField] float pulseInterval = 0.2f;
   [SerializeField] Light light;
   [SerializeField] float radiusFudge;
@@ -16,8 +16,8 @@ public class BouncyGrenade : Projectile, IDamage
     //if( StartSound != null )
     //Global.instance.AudioOneShot( StartSound, transform.position );
     GetComponent<Rigidbody2D>().velocity = new Vector2( velocity.x, velocity.y );
-    timeoutTimer = new Timer( timeout, null, Boom );
-    pulseTimer = new Timer( int.MaxValue, pulseInterval,delegate(Timer obj){ light.enabled = !light.enabled; }, null );
+    timeoutTimer.Start( timeout, null, Boom );
+    pulseTimer.Start( int.MaxValue, pulseInterval,delegate(Timer obj){ light.enabled = !light.enabled; }, null );
   }
 
   void OnDestroy()

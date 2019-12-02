@@ -18,6 +18,11 @@ public class Shield : MonoBehaviour, IDamage
   public float hitPushDuration = 1;
   public float reflectOffset = 0.1f;
 
+  void OnDestroy()
+  {
+    pulseTimer.Stop( false );
+  }
+
   void Awake()
   {
     sr.material.SetFloat( "_FlashAmount", 0 );

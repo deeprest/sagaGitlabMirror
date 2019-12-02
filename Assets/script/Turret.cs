@@ -18,7 +18,6 @@ public class Turret : Character
   [SerializeField] float min = -90;
   [SerializeField] float max = 90;
   public float maxShootAngle = 5;
-  public bool debugShoot = false;
 
   void Start()
   {
@@ -38,7 +37,7 @@ public class Turret : Character
       if( delta.sqrMagnitude < sightRange * sightRange )
       {
         Transform target = null;
-        RaycastHit2D hit = Physics2D.Linecast( (Vector2)sightOrigin.position + delta.normalized*sightStartRadius, player, LayerMask.GetMask( Global.TurretSightLayers ) );
+        RaycastHit2D hit = Physics2D.Linecast( (Vector2)sightOrigin.position + delta.normalized * sightStartRadius, player, LayerMask.GetMask( Global.TurretSightLayers ) );
         if( hit.transform.root == Global.instance.CurrentPlayer.transform )
           target = hit.transform;
         if( target == null )
@@ -56,10 +55,9 @@ public class Turret : Character
           Vector2 aim = cannon.transform.up;
           if( target != null && target.IsChildOf( Global.instance.CurrentPlayer.transform ) )
           {
-            if( debugShoot )
-              if( Vector2.Angle( delta, aim ) < maxShootAngle )
-                if( !shootRepeatTimer.IsActive )
-                  Shoot( aim );
+            if( Vector2.Angle( delta, aim ) < maxShootAngle )
+              if( !shootRepeatTimer.IsActive )
+                Shoot( aim );
           }
         }
 

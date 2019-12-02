@@ -27,7 +27,7 @@ public class Chopper : MonoBehaviour {
       {
         character.transform.parent = null;
         character.hanging = false;
-        character.Push( Vector2.right * speed, 1 );
+        character.Push( Vector2.right * speed, 3 );
         character = null;
       }
     } );

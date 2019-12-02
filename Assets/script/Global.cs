@@ -327,7 +327,7 @@ public class Global : MonoBehaviour
 
     musicLoop.Play( musicIntroSource, musicLoopSource );
     // hack settings are read before player is created, so set player settings here.
-    FloatSetting["PlayerSpeedFactor"].Value = FloatSetting["PlayerSpeedFactor"].Value;
+    FloatSetting["PlayerSpeedFactor"].onValueChanged( FloatSetting["PlayerSpeedFactor"].Value );
   }
 
   public void PlayMusicLoop( AudioLoop al )
@@ -1143,7 +1143,11 @@ public class Global : MonoBehaviour
     CreateFloatSetting( "CameraLerpAlpha", 20, 0, 50, 0.01f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 0.05f, delegate ( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
-    CreateFloatSetting( "PlayerSpeedFactor", 1, 1, 2, 0.1f, delegate ( float value ) { if( CurrentPlayer != null ) CurrentPlayer.SpeedFactor = value; } );
+    CreateFloatSetting( "PlayerSpeedFactor", 0, 0, 1, 0.1f, delegate ( float value )
+    {
+      if( CurrentPlayer != null )
+        CurrentPlayer.SpeedFactorNormalized = value;
+    } );
   }
 
   Selectable previousSelectable;
