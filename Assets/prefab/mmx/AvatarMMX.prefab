@@ -4932,11 +4932,13 @@ MonoBehaviour:
     type: 3}
   arm: {fileID: 4897319614591276}
   headbox: {x: 0.1, y: 0.1}
-  speedFactor: 1
-  speedFactorJump: 0.77
-  moveVel: 1.5
-  jumpVel: 5
-  dashVel: 3
+  speedFactorNormalized: 1
+  moveVelMin: 1.5
+  moveVelMax: 3
+  jumpVelMin: 5
+  jumpVelMax: 10
+  dashVelMin: 3
+  dashVelMax: 10
   wallJumpPushVelocity: 1.5
   wallJumpPushDuration: 0.1
   jumpDuration: 0.4

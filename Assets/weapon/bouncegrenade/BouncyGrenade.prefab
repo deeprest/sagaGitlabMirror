@@ -116,13 +116,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 2738584566118510243}
   circle: {fileID: 58790195297255388}
+  weapon: {fileID: 0}
   instigator: {fileID: 0}
   ContactDamage: {fileID: 11400000, guid: 9ee6504c4d3a34696b22db80eccab972, type: 2}
   speed: 8
   raycastDistance: 0.2
   timeout: 3
   velocity: {x: 0, y: 0}
-  StartSound: {fileID: 8300000, guid: 20e667e89d46a47beba73825a6c36a76, type: 3}
+  ignore: []
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   pulseInterval: 0.1
   light: {fileID: 108267418089597158}

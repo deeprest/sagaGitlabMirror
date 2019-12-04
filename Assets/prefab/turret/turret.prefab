@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 591998084805524476}
   - component: {fileID: 7595769896330164111}
   m_Layer: 10
-  m_Name: turret
+  m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -240,7 +240,6 @@ MonoBehaviour:
   min: -90
   max: 90
   maxShootAngle: 5
-  debugShoot: 1
 --- !u!212 &4083742519420547586
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -367,11 +366,11 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.25, y: 0.18, z: 0.1}
+  m_Extents: {x: 0.25, y: 0.1796875, z: 0.15}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0.18, z: 0}
+  m_Center: {x: 0, y: 0.1796875, z: 0}
   m_TimeToStationary: 0.5
 --- !u!1 &8857430277333958295
 GameObject:

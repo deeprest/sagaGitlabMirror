@@ -86,6 +86,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -126,22 +127,31 @@ MonoBehaviour:
   renderer: {fileID: 212949075796312028}
   animator: {fileID: 0}
   colliders: []
+  spriteRenderers: []
   UseGravity: 1
   velocity: {x: 0, y: 0}
+  pushVelocity: {x: 0, y: 0}
   inertia: {x: 0, y: 0}
   friction: 0.1
   airFriction: 0.01
   raylength: 0.01
   contactSeparation: 0.01
-  downOffset: 0.01
-  CollideLayers:
-  - Default
-  DamageLayers:
-  - character
+  IgnoreCollideObjects: []
+  HasPath: 0
+  WaypointRadii: 0.1
+  DestinationRadius: 0.3
+  DestinationPosition: {x: 0, y: 0, z: 0}
+  waypoint: []
+  debugPath: []
+  AgentTypeName: Small
+  MoveDirection: {x: 0, y: 0}
+  SidestepAvoidance: 1
+  CanTakeDamage: 1
   health: 3
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  hitPush: 4
+  spawnChance: 1
+  spawnWhenDead: {fileID: 0}
   flashInterval: 0.05
   flashCount: 1
   ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
@@ -225,6 +235,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

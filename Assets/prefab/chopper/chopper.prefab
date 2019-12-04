@@ -116,6 +116,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -154,6 +155,7 @@ MonoBehaviour:
   CurrentFrameIndex: 3
   sac: []
   sr: {fileID: 212343005596785154}
+  image: {fileID: 0}
   flipX: 0
   CurrentSequence: {fileID: 11400000, guid: 3c39ae3b2a4284e04a46e5924d0a4063, type: 2}
   isPlaying: 0

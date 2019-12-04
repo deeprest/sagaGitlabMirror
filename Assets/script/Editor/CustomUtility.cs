@@ -280,17 +280,13 @@ public class CustomUtility : EditorWindow
 
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Fix all Nav Obstacles" ) )
     {
-      gos = new List<GameObject>();
-      string[] guids = AssetDatabase.FindAssets( "t:prefab" );
+      assetPaths = new List<string>();
+      guids = AssetDatabase.FindAssets( replaceName + " t:prefab", new string[] { "Assets" } );
       foreach( string guid in guids )
+        assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
+      StartJob( "Searching...", assetPaths.Count, delegate ()
       {
-        GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>( AssetDatabase.GUIDToAssetPath( guid ) );
-        gos.Add( go );
-      }
-      //gos = new List<GameObject>( Resources.FindObjectsOfTypeAll<GameObject>() );
-      StartJob( "Searching...", gos.Count, delegate ()
-      {
-        GameObject go = gos[index];
+        GameObject go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
         NavMeshObstacle[] navs = go.GetComponentsInChildren<NavMeshObstacle>();
         foreach( var nav in navs )
         {
@@ -299,12 +295,13 @@ public class CustomUtility : EditorWindow
           {
             nav.carving = true;
             nav.center = rdr.transform.worldToLocalMatrix.MultiplyPoint( rdr.bounds.center );
-            nav.size = new Vector3( rdr.size.x, rdr.size.y, 0.2f );
+            nav.size = new Vector3( rdr.size.x, rdr.size.y, 0.3f );
           }
         }
-
+        PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
+        PrefabUtility.UnloadPrefabContents( go );
       },
-        AssetDatabase.SaveAssets );
+      null );
     }
 
     GUILayout.Label( "Replace Common Settings", EditorStyles.boldLabel );
