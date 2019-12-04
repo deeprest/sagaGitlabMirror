@@ -6,7 +6,7 @@
             "id": "8a6bf452-3efb-41a3-8194-b811718b7ee7",
             "actions": [
                 {
-                    "name": "DetectInputType",
+                    "name": "Any",
                     "type": "Button",
                     "id": "0db8ffb9-5a14-4281-adce-bfaec801389f",
                     "expectedControlType": "",
@@ -147,7 +147,7 @@
                     "interactions": "",
                     "processors": "AxisDeadzone(min=0.5,max=1)",
                     "groups": "",
-                    "action": "DetectInputType",
+                    "action": "Any",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -158,7 +158,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "DefaultControlScheme",
-                    "action": "DetectInputType",
+                    "action": "Any",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

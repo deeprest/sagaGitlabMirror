@@ -30,19 +30,19 @@ public class AudioLoop : ScriptableObject
   public AudioClip loop;
   public float introDelay = 0.2f;
 
-  public void Play( AudioSource introSource, AudioSource source )
+  public void Play( AudioSource introSource, AudioSource loopSource )
   {
     introSource.playOnAwake = false;
-    introSource.priority = source.priority;
-    introSource.volume = source.volume;
+    introSource.priority = loopSource.priority;
+    introSource.volume = loopSource.volume;
 
     introSource.loop = false;
     introSource.clip = intro;
     introSource.PlayScheduled( AudioSettings.dspTime + introDelay );
 
-    source.loop = true;
-    source.clip = loop;
-    source.PlayScheduled( AudioSettings.dspTime + introDelay + intro.length );
+    loopSource.loop = true;
+    loopSource.clip = loop;
+    loopSource.PlayScheduled( AudioSettings.dspTime + introDelay + intro.length );
   }
 
 }

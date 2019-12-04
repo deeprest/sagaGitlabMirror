@@ -561,9 +561,7 @@ MonoBehaviour:
   ScreenSettingsCountdown: {fileID: 5907061491218795952}
   InitialSceneName: home
   CameraController: {fileID: 114243473509280006}
-  musicLoopSource: {fileID: 681935436}
-  musicIntroSource: {fileID: 583537875}
-  musicLoop: {fileID: 11400000, guid: 8c0e3bad8364b489fa2e06687d70b7ab, type: 2}
+  animator: {fileID: 0}
   audioOneShotPrefab: {fileID: 1480036779989360, guid: d4170fe16bae647ac97e235eb55168d5,
     type: 3}
   AvatarPrefab: {fileID: 1789244597324514, guid: b9ab9fa9feaf64647b54a4f4a828b2d4,
@@ -619,7 +617,15 @@ MonoBehaviour:
   snapSlowmo: {fileID: 245016920106228552, guid: 1c39f8c58cb83400089739cd8e4d9c58,
     type: 2}
   snapNormal: {fileID: 24500006, guid: 1c39f8c58cb83400089739cd8e4d9c58, type: 2}
+  snapMusicSilence: {fileID: 0}
+  MusicTransitionDuration: 1
   AudioFadeDuration: 0.1
+  musicSource0: {fileID: 681935436}
+  musicSource1: {fileID: 583537875}
+  MusicLoops:
+  - {fileID: 11400000, guid: 8c0e3bad8364b489fa2e06687d70b7ab, type: 2}
+  - {fileID: 11400000, guid: f50410053ee0a4ea8af3e10a18b81d33, type: 2}
+  - {fileID: 11400000, guid: ddd6a64fcc0074f85a35c26606704fff, type: 2}
   SpeechBubble: {fileID: 5109516709708530702}
   SpeechText: {fileID: 7212866214475871008}
   SpeechIcon: {fileID: 1274452571569816997}
@@ -2461,7 +2467,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2384965751961763982
 RectTransform:
   m_ObjectHideFlags: 0

@@ -12,11 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04394a018bd0446538c88f8afb7a48be, type: 3}
   m_Name: Hornet Blaster
   m_EditorClassIdentifier: 
+  weaponType: 0
   icon: {fileID: 21300024, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   cursor: {fileID: 0}
   ProjectilePrefab: {fileID: 4831291083865458239, guid: 45580d8375fe04b5e95e71c4c3a90978,
     type: 3}
+  StartSound: {fileID: 8300000, guid: 1c1f59a9693c44e518b4ee356051971f, type: 3}
   fullAuto: 0
+  HasInterval: 1
   shootInterval: 0.2
   speedIncrease: 10
   projectileCount: 1

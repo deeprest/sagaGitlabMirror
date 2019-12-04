@@ -4,11 +4,28 @@ using System.Collections;
 
 public class SceneScript : MonoBehaviour
 {
-  // temp
+  public AudioLoop music;
+  // 
   public Level level;
+  public Collider2D sb;
 
-  public PolygonCollider2D sb;
-  public virtual void StartScene() { }
+  public virtual void StartScene() 
+  {
+    if( Application.isEditor && !Global.instance.SimulatePlayer && Global.instance.CurrentPlayer == null )
+    {
+      Global.instance.SpawnPlayer();
+      return;
+    }
+    // level generation
+    if( level != null )
+      level.Generate();
+
+    Global.instance.AssignCameraPoly( sb );
+
+    // music fade in
+    if( music != null )
+      Global.instance.PlayMusicLoop( music );
+  }
 
   public void PlayerInputOff()
   {

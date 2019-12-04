@@ -10,6 +10,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.AI;
+using UnityEngine.Playables;
 using LitJson;
 using Ionic.Zip;
 using System.Runtime.InteropServices;
@@ -68,6 +69,7 @@ public class Global : MonoBehaviour
   [Header( "Global Settings" )]
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
+  [SerializeField] string InitialSceneName;
   public float deadZone = 0.1f;
   // screenshot timer
   public int screenshotInterval;
@@ -117,11 +119,9 @@ public class Global : MonoBehaviour
   Timer ScreenSettingsCountdownTimer = new Timer();
 
   [Header( "References" )]
-  [SerializeField] string InitialSceneName;
   public CameraController CameraController;
-  [SerializeField] AudioSource musicLoopSource;
-  [SerializeField] AudioSource musicIntroSource;
-  [SerializeField] AudioLoop musicLoop;
+  [SerializeField] Animator animator;
+
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
@@ -131,7 +131,7 @@ public class Global : MonoBehaviour
   public bool Updating = false;
   public Collider2D CameraPoly;
   public UnityEngine.Bounds CameraBounds;
-  [System.NonSerialized] public SceneScript ss;
+  SceneScript sceneScript;
   public PlayerController CurrentPlayer;
   [SerializeField] Chopper chopper;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
@@ -213,7 +213,14 @@ public class Global : MonoBehaviour
   public UnityEngine.Audio.AudioMixer mixer;
   public UnityEngine.Audio.AudioMixerSnapshot snapSlowmo;
   public UnityEngine.Audio.AudioMixerSnapshot snapNormal;
+  public UnityEngine.Audio.AudioMixerSnapshot snapMusicSilence;
+  public float MusicTransitionDuration = 1;
   public float AudioFadeDuration = 0.1f;
+  [SerializeField] AudioSource musicSource0;
+  [SerializeField] AudioSource musicSource1;
+  AudioSource activeMusicSource;
+  [SerializeField] AudioLoop[] MusicLoops;
+
 
   [Header( "Speech" )]
   public GameObject SpeechBubble;
@@ -269,6 +276,7 @@ public class Global : MonoBehaviour
       ResourceLookup.Add( go.name, go );
 
     ShowMenu( false );
+    SpeechBubble.SetActive( false );
 
     NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
     foreach( var mesh in meshSurfaces )
@@ -290,30 +298,32 @@ public class Global : MonoBehaviour
     else
       Camera.main.fieldOfView = 20;
 
+    HUD.SetActive( false );
+
     if( Application.isEditor && !SimulatePlayer )
     {
       LoadingScreen.SetActive( false );
       fader.color = Color.clear;
       Updating = true;
-      ss = GetSceneScript();
-      if( ss != null )
-      {
-        AssignCameraPoly( ss.sb );
-        if( ss.level != null )
-          ss.level.Generate();
-      }
+      sceneScript = FindObjectOfType<SceneScript>();
+      if( sceneScript != null )
+        sceneScript.StartScene();
+      //{
+      //  AssignCameraPoly( sceneScript.sb );
+      //  if( sceneScript.level != null )
+      //    sceneScript.level.Generate();
+      //}
       foreach( var mesh in meshSurfaces )
         mesh.BuildNavMesh();
 
-      if( CurrentPlayer == null )
-        SpawnPlayer();
+      //if( CurrentPlayer == null )
+        //SpawnPlayer();
     }
     else
     {
-      StartCoroutine( LoadSceneRoutine( "home", true, true, false ) );
+      StartCoroutine( LoadSceneRoutine( InitialSceneName, false, false, true, false ) );
     }
 
-    SpeechBubble.SetActive( false );
   }
 
   void Start()
@@ -324,21 +334,6 @@ public class Global : MonoBehaviour
     mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value ) );
     mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
 #endif
-
-    musicLoop.Play( musicIntroSource, musicLoopSource );
-    // hack settings are read before player is created, so set player settings here.
-    FloatSetting["PlayerSpeedFactor"].onValueChanged( FloatSetting["PlayerSpeedFactor"].Value );
-  }
-
-  public void PlayMusicLoop( AudioLoop al )
-  {
-    al.Play( musicIntroSource, musicLoopSource );
-  }
-
-  public void StopMusic()
-  {
-    musicIntroSource.Stop();
-    musicLoopSource.Stop();
   }
 
   public string ReplaceWithControlNames( string source )
@@ -382,7 +377,7 @@ public class Global : MonoBehaviour
     Controls.Enable();
     Controls.MenuActions.Disable();
 
-    Controls.GlobalActions.DetectInputType.performed += ( obj ) => {
+    Controls.GlobalActions.Any.performed += ( obj ) => {
       bool newvalue = obj.control.path.Contains( "Gamepad" );
       if( newvalue != UsingGamepad )
         print( "UsingGamepad new value: " + newvalue.ToString() + " " + obj.control.path );
@@ -437,12 +432,12 @@ public class Global : MonoBehaviour
     };
   }
 
-  public void LoadScene( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true )
+  public void LoadScene( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true )
   {
-    StartCoroutine( LoadSceneRoutine( sceneName, waitForFadeIn, spawnPlayer, fadeOut ) );
+    StartCoroutine( LoadSceneRoutine( sceneName, waitForFadeIn, spawnPlayer, fadeOut, showLoadingScreen ) );
   }
 
-  IEnumerator LoadSceneRoutine( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true )
+  IEnumerator LoadSceneRoutine( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true )
   {
     Updating = false;
     if( fadeOut )
@@ -457,9 +452,30 @@ public class Global : MonoBehaviour
       fader.gameObject.SetActive( true );
       yield return null;
     }
+    // music fade out
+    Timer musicTimer = new Timer();
+    TimerParams musicTimerParams = new TimerParams
+    {
+      unscaledTime = true,
+      repeat = false,
+      duration = MusicTransitionDuration,
+      UpdateDelegate = delegate ( Timer obj )
+      {
+        musicSource0.volume = 1 - obj.ProgressNormalized;
+        musicSource1.volume = 1 - obj.ProgressNormalized;
+      },
+      CompleteDelegate = delegate
+      {
+        musicSource0.volume = 0;
+        musicSource1.volume = 0;
+        StopMusic();
+      }
+    };
+    musicTimer.Start( musicTimerParams );
     Pause();
     HUD.SetActive( false );
-    yield return ShowLoadingScreenRoutine( "Loading... " + sceneName );
+    if( showLoadingScreen )
+      yield return ShowLoadingScreenRoutine( "Loading... " + sceneName );
     if( CurrentPlayer != null )
     {
       CurrentPlayer.PreSceneTransition();
@@ -477,7 +493,6 @@ public class Global : MonoBehaviour
       //progTarget = ao.progress;
       //print( ao.progress.ToString() );
       yield return null;
-      //yield return new WaitForSecondsRealtime( 1 );
     }
     loadingScene = false;
 
@@ -485,7 +500,6 @@ public class Global : MonoBehaviour
     foreach( var mesh in meshSurfaces )
       mesh.BuildNavMesh();
 
-    Scene scene = SceneManager.GetSceneByName( sceneName );
     if( CurrentPlayer == null )
     {
       if( spawnPlayer )
@@ -496,18 +510,26 @@ public class Global : MonoBehaviour
       CurrentPlayer.PostSceneTransition();
     }
 
-    ss = FindObjectOfType<SceneScript>();
-    if( ss != null )
-    {
-      if( ss.level != null )
-        ss.level.Generate();
-      AssignCameraPoly( ss.sb );
-      ss.StartScene();
-    }
-
     HUD.SetActive( true );
     Unpause();
-    yield return HideLoadingScreenRoutine();
+
+    sceneScript = FindObjectOfType<SceneScript>();
+    if( sceneScript != null )
+      sceneScript.StartScene();
+
+    musicTimer.Start( MusicTransitionDuration,
+    delegate ( Timer obj )
+    {
+      musicSource0.volume = obj.ProgressNormalized;
+      musicSource1.volume = obj.ProgressNormalized;
+    }, delegate
+    {
+      musicSource0.volume = 1;
+      musicSource1.volume = 1;
+    } );
+
+    if( showLoadingScreen )
+      HideLoadingScreen();
     FadeClear();
     if( waitForFadeIn )
       while( fadeTimer.IsActive )
@@ -686,6 +708,9 @@ public class Global : MonoBehaviour
     CurrentPlayer = go.GetComponent<PlayerController>();
     CameraController.LookTarget = CurrentPlayer.gameObject;
     CameraController.transform.position = CurrentPlayer.transform.position;
+
+    // hack settings are read before player is created, so set player settings here.
+    CurrentPlayer.SpeedFactorNormalized = FloatSetting["PlayerSpeedFactor"].Value;
   }
 
   GameObject FindSpawnPoint()
@@ -707,8 +732,6 @@ public class Global : MonoBehaviour
     }
     return Vector3.zero;
   }
-
-
 
   public void Slow()
   {
@@ -820,7 +843,7 @@ public class Global : MonoBehaviour
     ActiveDiagetic = null;
     Controls.MenuActions.Disable();
     Controls.BipedActions.Enable();
-    SceneScript ss = GetSceneScript();
+    SceneScript ss = FindObjectOfType<SceneScript>();
     if( ss != null )
       AssignCameraPoly( ss.sb );
     CameraController.EncompassBounds = false;
@@ -851,12 +874,6 @@ public class Global : MonoBehaviour
     // This is a coroutine simply to wait a single frame after activating the loading screen.
     // Otherwise the screen will not show! 
     ShowLoadingScreen( message );
-    yield return null;
-  }
-
-  IEnumerator HideLoadingScreenRoutine()
-  {
-    HideLoadingScreen();
     yield return null;
   }
 
@@ -1026,11 +1043,6 @@ public class Global : MonoBehaviour
     SpeechAnimator.Play( "talk" );
   }
 
-  public SceneScript GetSceneScript()
-  {
-    return FindObjectOfType<SceneScript>();
-  }
-
   public void AssignCameraPoly( Collider2D collider )
   {
     CameraPoly = collider;
@@ -1048,7 +1060,6 @@ public class Global : MonoBehaviour
       CameraBounds = box.bounds;
     }
   }
-
 
   void VerifyPersistentData()
   {
@@ -1133,6 +1144,11 @@ public class Global : MonoBehaviour
       mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) );
     } );
 
+    /*CreateFloatSetting( "MusicTrack", 0, 0, MusicLoops.Length - 1, 1.0f / (MusicLoops.Length - 1), delegate ( float value )
+    {
+      PlayMusicLoop( MusicLoops[Mathf.FloorToInt( Mathf.Clamp( value, 0, MusicLoops.Length - 1 ) )] );
+    } );*/
+
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
     CreateBoolSetting( "CursorInfluence", true, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
     CreateBoolSetting( "AimSnap", false, delegate ( bool value ) { AimSnap = value; } );
@@ -1143,11 +1159,7 @@ public class Global : MonoBehaviour
     CreateFloatSetting( "CameraLerpAlpha", 20, 0, 50, 0.01f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 0.05f, delegate ( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
-    CreateFloatSetting( "PlayerSpeedFactor", 0, 0, 1, 0.1f, delegate ( float value )
-    {
-      if( CurrentPlayer != null )
-        CurrentPlayer.SpeedFactorNormalized = value;
-    } );
+    CreateFloatSetting( "PlayerSpeedFactor", 0, 0, 1, 0.1f, delegate ( float value ) { if( CurrentPlayer != null ) CurrentPlayer.SpeedFactorNormalized = value; } );
   }
 
   Selectable previousSelectable;
@@ -1361,5 +1373,54 @@ public class Global : MonoBehaviour
   }
 
 
+  public void PlayMusicClip( AudioClip clip )
+  {
+    musicSource0.clip = clip;
+    musicSource0.Play();
+  }
 
+  public void StopMusic()
+  {
+    musicSource0.Stop();
+    musicSource1.Stop();
+  }
+
+  public void PlayMusicLoop( AudioLoop audioLoop )
+  {
+    audioLoop.Play( musicSource0, musicSource1 );
+  }
+  /*
+ public void MusicTransition( AudioLoop loop )
+ {
+   Timer t = new Timer();
+   t.Start( MusicTransitionDuration, 
+   delegate ( Timer obj )
+   {
+     musicSource0.volume = 1 - obj.ProgressNormalized;
+     musicSource1.volume = 1 - obj.ProgressNormalized;
+   },
+   delegate
+   {
+     loop.Play( musicSource0, musicSource1 );
+     t.Start( MusicTransitionDuration, 
+     delegate ( Timer obj )
+     {
+       musicSource0.volume = obj.ProgressNormalized;
+       musicSource1.volume = obj.ProgressNormalized;
+     }, null );
+   }
+   );
+ }
+
+ public void CrossFadeToClip( AudioClip clip )
+ {
+   AudioSource next = (activeMusicSource == musicSource0) ? musicSource1 : musicSource0;
+   next.clip = clip;
+   Timer t = new Timer( MusicTransitionDuration, delegate ( Timer obj )
+   {
+     activeMusicSource.volume = obj.ProgressNormalized;
+     next.volume = 1 - obj.ProgressNormalized;
+   }, null );
+ }
+ */
 }

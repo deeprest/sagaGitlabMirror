@@ -52,6 +52,7 @@ public class CameraController : MonoBehaviour
   public void CameraLateUpdate()
   {
     float ortho = orthoTarget;
+    pos.z = zOffset;
 
     if( !lerp.enabled && LookTarget != null )
     {
@@ -63,7 +64,7 @@ public class CameraController : MonoBehaviour
         lookTarget.z = zOffset;
       }
       pos.x = lookTarget.x;
-      pos.z = zOffset;
+      //pos.z = zOffset;
 
       if( UseVerticalRange )
       {

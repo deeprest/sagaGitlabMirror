@@ -19,7 +19,7 @@ public class Controls : IInputActionCollection, IDisposable
             ""id"": ""8a6bf452-3efb-41a3-8194-b811718b7ee7"",
             ""actions"": [
                 {
-                    ""name"": ""DetectInputType"",
+                    ""name"": ""Any"",
                     ""type"": ""Button"",
                     ""id"": ""0db8ffb9-5a14-4281-adce-bfaec801389f"",
                     ""expectedControlType"": """",
@@ -160,7 +160,7 @@ public class Controls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": ""AxisDeadzone(min=0.5,max=1)"",
                     ""groups"": """",
-                    ""action"": ""DetectInputType"",
+                    ""action"": ""Any"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -171,7 +171,7 @@ public class Controls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""DefaultControlScheme"",
-                    ""action"": ""DetectInputType"",
+                    ""action"": ""Any"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -873,7 +873,7 @@ public class Controls : IInputActionCollection, IDisposable
 }");
         // GlobalActions
         m_GlobalActions = asset.FindActionMap("GlobalActions", throwIfNotFound: true);
-        m_GlobalActions_DetectInputType = m_GlobalActions.FindAction("DetectInputType", throwIfNotFound: true);
+        m_GlobalActions_Any = m_GlobalActions.FindAction("Any", throwIfNotFound: true);
         m_GlobalActions_Menu = m_GlobalActions.FindAction("Menu", throwIfNotFound: true);
         m_GlobalActions_Slowmo = m_GlobalActions.FindAction("Slowmo", throwIfNotFound: true);
         m_GlobalActions_Pause = m_GlobalActions.FindAction("Pause", throwIfNotFound: true);
@@ -950,7 +950,7 @@ public class Controls : IInputActionCollection, IDisposable
     // GlobalActions
     private readonly InputActionMap m_GlobalActions;
     private IGlobalActionsActions m_GlobalActionsActionsCallbackInterface;
-    private readonly InputAction m_GlobalActions_DetectInputType;
+    private readonly InputAction m_GlobalActions_Any;
     private readonly InputAction m_GlobalActions_Menu;
     private readonly InputAction m_GlobalActions_Slowmo;
     private readonly InputAction m_GlobalActions_Pause;
@@ -961,7 +961,7 @@ public class Controls : IInputActionCollection, IDisposable
     {
         private Controls m_Wrapper;
         public GlobalActionsActions(Controls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @DetectInputType => m_Wrapper.m_GlobalActions_DetectInputType;
+        public InputAction @Any => m_Wrapper.m_GlobalActions_Any;
         public InputAction @Menu => m_Wrapper.m_GlobalActions_Menu;
         public InputAction @Slowmo => m_Wrapper.m_GlobalActions_Slowmo;
         public InputAction @Pause => m_Wrapper.m_GlobalActions_Pause;
@@ -977,9 +977,9 @@ public class Controls : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_GlobalActionsActionsCallbackInterface != null)
             {
-                DetectInputType.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDetectInputType;
-                DetectInputType.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDetectInputType;
-                DetectInputType.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDetectInputType;
+                Any.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnAny;
+                Any.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnAny;
+                Any.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnAny;
                 Menu.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMenu;
                 Menu.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMenu;
                 Menu.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMenu;
@@ -1002,9 +1002,9 @@ public class Controls : IInputActionCollection, IDisposable
             m_Wrapper.m_GlobalActionsActionsCallbackInterface = instance;
             if (instance != null)
             {
-                DetectInputType.started += instance.OnDetectInputType;
-                DetectInputType.performed += instance.OnDetectInputType;
-                DetectInputType.canceled += instance.OnDetectInputType;
+                Any.started += instance.OnAny;
+                Any.performed += instance.OnAny;
+                Any.canceled += instance.OnAny;
                 Menu.started += instance.OnMenu;
                 Menu.performed += instance.OnMenu;
                 Menu.canceled += instance.OnMenu;
@@ -1224,7 +1224,7 @@ public class Controls : IInputActionCollection, IDisposable
     }
     public interface IGlobalActionsActions
     {
-        void OnDetectInputType(InputAction.CallbackContext context);
+        void OnAny(InputAction.CallbackContext context);
         void OnMenu(InputAction.CallbackContext context);
         void OnSlowmo(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
