@@ -510,8 +510,7 @@ public class Global : MonoBehaviour
       CurrentPlayer.PostSceneTransition();
     }
 
-    HUD.SetActive( true );
-    Unpause();
+   
 
     sceneScript = FindObjectOfType<SceneScript>();
     if( sceneScript != null )
@@ -528,6 +527,8 @@ public class Global : MonoBehaviour
       musicSource1.volume = 1;
     } );
 
+    HUD.SetActive( true );
+    Unpause();
     if( showLoadingScreen )
       HideLoadingScreen();
     FadeClear();
@@ -1372,20 +1373,13 @@ public class Global : MonoBehaviour
     return go;
   }
 
-
-  public void PlayMusicClip( AudioClip clip )
-  {
-    musicSource0.clip = clip;
-    musicSource0.Play();
-  }
-
   public void StopMusic()
   {
     musicSource0.Stop();
     musicSource1.Stop();
   }
 
-  public void PlayMusicLoop( AudioLoop audioLoop )
+  public void PlayMusic( AudioLoop audioLoop )
   {
     audioLoop.Play( musicSource0, musicSource1 );
   }

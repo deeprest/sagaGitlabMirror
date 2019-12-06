@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
-public class DisappearingControls : MonoBehaviour
+public class ControlBindingScreen : MonoBehaviour
 {
   [SerializeField] Transform parent;
   [SerializeField] GameObject template;
@@ -42,7 +42,7 @@ public class DisappearingControls : MonoBehaviour
       else
       {
         GameObject go = Instantiate( template, parent );
-        Text txt = go.GetComponent<Text>();
+        Text txt = go.GetComponentInChildren<Text>();
         txt.text = Global.instance.ReplaceWithControlNames( pair.Value.text );
         txt.color = Color.Lerp( Color.white, Color.grey, 1.0f / pair.Value.count );
       }
@@ -60,8 +60,8 @@ public class DisappearingControls : MonoBehaviour
   {
     c = Global.instance.Controls;
     // snippet dc1
-    map.Add( Menu, new ControlCounter( "[Menu] Menu", c.GlobalActions.Menu, Menu ) );
     map.Add( Move, new ControlCounter( "[Move] Move", c.BipedActions.Move, Move ) );
+    map.Add( Menu, new ControlCounter( "[Menu] Menu", c.GlobalActions.Menu, Menu ) );
     map.Add( Fire, new ControlCounter( "[Fire] Shoot", c.BipedActions.Fire, Fire ) );
     map.Add( Jump, new ControlCounter( "[Jump] Jump", c.BipedActions.Jump, Jump ) );
     map.Add( Dash, new ControlCounter( "[Dash] Dash", c.BipedActions.Dash, Dash ) );
@@ -71,7 +71,7 @@ public class DisappearingControls : MonoBehaviour
     map.Add( Charge, new ControlCounter( "[Charge] Charge", c.BipedActions.Charge, Charge ) );
     map.Add( WorldSelect, new ControlCounter( "[WorldSelect] WorldSelect", c.BipedActions.WorldSelect, WorldSelect ) );
     UpdateText();
-    updateTextTimer.Start( int.MaxValue, 1, delegate(Timer obj) { UpdateText(); }, null );
+    updateTextTimer.Start( int.MaxValue, 1, delegate ( Timer obj ) { UpdateText(); }, null );
   }
 
   // snippet dc2

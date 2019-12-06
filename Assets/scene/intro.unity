@@ -306,11 +306,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6d627637d4314ff6ac33f41564d35b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  music: {fileID: 11400000, guid: 8c0e3bad8364b489fa2e06687d70b7ab, type: 2}
+  music: {fileID: 11400000, guid: d8deeca115c894dba9d8b663dba46d05, type: 2}
   level: {fileID: 0}
   sb: {fileID: 0}
   animator: {fileID: 670903102}
-  musicIntro: {fileID: 8300000, guid: 82df8c8830c7b4cc38ca36f968fe32c2, type: 3}
+  musicIntro: {fileID: 0}
 --- !u!61 &670903106
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -396,7 +396,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300002, guid: eefa2060554ab451fb52f8390b7c3072,
+      objectReference: {fileID: 21300004, guid: eefa2060554ab451fb52f8390b7c3072,
         type: 3}
     - target: {fileID: 114844931330827930, guid: 6cf2753ada0e449deae9680e3cda5dae,
         type: 3}

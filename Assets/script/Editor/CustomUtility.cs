@@ -68,6 +68,7 @@ public class CustomUtility : EditorWindow
   string replaceName;
   GameObject replacePrefab;
   bool replaceInScene;
+  bool fixInScene;
   bool fixSpriteInScene;
   string fixSpriteName;
   string fixSpriteSubobjectName;
@@ -277,16 +278,34 @@ public class CustomUtility : EditorWindow
         Debug.Log( Selection.objects[i].GetType().ToString() + " " + Selection.objects[i].name + " " + Selection.assetGUIDs[i] );
     }
 
-
+    fixInScene = EditorGUILayout.Toggle( "Fix in Scene", fixInScene );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Fix all Nav Obstacles" ) )
     {
-      assetPaths = new List<string>();
-      guids = AssetDatabase.FindAssets( replaceName + " t:prefab", new string[] { "Assets" } );
-      foreach( string guid in guids )
-        assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
-      StartJob( "Searching...", assetPaths.Count, delegate ()
+      int count;
+      if( fixInScene )
       {
-        GameObject go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
+        gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
+        count = gos.Count;
+      }
+      else
+      {
+        assetPaths = new List<string>();
+        guids = AssetDatabase.FindAssets( replaceName + " t:prefab", new string[] { "Assets" } );
+        foreach( string guid in guids )
+          assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
+        count = assetPaths.Count;
+      }
+      StartJob( "Searching...", count, delegate ()
+      {
+        GameObject go;
+        if( fixInScene )
+        {
+          go = gos[index];
+        }
+        else
+        {
+          go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
+        }
         NavMeshObstacle[] navs = go.GetComponentsInChildren<NavMeshObstacle>();
         foreach( var nav in navs )
         {
@@ -298,8 +317,11 @@ public class CustomUtility : EditorWindow
             nav.size = new Vector3( rdr.size.x, rdr.size.y, 0.3f );
           }
         }
-        PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
-        PrefabUtility.UnloadPrefabContents( go );
+        if( !fixInScene )
+        {
+          PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
+          PrefabUtility.UnloadPrefabContents( go );
+        }
       },
       null );
     }

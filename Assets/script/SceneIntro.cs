@@ -7,13 +7,13 @@ public class SceneIntro : SceneScript
 {
   bool introFlag = false;
   [SerializeField] Animator animator;
-  [SerializeField] AudioClip musicIntro;
+  [SerializeField] AudioLoop musicIntro;
 
   public override void StartScene()
   {
     Global.instance.Controls.GlobalActions.Any.performed += StopIntro;
     animator.Play( "intro" );
-    Global.instance.PlayMusicClip( musicIntro );
+    Global.instance.PlayMusic( music );
   }
 
   private void OnDestroy()

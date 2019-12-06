@@ -10,11 +10,7 @@ public class MenuFunctions : MonoBehaviour
 
   public void PlayMusic( AudioLoop al )
   {
-    Global.instance.PlayMusicLoop( al );
+    Global.instance.PlayMusic( al );
   }
 
-  public void PlayMusicClip( AudioClip clip )
-  {
-    Global.instance.PlayMusicClip( clip );
-  }
 }

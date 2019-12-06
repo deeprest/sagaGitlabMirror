@@ -32,17 +32,32 @@ public class AudioLoop : ScriptableObject
 
   public void Play( AudioSource introSource, AudioSource loopSource )
   {
-    introSource.playOnAwake = false;
-    introSource.priority = loopSource.priority;
-    introSource.volume = loopSource.volume;
+    float skip = 0;
+    if( intro != null )
+    {
+      introSource.playOnAwake = false;
+      introSource.priority = loopSource.priority;
+      introSource.volume = loopSource.volume;
+      introSource.loop = false;
+      introSource.clip = intro;
+      introSource.PlayScheduled( AudioSettings.dspTime + introDelay );
+      skip = intro.length;
+    }
+    else
+    {
+      introSource.Stop();
+    }
 
-    introSource.loop = false;
-    introSource.clip = intro;
-    introSource.PlayScheduled( AudioSettings.dspTime + introDelay );
-
-    loopSource.loop = true;
-    loopSource.clip = loop;
-    loopSource.PlayScheduled( AudioSettings.dspTime + introDelay + intro.length );
+    if( loop != null )
+    {
+      loopSource.loop = true;
+      loopSource.clip = loop;
+      loopSource.PlayScheduled( AudioSettings.dspTime + introDelay + skip );
+    }
+    else
+    {
+      loopSource.Stop();
+    }
   }
 
 }
