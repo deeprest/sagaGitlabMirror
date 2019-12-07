@@ -668,10 +668,9 @@ public class PlayerController : Character, IDamage
     shoot.z = 0;
 
     // if player controlled
-    Vector2 move = Global.instance.Controls.BipedActions.Move.ReadValue<Vector2>();
-    if( move.x > 0 )
+    if( Global.instance.Controls.BipedActions.MoveRight.ReadValue<float>() > 0.5f )
       inputRight = true;
-    if( move.x < 0 )
+    if( Global.instance.Controls.BipedActions.MoveLeft.ReadValue<float>() > 0.5f )
       inputLeft = true;
 
 
