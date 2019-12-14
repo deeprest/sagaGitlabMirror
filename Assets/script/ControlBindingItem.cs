@@ -7,12 +7,16 @@ using UnityEngine.InputSystem;
 public class ControlBindingItem : MonoBehaviour
 {
   public InputAction action;
+  //public InputControl control;
   public Text txtAction;
   public Text txtControl;
   public Button button;
 
+
   public void OnComplete( InputActionRebindingExtensions.RebindingOperation operation )
   {
-    txtControl.text = InputControlPath.ToHumanReadableString( operation.selectedControl.path );
+    //control = operation.selectedControl;
+    //txtControl.text = InputControlPath.ToHumanReadableString( operation.selectedControl.path );
+    txtControl.text = Global.instance.ReplaceWithControlNames( "[" + operation.action.name + "]" );
   }
 }

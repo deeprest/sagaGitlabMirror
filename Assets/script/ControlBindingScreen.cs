@@ -39,6 +39,7 @@ public class ControlBindingScreen : MonoBehaviour
     {
       item.txtAction.text = item.action.name;
       item.txtControl.text = Global.instance.ReplaceWithControlNames( "[" + item.action.name + "]" );
+      //item.txtControl.text = InputControlPath.ToHumanReadableString( item.control.path );
     }
   }
 
@@ -52,7 +53,7 @@ public class ControlBindingScreen : MonoBehaviour
         cbi.button.interactable = true;
         EventSystem.current.SetSelectedGameObject( cbi.button.gameObject );
       } )
-      .OnMatchWaitForAnother( 0.1f )
+      .OnMatchWaitForAnother( 0.2f )
       .Start();
 
   }

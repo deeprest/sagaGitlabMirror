@@ -94,21 +94,21 @@ public class Hornet : Character
           //velocity += (tvel - velocity) * acc * Time.deltaTime;
           transform.rotation = Quaternion.RotateTowards( transform.rotation, Quaternion.Euler( 0, 0, Mathf.Clamp( velocity.x, -topspeedrot, topspeedrot ) * -rot ), rotspeed * Time.deltaTime );
         }
-        // drop wheels
-        if( wheelDropsRemaining > 0 && velocity.x > 0 && !wheelDrop.IsActive )
-        {
-          wheelDropsRemaining--;
-          wheelDrop.Start( wheelDropInterval, null, null );
-          GameObject go = Global.instance.Spawn( dropPrefab, drop.position, Quaternion.identity );
-          Physics2D.IgnoreCollision( go.GetComponent<Collider2D>(), GetComponent<Collider2D>() );
-          Wheelbot wheelbot = go.GetComponent<Wheelbot>();
-          wheelbot.wheelVelocity = Mathf.Sign( player.x - transform.position.x );
-        }
 
         // guns
         RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Global.DefaultProjectileCollideLayers ) );
         if( hit.transform != null && hit.transform.IsChildOf( Global.instance.CurrentPlayer.transform ) )
         {
+          // drop wheels
+          if( wheelDropsRemaining > 0 && velocity.x > 0 && !wheelDrop.IsActive )
+          {
+            wheelDropsRemaining--;
+            wheelDrop.Start( wheelDropInterval, null, null );
+            GameObject go = Global.instance.Spawn( dropPrefab, drop.position, Quaternion.identity );
+            Physics2D.IgnoreCollision( go.GetComponent<Collider2D>(), GetComponent<Collider2D>() );
+            Wheelbot wheelbot = go.GetComponent<Wheelbot>();
+            wheelbot.wheelVelocity = Mathf.Sign( player.x - transform.position.x );
+          }
           if( player.x < transform.position.x && player.y < transform.position.y )
           {
             if( !shootRepeatTimer.IsActive )

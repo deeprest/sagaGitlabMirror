@@ -130,7 +130,7 @@ public class Global : MonoBehaviour
   [Header( "Transient (Assigned at runtime)" )]
   public bool Updating = false;
   public Collider2D CameraPoly;
-  public UnityEngine.Bounds CameraBounds;
+  public Bounds CameraBounds;
   SceneScript sceneScript;
   public PlayerController CurrentPlayer;
   [SerializeField] Chopper chopper;
@@ -139,26 +139,23 @@ public class Global : MonoBehaviour
   [Header( "UI" )]
   public GameObject UI;
   CanvasScaler CanvasScaler;
-  public UIScreen MainMenu;
-  public GameObject MainMenuFirstSelected;
+  public UIScreen PauseMenu;
+  public GameObject PauseMenuFirstSelected;
   [SerializeField] GameObject HUD;
   DiageticUI ActiveDiagetic;
-  bool MenuShowing { get { return MainMenu.gameObject.activeInHierarchy; } }
+  bool MenuShowing { get { return PauseMenu.gameObject.activeInHierarchy; } }
   public GameObject LoadingScreen;
   [SerializeField] Image fader;
   public GameObject ready;
   // cursor 
-  public Transform Cursor;
-  public Vector2 CursorDelta;
+  [SerializeField] Transform Cursor;
+  Vector2 cursorDelta;
   Vector2 cursorOrigin;
   public float CursorOuter = 1;
   public Vector2 AimPosition;
   public Vector2 CursorWorldPosition;
   public float CursorSensitivity = 1;
-  public bool CursorPlayerRelative = true;
-  public float gamepadCursorLerp = 10;
-  public float positionalCursorSpeed = 30;
-  public float cursorScale = 4;
+  public float CursorScale = 2;
   public bool AimSnap;
   public float SnapAngleDivide = 8;
   public float SnapCursorDistance = 1;
@@ -270,13 +267,25 @@ public class Global : MonoBehaviour
     {
       //Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
     };
+    InputSystem.onDeviceChange +=
+    ( device, change ) => {
+      switch( change )
+      {
+        case InputDeviceChange.Added:
+        Debug.Log( "Device added: " + device );
+        break;
+        case InputDeviceChange.Removed:
+        Debug.Log( "Device removed: " + device );
+        break;
+        case InputDeviceChange.ConfigurationChanged:
+        Debug.Log( "Device configuration changed: " + device );
+        break;
+      }
+    };
 
     GameObject[] res = Resources.LoadAll<GameObject>( "" );
     foreach( GameObject go in res )
       ResourceLookup.Add( go.name, go );
-
-    ShowMenu( false );
-    SpeechBubble.SetActive( false );
 
     NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
     foreach( var mesh in meshSurfaces )
@@ -298,7 +307,10 @@ public class Global : MonoBehaviour
     else
       Camera.main.fieldOfView = 20;
 
-    HUD.SetActive( false );
+    HideHUD();
+    HidePauseMenu();
+    HideLoadingScreen();
+    SpeechBubble.SetActive( false );
 
     if( Application.isEditor && !SimulatePlayer )
     {
@@ -308,16 +320,8 @@ public class Global : MonoBehaviour
       sceneScript = FindObjectOfType<SceneScript>();
       if( sceneScript != null )
         sceneScript.StartScene();
-      //{
-      //  AssignCameraPoly( sceneScript.sb );
-      //  if( sceneScript.level != null )
-      //    sceneScript.level.Generate();
-      //}
       foreach( var mesh in meshSurfaces )
         mesh.BuildNavMesh();
-
-      //if( CurrentPlayer == null )
-        //SpawnPlayer();
     }
     else
     {
@@ -384,7 +388,7 @@ public class Global : MonoBehaviour
       UsingGamepad = newvalue;
     };
 
-    Controls.GlobalActions.Menu.performed += ( obj ) => ShowMenu( !MenuShowing );
+    Controls.GlobalActions.Menu.performed += ( obj ) => TogglePauseMenu();
     Controls.GlobalActions.Pause.performed += ( obj ) => {
       if( Paused )
         Unpause();
@@ -510,12 +514,6 @@ public class Global : MonoBehaviour
       CurrentPlayer.PostSceneTransition();
     }
 
-   
-
-    sceneScript = FindObjectOfType<SceneScript>();
-    if( sceneScript != null )
-      sceneScript.StartScene();
-
     musicTimer.Start( MusicTransitionDuration,
     delegate ( Timer obj )
     {
@@ -528,6 +526,11 @@ public class Global : MonoBehaviour
     } );
 
     HUD.SetActive( true );
+
+    sceneScript = FindObjectOfType<SceneScript>();
+    if( sceneScript != null )
+      sceneScript.StartScene();
+
     Unpause();
     if( showLoadingScreen )
       HideLoadingScreen();
@@ -627,9 +630,9 @@ public class Global : MonoBehaviour
         if( aim.magnitude > 0 )
           Debug.LogFormat( "aim {0} {1}", aim.x, aim.y );*/
 
-        CursorDelta += Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
+        cursorDelta += Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
 #endif
-        CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * CursorOuter ), 0.1f );
+        cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * CursorOuter ), 0.1f );
         cursorOrigin = CurrentPlayer.arm.position;
 
         if( AimSnap )
@@ -638,12 +641,12 @@ public class Global : MonoBehaviour
           Cursor.gameObject.SetActive( true );
           CursorSnapped.gameObject.SetActive( true );
 
-          float angle = Mathf.Atan2( CursorDelta.x, CursorDelta.y ) / Mathf.PI;
+          float angle = Mathf.Atan2( cursorDelta.x, cursorDelta.y ) / Mathf.PI;
           float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
           Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
           AimPosition = cursorOrigin + snapped * SnapCursorDistance;
           CursorSnapped.position = AimPosition;
-          CursorWorldPosition = cursorOrigin + CursorDelta;
+          CursorWorldPosition = cursorOrigin + cursorDelta;
           Cursor.position = CursorWorldPosition;
         }
         else
@@ -652,7 +655,7 @@ public class Global : MonoBehaviour
           Cursor.gameObject.SetActive( true );
           CursorSnapped.gameObject.SetActive( false );
 
-          AimPosition = cursorOrigin + CursorDelta;
+          AimPosition = cursorOrigin + cursorDelta;
           CursorWorldPosition = AimPosition;
           //Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
           Cursor.position = CursorWorldPosition;
@@ -660,8 +663,8 @@ public class Global : MonoBehaviour
 
         if( AutoAim )
         {
-          CursorWorldPosition = cursorOrigin + CursorDelta;
-          RaycastHit2D[] hits = Physics2D.CircleCastAll( CurrentPlayer.transform.position, AutoAimCircleRadius, CursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
+          CursorWorldPosition = cursorOrigin + cursorDelta;
+          RaycastHit2D[] hits = Physics2D.CircleCastAll( CurrentPlayer.transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
           float distance = Mathf.Infinity;
           Transform closest = null;
           foreach( var hit in hits )
@@ -779,53 +782,71 @@ public class Global : MonoBehaviour
   public void SetCursor( Sprite spr )
   {
     Cursor.GetComponent<SpriteRenderer>().sprite = spr;
-    Cursor.localScale = Vector3.one * cursorScale;
+    Cursor.localScale = Vector3.one * CursorScale;
   }
 
-  void ShowMenu( bool show )
+  public void ShowHUD()
+  {
+    HUD.SetActive( true );
+  }
+
+  public void HideHUD()
+  {
+    HUD.SetActive( false );
+  }
+
+  void ShowPauseMenu()
   {
     if( ScreenSettingsCountdownTimer.IsActive )
       return;
-    if( show )
+    Pause();
+    if( ActiveDiagetic != null )
     {
-      Pause();
-      if( ActiveDiagetic != null )
-      {
-        ActiveDiagetic.InteractableOff();
-      }
-      else
-      {
-        Controls.MenuActions.Enable();
-        Controls.BipedActions.Disable();
-      }
-      MainMenu.Select();
-      HUD.SetActive( false );
-      //UnityEngine.Cursor.lockState = CursorLockMode.None;
-      UnityEngine.Cursor.visible = true;
-      EnableRaycaster( true );
+      ActiveDiagetic.InteractableOff();
     }
     else
     {
-      Unpause();
-      MainMenu.Unselect();
-      HUD.SetActive( true );
-      //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-      UnityEngine.Cursor.visible = false;
-      EnableRaycaster( false );
-      if( ActiveDiagetic != null )
-      {
-        ActiveDiagetic.InteractableOn();
-      }
-      else
-      {
-        Controls.BipedActions.Enable();
-        Controls.MenuActions.Disable();
-      }
+      Controls.MenuActions.Enable();
+      Controls.BipedActions.Disable();
+    }
+    PauseMenu.Select();
+    HUD.SetActive( false );
+    //UnityEngine.Cursor.lockState = CursorLockMode.None;
+    UnityEngine.Cursor.visible = true;
+    EnableRaycaster( true );
+  }
+
+  void HidePauseMenu()
+  {
+    if( ScreenSettingsCountdownTimer.IsActive )
+      return;
+    Unpause();
+    PauseMenu.Unselect();
+    HUD.SetActive( true );
+    //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+    UnityEngine.Cursor.visible = false;
+    EnableRaycaster( false );
+    if( ActiveDiagetic != null )
+    {
+      ActiveDiagetic.InteractableOn();
+    }
+    else
+    {
+      Controls.BipedActions.Enable();
+      Controls.MenuActions.Disable();
+    }
 #if UNITY_WEBGL && !UNITY_EDITOR
       // cannot write settings on exit in webgl builds, so write them here
       WriteSettings();
 #endif
-    }
+  }
+
+  void TogglePauseMenu()
+  {
+    if( MenuShowing ) 
+      HidePauseMenu();
+    else 
+      ShowPauseMenu();
   }
 
   public void DiageticMenuOn( DiageticUI dui )
@@ -959,7 +980,7 @@ public class Global : MonoBehaviour
     fader.color = new Color( fader.color.r, fader.color.g, fader.color.b, 0 );
     fadeTimer.Stop( true );
     // set gameObject active after Stop() because FadeClear() CompleteDelegate
-    // makes the gameObject insactive
+    // makes the gameObject inactive
     fader.gameObject.SetActive( true );
     TimerParams tp = new TimerParams
     {
@@ -1097,7 +1118,7 @@ public class Global : MonoBehaviour
 
   void InitializeSettings()
   {
-    SettingUI[] settings = MainMenu.gameObject.GetComponentsInChildren<SettingUI>( true );
+    SettingUI[] settings = PauseMenu.gameObject.GetComponentsInChildren<SettingUI>( true );
     // use existing UI objects, if they exist
     foreach( var s in settings )
     {
@@ -1118,7 +1139,7 @@ public class Global : MonoBehaviour
       }
     }
     // "Apply Screen Settings" is first button 
-    previousSelectable = MainMenuFirstSelected.GetComponent<Selectable>();
+    previousSelectable = PauseMenuFirstSelected.GetComponent<Selectable>();
     // screen settings are applied explicitly when user pushes button
     CreateBoolSetting( "Fullscreen", false, null );
     CreateStringSetting( "Resolution", "1280x800", null );

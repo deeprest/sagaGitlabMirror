@@ -14,6 +14,8 @@ public class SceneIntro : SceneScript
     Global.instance.Controls.GlobalActions.Any.performed += StopIntro;
     animator.Play( "intro" );
     Global.instance.PlayMusic( music );
+
+    Global.instance.HideHUD();
   }
 
   private void OnDestroy()

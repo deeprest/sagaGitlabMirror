@@ -8,10 +8,11 @@ public class DisappearingControls : MonoBehaviour
 {
   [SerializeField] Transform parent;
   [SerializeField] GameObject template;
+  [SerializeField] Image image;
   Controls c;
   Timer updateTextTimer = new Timer();
   // action, text
-  Dictionary<InputAction, ControlCounter> map = new Dictionary<InputAction,ControlCounter>();
+  Dictionary<InputAction, ControlCounter> map = new Dictionary<InputAction, ControlCounter>();
   List<InputAction> Removal = new List<InputAction>();
 
   class ControlCounter
@@ -53,6 +54,13 @@ public class DisappearingControls : MonoBehaviour
       map.Remove( obj );
     }
     Removal.Clear();
+
+    parent.GetComponent<RectTransform>().sizeDelta = new Vector2( 200, parent.childCount * 20 + 20 );
+    if( parent.childCount == 0 )
+    {
+      gameObject.SetActive( false );
+      updateTextTimer.Stop( false );
+    }
   }
 
   void Start()
@@ -60,8 +68,8 @@ public class DisappearingControls : MonoBehaviour
     IEnumerator<InputAction> enumerator = Global.instance.Controls.BipedActions.Get().GetEnumerator();
     while( enumerator.MoveNext() )
     {
-      ControlCounter cc = new ControlCounter( "[" + enumerator.Current.name + "] "+ enumerator.Current.name, enumerator.Current );
-      cc.iacc = ( x ) => { map[ cc.action ].count--; UpdateText(); };
+      ControlCounter cc = new ControlCounter( "[" + enumerator.Current.name + "] " + enumerator.Current.name, enumerator.Current );
+      cc.iacc = ( x ) => { map[cc.action].count--; UpdateText(); };
       map.Add( enumerator.Current, cc );
       enumerator.Current.performed += cc.iacc;
     }

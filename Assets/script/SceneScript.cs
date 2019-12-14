@@ -25,6 +25,7 @@ public class SceneScript : MonoBehaviour
     // music fade in
     if( music != null )
       Global.instance.PlayMusic( music );
+      
   }
 
   public void PlayerInputOff()
