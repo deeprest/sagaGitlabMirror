@@ -199,7 +199,9 @@ MonoBehaviour:
   ContactDamage: {fileID: 0}
   sightRange: 6
   flySpeed: 1
-  path: []
+  path:
+  - {x: 0, y: 0}
+  - {x: 0, y: 3}
 --- !u!208 &1928618165654571599
 NavMeshObstacle:
   m_ObjectHideFlags: 0

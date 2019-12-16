@@ -519,6 +519,24 @@ public class PlayerController : Character, IDamage
       weapon.FireWeapon( this, pos, shoot );
   }
 
+  void ShootCharged()
+  {
+    if( weapon.ChargeVariant == null )
+      return;
+    if( chargeEffect != null )
+    {
+      audio.Stop();
+      if( (Time.time - chargeStart) > chargeMin )
+      {
+        audio.PlayOneShot( weapon.soundChargeShot );
+        Vector3 pos = arm.position + shoot.normalized * armRadius;
+        if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
+          weapon.ChargeVariant.FireWeapon( this, pos, shoot );
+      }
+    }
+    StopCharge();
+  }
+
   void ShootGraphook()
   {
     if( grapShooting )
@@ -579,24 +597,6 @@ public class PlayerController : Character, IDamage
     grapSize.x = 0;
     grapCableRender.size = grapSize;
     grapTimer.Stop( false );
-  }
-
-  void ShootCharged()
-  {
-    if( weapon.ChargeVariant == null )
-      return;
-    if( chargeEffect != null )
-    {
-      audio.Stop();
-      if( (Time.time - chargeStart) > chargeMin )
-      {
-        audio.PlayOneShot( weapon.soundChargeShot );
-        Vector3 pos = arm.position + shoot.normalized * armRadius;
-        if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
-          weapon.ChargeVariant.FireWeapon( this, pos, shoot );
-      }
-    }
-    StopCharge();
   }
 
   void BindControls()

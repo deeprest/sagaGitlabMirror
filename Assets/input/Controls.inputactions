@@ -22,14 +22,6 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Slowmo",
-                    "type": "Button",
-                    "id": "49974937-36e1-472d-926d-d45aff2c4e41",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
                     "name": "Pause",
                     "type": "Button",
                     "id": "b258d7cd-2c65-48b0-8b9b-cb2857978f71",
@@ -60,6 +52,14 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Dev-Slowmo",
+                    "type": "Button",
+                    "id": "19775fcb-27a4-4c68-8f07-b3b6f0683f97",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -82,17 +82,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Menu",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1a33a736-bb4a-4db0-9c0b-4fff5c4c788d",
-                    "path": "<Keyboard>/o",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Slowmo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -159,6 +148,17 @@
                     "processors": "",
                     "groups": "DefaultControlScheme",
                     "action": "Any",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cd969cd9-f853-4810-8bef-cb03c55fea89",
+                    "path": "<Keyboard>/o",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dev-Slowmo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -409,6 +409,22 @@
                     "interactions": ""
                 },
                 {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "db260e37-2539-4250-933c-7940bbfe0a77",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Dash",
+                    "type": "Button",
+                    "id": "c65feaea-6a5d-449c-9dac-bae3057beaaa",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Aim",
                     "type": "Value",
                     "id": "9c7ce899-70d3-4d23-bada-d4c9ae6dcd70",
@@ -444,22 +460,6 @@
                     "name": "Shield",
                     "type": "Button",
                     "id": "d52c1089-e44d-413e-81b6-a1a4c2b3d425",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Dash",
-                    "type": "Button",
-                    "id": "c65feaea-6a5d-449c-9dac-bae3057beaaa",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Jump",
-                    "type": "Button",
-                    "id": "db260e37-2539-4250-933c-7940bbfe0a77",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
@@ -561,50 +561,6 @@
                     "processors": "",
                     "groups": "DefaultControlScheme",
                     "action": "Shield",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c33449f1-9335-4213-908c-6d1182446ad2",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "0a7a2a72-f465-4804-b4ea-0167400c9146",
-                    "path": "<Gamepad>/rightShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "6a064992-593a-4449-abcf-b99f6e210f04",
-                    "path": "<Keyboard>/w",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a1816db8-1011-4465-831c-9f094d661dcf",
-                    "path": "<Gamepad>/leftShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -770,6 +726,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "MoveLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6a064992-593a-4449-abcf-b99f6e210f04",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a1816db8-1011-4465-831c-9f094d661dcf",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c33449f1-9335-4213-908c-6d1182446ad2",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0a7a2a72-f465-4804-b4ea-0167400c9146",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

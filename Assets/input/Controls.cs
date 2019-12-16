@@ -35,14 +35,6 @@ public class Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Slowmo"",
-                    ""type"": ""Button"",
-                    ""id"": ""49974937-36e1-472d-926d-d45aff2c4e41"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
                     ""name"": ""Pause"",
                     ""type"": ""Button"",
                     ""id"": ""b258d7cd-2c65-48b0-8b9b-cb2857978f71"",
@@ -73,6 +65,14 @@ public class Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Dev-Slowmo"",
+                    ""type"": ""Button"",
+                    ""id"": ""19775fcb-27a4-4c68-8f07-b3b6f0683f97"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -95,17 +95,6 @@ public class Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Menu"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1a33a736-bb4a-4db0-9c0b-4fff5c4c788d"",
-                    ""path"": ""<Keyboard>/o"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Slowmo"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -172,6 +161,17 @@ public class Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""DefaultControlScheme"",
                     ""action"": ""Any"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cd969cd9-f853-4810-8bef-cb03c55fea89"",
+                    ""path"": ""<Keyboard>/o"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dev-Slowmo"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -422,6 +422,22 @@ public class Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""db260e37-2539-4250-933c-7940bbfe0a77"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Dash"",
+                    ""type"": ""Button"",
+                    ""id"": ""c65feaea-6a5d-449c-9dac-bae3057beaaa"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Aim"",
                     ""type"": ""Value"",
                     ""id"": ""9c7ce899-70d3-4d23-bada-d4c9ae6dcd70"",
@@ -457,22 +473,6 @@ public class Controls : IInputActionCollection, IDisposable
                     ""name"": ""Shield"",
                     ""type"": ""Button"",
                     ""id"": ""d52c1089-e44d-413e-81b6-a1a4c2b3d425"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Dash"",
-                    ""type"": ""Button"",
-                    ""id"": ""c65feaea-6a5d-449c-9dac-bae3057beaaa"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Jump"",
-                    ""type"": ""Button"",
-                    ""id"": ""db260e37-2539-4250-933c-7940bbfe0a77"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -574,50 +574,6 @@ public class Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""DefaultControlScheme"",
                     ""action"": ""Shield"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""c33449f1-9335-4213-908c-6d1182446ad2"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0a7a2a72-f465-4804-b4ea-0167400c9146"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6a064992-593a-4449-abcf-b99f6e210f04"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Jump"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""a1816db8-1011-4465-831c-9f094d661dcf"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -785,6 +741,50 @@ public class Controls : IInputActionCollection, IDisposable
                     ""action"": ""MoveLeft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6a064992-593a-4449-abcf-b99f6e210f04"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a1816db8-1011-4465-831c-9f094d661dcf"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c33449f1-9335-4213-908c-6d1182446ad2"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0a7a2a72-f465-4804-b4ea-0167400c9146"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -817,11 +817,11 @@ public class Controls : IInputActionCollection, IDisposable
         m_GlobalActions = asset.FindActionMap("GlobalActions", throwIfNotFound: true);
         m_GlobalActions_Any = m_GlobalActions.FindAction("Any", throwIfNotFound: true);
         m_GlobalActions_Menu = m_GlobalActions.FindAction("Menu", throwIfNotFound: true);
-        m_GlobalActions_Slowmo = m_GlobalActions.FindAction("Slowmo", throwIfNotFound: true);
         m_GlobalActions_Pause = m_GlobalActions.FindAction("Pause", throwIfNotFound: true);
         m_GlobalActions_Screenshot = m_GlobalActions.FindAction("Screenshot", throwIfNotFound: true);
         m_GlobalActions_CursorLockToggle = m_GlobalActions.FindAction("CursorLockToggle", throwIfNotFound: true);
         m_GlobalActions_DEVRespawn = m_GlobalActions.FindAction("DEV-Respawn", throwIfNotFound: true);
+        m_GlobalActions_DevSlowmo = m_GlobalActions.FindAction("Dev-Slowmo", throwIfNotFound: true);
         // MenuActions
         m_MenuActions = asset.FindActionMap("MenuActions", throwIfNotFound: true);
         m_MenuActions_Move = m_MenuActions.FindAction("Move", throwIfNotFound: true);
@@ -833,13 +833,13 @@ public class Controls : IInputActionCollection, IDisposable
         m_BipedActions = asset.FindActionMap("BipedActions", throwIfNotFound: true);
         m_BipedActions_MoveRight = m_BipedActions.FindAction("MoveRight", throwIfNotFound: true);
         m_BipedActions_MoveLeft = m_BipedActions.FindAction("MoveLeft", throwIfNotFound: true);
+        m_BipedActions_Jump = m_BipedActions.FindAction("Jump", throwIfNotFound: true);
+        m_BipedActions_Dash = m_BipedActions.FindAction("Dash", throwIfNotFound: true);
         m_BipedActions_Aim = m_BipedActions.FindAction("Aim", throwIfNotFound: true);
         m_BipedActions_Fire = m_BipedActions.FindAction("Fire", throwIfNotFound: true);
         m_BipedActions_Graphook = m_BipedActions.FindAction("Graphook", throwIfNotFound: true);
         m_BipedActions_WorldSelect = m_BipedActions.FindAction("WorldSelect", throwIfNotFound: true);
         m_BipedActions_Shield = m_BipedActions.FindAction("Shield", throwIfNotFound: true);
-        m_BipedActions_Dash = m_BipedActions.FindAction("Dash", throwIfNotFound: true);
-        m_BipedActions_Jump = m_BipedActions.FindAction("Jump", throwIfNotFound: true);
         m_BipedActions_NextWeapon = m_BipedActions.FindAction("NextWeapon", throwIfNotFound: true);
         m_BipedActions_Charge = m_BipedActions.FindAction("Charge", throwIfNotFound: true);
         m_BipedActions_Down = m_BipedActions.FindAction("Down", throwIfNotFound: true);
@@ -895,22 +895,22 @@ public class Controls : IInputActionCollection, IDisposable
     private IGlobalActionsActions m_GlobalActionsActionsCallbackInterface;
     private readonly InputAction m_GlobalActions_Any;
     private readonly InputAction m_GlobalActions_Menu;
-    private readonly InputAction m_GlobalActions_Slowmo;
     private readonly InputAction m_GlobalActions_Pause;
     private readonly InputAction m_GlobalActions_Screenshot;
     private readonly InputAction m_GlobalActions_CursorLockToggle;
     private readonly InputAction m_GlobalActions_DEVRespawn;
+    private readonly InputAction m_GlobalActions_DevSlowmo;
     public struct GlobalActionsActions
     {
         private Controls m_Wrapper;
         public GlobalActionsActions(Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Any => m_Wrapper.m_GlobalActions_Any;
         public InputAction @Menu => m_Wrapper.m_GlobalActions_Menu;
-        public InputAction @Slowmo => m_Wrapper.m_GlobalActions_Slowmo;
         public InputAction @Pause => m_Wrapper.m_GlobalActions_Pause;
         public InputAction @Screenshot => m_Wrapper.m_GlobalActions_Screenshot;
         public InputAction @CursorLockToggle => m_Wrapper.m_GlobalActions_CursorLockToggle;
         public InputAction @DEVRespawn => m_Wrapper.m_GlobalActions_DEVRespawn;
+        public InputAction @DevSlowmo => m_Wrapper.m_GlobalActions_DevSlowmo;
         public InputActionMap Get() { return m_Wrapper.m_GlobalActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -926,9 +926,6 @@ public class Controls : IInputActionCollection, IDisposable
                 Menu.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMenu;
                 Menu.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMenu;
                 Menu.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMenu;
-                Slowmo.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnSlowmo;
-                Slowmo.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnSlowmo;
-                Slowmo.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnSlowmo;
                 Pause.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnPause;
                 Pause.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnPause;
                 Pause.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnPause;
@@ -941,6 +938,9 @@ public class Controls : IInputActionCollection, IDisposable
                 DEVRespawn.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
                 DEVRespawn.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
                 DEVRespawn.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
+                DevSlowmo.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDevSlowmo;
+                DevSlowmo.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDevSlowmo;
+                DevSlowmo.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDevSlowmo;
             }
             m_Wrapper.m_GlobalActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -951,9 +951,6 @@ public class Controls : IInputActionCollection, IDisposable
                 Menu.started += instance.OnMenu;
                 Menu.performed += instance.OnMenu;
                 Menu.canceled += instance.OnMenu;
-                Slowmo.started += instance.OnSlowmo;
-                Slowmo.performed += instance.OnSlowmo;
-                Slowmo.canceled += instance.OnSlowmo;
                 Pause.started += instance.OnPause;
                 Pause.performed += instance.OnPause;
                 Pause.canceled += instance.OnPause;
@@ -966,6 +963,9 @@ public class Controls : IInputActionCollection, IDisposable
                 DEVRespawn.started += instance.OnDEVRespawn;
                 DEVRespawn.performed += instance.OnDEVRespawn;
                 DEVRespawn.canceled += instance.OnDEVRespawn;
+                DevSlowmo.started += instance.OnDevSlowmo;
+                DevSlowmo.performed += instance.OnDevSlowmo;
+                DevSlowmo.canceled += instance.OnDevSlowmo;
             }
         }
     }
@@ -1041,13 +1041,13 @@ public class Controls : IInputActionCollection, IDisposable
     private IBipedActionsActions m_BipedActionsActionsCallbackInterface;
     private readonly InputAction m_BipedActions_MoveRight;
     private readonly InputAction m_BipedActions_MoveLeft;
+    private readonly InputAction m_BipedActions_Jump;
+    private readonly InputAction m_BipedActions_Dash;
     private readonly InputAction m_BipedActions_Aim;
     private readonly InputAction m_BipedActions_Fire;
     private readonly InputAction m_BipedActions_Graphook;
     private readonly InputAction m_BipedActions_WorldSelect;
     private readonly InputAction m_BipedActions_Shield;
-    private readonly InputAction m_BipedActions_Dash;
-    private readonly InputAction m_BipedActions_Jump;
     private readonly InputAction m_BipedActions_NextWeapon;
     private readonly InputAction m_BipedActions_Charge;
     private readonly InputAction m_BipedActions_Down;
@@ -1058,13 +1058,13 @@ public class Controls : IInputActionCollection, IDisposable
         public BipedActionsActions(Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @MoveRight => m_Wrapper.m_BipedActions_MoveRight;
         public InputAction @MoveLeft => m_Wrapper.m_BipedActions_MoveLeft;
+        public InputAction @Jump => m_Wrapper.m_BipedActions_Jump;
+        public InputAction @Dash => m_Wrapper.m_BipedActions_Dash;
         public InputAction @Aim => m_Wrapper.m_BipedActions_Aim;
         public InputAction @Fire => m_Wrapper.m_BipedActions_Fire;
         public InputAction @Graphook => m_Wrapper.m_BipedActions_Graphook;
         public InputAction @WorldSelect => m_Wrapper.m_BipedActions_WorldSelect;
         public InputAction @Shield => m_Wrapper.m_BipedActions_Shield;
-        public InputAction @Dash => m_Wrapper.m_BipedActions_Dash;
-        public InputAction @Jump => m_Wrapper.m_BipedActions_Jump;
         public InputAction @NextWeapon => m_Wrapper.m_BipedActions_NextWeapon;
         public InputAction @Charge => m_Wrapper.m_BipedActions_Charge;
         public InputAction @Down => m_Wrapper.m_BipedActions_Down;
@@ -1084,6 +1084,12 @@ public class Controls : IInputActionCollection, IDisposable
                 MoveLeft.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMoveLeft;
                 MoveLeft.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMoveLeft;
                 MoveLeft.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMoveLeft;
+                Jump.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnJump;
+                Jump.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnJump;
+                Jump.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnJump;
+                Dash.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDash;
+                Dash.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDash;
+                Dash.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDash;
                 Aim.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnAim;
                 Aim.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnAim;
                 Aim.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnAim;
@@ -1099,12 +1105,6 @@ public class Controls : IInputActionCollection, IDisposable
                 Shield.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnShield;
                 Shield.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnShield;
                 Shield.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnShield;
-                Dash.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDash;
-                Dash.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDash;
-                Dash.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDash;
-                Jump.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnJump;
-                Jump.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnJump;
-                Jump.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnJump;
                 NextWeapon.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnNextWeapon;
                 NextWeapon.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnNextWeapon;
                 NextWeapon.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnNextWeapon;
@@ -1127,6 +1127,12 @@ public class Controls : IInputActionCollection, IDisposable
                 MoveLeft.started += instance.OnMoveLeft;
                 MoveLeft.performed += instance.OnMoveLeft;
                 MoveLeft.canceled += instance.OnMoveLeft;
+                Jump.started += instance.OnJump;
+                Jump.performed += instance.OnJump;
+                Jump.canceled += instance.OnJump;
+                Dash.started += instance.OnDash;
+                Dash.performed += instance.OnDash;
+                Dash.canceled += instance.OnDash;
                 Aim.started += instance.OnAim;
                 Aim.performed += instance.OnAim;
                 Aim.canceled += instance.OnAim;
@@ -1142,12 +1148,6 @@ public class Controls : IInputActionCollection, IDisposable
                 Shield.started += instance.OnShield;
                 Shield.performed += instance.OnShield;
                 Shield.canceled += instance.OnShield;
-                Dash.started += instance.OnDash;
-                Dash.performed += instance.OnDash;
-                Dash.canceled += instance.OnDash;
-                Jump.started += instance.OnJump;
-                Jump.performed += instance.OnJump;
-                Jump.canceled += instance.OnJump;
                 NextWeapon.started += instance.OnNextWeapon;
                 NextWeapon.performed += instance.OnNextWeapon;
                 NextWeapon.canceled += instance.OnNextWeapon;
@@ -1177,11 +1177,11 @@ public class Controls : IInputActionCollection, IDisposable
     {
         void OnAny(InputAction.CallbackContext context);
         void OnMenu(InputAction.CallbackContext context);
-        void OnSlowmo(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnScreenshot(InputAction.CallbackContext context);
         void OnCursorLockToggle(InputAction.CallbackContext context);
         void OnDEVRespawn(InputAction.CallbackContext context);
+        void OnDevSlowmo(InputAction.CallbackContext context);
     }
     public interface IMenuActionsActions
     {
@@ -1195,13 +1195,13 @@ public class Controls : IInputActionCollection, IDisposable
     {
         void OnMoveRight(InputAction.CallbackContext context);
         void OnMoveLeft(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
+        void OnDash(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnGraphook(InputAction.CallbackContext context);
         void OnWorldSelect(InputAction.CallbackContext context);
         void OnShield(InputAction.CallbackContext context);
-        void OnDash(InputAction.CallbackContext context);
-        void OnJump(InputAction.CallbackContext context);
         void OnNextWeapon(InputAction.CallbackContext context);
         void OnCharge(InputAction.CallbackContext context);
         void OnDown(InputAction.CallbackContext context);

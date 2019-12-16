@@ -6,13 +6,12 @@ public class Chopper : MonoBehaviour {
 
   public Transform hangPoint;
   public Transform chopperStartPoint;
-  public PlayerController character;
   public float speed = 5;
   Timer timer = new Timer();
   public float timeUntilDrop = 3;
   float timeStart;
 
-  public void StartDrop()
+  public void StartDrop( PlayerController character )
   {
     transform.position = chopperStartPoint.position;
     character.hanging = true;

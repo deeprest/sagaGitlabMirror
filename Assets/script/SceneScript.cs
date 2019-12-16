@@ -5,16 +5,18 @@ using System.Collections;
 public class SceneScript : MonoBehaviour
 {
   public AudioLoop music;
-  // 
+  // generation
   public Level level;
+  // the camera collider
   public Collider2D sb;
+  public BoxCollider NavmeshBox;
 
   public virtual void StartScene() 
   {
     if( Application.isEditor && !Global.instance.SimulatePlayer && Global.instance.CurrentPlayer == null )
     {
       Global.instance.SpawnPlayer();
-      return;
+      //return;
     }
     // level generation
     if( level != null )

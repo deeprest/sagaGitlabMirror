@@ -80,7 +80,7 @@
       norm.x = -norm.x;
       norm.y = -norm.y;
     }
-    o.Normal = norm;
+     o.Normal = norm;
      o.Metallic = _Metallic * (1.0 - tex2D( _MetallicTex, IN.uv_MainTex ));
      o.Smoothness = _Glossiness;
      o.Alpha = c.a;

@@ -4,11 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
-public class DisappearingControls : MonoBehaviour
+public class OnboardingControls : MonoBehaviour
 {
   [SerializeField] Transform parent;
   [SerializeField] GameObject template;
-  [SerializeField] Image image;
   Controls c;
   Timer updateTextTimer = new Timer();
   // action, text
@@ -25,7 +24,7 @@ public class DisappearingControls : MonoBehaviour
       //action.performed += iacc;
     }
     public string text;
-    public int count = 5;
+    public int count;
     public InputAction action;
     public System.Action<InputAction.CallbackContext> iacc;
   }
@@ -55,7 +54,6 @@ public class DisappearingControls : MonoBehaviour
     }
     Removal.Clear();
 
-    parent.GetComponent<RectTransform>().sizeDelta = new Vector2( 200, parent.childCount * 20 + 20 );
     if( parent.childCount == 0 )
     {
       gameObject.SetActive( false );
@@ -63,16 +61,28 @@ public class DisappearingControls : MonoBehaviour
     }
   }
 
+  private void LateUpdate()
+  {
+    parent.GetComponent<RectTransform>().sizeDelta = new Vector2( 200, parent.childCount * 20 + 20 );
+  }
+
+  void AddInputAction( InputAction inputAction )
+  {
+    ControlCounter cc = new ControlCounter( inputAction.name + " [" + inputAction.name + "]", inputAction );
+    cc.iacc = ( x ) => { map[cc.action].count--; UpdateText(); };
+    map.Add( inputAction, cc );
+    inputAction.performed += cc.iacc;
+  }
+
   void Start()
   {
     IEnumerator<InputAction> enumerator = Global.instance.Controls.BipedActions.Get().GetEnumerator();
     while( enumerator.MoveNext() )
-    {
-      ControlCounter cc = new ControlCounter( "[" + enumerator.Current.name + "] " + enumerator.Current.name, enumerator.Current );
-      cc.iacc = ( x ) => { map[cc.action].count--; UpdateText(); };
-      map.Add( enumerator.Current, cc );
-      enumerator.Current.performed += cc.iacc;
-    }
+      AddInputAction( enumerator.Current );
+
+    AddInputAction( Global.instance.Controls.GlobalActions.Menu );
+    AddInputAction( Global.instance.Controls.GlobalActions.DEVRespawn );
+
     updateTextTimer.Start( int.MaxValue, 1, delegate ( Timer obj ) { UpdateText(); }, null );
   }
 

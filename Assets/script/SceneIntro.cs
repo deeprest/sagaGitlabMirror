@@ -7,7 +7,6 @@ public class SceneIntro : SceneScript
 {
   bool introFlag = false;
   [SerializeField] Animator animator;
-  [SerializeField] AudioLoop musicIntro;
 
   public override void StartScene()
   {

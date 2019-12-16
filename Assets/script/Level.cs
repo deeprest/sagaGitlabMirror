@@ -13,8 +13,15 @@ public class LevelEditor : Editor
   public override void OnInspectorGUI()
   {
     Level level = target as Level;
+    EditorGUILayout.BeginHorizontal();
     if( GUI.Button( EditorGUILayout.GetControlRect(), "Generate" ) )
       level.Generate();
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "+1" ) )
+    {
+      level.seed++;
+      level.Generate();
+    }
+    EditorGUILayout.EndHorizontal();
     if( GUI.Button( EditorGUILayout.GetControlRect(), "Destroy" ) )
       level.DestroyAll();
     DrawDefaultInspector();
@@ -78,35 +85,72 @@ public class Level : MonoBehaviour
       Debug.DrawLine( segment.a, segment.b, Color.red );
   }
 
+  Bounds bounds = new Bounds();
+
+  void AddObject( GameObject go )
+  {
+    Collider2D cld = go.GetComponent<Collider2D>();
+    if( cld != null )
+      bounds.Encapsulate( cld.bounds );
+    gens.Add( go );
+  }
+
   public void Generate()
   {
     Profiler.BeginSample( "Level Generation" );
 
     DestroyAll();
     Random.InitState( seed );
+    bounds.Encapsulate( Vector3.right * dimension.x * cellsize.x );
+    bounds.Encapsulate( Vector3.up * dimension.y * cellsize.y );
 
     InitializeStructure();
     Vector2Int pos = new Vector2Int( 1, 1 );
-    for( int x = 1; x < dimension.x; x++ )
+    for( int x = 0; x <= dimension.x; x++ )
     {
       Column column = new Column();
       columns.Add( column );
       column.xindex = pos.x;
-      int height = Mathf.CeilToInt( Random.Range( 0, dimension.y - 1 ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
-      for( int y = 0; y < height; y++ )
+      if( x == 0 || x == dimension.x )
       {
-        SetStructureBitOn( pos.x, pos.y, PixelBit.Building );
-        pos.y++;
+        for( int y = 0; y < dimension.y; y++ )
+          SetStructureValue( x, y, 0 );
+        pos.x++;
       }
-      pos.x += Random.Range( 1, 4 );
+      else
+      {
+        int height = Mathf.CeilToInt( Random.Range( 0, dimension.y - 1 ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
+        for( int y = 0; y < height; y++ )
+        {
+          SetStructureBitOn( pos.x, pos.y, PixelBit.Building );
+          pos.y++;
+        }
+        pos.x += Random.Range( 1, 3 );
+      }
       pos.y = 1;
     }
     UpdateStructure( 0, 0, dimension.x, dimension.y );
 
-    gens.Add( Instantiate( spawnPointPrefab, new Vector3( 2, 30, 0 ), Quaternion.identity ) );
+    //AddObject( Instantiate( spawnPointPrefab, new Vector3( 2, (GroundY+1)*cellsize.y, 0 ), Quaternion.identity ) );
     GenerateChain( "street bg", false, 0, 3 );
     GenerateChain( "street", true );
 
+    /*
+    SceneScript ss = FindObjectOfType<SceneScript>();
+    if( ss != null )
+    {
+      if( ss.sb != null && ss.sb is BoxCollider2D )
+      {
+        //bounds.Encapsulate( ss.sb.bounds );
+        BoxCollider2D box = ss.sb as BoxCollider2D;
+        box.size = bounds.size;
+        box.transform.position = bounds.center;
+
+        ss.NavmeshBox.size = new Vector3( bounds.size.x, .1f, bounds.size.y );
+        ss.NavmeshBox.transform.position = bounds.center;
+      }
+    }
+    */
     Profiler.EndSample();
   }
 
@@ -135,7 +179,7 @@ public class Level : MonoBehaviour
     GameObject firstPrefab = gos[0];
     GameObject first = Instantiate( firstPrefab, new Vector3( xpos, Random.Range( 10, 20 ), zDepth ), Quaternion.identity );
     first.name = firstPrefab.name;
-    gens.Add( first );
+    AddObject( first );
     links.AddRange( first.GetComponentsInChildren<NodeLink>() );
 
     for( int i = 0; i < max; i++ )
@@ -175,7 +219,7 @@ public class Level : MonoBehaviour
           {
             GameObject go = Instantiate( prefab, link.transform.position, Quaternion.identity );
             go.name = prefab.name;
-            gens.Add( go );
+            AddObject( go );
             newlinks.AddRange( go.GetComponentsInChildren<NodeLink>() );
           }
           else
@@ -190,7 +234,7 @@ public class Level : MonoBehaviour
         {
           GameObject go = Instantiate( prefab, link.transform.position, Quaternion.identity );
           go.name = prefab.name;
-          gens.Add( go );
+          AddObject( go );
           newlinks.AddRange( go.GetComponentsInChildren<NodeLink>() );
         }
         removelinks.Add( link );

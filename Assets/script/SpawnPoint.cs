@@ -32,7 +32,7 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
 
   float lastTime = 0;
   int index = 0;
-  System.Random randy;
+  //System.Random randy;
 
   [HideInInspector]
   [Serialize] public List<int> SpawnedCharactersID = new List<int>();
@@ -66,8 +66,8 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
   {
     if( SpawnPrefab.Count == 0 )
       return;
-    if( ChooseRandomPrefab )
-      randy = new System.Random( GetInstanceID() );
+    /*if( ChooseRandomPrefab )
+      randy = new System.Random( GetInstanceID() );*/
   }
 
   void Update()
@@ -109,7 +109,8 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
   public void SpawnThatThing()
   {
     if( ChooseRandomPrefab )
-      index = randy.Next( 0, SpawnPrefab.Count );
+      index = Random.Range(0, SpawnPrefab.Count );
+    //index = randy.Next( 0, SpawnPrefab.Count );
     else
       index = (index + 1 >= SpawnPrefab.Count) ? 0 : index + 1;
 

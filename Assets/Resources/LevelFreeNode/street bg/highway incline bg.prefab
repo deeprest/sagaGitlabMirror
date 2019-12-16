@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1810661693476826660}
   - component: {fileID: 611900214264390471}
   m_Layer: 0
-  m_Name: highway incline 1
+  m_Name: highway incline bg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -221,6 +221,11 @@ PrefabInstance:
       propertyPath: m_SortingLayer
       value: -2
       objectReference: {fileID: 0}
+    - target: {fileID: 212410139921155738, guid: 3863ded62327f4b6c999e076452f7455,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 915ab3d41c8ba46f688315c7d920d71b, type: 2}
     - target: {fileID: 390241340165694690, guid: 3863ded62327f4b6c999e076452f7455,
         type: 3}
       propertyPath: m_Enabled

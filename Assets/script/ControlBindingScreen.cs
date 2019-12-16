@@ -28,7 +28,8 @@ public class ControlBindingScreen : MonoBehaviour
     IEnumerator<InputAction> enumerator = Global.instance.Controls.GetEnumerator();
     while( enumerator.MoveNext() )
     {
-      if( !Global.instance.Controls.MenuActions.Get().Contains( enumerator.Current ) )
+      if( !Global.instance.Controls.MenuActions.Get().Contains( enumerator.Current ) &&
+          !Global.instance.Controls.GlobalActions.Get().Contains( enumerator.Current ) )
         CreateItem( enumerator.Current );
     }
   }
@@ -45,6 +46,7 @@ public class ControlBindingScreen : MonoBehaviour
 
   public void StartRebind( ControlBindingItem cbi )
   {
+    Global.instance.Controls.Disable();
     cbi.button.interactable = false;
     InputActionRebindingExtensions.PerformInteractiveRebinding( cbi.action )
       //.OnCancel( OnCancel )
@@ -52,6 +54,7 @@ public class ControlBindingScreen : MonoBehaviour
         cbi.OnComplete( x );
         cbi.button.interactable = true;
         EventSystem.current.SetSelectedGameObject( cbi.button.gameObject );
+        Global.instance.Controls.Enable();
       } )
       .OnMatchWaitForAnother( 0.2f )
       .Start();

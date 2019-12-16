@@ -51,7 +51,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 29c0ea6655fd148bc87203fa33522eec, type: 2}
+  - {fileID: 2100000, guid: d905710c44976415991cc7aff39cfb39, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -108,7 +108,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6948721772952526834}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.019000053, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6948721772412102457}
@@ -131,7 +131,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 29c0ea6655fd148bc87203fa33522eec, type: 2}
+  - {fileID: 2100000, guid: d905710c44976415991cc7aff39cfb39, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -175,6 +175,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: vent (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4596207536373528126, guid: 1212ae07760e642118608d1473c66587,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4596207536373528514, guid: 1212ae07760e642118608d1473c66587,
         type: 3}
@@ -285,6 +290,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: vent (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4596207536373528126, guid: 1212ae07760e642118608d1473c66587,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4596207536373528514, guid: 1212ae07760e642118608d1473c66587,
         type: 3}

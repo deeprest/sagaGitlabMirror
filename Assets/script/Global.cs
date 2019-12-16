@@ -133,7 +133,6 @@ public class Global : MonoBehaviour
   public Bounds CameraBounds;
   SceneScript sceneScript;
   public PlayerController CurrentPlayer;
-  [SerializeField] Chopper chopper;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
 
   [Header( "UI" )]
@@ -147,6 +146,7 @@ public class Global : MonoBehaviour
   public GameObject LoadingScreen;
   [SerializeField] Image fader;
   public GameObject ready;
+  [SerializeField] GameObject OnboardingControls;
   // cursor 
   [SerializeField] Transform Cursor;
   Vector2 cursorDelta;
@@ -325,7 +325,9 @@ public class Global : MonoBehaviour
     }
     else
     {
-      StartCoroutine( LoadSceneRoutine( InitialSceneName, false, false, true, false ) );
+      //StartCoroutine( LoadSceneRoutine( InitialSceneName, false, false, true, false ) );
+      //StartCoroutine( LoadSceneRoutine( "intro", false, false, true, false ) );
+      StartCoroutine( LoadSceneRoutine( "home", true, true, true, false ) );
     }
 
   }
@@ -395,7 +397,7 @@ public class Global : MonoBehaviour
       else
         Pause();
     };
-    Controls.GlobalActions.Slowmo.performed += ( obj ) => {
+    Controls.GlobalActions.DevSlowmo.performed += ( obj ) => {
       if( Slowed )
         NoSlow();
       else
@@ -412,8 +414,8 @@ public class Global : MonoBehaviour
 #endif
     Controls.GlobalActions.DEVRespawn.performed += ( obj ) => {
       Chopper chopper = FindObjectOfType<Chopper>();
-      if( (!Application.isEditor || Global.instance.SimulatePlayer) && chopper != null )
-        ChopDrop();
+      if( (!Application.isEditor || SimulatePlayer) && chopper != null )
+        chopper.StartDrop( CurrentPlayer );
       else
       {
         CurrentPlayer.transform.position = FindSpawnPosition();
@@ -427,9 +429,7 @@ public class Global : MonoBehaviour
       // ...or if there is none, close diagetic UI
       if( ActiveDiagetic != null && !MenuShowing && CurrentPlayer != null )
         CurrentPlayer.UnselectWorldSelection();
-
     };
-
     // DEVELOPMENT
     Controls.BipedActions.DEVZoom.started += ( obj ) => {
       zoomDelta += obj.ReadValue<float>();
@@ -713,7 +713,7 @@ public class Global : MonoBehaviour
     CameraController.LookTarget = CurrentPlayer.gameObject;
     CameraController.transform.position = CurrentPlayer.transform.position;
 
-    // hack settings are read before player is created, so set player settings here.
+    // settings are read before player is created, so set player settings here.
     CurrentPlayer.SpeedFactorNormalized = FloatSetting["PlayerSpeedFactor"].Value;
   }
 
@@ -843,9 +843,9 @@ public class Global : MonoBehaviour
 
   void TogglePauseMenu()
   {
-    if( MenuShowing ) 
+    if( MenuShowing )
       HidePauseMenu();
-    else 
+    else
       ShowPauseMenu();
   }
 
@@ -962,17 +962,6 @@ public class Global : MonoBehaviour
     {
       Destroy( go );
     } );
-  }
-
-  public void ChopDrop()
-  {
-    //Camera.main.fieldOfView = 25;
-    chopper = FindObjectOfType<Chopper>();
-    if( chopper != null )
-    {
-      chopper.character = CurrentPlayer;
-      chopper.StartDrop();
-    }
   }
 
   public void FadeBlack()
@@ -1153,15 +1142,15 @@ public class Global : MonoBehaviour
     } );
     CreateFloatSetting( "UIScale", 1, 0.1f, 4, 0.05f, null );
 
-    CreateFloatSetting( "MasterVolume", 0.5f, 0, 1, 0.05f, delegate ( float value )
+    CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 0.05f, delegate ( float value )
     {
       mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) );
     } );
-    CreateFloatSetting( "MusicVolume", 0.5f, 0, 1, 0.05f, delegate ( float value )
+    CreateFloatSetting( "MusicVolume", 0.9f, 0, 1, 0.05f, delegate ( float value )
     {
       mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) );
     } );
-    CreateFloatSetting( "SFXVolume", 0.5f, 0, 1, 0.05f, delegate ( float value )
+    CreateFloatSetting( "SFXVolume", 1, 0, 1, 0.05f, delegate ( float value )
     {
       mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) );
     } );
@@ -1171,10 +1160,12 @@ public class Global : MonoBehaviour
       PlayMusicLoop( MusicLoops[Mathf.FloorToInt( Mathf.Clamp( value, 0, MusicLoops.Length - 1 ) )] );
     } );*/
 
+    CreateBoolSetting( "ShowOnboardingControls", false, OnboardingControls.SetActive );
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
     CreateBoolSetting( "CursorInfluence", true, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
     CreateBoolSetting( "AimSnap", false, delegate ( bool value ) { AimSnap = value; } );
     CreateBoolSetting( "AutoAim", false, delegate ( bool value ) { AutoAim = value; } );
+
 
     CreateFloatSetting( "CursorOuter", 1, 0, 1, 0.05f, delegate ( float value ) { CursorOuter = value; } );
     CreateFloatSetting( "CursorSensitivity", 0.5f, 0, 1, 0.05f, delegate ( float value ) { CursorSensitivity = value; } );
