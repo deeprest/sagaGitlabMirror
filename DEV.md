@@ -3,40 +3,46 @@
 + bottom of wall jump issue
 + add dash anim effect
 + remove pathfinding from lift, just use points+radius
++ minor shield single frame flip issue
 
 # todo
 - control rebinding
 - bindings json read/write
 - horizontal door trigger
 - lift push x
-- highway loading screen borked
-- intro scene: no hud, no menu or biped controls
-- align shot with surface
-- add airbot prop ability
+- optimize performance pass
 
 ## issues
-- gamepad double select diagetic menu
+- highway loading screen borked
 - liftbot shake issue
-- reduce audiooneshot calls to avoid dropout
+- gamepad double select diagetic menu
 - release build screen fade in on level transition gets stuck
-- reproducible: charge particles on after transition. reset player state on level transition
-- minor shield single frame flip issue
-- wheelbot box collider hits corners
-- fix glitchy sprite shader for mech on linux
+
+## low priority
+- reduce audiooneshot calls to avoid dropout
 - fix long slide clipping
 - UNITY bug: webgl audio loop Unity bug
 - UNITY bug: cursor movement in last direction when shoot
-
-## lower priority
 - hide arm while not shooting
-- fix nav mesh obstacles in city scene
 - add ability icon to hud
 - music scene switch
 - add spark effect to wall jump
 - detect cmd-f fullscreen switch and update setting
 - consolidate all sprites into bigsheet
+- wheelbot box collider hits corners
+- reproducible: charge particles on after transition. reset player state on level transition
+
+## Linux Issues
+- support Ctrl-Q to quit
+- no per-pixel lights (check OpenGL/Vulcan support)
+- control names are not converted in diagetics (but okay in menu)
+- scroll wheel sensitivity is too low
+- mouse sensitivity is crazy-high even on lowest setting (0.05)
+- glitchy/wrong sprite shader for mech on linux
 
 ## ideas
+- add airbot prop ability
+- align shot with surface
 - graphook foe
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
 - FSM: enemies should react to projectiles in proximity
@@ -63,9 +69,11 @@ story upfront
 polish lots
 add things arbitrarily
 
+## player perspective
 primary = xbuster, grenade, flame
 primary charge = charged blast
 secondary = graphook, shield, slowmo
+? maybe the current pickup modifies current weapon?
 ? Weapon limit. infinite, multiple, single(Contra).
 ? Abilities: persistent, temporary, limited. Ex: persistent shields, temporary powerup, limited ammo.
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
@@ -95,13 +103,13 @@ AI, navigation mesh
 
 ## aesthetics
 1. animation
-- idle
-- run cycle
-- jump, fall
-- wall slide
-- dash
-- weapon charge
-- take damage
++ idle
++ run cycle
++ jump, fall
++ wall slide
++ dash
++ weapon charge
++ take damage
 - low health
 
 1. atmosphere.
@@ -111,25 +119,12 @@ Consistent with instruments in the music.
 3. music
 energy. melody.
 
-In my opinion, Megaman X1-X3 suffers from the same problems: small viewing area, can only shoot forward, enemies respawn immediately out of sight, levels are static.
-Megaman X4 is bad enough that I never played another MMX game again. I've watched gameplay videos to keep up to date with the MMX games, but it seems the franchise never improved.
-
 1. Camera view range.
 Camera can center on an imaginary point around the player, in the aiming direction. Allow for variance in zoom, depending on how cozy the surroundings (raycast in a few directions to determine).
 2. Full range of aim.
 MegamanX can only shoot forwards, not upwards or even slightly higher. The ability to shoot upwards in games like Contra is an improvement. Having weapons that spread out when shot can make this limitation feel less awkward.
 3. Enemies respawn at logical locations.
 Not arbitrary static points.
-
-# Fan Games
-["Cancelled/Dead Mega Man X Fangames"](https://www.youtube.com/watch?v=PB8pMBSK8AU)
-["Mega Man X Elf Wars (aiming)"](https://youtu.be/xGahhqoooT0?t=109)
-["Mega Man X++"](https://www.youtube.com/watch?v=twI3res-obs)
-["Mega Man X: Corrupted"](http://www.megamanxcorrupted.com/)
-["Apsel Haven Mega Man X fangame"](https://www.youtube.com/watch?v=CwW_cziXs4U)
-["Mega Man X AD"](https://reploidsoft.blogspot.com/)
-# Similar Derived Games
-["20XX"](https://store.steampowered.com/app/322110/20XX/)
 
 
 # Features
@@ -150,63 +145,8 @@ Not arbitrary static points.
 - no story to ignore or lore to forget
 
 
-## where to release/announce demo
-gamejolt
-sprites.co.uk forums
-send to Stone McKnuckle
-pixeljoint or tigsource (to find artist for full project)
-## distribution platforms
-itch.io
-GOG
-Steam
-
-# announcements
-tigsource forums
-gamejolt
-indiegamesplus
-itch.io devlog
-twitter
-reddit
-
 # random
 Can gain other weapons from enemies.
 Chopdrop instead of teleportation.
 death -> You emerge from corpse as a small spiderbot that can gain control of other machines.
 death -> The player awakens in the lab, newly-rebuilt. The attending mechanic explains that the explosion destroyed your body but not your core. He has given you a new body but could not retrieve your weapons.
-
-## random 'names'
-jack basswards
-bran slapmuffin
-dert mcderples
-Slappy McTicklemonster
-
-I love the idea that nobody respects the player's character.
-A: (turns to leave) Where are you going?
-B: Oh, I thought you were done.
-
-A: YOU'RE going to fix things?! Well we're screwed.
-
-# Motivations
-power
-profits
-success
-glory
-pride
-vanity
-comfort
-justice
-chaos
-
-# Casualties
-Health
-Equality
-Safety
-Privacy
-
-# Problems
-World Corporation Dystopia ("Successful" Capitalism, Cronyism)
-Nuclear Holocaust from disregard for nuclear treaties (Rogue Nation)
-Toxic Environment from Pollution, plastics (Petroleum Industry)
-Solar Flare destroys electrical infrastructure (Cosmic Nature)
-Asteroid collision dust blocks sun, kills flora and starts another Ice Age (Cosmic Nature)
-Viral Epidemic

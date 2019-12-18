@@ -4,5 +4,5 @@
 
 # push to itch.io
 # ditto is a macos anomaly
-ditto -c -k --sequesterRsrc --keepParent SagaCity.app SagaCity.app.zip
-butler push SagaCity.app.zip deeprest/sagacity:macos
+ditto -c -k --sequesterRsrc --keepParent saga2020.app saga2020.app.zip
+butler push saga2020.app.zip deeprest/saga2020:macos

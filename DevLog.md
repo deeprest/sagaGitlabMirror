@@ -1,4 +1,8 @@
 
+# thought
+In my opinion, Megaman X1-X3 suffers from the same problems: small viewing area, can only shoot forward, enemies respawn immediately out of sight, levels are static.
+Megaman X4 is bad enough that I never played another MMX game again. I've watched gameplay videos to keep up to date with the MMX games, but it seems the series has not improved.
+
 Unity is great for static levels
 
 Chose to use no 2d physics (except for bouncygrenade). just want collision detection. Used boxcast for directional response.
