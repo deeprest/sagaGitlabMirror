@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿  using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,9 +11,12 @@ public class Destructible : Character
   {
     CharacterStart();
     UpdateLogic = null;
-    UpdateHit = null;
-    UpdateCollision = null;
-    UpdatePosition = null;
+    if( !UseGravity )
+    {
+      UpdateHit = null;
+      UpdateCollision = null;
+      UpdatePosition = null;
+    }
   }
 
   protected override void Die()

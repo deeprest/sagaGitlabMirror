@@ -27,31 +27,63 @@ public class LiftbotEdtitor : Editor
 
 public class Liftbot : Character
 {
-  public float sightRange = 6;
   public float flySpeed = 2;
-  const float small = 0.1f;
+  public float waitDuration = 2;
+  public float small = 0.1f;
   int pathIndex = 0;
   Vector2 origin;
   public Vector2[] path;
+  Timer timeout = new Timer();
+  bool waiting;
+
+  private void OnDestroy()
+  {
+    timeout.Stop( false );
+  }
 
   void Start()
   {
     CharacterStart();
     UpdateLogic = UpdateAirbot;
     UpdateHit = null;
-    UpdateCollision = BoxCollision;
+    UpdateCollision = null;  //BoxCollision;
     UpdatePosition = null;
     origin = transform.position;
+    timeout.Start( waitDuration, null, NextWaypoint );
+  }
+
+  float DistanceToWaypoint()
+  {
+    return Vector3.Distance( transform.position, origin + path[pathIndex] );
+  }
+
+  void NextWaypoint()
+  {
+    waiting = false;
+    pathIndex = ++pathIndex % path.Length;
+    timeout.Stop( false );
+    if( flySpeed > 0 )
+      timeout.Start( DistanceToWaypoint() / flySpeed, null, NextWaypoint );
   }
 
   void UpdateAirbot()
   {
     if( path.Length > 0 )
     {
-      if( Vector3.Distance( transform.position, origin + path[pathIndex] ) < small )
-        pathIndex = ++pathIndex % path.Length;
-      MoveDirection = origin + path[pathIndex] - (Vector2)transform.position;
-      velocity = MoveDirection.normalized * flySpeed;
+      if( DistanceToWaypoint() < flySpeed * Time.maximumDeltaTime )
+      {
+        transform.position = origin + path[pathIndex];
+        if( !waiting )
+        {
+          waiting = true;
+          timeout.Start( waitDuration, null, NextWaypoint );
+        }
+      }
+      else
+      {
+        MoveDirection = origin + path[pathIndex] - (Vector2)transform.position;
+        velocity = MoveDirection.normalized * flySpeed;
+      }
     }
     else
     {

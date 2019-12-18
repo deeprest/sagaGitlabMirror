@@ -2,20 +2,28 @@
 + TURRETS only aim when target is visible
 + bottom of wall jump issue
 + add dash anim effect
++ remove pathfinding from lift, just use points+radius
 
 # todo
-- remove pathfinding from lift, just use points+radius
-- fix long slide clipping
+- control rebinding
+- bindings json read/write
+- horizontal door trigger
+- lift push x
+- highway loading screen borked
+- intro scene: no hud, no menu or biped controls
+- align shot with surface
 - add airbot prop ability
 
-## bugs / issues
-- minor liftbot shake issue
+## issues
+- gamepad double select diagetic menu
+- liftbot shake issue
 - reduce audiooneshot calls to avoid dropout
 - release build screen fade in on level transition gets stuck
 - reproducible: charge particles on after transition. reset player state on level transition
 - minor shield single frame flip issue
 - wheelbot box collider hits corners
 - fix glitchy sprite shader for mech on linux
+- fix long slide clipping
 - UNITY bug: webgl audio loop Unity bug
 - UNITY bug: cursor movement in last direction when shoot
 

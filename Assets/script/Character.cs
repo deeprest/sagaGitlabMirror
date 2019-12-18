@@ -70,6 +70,7 @@ public class Character : MonoBehaviour, IDamage
   readonly float flashOn = 1f;
 
   public Damage ContactDamage;
+  protected Timer pushTimer = new Timer();
 
   // "collision" impedes this object's movement
   protected System.Action UpdateCollision;
@@ -133,8 +134,6 @@ public class Character : MonoBehaviour, IDamage
       }
     }
   }
-
-  protected Timer pushTimer = new Timer();
 
   public void Push( Vector2 pVelocity, float duration )
   {
@@ -294,6 +293,7 @@ public class Character : MonoBehaviour, IDamage
     }
     return true;
   }
+
   #region Pathing
   protected void UpdatePath()
   {
@@ -391,8 +391,6 @@ public class Character : MonoBehaviour, IDamage
       }
       MoveDirection += Sidestep;
     }
-
-
 
 #if DEBUG_LINES
     Debug.DrawLine( transform.position, (Vector2)transform.position + MoveDirection.normalized * 0.5f, Color.magenta );

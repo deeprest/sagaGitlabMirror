@@ -164,7 +164,7 @@ public class PlayerController : Character, IDamage
   [Header( "Weapon" )]
   public Weapon weapon;
   public int CurrentWeaponIndex;
-  [SerializeField] Weapon[] weapons;
+  [SerializeField] List<Weapon> weapons;
   Timer shootRepeatTimer = new Timer();
   ParticleSystem chargeEffect = null;
   public float chargeMin = 0.3f;
@@ -232,8 +232,8 @@ public class PlayerController : Character, IDamage
     spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
     graphookTip.SetActive( false );
     grapCableRender.gameObject.SetActive( false );
-
-    weapon = weapons[CurrentWeaponIndex];
+    if( weapons.Count > 0 )
+      weapon = weapons[ CurrentWeaponIndex % weapons.Count ];
   }
 
   public override void PreSceneTransition()
@@ -274,7 +274,7 @@ public class PlayerController : Character, IDamage
 
   void NextWeapon()
   {
-    CurrentWeaponIndex = (CurrentWeaponIndex + 1) % weapons.Length;
+    CurrentWeaponIndex = (CurrentWeaponIndex + 1) % weapons.Count;
     AssignWeapon( weapons[CurrentWeaponIndex] );
   }
 
@@ -508,10 +508,10 @@ public class PlayerController : Character, IDamage
 
   void Shoot()
   {
-    if( !weapon.fullAuto )
-      inputFire = false;
     if( weapon == null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
       return;
+    if( !weapon.fullAuto )
+      inputFire = false;
     if( weapon.HasInterval )
       shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector3 pos = arm.position + shoot.normalized * armRadius;
@@ -521,7 +521,7 @@ public class PlayerController : Character, IDamage
 
   void ShootCharged()
   {
-    if( weapon.ChargeVariant == null )
+    if( weapon==null || weapon.ChargeVariant == null )
       return;
     if( chargeEffect != null )
     {
@@ -631,7 +631,13 @@ public class PlayerController : Character, IDamage
         {
           Pickup pickup = (Pickup)closestISelect;
           if( pickup.weapon != null )
-            AssignWeapon( ((Pickup)closestISelect).weapon );
+          {
+            if( !weapons.Contains( pickup.weapon ) )
+            {
+              weapons.Add( pickup.weapon );
+              AssignWeapon( pickup.weapon );
+            }
+          }
           else if( pickup.ability != null )
           {
             secondary = pickup.ability;
@@ -968,6 +974,8 @@ public class PlayerController : Character, IDamage
 
   void StartCharge()
   {
+    if( weapon == null )
+      return;
     if( weapon.ChargeVariant != null )
     {
       chargeStartDelay.Start( chargeDelay, null, delegate

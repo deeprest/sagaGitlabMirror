@@ -211,7 +211,7 @@ public class Global : MonoBehaviour
   public UnityEngine.Audio.AudioMixerSnapshot snapSlowmo;
   public UnityEngine.Audio.AudioMixerSnapshot snapNormal;
   public UnityEngine.Audio.AudioMixerSnapshot snapMusicSilence;
-  public float MusicTransitionDuration = 1;
+  public float MusicTransitionDuration = 0.5f;
   public float AudioFadeDuration = 0.1f;
   [SerializeField] AudioSource musicSource0;
   [SerializeField] AudioSource musicSource1;
@@ -405,12 +405,12 @@ public class Global : MonoBehaviour
     };
     Controls.GlobalActions.Screenshot.performed += ( obj ) => Util.Screenshot();
 #if !UNITY_EDITOR
-    /*Controls.GlobalActions.CursorLockToggle.performed += (obj) => {
+    Controls.GlobalActions.CursorLockToggle.performed += (obj) => {
       if( UnityEngine.Cursor.lockState == CursorLockMode.Locked )
         UnityEngine.Cursor.lockState = CursorLockMode.None;
       else
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-    };*/
+    };
 #endif
     Controls.GlobalActions.DEVRespawn.performed += ( obj ) => {
       Chopper chopper = FindObjectOfType<Chopper>();
@@ -458,7 +458,7 @@ public class Global : MonoBehaviour
     }
     // music fade out
     Timer musicTimer = new Timer();
-    TimerParams musicTimerParams = new TimerParams
+    TimerParams musicTimerParamsFadeOut = new TimerParams
     {
       unscaledTime = true,
       repeat = false,
@@ -475,7 +475,7 @@ public class Global : MonoBehaviour
         StopMusic();
       }
     };
-    musicTimer.Start( musicTimerParams );
+    musicTimer.Start( musicTimerParamsFadeOut );
     Pause();
     HUD.SetActive( false );
     if( showLoadingScreen )
@@ -514,16 +514,23 @@ public class Global : MonoBehaviour
       CurrentPlayer.PostSceneTransition();
     }
 
-    musicTimer.Start( MusicTransitionDuration,
-    delegate ( Timer obj )
+    TimerParams musicTimerParamsFadeIn = new TimerParams
     {
-      musicSource0.volume = obj.ProgressNormalized;
-      musicSource1.volume = obj.ProgressNormalized;
-    }, delegate
-    {
-      musicSource0.volume = 1;
-      musicSource1.volume = 1;
-    } );
+      unscaledTime = true,
+      repeat = false,
+      duration = MusicTransitionDuration,
+      UpdateDelegate = delegate ( Timer obj )
+      {
+        musicSource0.volume = obj.ProgressNormalized;
+        musicSource1.volume = obj.ProgressNormalized;
+      },
+      CompleteDelegate = delegate
+      {
+        musicSource0.volume = 1;
+        musicSource1.volume = 1;
+      }
+    };
+    musicTimer.Start( musicTimerParamsFadeIn ); 
 
     HUD.SetActive( true );
 
@@ -1131,8 +1138,7 @@ public class Global : MonoBehaviour
     previousSelectable = PauseMenuFirstSelected.GetComponent<Selectable>();
     // screen settings are applied explicitly when user pushes button
     CreateBoolSetting( "Fullscreen", false, null );
-    CreateStringSetting( "Resolution", "1280x800", null );
-    CreateFloatSetting( "ResolutionSlider", 0, 0, resolutions.Length - 1, 1.0f / (resolutions.Length - 1), delegate ( float value )
+    CreateFloatSetting( "ResolutionSlider", 4, 0, resolutions.Length - 1, 1.0f / (resolutions.Length - 1), delegate ( float value )
     {
       string Resolution = resolutions[Mathf.FloorToInt( Mathf.Clamp( value, 0, resolutions.Length - 1 ) )];
       string[] tokens = Resolution.Split( new char[] { 'x' } );
@@ -1140,25 +1146,13 @@ public class Global : MonoBehaviour
       ResolutionHeight = int.Parse( tokens[1].Trim() );
       StringSetting["Resolution"].Value = ResolutionWidth.ToString() + "x" + ResolutionHeight.ToString();
     } );
+    CreateStringSetting( "Resolution", "1280x800", null );
     CreateFloatSetting( "UIScale", 1, 0.1f, 4, 0.05f, null );
 
-    CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 0.05f, delegate ( float value )
-    {
-      mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) );
-    } );
-    CreateFloatSetting( "MusicVolume", 0.9f, 0, 1, 0.05f, delegate ( float value )
-    {
-      mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) );
-    } );
-    CreateFloatSetting( "SFXVolume", 1, 0, 1, 0.05f, delegate ( float value )
-    {
-      mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) );
-    } );
-
-    /*CreateFloatSetting( "MusicTrack", 0, 0, MusicLoops.Length - 1, 1.0f / (MusicLoops.Length - 1), delegate ( float value )
-    {
-      PlayMusicLoop( MusicLoops[Mathf.FloorToInt( Mathf.Clamp( value, 0, MusicLoops.Length - 1 ) )] );
-    } );*/
+    CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 0.05f, delegate ( float value ){ mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) ); } );
+    CreateFloatSetting( "MusicVolume", 0.9f, 0, 1, 0.05f, delegate ( float value ){ mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) ); } );
+    CreateFloatSetting( "SFXVolume", 1, 0, 1, 0.05f, delegate ( float value ){ mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) ); } );
+    /*CreateFloatSetting( "MusicTrack", 0, 0, MusicLoops.Length - 1, 1.0f / (MusicLoops.Length - 1), delegate ( float value ){ PlayMusicLoop( MusicLoops[Mathf.FloorToInt( Mathf.Clamp( value, 0, MusicLoops.Length - 1 ) )] ); } );*/
 
     CreateBoolSetting( "ShowOnboardingControls", false, OnboardingControls.SetActive );
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );

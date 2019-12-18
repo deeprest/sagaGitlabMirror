@@ -505,7 +505,7 @@ public class Controls : IInputActionCollection, IDisposable
                     ""name"": ""DEV-Zoom"",
                     ""type"": ""Value"",
                     ""id"": ""daad5be2-bb09-4201-939d-730f35d6594c"",
-                    ""expectedControlType"": ""Axis"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -756,7 +756,7 @@ public class Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a1816db8-1011-4465-831c-9f094d661dcf"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -778,7 +778,7 @@ public class Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0a7a2a72-f465-4804-b4ea-0167400c9146"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

@@ -383,6 +383,15 @@ TextureImporter:
   - first:
       213: -2043017983467968750
     second: arrow
+  - first:
+      213: 4439171445658710530
+    second: car
+  - first:
+      213: 8773630017238524476
+    second: truck
+  - first:
+      213: -3741573112334478744
+    second: box
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -3051,6 +3060,69 @@ TextureImporter:
       bones: []
       spriteID: da2e5ad6d6900458583893b40c15cb17
       internalID: -2043017983467968750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: car
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 448
+        width: 78
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa72f725633ea4045b70aa77177d6409
+      internalID: 4439171445658710530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: truck
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 424
+        width: 97
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 37fc3ec07cf5648e1962e0b5b25cc8b5
+      internalID: 8773630017238524476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: box
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 480
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a1d9add0d25641dd81391cc4c4ca4a4
+      internalID: -3741573112334478744
       vertices: []
       indices: 
       edges: []

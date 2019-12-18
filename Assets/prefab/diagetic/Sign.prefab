@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3989671509996354706}
   - component: {fileID: 4803074220341333794}
   - component: {fileID: 5437641559593702384}
-  - component: {fileID: 9120436781363642482}
   - component: {fileID: 117907209037309610}
   m_Layer: 2
   m_Name: Menu
@@ -91,23 +90,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &9120436781363642482
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 425608499035637248}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!114 &117907209037309610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,7 +110,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 197eacf5c22d14d05b9f34cf21fd96f2, type: 3}
-    m_FontSize: 40
+    m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -150,7 +132,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8408425422518579388}
   - component: {fileID: 8517692444710378138}
-  m_Layer: 16
+  - component: {fileID: 5808246024410414728}
+  m_Layer: 2
   m_Name: Sign
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,3 +205,16 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5808246024410414728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8517692444710378139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab0d899a725c84d539e0ee35d89e9135, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  message: {fileID: 117907209037309610}
