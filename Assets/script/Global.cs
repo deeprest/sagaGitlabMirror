@@ -291,11 +291,11 @@ public class Global : MonoBehaviour
     foreach( var mesh in meshSurfaces )
       AgentType[NavMesh.GetSettingsNameFromID( mesh.agentTypeID )] = mesh.agentTypeID;
 
-    fpsTimer = new Timer( int.MaxValue, 1, delegate ( Timer tmr )
+    /*fpsTimer = new Timer( int.MaxValue, 1, delegate ( Timer tmr )
     {
       debugFPS.text = frames.ToString();
       frames = 0;
-    }, null );
+    }, null );*/
 
     if( Camera.main.orthographic )
       debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
@@ -548,6 +548,7 @@ public class Global : MonoBehaviour
     Updating = true;
   }
 
+  float lastTime;
   void Update()
   {
 #if DESTRUCTION_LIST
@@ -557,6 +558,13 @@ public class Global : MonoBehaviour
 #endif
 
     frames++;
+    if( Time.unscaledTime - lastTime >= 1 )
+    {
+      lastTime = Time.unscaledTime;
+      debugFPS.text = frames.ToString();
+      frames = 0;
+    }
+
     Timer.UpdateTimers();
 
     if( !Updating )
@@ -1127,7 +1135,7 @@ public class Global : MonoBehaviour
       {
         s.intValue.Init();
         FloatSetting.Add( s.intValue.name, s.intValue );
-      }
+      }S:
       if( s.isBool )
       {
         s.boolValue.Init();
@@ -1154,9 +1162,9 @@ public class Global : MonoBehaviour
     CreateFloatSetting( "SFXVolume", 1, 0, 1, 0.05f, delegate ( float value ){ mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) ); } );
     /*CreateFloatSetting( "MusicTrack", 0, 0, MusicLoops.Length - 1, 1.0f / (MusicLoops.Length - 1), delegate ( float value ){ PlayMusicLoop( MusicLoops[Mathf.FloorToInt( Mathf.Clamp( value, 0, MusicLoops.Length - 1 ) )] ); } );*/
 
-    CreateBoolSetting( "ShowOnboardingControls", false, OnboardingControls.SetActive );
+    CreateBoolSetting( "ShowOnboardingControls", true, OnboardingControls.SetActive );
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
-    CreateBoolSetting( "CursorInfluence", true, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
+    CreateBoolSetting( "CursorInfluence", false, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
     CreateBoolSetting( "AimSnap", false, delegate ( bool value ) { AimSnap = value; } );
     CreateBoolSetting( "AutoAim", false, delegate ( bool value ) { AutoAim = value; } );
 

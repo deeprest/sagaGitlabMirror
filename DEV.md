@@ -1,20 +1,24 @@
 # done (add to devlog)
-+ TURRETS only aim when target is visible
++ turrets only aim when target is visible
 + bottom of wall jump issue
 + add dash anim effect
 + remove pathfinding from lift, just use points+radius
 + minor shield single frame flip issue
++ control rebinding
 
 # todo
-- control rebinding
+- snap reticle  a line
+- reticle easier to see
+- lower volume when paused
+
 - bindings json read/write
 - horizontal door trigger
+- lift shake issue
 - lift push x
 - optimize performance pass
 
 ## issues
 - highway loading screen borked
-- liftbot shake issue
 - gamepad double select diagetic menu
 - release build screen fade in on level transition gets stuck
 
@@ -37,7 +41,7 @@
 - no per-pixel lights (check OpenGL/Vulcan support)
 - control names are not converted in diagetics (but okay in menu)
 - scroll wheel sensitivity is too low
-- mouse sensitivity is crazy-high even on lowest setting (0.05)
+- mouse sensitivity is too high even on lowest setting (0.05)
 - glitchy/wrong sprite shader for mech on linux
 
 ## ideas
@@ -129,7 +133,7 @@ Not arbitrary static points.
 
 # Features
 ## accessibly
-- Linux, MacOS, Windows?
+- Linux, MacOS, Windows
 - runs smoothly on lower-spec machines
 - (single player) no internet connection required to play.
 - remap controls
@@ -150,3 +154,7 @@ Can gain other weapons from enemies.
 Chopdrop instead of teleportation.
 death -> You emerge from corpse as a small spiderbot that can gain control of other machines.
 death -> The player awakens in the lab, newly-rebuilt. The attending mechanic explains that the explosion destroyed your body but not your core. He has given you a new body but could not retrieve your weapons.
+
+
+# thank you
+https://seansleblanc.itch.io/better-minimal-webgl-template

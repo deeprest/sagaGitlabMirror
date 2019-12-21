@@ -197,8 +197,9 @@ MonoBehaviour:
   flashInterval: 0.05
   flashCount: 5
   ContactDamage: {fileID: 0}
-  sightRange: 6
   flySpeed: 1
+  waitDuration: 2
+  small: 0.1
   path:
   - {x: 0, y: 0}
   - {x: 0, y: 3}
@@ -215,7 +216,7 @@ NavMeshObstacle:
   m_Extents: {x: 0.3, y: 0.1, z: 0.15}
   m_MoveThreshold: 0.1
   m_Carve: 1
-  m_CarveOnlyStationary: 0
+  m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
 --- !u!1 &9209941920657911778
