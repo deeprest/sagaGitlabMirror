@@ -628,7 +628,7 @@ public class Global : MonoBehaviour
 #if UNITY_WEBGL && !UNITY_EDITOR
         Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
         delta.y = -delta.y;
-        CursorDelta += delta;
+        cursorDelta += delta;
 #else
         /*currentDelta = UnityEngine.InputSystem.Mouse.current.delta.ReadValue();
         if( currentDelta.magnitude > 0 )
