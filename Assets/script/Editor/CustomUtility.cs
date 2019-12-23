@@ -444,6 +444,23 @@ public class CustomUtility : EditorWindow
     }
 
 
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "write font data" ) )
+    {
+      string letter = " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+      string fontImageName = "mmx.png";
+      string outFontName = "mmx.fnt";
+      const int imageSize = 256;
+      const int cols = 16;
+      const int charWith = imageSize / cols;
+      string output = "info font=\"Base 5\" size=16 bold=0 italic=0 charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=2,2\n" +
+        "common lineHeight=6 base=12 scaleW="+ imageSize+" scaleH="+ imageSize+" pages=1 packed=0\n" +
+        "page id=0 file=\"" + fontImageName + "\"\nchars count=" + letter.Length + "\n";
+      for( int i = 0; i < letter.Length; i++ )
+        output += "char id=" + i + " x="+(i%cols)* charWith + " y="+(i/cols)* charWith + " width=14 height=14 xoffset=1 yoffset=1 xadvance=16 page=0 chnl=0 letter=\"" + letter[i] + "\"\n";
+      output += "kernings count=0";
+      File.WriteAllText( Application.dataPath + "/font/"+ outFontName, output );
+    }
+
   }
 
   void ReplaceObjectWithPrefabInstance( GameObject replaceThis, GameObject prefab )

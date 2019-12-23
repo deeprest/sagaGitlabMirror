@@ -20,9 +20,9 @@ GOG
 Steam
 
 # announcements
+itch.io
 tigsource forums
-gamejolt
 indiegamesplus
-itch.io devlog
-twitter
+gamejolt
 reddit
+twitter

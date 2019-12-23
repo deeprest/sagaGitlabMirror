@@ -23,18 +23,18 @@
         _FlipX ("FlipX", int) = 0 
  }
  SubShader {
-   Tags { 
-     "Queue"="Transparent" 
-     "RenderType"="Transparent" 
+   Tags {  
+    "Queue"="Transparent"  
+     //"RenderType"="Opaque" 
    }
    Cull Off
    Lighting On
-   ZWrite On
+   ZWrite Off
    Blend One OneMinusSrcAlpha
 
    CGPROGRAM
    // Physically based Standard lighting model, and enable shadows on all light types
-   #pragma surface surf Standard fullforwardshadows alphatest:_Cutoff addshadow
+   #pragma surface surf Standard alphatest:_Cutoff novertexlights noshadow noshadowmask
 
    // Use shader model 3.0 target, to get nicer looking lighting
    #pragma target 3.0

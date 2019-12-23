@@ -131,9 +131,9 @@ MegamanX can only shoot forwards, not upwards or even slightly higher. The abili
 Not arbitrary static points.
 
 
-# Features
+# Design Requirements
 ## accessibly
-- Linux, MacOS, Windows
+- Linux, MacOS, WebGL if possible
 - runs smoothly on lower-spec machines
 - (single player) no internet connection required to play.
 - remap controls
