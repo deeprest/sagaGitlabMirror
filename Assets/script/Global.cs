@@ -121,7 +121,7 @@ public class Global : MonoBehaviour
   [Header( "References" )]
   public CameraController CameraController;
   [SerializeField] Animator animator;
-
+  [SerializeField] AudioClip VolumeChangeNoise;
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
@@ -785,6 +785,8 @@ public class Global : MonoBehaviour
     Paused = true;
     Time.timeScale = 0;
     Time.fixedDeltaTime = 0;
+    instance.mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["MusicVolume"].Value * 0.8f ) );
+    instance.mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["SFXVolume"].Value * 0.8f ) );
   }
 
   public static void Unpause()
@@ -792,6 +794,8 @@ public class Global : MonoBehaviour
     Paused = false;
     Time.timeScale = 1;
     Time.fixedDeltaTime = 0.01f * Time.timeScale;
+    instance.mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["MusicVolume"].Value ) );
+    instance.mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["SFXVolume"].Value ) );
   }
 
   public void SetCursor( Sprite spr )
@@ -1159,7 +1163,11 @@ public class Global : MonoBehaviour
 
     CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 0.05f, delegate ( float value ){ mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) ); } );
     CreateFloatSetting( "MusicVolume", 0.9f, 0, 1, 0.05f, delegate ( float value ){ mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) ); } );
-    CreateFloatSetting( "SFXVolume", 1, 0, 1, 0.05f, delegate ( float value ){ mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) ); } );
+    CreateFloatSetting( "SFXVolume", 1, 0, 1, 0.05f, delegate ( float value )
+    {
+      mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) );
+      AudioOneShot( VolumeChangeNoise, Camera.main.transform.position );
+    } );
     /*CreateFloatSetting( "MusicTrack", 0, 0, MusicLoops.Length - 1, 1.0f / (MusicLoops.Length - 1), delegate ( float value ){ PlayMusicLoop( MusicLoops[Mathf.FloorToInt( Mathf.Clamp( value, 0, MusicLoops.Length - 1 ) )] ); } );*/
 
     CreateBoolSetting( "ShowOnboardingControls", true, OnboardingControls.SetActive );

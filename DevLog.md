@@ -36,7 +36,6 @@ deployment
 * multi-shot, variants
 + bouncy grenade
 
-
 + new input system. gamepad, linux. Keys: O, P
 + customutility build buttons: macos and linux
 + webgl issues: intial video mode is borked; mousewheel does not work;

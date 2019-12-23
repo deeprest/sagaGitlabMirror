@@ -22,9 +22,9 @@ public class Talker : WorldSelectable
   public override void Select()
   {
     animator.Play( "talk" );
-    Timer talk = new Timer( 3, null, delegate { animator.Play( "idle" ); } );
-    jabber.Play( "the city is being attacked!" );
-    Global.instance.Speak( identity, "the city is being attacked!", 3 );
+    Timer talk = new Timer( 4, null, delegate { animator.Play( "idle" ); } );
+    jabber.Play( "jibber jabber" );
+    Global.instance.Speak( identity, "You! This struggle is philosophical!", 4 );
   }
 
   public override void Unselect()

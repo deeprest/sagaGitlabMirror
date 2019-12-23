@@ -5,17 +5,15 @@
 + remove pathfinding from lift, just use points+radius
 + minor shield single frame flip issue
 + control rebinding
++ optimize performance pass
++ reticle easier to see
 
 # todo
 - snap reticle  a line
-- reticle easier to see
 - lower volume when paused
-
 - bindings json read/write
-- horizontal door trigger
 - lift shake issue
 - lift push x
-- optimize performance pass
 
 ## issues
 - highway loading screen borked
@@ -23,6 +21,7 @@
 - release build screen fade in on level transition gets stuck
 
 ## low priority
+- horizontal door trigger
 - reduce audiooneshot calls to avoid dropout
 - fix long slide clipping
 - UNITY bug: webgl audio loop Unity bug
