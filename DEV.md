@@ -7,20 +7,13 @@
 + control rebinding
 + optimize performance pass
 + reticle easier to see
++ lower volume when paused
 
-# todo
-- snap reticle  a line
-- lower volume when paused
-- bindings json read/write
-- lift shake issue
-- lift push x
 
 ## issues
-- highway loading screen borked
+- align shot with surface
 - gamepad double select diagetic menu
 - release build screen fade in on level transition gets stuck
-
-## low priority
 - horizontal door trigger
 - reduce audiooneshot calls to avoid dropout
 - fix long slide clipping
@@ -28,8 +21,10 @@
 - UNITY bug: cursor movement in last direction when shoot
 - hide arm while not shooting
 - add ability icon to hud
+- intro scene: no hud, no menu or biped controls
 - music scene switch
 - add spark effect to wall jump
+- highway loading screen borked
 - detect cmd-f fullscreen switch and update setting
 - consolidate all sprites into bigsheet
 - wheelbot box collider hits corners

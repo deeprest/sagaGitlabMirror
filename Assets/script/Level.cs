@@ -159,13 +159,11 @@ public class Level : MonoBehaviour
   {
     if( obj == PlayModeStateChange.ExitingEditMode )
     {
-      print( "exit edit" );
       DestroyAll();
     }
     if( obj == PlayModeStateChange.ExitingPlayMode )
     {
       // restore objects from ids
-      print( "exit play" );
       DestroyAll();
     }
   }

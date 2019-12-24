@@ -138,7 +138,6 @@ public class Character : MonoBehaviour, IDamage
   public void Push( Vector2 pVelocity, float duration )
   {
     pushVelocity = pVelocity;
-    pushTimer.Stop( false );
     pushTimer.Start( duration );
   }
 

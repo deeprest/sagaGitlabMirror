@@ -29,7 +29,6 @@ public class Liftbot : Character
 {
   public float flySpeed = 2;
   public float waitDuration = 2;
-  public float small = 0.1f;
   int pathIndex = 0;
   Vector2 origin;
   public Vector2[] path;
@@ -46,12 +45,12 @@ public class Liftbot : Character
     CharacterStart();
     UpdateLogic = UpdateAirbot;
     UpdateHit = null;
-    UpdateCollision = null;  //BoxCollision;
-    UpdatePosition = null;
+    UpdateCollision = null;
+    UpdatePosition = BasicPosition;
     origin = transform.position;
     timeout.Start( waitDuration, null, NextWaypoint );
-  }
-
+  } 
+  
   float DistanceToWaypoint()
   {
     return Vector3.Distance( transform.position, origin + path[pathIndex] );
@@ -72,7 +71,8 @@ public class Liftbot : Character
     {
       if( DistanceToWaypoint() < flySpeed * Time.maximumDeltaTime )
       {
-        transform.position = origin + path[pathIndex];
+        velocity = Vector2.zero;
+        //transform.position = origin + path[pathIndex];
         if( !waiting )
         {
           waiting = true;
@@ -90,7 +90,7 @@ public class Liftbot : Character
       velocity = Vector2.zero;
     }
   }
-
+  /*
   private void FixedUpdate()
   {
     if( pushTimer.IsActive )
@@ -120,9 +120,8 @@ public class Liftbot : Character
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     velocity -= (velocity * airFriction) * Time.fixedDeltaTime;
     transform.position += (Vector3)velocity * Time.fixedDeltaTime;
-
   }
-
+  */
   public override bool TakeDamage( Damage d )
   {
     // absorb hits, but do not take damage

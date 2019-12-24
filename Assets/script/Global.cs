@@ -178,6 +178,7 @@ public class Global : MonoBehaviour
   [Header( "Debug" )]
   [SerializeField] Text debugFPS;
   [SerializeField] Text debugText;
+  [SerializeField] Text debugText2;
   // loading screen
   bool loadingScene;
   float prog = 0;
@@ -291,11 +292,11 @@ public class Global : MonoBehaviour
     foreach( var mesh in meshSurfaces )
       AgentType[NavMesh.GetSettingsNameFromID( mesh.agentTypeID )] = mesh.agentTypeID;
 
-    /*fpsTimer = new Timer( int.MaxValue, 1, delegate ( Timer tmr )
+    fpsTimer = new Timer( int.MaxValue, 1, delegate ( Timer tmr )
     {
       debugFPS.text = frames.ToString();
       frames = 0;
-    }, null );*/
+    }, null );
 
     if( Camera.main.orthographic )
       debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
@@ -548,7 +549,7 @@ public class Global : MonoBehaviour
     Updating = true;
   }
 
-  float lastTime;
+  //float lastTime;
   void Update()
   {
 #if DESTRUCTION_LIST
@@ -558,14 +559,8 @@ public class Global : MonoBehaviour
 #endif
 
     frames++;
-    if( Time.unscaledTime - lastTime >= 1 )
-    {
-      lastTime = Time.unscaledTime;
-      debugFPS.text = frames.ToString();
-      frames = 0;
-    }
-
     Timer.UpdateTimers();
+    debugText2.text = "Active Timers: "+Timer.ActiveTimers.Count;
 
     if( !Updating )
       return;

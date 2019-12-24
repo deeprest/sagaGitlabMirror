@@ -440,6 +440,9 @@ public class PlayerController : Character, IDamage
       Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.grey );
 
     */
+    // reset carry velocity
+    //carryVelocity = Vector2.zero;
+    carryCharacter = null;
 
     float down = jumping ? raydown - downOffset : raydown;
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
@@ -455,7 +458,13 @@ public class PlayerController : Character, IDamage
         // moving platforms
         Character cha = hit.transform.GetComponent<Character>();
         if( cha != null )
-          adjust.y += cha.velocity.y * dT;
+        {
+          //adjust.y += cha.velocity.y * dT;
+          //carryVelocity = cha.velocity;
+          //Push( cha.velocity, Time.maximumDeltaTime );
+          //velocity += cha.velocity * dT;
+          carryCharacter = cha;
+        }
         break;
       }
     }
@@ -663,6 +672,9 @@ public class PlayerController : Character, IDamage
     inputChargeEnd = false;
     inputGraphook = false;
   }
+
+  Vector2 carryVelocity = Vector2.zero;
+  Character carryCharacter;
 
   void Update()
   {
@@ -876,10 +888,15 @@ public class PlayerController : Character, IDamage
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    transform.position += (Vector3)velocity * Time.deltaTime;
+    
+    if( carryCharacter != null )
+      carryVelocity = carryCharacter.velocity;
+    else
+      carryVelocity = Vector2.zero;
+    transform.position += (Vector3)(velocity + carryVelocity) * Time.deltaTime;
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
-
+     
     if( takingDamage )
       anim = "damage";
     else if( walljumping )
@@ -914,18 +931,8 @@ public class PlayerController : Character, IDamage
     else
       transform.rotation = Quaternion.Euler( 0, 0, 0 );
 
-
     ResetInput();
   }
-
-  /*
-  private void FixedUpdate()
-  {
-    previousGround = onGround;
-    UpdateCollision( Time.fixedDeltaTime );
-    onGround = collideBottom || (collideLeft && collideRight);
-  }
-  */
 
   void StartJump()
   {

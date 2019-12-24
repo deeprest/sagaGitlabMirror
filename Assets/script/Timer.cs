@@ -53,8 +53,9 @@ public class Timer
 
   public Timer( float duration, System.Action<Timer> UpdateDelegate, System.Action CompleteDelegate )
   {
+    if( !active )
+      NewTimers.Add( this );
     active = true;
-    NewTimers.Add( this );
     StartTime = time;
     Duration = duration;
     repeat = false;
@@ -69,8 +70,9 @@ public class Timer
 
   public void Start( TimerParams param )
   {
+    if( !active )
+      NewTimers.Add( this );
     active = true;
-    NewTimers.Add( this );
     unscaledTime = param.unscaledTime;
     StartTime = time;
     if( param.repeat )
@@ -98,8 +100,9 @@ public class Timer
 
   public void Start( float duration, System.Action<Timer> UpdateDelegate, System.Action CompleteDelegate )
   {
+    if( !active )
+      NewTimers.Add( this );
     active = true;
-    NewTimers.Add( this );
     StartTime = time;
     Duration = duration;
     repeat = false;
@@ -109,8 +112,9 @@ public class Timer
 
   public void Start( int loops, float interval, System.Action<Timer> IntervalDelegate, System.Action CompleteDelegate )
   {
+    if( !active )
+      NewTimers.Add( this );
     active = true;
-    NewTimers.Add( this );
     StartTime = time;
     Interval = interval;
     IntervalStartTime = StartTime;
