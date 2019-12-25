@@ -36,6 +36,7 @@ deployment
 * multi-shot, variants
 + bouncy grenade
 
+# Log
 + new input system. gamepad, linux. Keys: O, P
 + customutility build buttons: macos and linux
 + webgl issues: intial video mode is borked; mousewheel does not work;
@@ -44,3 +45,16 @@ deployment
 + menu navigation
 + cursor sensitivity setting
 + confirm screen settings dialog nav issue
+
++ turrets only aim when target is visible
++ bottom of wall jump issue
++ add dash anim effect
++ remove pathfinding from lift, just use points+radius
++ minor shield single frame flip issue
++ control rebinding
++ optimize performance pass
++ reticle easier to see
++ lower volume when paused
+
+- lift shake issue
+- lift push x

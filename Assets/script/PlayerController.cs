@@ -440,10 +440,7 @@ public class PlayerController : Character, IDamage
       Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.grey );
 
     */
-    // reset carry velocity
-    //carryVelocity = Vector2.zero;
-    carryCharacter = null;
-
+    
     float down = jumping ? raydown - downOffset : raydown;
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
@@ -458,13 +455,7 @@ public class PlayerController : Character, IDamage
         // moving platforms
         Character cha = hit.transform.GetComponent<Character>();
         if( cha != null )
-        {
-          //adjust.y += cha.velocity.y * dT;
-          //carryVelocity = cha.velocity;
-          //Push( cha.velocity, Time.maximumDeltaTime );
-          //velocity += cha.velocity * dT;
           carryCharacter = cha;
-        }
         break;
       }
     }
@@ -673,9 +664,6 @@ public class PlayerController : Character, IDamage
     inputGraphook = false;
   }
 
-  Vector2 carryVelocity = Vector2.zero;
-  Character carryCharacter;
-
   void Update()
   {
     if( Global.Paused )
@@ -706,6 +694,10 @@ public class PlayerController : Character, IDamage
       velocity = Vector3.zero;
     else if( !(inputRight || inputLeft) )
       velocity.x = 0;
+
+    //if( carryCharacter != null )
+    //  velocity = carryCharacter.velocity;
+    //carryCharacter = null;
 
     // WEAPONS / ABILITIES
     if( inputFire )
@@ -888,12 +880,9 @@ public class PlayerController : Character, IDamage
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    
-    if( carryCharacter != null )
-      carryVelocity = carryCharacter.velocity;
-    else
-      carryVelocity = Vector2.zero;
-    transform.position += (Vector3)(velocity + carryVelocity) * Time.deltaTime;
+
+    transform.position += (Vector3)Velocity * Time.deltaTime;
+    carryCharacter = null;
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
      

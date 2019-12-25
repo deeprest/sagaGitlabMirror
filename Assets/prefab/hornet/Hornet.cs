@@ -84,17 +84,6 @@ public class Hornet : Character
       SetPath( tpos );
       if( (player - pos).sqrMagnitude < sightRange * sightRange )
       {
-        if( delta.sqrMagnitude < small * small )
-          tvel = Vector2.zero;
-        else
-        {
-          UpdatePath();
-          velocity += (MoveDirection.normalized * flySpeed - velocity) * acc * Time.deltaTime;
-          //tvel = delta.normalized * flySpeed;
-          //velocity += (tvel - velocity) * acc * Time.deltaTime;
-          transform.rotation = Quaternion.RotateTowards( transform.rotation, Quaternion.Euler( 0, 0, Mathf.Clamp( velocity.x, -topspeedrot, topspeedrot ) * -rot ), rotspeed * Time.deltaTime );
-        }
-
         // guns
         RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Global.DefaultProjectileCollideLayers ) );
         if( hit.transform != null && hit.transform.IsChildOf( Global.instance.CurrentPlayer.transform ) )
@@ -115,8 +104,17 @@ public class Hornet : Character
               Shoot( new Vector3( -1, -1, 0 ) );
           }
         }
-
       }
+
+      if( delta.sqrMagnitude < small * small )
+        tvel = Vector2.zero;
+      else
+      {
+        UpdatePath();
+        velocity += (MoveDirection.normalized * flySpeed - velocity) * acc * Time.deltaTime;
+      }
+      transform.rotation = Quaternion.RotateTowards( transform.rotation, Quaternion.Euler( 0, 0, Mathf.Clamp( velocity.x, -topspeedrot, topspeedrot ) * -rot ), rotspeed * Time.deltaTime );
+
     }
   }
 

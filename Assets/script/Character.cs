@@ -17,9 +17,9 @@ public class Character : MonoBehaviour, IDamage
   public bool UseGravity = true;
   public Vector2 velocity = Vector2.zero;
   public Vector2 pushVelocity = Vector2.zero;
-  public Vector2 inertia = Vector2.zero;
+  public Character carryCharacter;
   public float friction = 0.05f;
-  public float airFriction = 0.05f;
+  //public float airFriction = 0.05f;
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
 
@@ -166,10 +166,22 @@ public class Character : MonoBehaviour, IDamage
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
     }
-
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    velocity -= (velocity * airFriction) * Time.deltaTime;
-    transform.position += (Vector3)velocity * Time.deltaTime;
+
+    //velocity -= (velocity * airFriction) * Time.deltaTime;
+    transform.position += (Vector3)Velocity * Time.deltaTime;
+    carryCharacter = null;
+  }
+
+  public Vector2 Velocity
+  {
+    get
+    {
+      if( carryCharacter == null )
+        return velocity;
+      else
+        return velocity + carryCharacter.Velocity;
+    }
   }
 
   protected void BoxCollision()
@@ -194,6 +206,10 @@ public class Character : MonoBehaviour, IDamage
       {
         collideBottom = true;
         adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation;
+        // moving platforms
+        Character cha = hit.transform.GetComponent<Character>();
+        if( cha != null )
+          carryCharacter = cha;
         break;
       }
     }

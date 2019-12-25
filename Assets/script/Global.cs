@@ -1161,7 +1161,8 @@ public class Global : MonoBehaviour
     CreateFloatSetting( "SFXVolume", 1, 0, 1, 0.05f, delegate ( float value )
     {
       mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) );
-      AudioOneShot( VolumeChangeNoise, Camera.main.transform.position );
+      if( Updating )
+        AudioOneShot( VolumeChangeNoise, Camera.main.transform.position );
     } );
     /*CreateFloatSetting( "MusicTrack", 0, 0, MusicLoops.Length - 1, 1.0f / (MusicLoops.Length - 1), delegate ( float value ){ PlayMusicLoop( MusicLoops[Mathf.FloorToInt( Mathf.Clamp( value, 0, MusicLoops.Length - 1 ) )] ); } );*/
 
@@ -1177,7 +1178,7 @@ public class Global : MonoBehaviour
     CreateFloatSetting( "CameraLerpAlpha", 20, 0, 50, 0.01f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 0.05f, delegate ( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
-    CreateFloatSetting( "PlayerSpeedFactor", 0, 0, 1, 0.1f, delegate ( float value ) { if( CurrentPlayer != null ) CurrentPlayer.SpeedFactorNormalized = value; } );
+    CreateFloatSetting( "PlayerSpeedFactor", 0.3f, 0, 1, 0.1f, delegate ( float value ) { if( CurrentPlayer != null ) CurrentPlayer.SpeedFactorNormalized = value; } );
   }
 
   Selectable previousSelectable;

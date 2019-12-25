@@ -1,14 +1,3 @@
-# done (add to devlog)
-+ turrets only aim when target is visible
-+ bottom of wall jump issue
-+ add dash anim effect
-+ remove pathfinding from lift, just use points+radius
-+ minor shield single frame flip issue
-+ control rebinding
-+ optimize performance pass
-+ reticle easier to see
-+ lower volume when paused
-
 
 ## issues
 - align shot with surface
