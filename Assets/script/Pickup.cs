@@ -22,10 +22,12 @@ public class Pickup : WorldSelectable
 
   public override void Highlight()
   {
+    base.Highlight();
     animator.Play( "highlight" );
   }
   public override void Unhighlight()
   {
+    base.Unhighlight();
     animator.Play( "idle" );
   }
   public override void Select()
@@ -33,7 +35,8 @@ public class Pickup : WorldSelectable
     animator.Play( "selected" );
   }
   public override void Unselect()
-  { }
+  {
+  }
 
   void Start()
   {

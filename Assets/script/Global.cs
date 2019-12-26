@@ -52,8 +52,13 @@ public class GlobalEditor : Editor
 
 public class WorldSelectable : MonoBehaviour
 {
-  public virtual void Highlight() { }
-  public virtual void Unhighlight() { }
+  public virtual void Highlight() {
+    Global.instance.InteractIndicator.SetActive( true );
+    Global.instance.InteractIndicator.transform.position = transform.position;
+  }
+  public virtual void Unhighlight() {
+    Global.instance.InteractIndicator.SetActive( false );
+  }
   public virtual void Select() { }
   public virtual void Unselect() { }
 }
@@ -122,6 +127,7 @@ public class Global : MonoBehaviour
   public CameraController CameraController;
   [SerializeField] Animator animator;
   [SerializeField] AudioClip VolumeChangeNoise;
+  public GameObject InteractIndicator;
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
@@ -656,6 +662,7 @@ public class Global : MonoBehaviour
           Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
           AimPosition = cursorOrigin + snapped * SnapCursorDistance;
           CursorSnapped.position = AimPosition;
+          CursorSnapped.rotation = Quaternion.LookRotation( Vector3.forward, snapped );
           CursorWorldPosition = cursorOrigin + cursorDelta;
           Cursor.position = CursorWorldPosition;
         }
