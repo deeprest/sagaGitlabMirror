@@ -462,7 +462,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""WorldSelect"",
+                    ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""24499f08-18e1-495f-80fa-640349852f96"",
                     ""expectedControlType"": """",
@@ -540,7 +540,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""DefaultControlScheme"",
-                    ""action"": ""WorldSelect"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -551,7 +551,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""WorldSelect"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -838,7 +838,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_BipedActions_Aim = m_BipedActions.FindAction("Aim", throwIfNotFound: true);
         m_BipedActions_Fire = m_BipedActions.FindAction("Fire", throwIfNotFound: true);
         m_BipedActions_Graphook = m_BipedActions.FindAction("Graphook", throwIfNotFound: true);
-        m_BipedActions_WorldSelect = m_BipedActions.FindAction("WorldSelect", throwIfNotFound: true);
+        m_BipedActions_Interact = m_BipedActions.FindAction("Interact", throwIfNotFound: true);
         m_BipedActions_Shield = m_BipedActions.FindAction("Shield", throwIfNotFound: true);
         m_BipedActions_NextWeapon = m_BipedActions.FindAction("NextWeapon", throwIfNotFound: true);
         m_BipedActions_Charge = m_BipedActions.FindAction("Charge", throwIfNotFound: true);
@@ -1046,7 +1046,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_BipedActions_Aim;
     private readonly InputAction m_BipedActions_Fire;
     private readonly InputAction m_BipedActions_Graphook;
-    private readonly InputAction m_BipedActions_WorldSelect;
+    private readonly InputAction m_BipedActions_Interact;
     private readonly InputAction m_BipedActions_Shield;
     private readonly InputAction m_BipedActions_NextWeapon;
     private readonly InputAction m_BipedActions_Charge;
@@ -1063,7 +1063,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Aim => m_Wrapper.m_BipedActions_Aim;
         public InputAction @Fire => m_Wrapper.m_BipedActions_Fire;
         public InputAction @Graphook => m_Wrapper.m_BipedActions_Graphook;
-        public InputAction @WorldSelect => m_Wrapper.m_BipedActions_WorldSelect;
+        public InputAction @Interact => m_Wrapper.m_BipedActions_Interact;
         public InputAction @Shield => m_Wrapper.m_BipedActions_Shield;
         public InputAction @NextWeapon => m_Wrapper.m_BipedActions_NextWeapon;
         public InputAction @Charge => m_Wrapper.m_BipedActions_Charge;
@@ -1099,9 +1099,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Graphook.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnGraphook;
                 @Graphook.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnGraphook;
                 @Graphook.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnGraphook;
-                @WorldSelect.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnWorldSelect;
-                @WorldSelect.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnWorldSelect;
-                @WorldSelect.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnWorldSelect;
+                @Interact.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnInteract;
                 @Shield.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnShield;
                 @Shield.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnShield;
                 @Shield.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnShield;
@@ -1142,9 +1142,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Graphook.started += instance.OnGraphook;
                 @Graphook.performed += instance.OnGraphook;
                 @Graphook.canceled += instance.OnGraphook;
-                @WorldSelect.started += instance.OnWorldSelect;
-                @WorldSelect.performed += instance.OnWorldSelect;
-                @WorldSelect.canceled += instance.OnWorldSelect;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
                 @Shield.started += instance.OnShield;
                 @Shield.performed += instance.OnShield;
                 @Shield.canceled += instance.OnShield;
@@ -1200,7 +1200,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnAim(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnGraphook(InputAction.CallbackContext context);
-        void OnWorldSelect(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
         void OnShield(InputAction.CallbackContext context);
         void OnNextWeapon(InputAction.CallbackContext context);
         void OnCharge(InputAction.CallbackContext context);

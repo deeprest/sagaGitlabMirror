@@ -42,8 +42,9 @@ public class CustomUtility : EditorWindow
 
   bool developmentBuild;
   bool buildMacOS = true;
-  bool buildLinux = true;
+  bool buildLinux = false;
   bool buildWebGL = false;
+  bool buildWindows = false;
 
   int audioDoppler = 0;
   int audioDistanceMin = 1;
@@ -126,6 +127,7 @@ public class CustomUtility : EditorWindow
     EditorGUILayout.BeginHorizontal();
     buildMacOS = EditorGUILayout.ToggleLeft( "MacOS", buildMacOS, GUILayout.MaxWidth( 60 ) );
     buildLinux = EditorGUILayout.ToggleLeft( "Linux", buildLinux, GUILayout.MaxWidth( 60 ) );
+    buildWindows = EditorGUILayout.ToggleLeft( "Windows", buildWindows, GUILayout.MaxWidth( 60 ) );
     buildWebGL = EditorGUILayout.ToggleLeft( "WebGL", buildWebGL, GUILayout.MaxWidth( 60 ) );
     EditorGUILayout.EndHorizontal();
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Build" ) )
@@ -169,6 +171,17 @@ public class CustomUtility : EditorWindow
         // copy to shared folder
         string shareDir = System.Environment.GetFolderPath( System.Environment.SpecialFolder.UserProfile ) + "/SHARE";
         Util.DirectoryCopy( outDir, Path.Combine( shareDir, (developmentBuild ? "sagaDEV." : "Saga.") + Util.Timestamp() ) );
+      }
+      if( buildWindows )
+      {
+        bpo.targetGroup = BuildTargetGroup.Standalone;
+        bpo.target = BuildTarget.StandaloneWindows64;
+        string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/Windows";
+        outDir += "/Saga." + Util.Timestamp();
+        Directory.CreateDirectory( outDir );
+        bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + ".x86_64";
+        BuildPipeline.BuildPlayer( bpo );
+        Debug.Log( bpo.locationPathName );
       }
       if( buildWebGL )
       {

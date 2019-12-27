@@ -615,7 +615,7 @@ public class PlayerController : Character, IDamage
     Global.instance.Controls.BipedActions.Charge.canceled += ( obj ) => inputChargeEnd = true;
     Global.instance.Controls.BipedActions.Down.performed += ( obj ) => hanging = false;
 
-    Global.instance.Controls.BipedActions.WorldSelect.performed += ( obj ) => {
+    Global.instance.Controls.BipedActions.Interact.performed += ( obj ) => {
       if( WorldSelection != null )
       {
         WorldSelection.Unselect();
