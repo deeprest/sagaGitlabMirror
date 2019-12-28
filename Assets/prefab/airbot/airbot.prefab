@@ -87,6 +87,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -130,21 +131,13 @@ MonoBehaviour:
   spriteRenderers: []
   UseGravity: 0
   velocity: {x: 0, y: 0}
+  pushVelocity: {x: 0, y: 0}
   inertia: {x: 0, y: 0}
   friction: 0.5
   airFriction: 0.5
   raylength: 0.01
   contactSeparation: 0.01
   IgnoreCollideObjects: []
-  CanTakeDamage: 1
-  health: 3
-  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
-  soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  CanHitPush: 1
-  hitPush: 4
-  flashInterval: 0.05
-  flashCount: 1
-  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
   HasPath: 0
   WaypointRadii: 0.1
   DestinationRadius: 0.3
@@ -154,7 +147,17 @@ MonoBehaviour:
   AgentTypeName: Small
   MoveDirection: {x: 0, y: 0}
   SidestepAvoidance: 1
-  sightRange: 4
+  CanTakeDamage: 1
+  health: 1
+  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
+  soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
+  spawnChance: 2
+  spawnWhenDead: {fileID: 3966323970981597261, guid: 7fd46f02a52234b37a56000145e7fa09,
+    type: 3}
+  flashInterval: 0.05
+  flashCount: 1
+  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  sightRange: 6
   flySpeed: 1.5
   targetOffset: 0.1
 --- !u!95 &4874249801477483448
@@ -212,7 +215,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &9203506422267389143
 Transform:
@@ -253,6 +256,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

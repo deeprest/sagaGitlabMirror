@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Door : MonoBehaviour, ITrigger
 {
   [SerializeField] SpriteAnimator sa;
   [SerializeField] Collider2D cd;
   [SerializeField] AudioSource audio;
+  [SerializeField] NavMeshObstacle obstacle;
   public bool isOpen = false;
   bool transitioning = false;
   public AnimSequence open;
@@ -25,6 +27,10 @@ public class Door : MonoBehaviour, ITrigger
   public UnityEngine.Events.UnityEvent onEnter;
   public UnityEngine.Events.UnityEvent onExit;
 
+  void OnDestroy()
+  {
+    timer.Stop( false );
+  }
 
   public void Trigger( Transform instigator )
   {
@@ -51,6 +57,7 @@ public class Door : MonoBehaviour, ITrigger
       //transitioning = false;
       isOpen = true;
       cd.enabled = false;
+      obstacle.enabled = false;
       if( Entering )
         onEnter.Invoke();
       else
@@ -73,6 +80,7 @@ public class Door : MonoBehaviour, ITrigger
     {
       isOpen = false;
       cd.enabled = true;
+      obstacle.enabled = true;
       timer.Start( 2, null, delegate
       {
         transitioning = false;

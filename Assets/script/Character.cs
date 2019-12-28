@@ -16,14 +16,14 @@ public class Character : MonoBehaviour, IDamage
 
   public bool UseGravity = true;
   public Vector2 velocity = Vector2.zero;
-  public Vector2 inertia = Vector2.zero;
+  public Vector2 pushVelocity = Vector2.zero;
+  public Character carryCharacter;
   public float friction = 0.05f;
-  public float airFriction = 0.05f;
+  //public float airFriction = 0.05f;
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
 
   public List<Transform> IgnoreCollideObjects;
-
   protected bool collideRight = false;
   protected bool collideLeft = false;
   protected bool collideTop = false;
@@ -32,12 +32,36 @@ public class Character : MonoBehaviour, IDamage
   protected RaycastHit2D hitRight;
   protected RaycastHit2D hitLeft;
 
+  [Header( "Pathing" )]
+  public bool HasPath = false;
+  public float WaypointRadii = 0.1f;
+  public float DestinationRadius = 0.3f;
+  public Vector3 DestinationPosition;
+  public System.Action OnPathEnd;
+  public System.Action OnPathCancel;
+  public NavMeshPath nvp;
+  float PathEventTime;
+  public List<Vector3>.Enumerator waypointEnu;
+  public List<Vector3> waypoint = new List<Vector3>();
+  public List<LineSegment> debugPath = new List<LineSegment>();
+  int AgentTypeID;
+  public string AgentTypeName = "Small";
+  public Vector2 MoveDirection;
+  // sidestep
+  public bool SidestepAvoidance = true;
+  bool DefaultSidestepAvoidance = true;
+  float SidestepLast;
+  Vector2 Sidestep;
+  RaycastHit2D[] RaycastHits;
+
+  [Header( "Damage" )]
   public bool CanTakeDamage = true;
   public int health = 5;
   public GameObject explosion;
   public AudioClip soundHit;
-  public bool CanHitPush = true;
-  public float hitPush = 4;
+  public int spawnChance = 1;
+  public GameObject spawnWhenDead;
+
   // FLASH
   Timer flashTimer = new Timer();
   public float flashInterval = 0.05f;
@@ -46,11 +70,16 @@ public class Character : MonoBehaviour, IDamage
   readonly float flashOn = 1f;
 
   public Damage ContactDamage;
+  protected Timer pushTimer = new Timer();
 
-  protected System.Action UpdateLogic;
+  // "collision" impedes this object's movement
   protected System.Action UpdateCollision;
-  protected System.Action UpdatePosition;
+  // "hit" inflicts damage on others
   protected System.Action UpdateHit;
+  // integrate forces into position
+  protected System.Action UpdatePosition;
+  // brains!!
+  protected System.Action UpdateLogic;
 
   public virtual void PreSceneTransition() { }
   public virtual void PostSceneTransition() { }
@@ -106,9 +135,17 @@ public class Character : MonoBehaviour, IDamage
     }
   }
 
+  public void Push( Vector2 pVelocity, float duration )
+  {
+    pushVelocity = pVelocity;
+    pushTimer.Start( duration );
+  }
 
   protected void BasicPosition()
   {
+    if( pushTimer.IsActive )
+      velocity = pushVelocity;
+
     if( UseGravity )
       velocity.y += -Global.Gravity * Time.deltaTime;
 
@@ -129,10 +166,22 @@ public class Character : MonoBehaviour, IDamage
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
     }
-
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    velocity -= (velocity * airFriction) * Time.deltaTime;
-    transform.position += (Vector3)velocity * Time.deltaTime;
+
+    //velocity -= (velocity * airFriction) * Time.deltaTime;
+    transform.position += (Vector3)Velocity * Time.deltaTime;
+    carryCharacter = null;
+  }
+
+  public Vector2 Velocity
+  {
+    get
+    {
+      if( carryCharacter == null )
+        return velocity;
+      else
+        return velocity + carryCharacter.Velocity;
+    }
   }
 
   protected void BoxCollision()
@@ -157,6 +206,10 @@ public class Character : MonoBehaviour, IDamage
       {
         collideBottom = true;
         adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation;
+        // moving platforms
+        Character cha = hit.transform.GetComponent<Character>();
+        if( cha != null )
+          carryCharacter = cha;
         break;
       }
     }
@@ -199,22 +252,32 @@ public class Character : MonoBehaviour, IDamage
         break;
       }
     }
-    transform.position = (Vector3)(adjust - boxOffset);
+#if KINEMATIC
+    ugh = adjust - boxOffset;
+#else
+    transform.position = adjust - boxOffset;
+#endif
   }
+
+#if KINEMATIC
+  public Vector2 ugh;
+#endif
 
   protected virtual void Die()
   {
     Instantiate( explosion, transform.position, Quaternion.identity );
-    Global.instance.Destroy( gameObject );
+    //Global.instance.Destroy( gameObject );
+    Destroy( gameObject );
+    if( spawnWhenDead != null && Random.Range( 0, spawnChance ) == 0 )
+      Instantiate( spawnWhenDead, transform.position, Quaternion.identity );
   }
 
-  public bool TakeDamage( Damage d )
+  public virtual bool TakeDamage( Damage d )
   {
+    // dead characters will not absorb projectiles
     if( !CanTakeDamage || health <= 0 )
       return false;
     health -= d.amount;
-    if( CanHitPush )
-      velocity += (body.position - d.point) * hitPush;
     if( health <= 0 )
     {
       flashTimer.Stop( false );
@@ -224,57 +287,29 @@ public class Character : MonoBehaviour, IDamage
     {
       if( soundHit != null )
         Global.instance.AudioOneShot( soundHit, transform.position );
-
       // color pulse
       flip = false;
-      //renderer.material.SetFloat( "_FlashAmount", flashOn );
       foreach( var sr in spriteRenderers )
         sr.material.SetFloat( "_FlashAmount", flashOn );
       flashTimer.Start( flashCount * 2, flashInterval, delegate ( Timer t )
       {
         flip = !flip;
         if( flip )
-          //renderer.material.SetFloat( "_FlashAmount", flashOn );
           foreach( var sr in spriteRenderers )
             sr.material.SetFloat( "_FlashAmount", flashOn );
         else
           foreach( var sr in spriteRenderers )
             sr.material.SetFloat( "_FlashAmount", 0 );
-        //renderer.material.SetFloat( "_FlashAmount", 0 );
       }, delegate
       {
         foreach( var sr in spriteRenderers )
           sr.material.SetFloat( "_FlashAmount", 0 );
-        //renderer.material.SetFloat( "_FlashAmount", 0 );
       } );
-
     }
     return true;
   }
 
-
-  [Header( "Pathing" )]
-  public bool HasPath = false;
-  public float WaypointRadii = 0.1f;
-  public float DestinationRadius = 0.3f;
-  public Vector3 DestinationPosition;
-  public System.Action OnPathEnd;
-  public System.Action OnPathCancel;
-  public NavMeshPath nvp;
-  float PathEventTime;
-  public List<Vector3>.Enumerator waypointEnu;
-  public List<Vector3> waypoint = new List<Vector3>();
-  public List<LineSegment> debugPath = new List<LineSegment>();
-  int AgentTypeID;
-  public string AgentTypeName = "Small";
-  public Vector2 MoveDirection;
-  // sidestep
-  public bool SidestepAvoidance = true;
-  bool DefaultSidestepAvoidance = true;
-  float SidestepLast;
-  Vector2 Sidestep;
-  RaycastHit2D[] RaycastHits;
-
+  #region Pathing
   protected void UpdatePath()
   {
     if( HasPath )
@@ -372,8 +407,6 @@ public class Character : MonoBehaviour, IDamage
       MoveDirection += Sidestep;
     }
 
-
-
 #if DEBUG_LINES
     Debug.DrawLine( transform.position, (Vector2)transform.position + MoveDirection.normalized * 0.5f, Color.magenta );
     //Debug.DrawLine( transform.position, transform.position + FaceDirection.normalized, Color.red );
@@ -391,6 +424,7 @@ public class Character : MonoBehaviour, IDamage
 
   public bool SetPath( Vector3 TargetPosition, System.Action onArrival = null )
   {
+    // WARNING!! DO NOT set path from within Start(). The nav meshes are not guaranteed to exist during Start()
     OnPathEnd = onArrival;
 
     Vector3 EndPosition = TargetPosition;
@@ -443,6 +477,6 @@ public class Character : MonoBehaviour, IDamage
     }
     return false;
   }
-
+  #endregion
 
 }

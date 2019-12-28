@@ -59,6 +59,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -71,7 +72,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: d243a805f187d409da10d741ccd17950, type: 3}
+  m_Sprite: {fileID: 21300084, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -118,7 +119,7 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.25, y: 0.25, z: 0.1}
+  m_Extents: {x: 0.25, y: 0.25, z: 0.15}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 1
@@ -144,22 +145,13 @@ MonoBehaviour:
   spriteRenderers: []
   UseGravity: 0
   velocity: {x: 0, y: 0}
+  pushVelocity: {x: 0, y: 0}
   inertia: {x: 0, y: 0}
   friction: 0.05
   airFriction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
-  DamageLayers:
-  - character
-  CanTakeDamage: 1
-  health: 5
-  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
-  soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  CanHitPush: 0
-  hitPush: 4
-  flashInterval: 0.05
-  flashCount: 5
-  ContactDamage: {fileID: 0}
+  IgnoreCollideObjects: []
   HasPath: 0
   WaypointRadii: 0.1
   DestinationRadius: 0.3
@@ -167,4 +159,17 @@ MonoBehaviour:
   waypoint: []
   debugPath: []
   AgentTypeName: Small
-  WaypointVector: {x: 0, y: 0}
+  MoveDirection: {x: 0, y: 0}
+  SidestepAvoidance: 1
+  CanTakeDamage: 1
+  health: 5
+  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
+  soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
+  spawnChance: 1
+  spawnWhenDead: {fileID: 0}
+  flashInterval: 0.05
+  flashCount: 5
+  ContactDamage: {fileID: 0}
+  onDestruct:
+    m_PersistentCalls:
+      m_Calls: []

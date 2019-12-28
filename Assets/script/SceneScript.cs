@@ -4,33 +4,53 @@ using System.Collections;
 
 public class SceneScript : MonoBehaviour
 {
-  // temp
+  public AudioLoop music;
+  // generation
   public Level level;
+  // the camera collider
+  public Collider2D sb;
+  public BoxCollider NavmeshBox;
 
-  public PolygonCollider2D sb;
-  public virtual void StartScene() { }
+  public virtual void StartScene() 
+  {
+    if( Application.isEditor && !Global.instance.SimulatePlayer && Global.instance.CurrentPlayer == null )
+    {
+      Global.instance.SpawnPlayer();
+      //return;
+    }
+    // level generation
+    if( level != null )
+      level.Generate();
+
+    Global.instance.AssignCameraPoly( sb );
+
+    // music fade in
+    if( music != null )
+      Global.instance.PlayMusic( music );
+      
+  }
 
   public void PlayerInputOff()
   {
-    Global.instance.CurrentPlayer.playerInput = false;
+    Global.instance.Controls.BipedActions.Disable();
   }
 
-  public void ReplaceCameraPoly( PolygonCollider2D poly )
+  public void ReplaceCameraPoly( Collider2D collider )
   {
-    Global.instance.AssignCameraPoly( poly );
+    Global.instance.AssignCameraPoly( collider );
     Global.instance.CameraController.EncompassBounds = false;
   }
 
-  public void ReplaceCameraPolyEncompass( PolygonCollider2D poly )
+  public void ReplaceCameraPolyEncompass( Collider2D collider )
   {
-    Global.instance.AssignCameraPoly( poly );
+    Global.instance.AssignCameraPoly( collider );
     Global.instance.CameraController.EncompassBounds = true;
   }
 
   Timer runTimer = new Timer();
   public void RunLeft( float duration )
   {
-    Global.instance.CurrentPlayer.playerInput = false;
+    Global.instance.Controls.BipedActions.Disable();
     TimerParams tp = new TimerParams
     {
       unscaledTime = true,
@@ -42,7 +62,7 @@ public class SceneScript : MonoBehaviour
       },
       CompleteDelegate = delegate
       {
-        Global.instance.CurrentPlayer.playerInput = true;
+        Global.instance.Controls.BipedActions.Enable();
       }
     };
     runTimer.Start( tp );
@@ -50,7 +70,7 @@ public class SceneScript : MonoBehaviour
 
   public void RunRight( float duration )
   {
-    Global.instance.CurrentPlayer.playerInput = false;
+    Global.instance.Controls.BipedActions.Disable();
     TimerParams tp = new TimerParams
     {
       unscaledTime = true,
@@ -62,7 +82,7 @@ public class SceneScript : MonoBehaviour
       },
       CompleteDelegate = delegate
       {
-        Global.instance.CurrentPlayer.playerInput = true;
+        Global.instance.Controls.BipedActions.Enable();
       }
     };
     runTimer.Start( tp );

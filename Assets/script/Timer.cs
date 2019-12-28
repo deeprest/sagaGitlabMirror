@@ -6,7 +6,7 @@ public struct TimerParams
 {
   public bool unscaledTime;
   public float duration;
-  //
+  
   public bool repeat;
   public int loops;
   public float interval;
@@ -20,27 +20,25 @@ public class Timer
   // New timers are held until the next frame, so that adding timers within the callback
   // of another timer does not modify the ActiveTimers collection while iterating.
   public static List<Timer> NewTimers = new List<Timer>();
-  //  public static List<Timer> InactiveTimers = new List<Timer>();
   public static List<Timer> ActiveTimers = new List<Timer>();
   public static List<Timer> RemoveTimers = new List<Timer>();
 
 
   public static void UpdateTimers()
   {
+    // remove first so that timers in both new and remove lists still get added.
+    foreach( var timer in RemoveTimers )
+      ActiveTimers.Remove( timer );
+    RemoveTimers.Clear();
     ActiveTimers.AddRange( NewTimers );
     NewTimers.Clear();
-
     foreach( var timer in ActiveTimers )
     {
       if( timer.IsActive )
         timer.Update();
       else
         RemoveTimers.Add( timer );
-
     }
-    foreach( var timer in RemoveTimers )
-      ActiveTimers.Remove( timer );
-    RemoveTimers.Clear();
   }
 
 
@@ -48,18 +46,11 @@ public class Timer
   {
     active = false;
     repeat = false;
-    //    InactiveTimers.Add( this );
   }
 
   public Timer( float duration, System.Action<Timer> UpdateDelegate, System.Action CompleteDelegate )
   {
-    active = true;
-    NewTimers.Add( this );
-    StartTime = time;
-    Duration = duration;
-    repeat = false;
-    OnUpdate = UpdateDelegate;
-    OnComplete = CompleteDelegate;
+    Start( duration, UpdateDelegate, CompleteDelegate );
   }
 
   public Timer( int loops, float interval, System.Action<Timer> IntervalDelegate, System.Action CompleteDelegate )
@@ -69,8 +60,9 @@ public class Timer
 
   public void Start( TimerParams param )
   {
+    if( !active )
+      NewTimers.Add( this );
     active = true;
-    NewTimers.Add( this );
     unscaledTime = param.unscaledTime;
     StartTime = time;
     if( param.repeat )
@@ -87,10 +79,21 @@ public class Timer
     OnComplete = param.CompleteDelegate;
   }
 
+  public void Start( float duration )
+  {
+    if( !active )
+      NewTimers.Add( this );
+    active = true;
+    StartTime = time;
+    Duration = duration;
+    repeat = false;
+  }
+
   public void Start( float duration, System.Action<Timer> UpdateDelegate, System.Action CompleteDelegate )
   {
+    if( !active )
+      NewTimers.Add( this );
     active = true;
-    NewTimers.Add( this );
     StartTime = time;
     Duration = duration;
     repeat = false;
@@ -100,8 +103,9 @@ public class Timer
 
   public void Start( int loops, float interval, System.Action<Timer> IntervalDelegate, System.Action CompleteDelegate )
   {
+    if( !active )
+      NewTimers.Add( this );
     active = true;
-    NewTimers.Add( this );
     StartTime = time;
     Interval = interval;
     IntervalStartTime = StartTime;
@@ -114,9 +118,10 @@ public class Timer
 
   public void Stop( bool callOnComplete )
   {
+    active = false;
+    RemoveTimers.Add( this );
     if( callOnComplete && OnComplete != null )
       OnComplete();
-    active = false;
   }
 
   public void Update()
@@ -125,9 +130,7 @@ public class Timer
     {
       if( time - StartTime > Duration )
       {
-        active = false;
-        if( OnComplete != null )
-          OnComplete();
+        Stop( true );
       }
       else if( repeat )
       {
@@ -153,14 +156,14 @@ public class Timer
     StartTime = time - progressSeconds;
   }
 
-  float time { get { return unscaledTime ? Time.unscaledTime : Time.time; } }
   public bool IsActive { get { return active; } }
 
   public float ProgressSeconds { get { return time - StartTime; } }
 
   public float ProgressNormalized{ get{ return Mathf.Clamp( (time - StartTime) / Duration, 0, 1 ); }}
 
-  bool active;
+  float time { get { return unscaledTime ? Time.unscaledTime : Time.time; } }
+  bool active = false;
   public bool unscaledTime;
   float StartTime;
   float Duration;

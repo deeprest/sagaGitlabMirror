@@ -6,55 +6,56 @@ public class Projectile : MonoBehaviour
 {
   public Animator animator;
   public CircleCollider2D circle;
-  public Transform instigator;
+
+  public Weapon weapon;
+  public Character instigator;
+
   public Damage ContactDamage;
   public float speed = 1;
   public float raycastDistance = 0.2f;
   public float timeout = 2;
-  //Timer timeoutTimer;
-  public Vector3 velocity;
+  public Vector2 velocity;
 
+  public List<Transform> ignore = new List<Transform>();
 
-  public AudioClip StartSound;
-
-/*
-  void OnDestroy()
-  {
-    timeoutTimer.Stop( false );
-  }
-
-  void Start()
-  {
-    if( StartSound!=null )
-      Global.instance.AudioOneShot( StartSound, transform.position );
-
-    timeoutTimer = new Timer( timeout, null, delegate ()
+  /*
+    void OnDestroy()
     {
-      if( gameObject != null )
-        Destroy( gameObject );
-    } );
-  }
+      timeoutTimer.Stop( false );
+    }
 
-
-    private void Update()
-  {
-    RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( CollideLayers ) );
-    if( hit.transform != null && (instigator == null || hit.transform != instigator) )
+    void Start()
     {
-      IDamage dam = hit.transform.GetComponent<IDamage>();
-      if( dam != null )
+      if( StartSound!=null )
+        Global.instance.AudioOneShot( StartSound, transform.position );
+
+      timeoutTimer = new Timer( timeout, null, delegate ()
       {
-        Damage dmg = Instantiate<Damage>( ContactDamage );
-        dmg.instigator = transform;
-        dmg.point = hit.point;
-        dam.TakeDamage( dmg );
-      }
-      Destroy( gameObject );
+        if( gameObject != null )
+          Destroy( gameObject );
+      } );
     }
-    else
+
+
+      private void Update()
     {
-      transform.position += velocity * Time.deltaTime;
+      RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( CollideLayers ) );
+      if( hit.transform != null && (instigator == null || hit.transform != instigator) )
+      {
+        IDamage dam = hit.transform.GetComponent<IDamage>();
+        if( dam != null )
+        {
+          Damage dmg = Instantiate<Damage>( ContactDamage );
+          dmg.instigator = transform;
+          dmg.point = hit.point;
+          dam.TakeDamage( dmg );
+        }
+        Destroy( gameObject );
+      }
+      else
+      {
+        transform.position += velocity * Time.deltaTime;
+      }
     }
-  }
-  */
+    */
 }

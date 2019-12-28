@@ -6,12 +6,12 @@ public class Chopper : MonoBehaviour {
 
   public Transform hangPoint;
   public Transform chopperStartPoint;
-  public PlayerController character;
   public float speed = 5;
+  Timer timer = new Timer();
   public float timeUntilDrop = 3;
   float timeStart;
 
-  public void StartDrop()
+  public void StartDrop( PlayerController character )
   {
     transform.position = chopperStartPoint.position;
     character.hanging = true;
@@ -19,23 +19,21 @@ public class Chopper : MonoBehaviour {
     character.transform.parent = hangPoint;
     character.transform.localPosition = Vector3.zero;
 
-    timeStart = Time.time;
-  }
 
-	// Update is called once per frame
-	void Update () {
-		
-    transform.position += Vector3.right * speed * Time.deltaTime;
-
-    if( character != null )
+    timer.Start( timeUntilDrop, null, delegate
     {
-      if( Time.time - timeStart > timeUntilDrop )
+      if( character != null )
       {
         character.transform.parent = null;
         character.hanging = false;
-        character.push.x = speed;
+        character.Push( Vector2.right * speed, 3 );
         character = null;
       }
-    }
+    } );
+  }
+
+	void Update () 
+  {
+    transform.position += Vector3.right * speed * Time.deltaTime;
 	}
 }

@@ -32,7 +32,7 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
 
   float lastTime = 0;
   int index = 0;
-  System.Random randy;
+  //System.Random randy;
 
   [HideInInspector]
   [Serialize] public List<int> SpawnedCharactersID = new List<int>();
@@ -59,15 +59,15 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
 
     //Team team = Global.instance.gameData.FindTeam( TeamName );
     //if( team != null )
-      //Global.instance.AssignTeam( gameObject, team );
+    //Global.instance.AssignTeam( gameObject, team );
   }
 
   void OnEnable()
   {
     if( SpawnPrefab.Count == 0 )
       return;
-    if( ChooseRandomPrefab )
-      randy = new System.Random( GetInstanceID() );
+    /*if( ChooseRandomPrefab )
+      randy = new System.Random( GetInstanceID() );*/
   }
 
   void Update()
@@ -109,11 +109,12 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
   public void SpawnThatThing()
   {
     if( ChooseRandomPrefab )
-      index = randy.Next( 0, SpawnPrefab.Count );
+      index = Random.Range(0, SpawnPrefab.Count );
+    //index = randy.Next( 0, SpawnPrefab.Count );
     else
-      index = ( index + 1 >= SpawnPrefab.Count ) ? 0 : index + 1;
+      index = (index + 1 >= SpawnPrefab.Count) ? 0 : index + 1;
 
-    GameObject prefab = SpawnPrefab[ index ];
+    GameObject prefab = SpawnPrefab[index];
     if( prefab == null )
     {
       Debug.LogError( "Spawn point has null objects in list " + name );
@@ -134,11 +135,13 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
           return;
       }
 
-      Vector3 pos = transform.position + Random.insideUnitSphere * SpawnRadius;
-      pos.y = 0;
+      Vector3 pos = new Vector3();
       if( SpawnPointLocal != null )
         pos = SpawnPointLocal.position;
-
+      else
+        pos = transform.position;
+      pos += Random.insideUnitSphere * SpawnRadius;
+      pos.z = 0;
       GameObject go = Global.instance.Spawn( prefab, pos, Quaternion.identity, null, true, true );
 
       /*if( MyTeam != null )
@@ -204,4 +207,3 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
   }
   */
 }
-  

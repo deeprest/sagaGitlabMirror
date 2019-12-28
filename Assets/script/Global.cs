@@ -1,17 +1,19 @@
 ﻿#pragma warning disable 414
-
+//#define DESTRUCTION_LIST
 
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.AI;
+using UnityEngine.Playables;
 using LitJson;
 using Ionic.Zip;
+using System.Runtime.InteropServices;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -19,8 +21,6 @@ using UnityEditor;
 public class GlobalEditor : Editor
 {
   Global obj;
-
-
   public override void OnInspectorGUI()
   {
     //screenshotInterval = EditorGUILayout.IntField( "Screenshot Interval", screenshotInterval );
@@ -41,7 +41,7 @@ public class GlobalEditor : Editor
   {
     obj.ScreenshotTimer.Start( obj.screenshotInterval, null, delegate
     {
-      obj.Screenshot();
+      Util.Screenshot();
       StartTimer();
     } );
   }
@@ -52,15 +52,17 @@ public class GlobalEditor : Editor
 
 public class WorldSelectable : MonoBehaviour
 {
-  //public bool IsSelected;
-  public virtual void Highlight() { }
-  public virtual void Unhighlight() { }
+  public virtual void Highlight() {
+    Global.instance.InteractIndicator.SetActive( true );
+    Global.instance.InteractIndicator.transform.position = transform.position;
+  }
+  public virtual void Unhighlight() {
+    Global.instance.InteractIndicator.SetActive( false );
+  }
   public virtual void Select() { }
   public virtual void Unselect() { }
 }
 
-
-// TODO upgrade to 2019 and use new input system, or find something on asset store.
 
 public class Global : MonoBehaviour
 {
@@ -72,6 +74,7 @@ public class Global : MonoBehaviour
   [Header( "Global Settings" )]
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
+  [SerializeField] string InitialSceneName;
   public float deadZone = 0.1f;
   // screenshot timer
   public int screenshotInterval;
@@ -96,36 +99,35 @@ public class Global : MonoBehaviour
     "events.json"*/
   };
 
-  // allowing characters to collide introduces potential for "pinch points"
+  // note: allowing characters to collide introduces potential for "pinch points"
   public static string[] CharacterCollideLayers = { "Default", "destructible", "triggerAndCollision" }; //, "character", "enemy" };
   public static string[] CharacterSidestepLayers = { "character", "enemy" };
   public static string[] CharacterDamageLayers = { "character" };
   public static string[] TriggerLayers = { "trigger", "triggerAndCollision" };
-  public static string[] DefaultProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible" };
-  // check first before spawning to avoid colliding with these layers on the first frame
   public static string[] ProjectileNoShootLayers = { "Default" };
-  public static string[] BouncyGrenadeCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile", "destructible" };
+  public static string[] DefaultProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade", "flameProjectile" };
+  public static string[] FlameProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" };
+  // check first before spawning to avoid colliding with these layers on the first frame
+  public static string[] BouncyGrenadeCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" };
+  public static string[] TurretSightLayers = { "Default", "character", "triggerAndCollision", "destructible" };
 
-  [Header("Settings")]
+  [Header( "Settings" )]
   public GameObject ToggleTemplate;
   public GameObject SliderTemplate;
   string settingsPath { get { return Application.persistentDataPath + "/" + "settings.json"; } }
   public Dictionary<string, FloatValue> FloatSetting = new Dictionary<string, FloatValue>();
   public Dictionary<string, BoolValue> BoolSetting = new Dictionary<string, BoolValue>();
-   // screen settings
-  bool Fullscreen;
-  int ScreenWidth;
-  int ScreenHeight;
-  float UIScale = 1;
+  public Dictionary<string, StringValue> StringSetting = new Dictionary<string, StringValue>();
+  // screen settings
   public GameObject ScreenSettingsPrompt;
   public Text ScreenSettingsCountdown;
   Timer ScreenSettingsCountdownTimer = new Timer();
 
   [Header( "References" )]
-  [SerializeField] GameInputRemapper GameInputRemapper;
-  [SerializeField] string InitialSceneName;
   public CameraController CameraController;
-  [SerializeField] AudioSource music;
+  [SerializeField] Animator animator;
+  [SerializeField] AudioClip VolumeChangeNoise;
+  public GameObject InteractIndicator;
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
@@ -133,33 +135,33 @@ public class Global : MonoBehaviour
 
   [Header( "Transient (Assigned at runtime)" )]
   public bool Updating = false;
-  public PolygonCollider2D CameraPoly;
-  public UnityEngine.Bounds CameraPolyBounds;
-  [System.NonSerialized] public SceneScript ss;
+  public Collider2D CameraPoly;
+  public Bounds CameraBounds;
+  SceneScript sceneScript;
   public PlayerController CurrentPlayer;
-  [SerializeField] Chopper chopper;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
 
   [Header( "UI" )]
   public GameObject UI;
-  public GameObject MainMenu;
+  CanvasScaler CanvasScaler;
+  public UIScreen PauseMenu;
+  public GameObject PauseMenuFirstSelected;
   [SerializeField] GameObject HUD;
-  bool MenuShowing { get { return MainMenu.activeInHierarchy; } }
+  DiageticUI ActiveDiagetic;
+  bool MenuShowing { get { return PauseMenu.gameObject.activeInHierarchy; } }
   public GameObject LoadingScreen;
   [SerializeField] Image fader;
   public GameObject ready;
-  // cursor
-  public Transform Cursor;
-  public float cursorOuter = 100;
-  public float cursorInner = 50;
-  public Vector3 CursorDelta;
-  public float cursorSensitivity = 1;
-  public bool CursorPlayerRelative = true;
-  Vector3 aimRaw;
-  public float gamepadCursorLerp = 10;
-  public bool positionalCursor = true;
-  public float positionalCursorSpeed = 30;
-  public float cursorScale = 4;
+  [SerializeField] GameObject OnboardingControls;
+  // cursor 
+  [SerializeField] Transform Cursor;
+  Vector2 cursorDelta;
+  Vector2 cursorOrigin;
+  public float CursorOuter = 1;
+  public Vector2 AimPosition;
+  public Vector2 CursorWorldPosition;
+  public float CursorSensitivity = 1;
+  public float CursorScale = 2;
   public bool AimSnap;
   public float SnapAngleDivide = 8;
   public float SnapCursorDistance = 1;
@@ -170,26 +172,69 @@ public class Global : MonoBehaviour
   public float AutoAimDistance = 5;
   // status 
   public Image weaponIcon;
+  // settings
+  public GameObject SettingsParent;
+  public UIScreen ConfirmDialog;
 
-
-
+  [Header( "Input" )]
+  public Controls Controls;
+  public bool UsingGamepad;
+  public Color ControlNameColor = Color.red;
 
   [Header( "Debug" )]
-  [SerializeField] Text debugButtons;
+  [SerializeField] Text debugFPS;
   [SerializeField] Text debugText;
+  [SerializeField] Text debugText2;
   // loading screen
   bool loadingScene;
   float prog = 0;
   [SerializeField] Image progress;
   [SerializeField] float progressSpeed = 0.5f;
 
+  [Header( "Misc" )]
+  Timer fpsTimer;
+  int frames;
+  float zoomDelta = 0;
   // color shift
   public Color shiftyColor = Color.red;
   [SerializeField] float colorShiftSpeed = 1;
   [SerializeField] Image shifty;
+  // spinner on loading screen
+  float progTarget = 0;
+  [SerializeField] GameObject spinner;
+  [SerializeField] float spinnerMoveSpeed = 1;
+
+  public GameData gameData;
+  public Dictionary<string, GameObject> ResourceLookup = new Dictionary<string, GameObject>();
+
+#if DESTRUCTION_LIST
   // This exists only because of a Unity crash bug when objects with active
   // Contacts are destroyed from within OnCollisionEnter2D()
   List<GameObject> DestructionList = new List<GameObject>();
+#endif
+
+  [Header( "Audio" )]
+  public UnityEngine.Audio.AudioMixer mixer;
+  public UnityEngine.Audio.AudioMixerSnapshot snapSlowmo;
+  public UnityEngine.Audio.AudioMixerSnapshot snapNormal;
+  public UnityEngine.Audio.AudioMixerSnapshot snapMusicSilence;
+  public float MusicTransitionDuration = 0.5f;
+  public float AudioFadeDuration = 0.1f;
+  [SerializeField] AudioSource musicSource0;
+  [SerializeField] AudioSource musicSource1;
+  AudioSource activeMusicSource;
+  [SerializeField] AudioLoop[] MusicLoops;
+
+
+  [Header( "Speech" )]
+  public GameObject SpeechBubble;
+  public Text SpeechText;
+  public Image SpeechIcon;
+  public Animator SpeechAnimator;
+  CharacterIdentity SpeechCharacter;
+  int SpeechPriority = 0;
+  public float SpeechRange = 8;
+  Timer SpeechTimer = new Timer();
 
 
   [RuntimeInitializeOnLoadMethod]
@@ -215,81 +260,195 @@ public class Global : MonoBehaviour
     }
     instance = this;
     DontDestroyOnLoad( gameObject );
-
-    SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
-    {
-      Debug.Log( "scene loaded: " + arg0.name );
-    };
-    SceneManager.activeSceneChanged += delegate ( Scene arg0, Scene arg1 )
-    {
-      Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
-    };
-
+    CanvasScaler = UI.GetComponent<CanvasScaler>();
     InitializeSettings();
     ReadSettings();
     ApplyScreenSettings();
+    InitializeControls();
+
+    SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
+    {
+      //Debug.Log( "scene loaded: " + arg0.name );
+    };
+    SceneManager.activeSceneChanged += delegate ( Scene arg0, Scene arg1 )
+    {
+      //Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
+    };
+    InputSystem.onDeviceChange +=
+    ( device, change ) => {
+      switch( change )
+      {
+        case InputDeviceChange.Added:
+        Debug.Log( "Device added: " + device );
+        break;
+        case InputDeviceChange.Removed:
+        Debug.Log( "Device removed: " + device );
+        break;
+        case InputDeviceChange.ConfigurationChanged:
+        Debug.Log( "Device configuration changed: " + device );
+        break;
+      }
+    };
 
     GameObject[] res = Resources.LoadAll<GameObject>( "" );
     foreach( GameObject go in res )
       ResourceLookup.Add( go.name, go );
 
-    StartCoroutine( InitializeRoutine() );
-  }
-
-  IEnumerator InitializeRoutine()
-  {
-    ShowMenu( false );
-
     NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
     foreach( var mesh in meshSurfaces )
       AgentType[NavMesh.GetSettingsNameFromID( mesh.agentTypeID )] = mesh.agentTypeID;
 
+    fpsTimer = new Timer( int.MaxValue, 1, delegate ( Timer tmr )
+    {
+      debugFPS.text = frames.ToString();
+      frames = 0;
+    }, null );
 
     if( Camera.main.orthographic )
       debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
     else
       debugText.text = CameraController.zOffset.ToString( "##.#" );
 
-    GameInputRemapper.InitializeControls();
-
     if( Camera.main.orthographic )
       Camera.main.orthographicSize = 2;
     else
       Camera.main.fieldOfView = 20;
 
+    HideHUD();
+    HidePauseMenu();
+    HideLoadingScreen();
+    SpeechBubble.SetActive( false );
+
     if( Application.isEditor && !SimulatePlayer )
     {
       LoadingScreen.SetActive( false );
-      music.Play();
       fader.color = Color.clear;
-      //yield return new WaitForSecondsRealtime( 1 );
       Updating = true;
-      ss = GetSceneScript();
-      if( ss != null )
-      {
-        AssignCameraPoly( ss.sb );
-        if( ss.level != null )
-          ss.level.Generate();
-      }
+      sceneScript = FindObjectOfType<SceneScript>();
+      if( sceneScript != null )
+        sceneScript.StartScene();
       foreach( var mesh in meshSurfaces )
         mesh.BuildNavMesh();
-
-      if( CurrentPlayer == null )
-        SpawnPlayer();
     }
     else
     {
-      music.Play();
-      yield return LoadSceneRoutine( "home", true, true, false );
+      //StartCoroutine( LoadSceneRoutine( InitialSceneName, false, false, true, false ) );
+      //StartCoroutine( LoadSceneRoutine( "intro", false, false, true, false ) );
+      StartCoroutine( LoadSceneRoutine( "home", true, true, true, false ) );
     }
+
   }
 
-  public void LoadScene( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true )
+  void Start()
   {
-    StartCoroutine( LoadSceneRoutine( sceneName, waitForFadeIn, spawnPlayer, fadeOut ) );
+#if UNITY_EDITOR
+    // workaround for Unity Editor bug where AudioMixer.SetFloat() does not work in Awake()
+    mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( FloatSetting["MasterVolume"].Value ) );
+    mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value ) );
+    mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
+#endif
   }
 
-  IEnumerator LoadSceneRoutine( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true )
+  public string ReplaceWithControlNames( string source )
+  {
+    // todo support composites
+    string outstr = "";
+    string[] tokens = source.Split( new char[] { '[' } );
+    foreach( var tok in tokens )
+    {
+      if( tok.Contains( "]" ) )
+      {
+        string[] ugh = tok.Split( new char[] { ']' } );
+        if( ugh.Length > 2 )
+          return "BAD FORMAT";
+        int inputTypeIndex = UsingGamepad ? 1 : 0;
+        // warning!! controls must be in correct order per-action: keyboard+mouse first, then gamepad
+        InputAction ia = Controls.BipedActions.Get().FindAction( ugh[0] );
+        if( ia == null ) ia = Controls.MenuActions.Get().FindAction( ugh[0] );
+        if( ia == null ) ia = Controls.GlobalActions.Get().FindAction( ugh[0] );
+        if( ia == null ) return "ACTION NOT FOUND: " + ugh[0];
+        if( ia.controls.Count <= inputTypeIndex )
+          return "BAD CONTROL INDEX";
+        InputControl ic = ia.controls[inputTypeIndex];
+        string controlName = "BAD NAME";
+        if( ic.shortDisplayName != null )
+          controlName = ic.shortDisplayName;
+        else
+          controlName = ic.name.ToUpper();
+        outstr += "<color=#" + ColorUtility.ToHtmlStringRGB( ControlNameColor ) + ">" + controlName + "</color>";
+        outstr += ugh[1];
+      }
+      else
+        outstr += tok;
+    }
+    return outstr;
+  }
+
+  void InitializeControls()
+  {
+    Controls = new Controls();
+    Controls.Enable();
+    Controls.MenuActions.Disable();
+
+    Controls.GlobalActions.Any.performed += ( obj ) => {
+      bool newvalue = obj.control.path.Contains( "Gamepad" );
+      if( newvalue != UsingGamepad )
+        print( "UsingGamepad new value: " + newvalue.ToString() + " " + obj.control.path );
+      UsingGamepad = newvalue;
+    };
+
+    Controls.GlobalActions.Menu.performed += ( obj ) => TogglePauseMenu();
+    Controls.GlobalActions.Pause.performed += ( obj ) => {
+      if( Paused )
+        Unpause();
+      else
+        Pause();
+    };
+    Controls.GlobalActions.DevSlowmo.performed += ( obj ) => {
+      if( Slowed )
+        NoSlow();
+      else
+        Slow();
+    };
+    Controls.GlobalActions.Screenshot.performed += ( obj ) => Util.Screenshot();
+#if !UNITY_EDITOR
+    Controls.GlobalActions.CursorLockToggle.performed += (obj) => {
+      if( UnityEngine.Cursor.lockState == CursorLockMode.Locked )
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+      else
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+    };
+#endif
+    Controls.GlobalActions.DEVRespawn.performed += ( obj ) => {
+      Chopper chopper = FindObjectOfType<Chopper>();
+      if( (!Application.isEditor || SimulatePlayer) && chopper != null )
+        chopper.StartDrop( CurrentPlayer );
+      else
+      {
+        CurrentPlayer.transform.position = FindSpawnPosition();
+        CurrentPlayer.velocity = Vector2.zero;
+      }
+    };
+
+    Controls.MenuActions.Back.performed += ( obj ) => {
+      // todo back out to previous UI screen...
+
+      // ...or if there is none, close diagetic UI
+      if( ActiveDiagetic != null && !MenuShowing && CurrentPlayer != null )
+        CurrentPlayer.UnselectWorldSelection();
+    };
+    // DEVELOPMENT
+    Controls.BipedActions.DEVZoom.started += ( obj ) => {
+      zoomDelta += obj.ReadValue<float>();
+    };
+  }
+
+  public void LoadScene( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true )
+  {
+    StartCoroutine( LoadSceneRoutine( sceneName, waitForFadeIn, spawnPlayer, fadeOut, showLoadingScreen ) );
+  }
+
+  IEnumerator LoadSceneRoutine( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true )
   {
     Updating = false;
     if( fadeOut )
@@ -304,9 +463,30 @@ public class Global : MonoBehaviour
       fader.gameObject.SetActive( true );
       yield return null;
     }
+    // music fade out
+    Timer musicTimer = new Timer();
+    TimerParams musicTimerParamsFadeOut = new TimerParams
+    {
+      unscaledTime = true,
+      repeat = false,
+      duration = MusicTransitionDuration,
+      UpdateDelegate = delegate ( Timer obj )
+      {
+        musicSource0.volume = 1 - obj.ProgressNormalized;
+        musicSource1.volume = 1 - obj.ProgressNormalized;
+      },
+      CompleteDelegate = delegate
+      {
+        musicSource0.volume = 0;
+        musicSource1.volume = 0;
+        StopMusic();
+      }
+    };
+    musicTimer.Start( musicTimerParamsFadeOut );
     Pause();
     HUD.SetActive( false );
-    yield return ShowLoadingScreenRoutine( "Loading... " + sceneName );
+    if( showLoadingScreen )
+      yield return ShowLoadingScreenRoutine( "Loading... " + sceneName );
     if( CurrentPlayer != null )
     {
       CurrentPlayer.PreSceneTransition();
@@ -324,7 +504,6 @@ public class Global : MonoBehaviour
       //progTarget = ao.progress;
       //print( ao.progress.ToString() );
       yield return null;
-      //yield return new WaitForSecondsRealtime( 1 );
     }
     loadingScene = false;
 
@@ -332,7 +511,6 @@ public class Global : MonoBehaviour
     foreach( var mesh in meshSurfaces )
       mesh.BuildNavMesh();
 
-    Scene scene = SceneManager.GetSceneByName( sceneName );
     if( CurrentPlayer == null )
     {
       if( spawnPlayer )
@@ -343,18 +521,33 @@ public class Global : MonoBehaviour
       CurrentPlayer.PostSceneTransition();
     }
 
-    ss = FindObjectOfType<SceneScript>();
-    if( ss != null )
+    TimerParams musicTimerParamsFadeIn = new TimerParams
     {
-      if( ss.level != null )
-        ss.level.Generate();
-      AssignCameraPoly( ss.sb );
-      ss.StartScene();
-    }
+      unscaledTime = true,
+      repeat = false,
+      duration = MusicTransitionDuration,
+      UpdateDelegate = delegate ( Timer obj )
+      {
+        musicSource0.volume = obj.ProgressNormalized;
+        musicSource1.volume = obj.ProgressNormalized;
+      },
+      CompleteDelegate = delegate
+      {
+        musicSource0.volume = 1;
+        musicSource1.volume = 1;
+      }
+    };
+    musicTimer.Start( musicTimerParamsFadeIn ); 
 
     HUD.SetActive( true );
+
+    sceneScript = FindObjectOfType<SceneScript>();
+    if( sceneScript != null )
+      sceneScript.StartScene();
+
     Unpause();
-    yield return HideLoadingScreenRoutine();
+    if( showLoadingScreen )
+      HideLoadingScreen();
     FadeClear();
     if( waitForFadeIn )
       while( fadeTimer.IsActive )
@@ -362,27 +555,18 @@ public class Global : MonoBehaviour
     Updating = true;
   }
 
-  public void Screenshot()
-  {
-    string now = System.DateTime.Now.Year.ToString() +
-                   System.DateTime.Now.Month.ToString( "D2" ) +
-                   System.DateTime.Now.Day.ToString( "D2" ) + "." +
-                   System.DateTime.Now.Minute.ToString( "D2" ) +
-                   System.DateTime.Now.Second.ToString( "D2" );
-    ScreenCapture.CaptureScreenshot( Application.persistentDataPath + "/" + now + ".png" );
-  }
-
-  float progTarget = 0;
-  [SerializeField] GameObject spinner;
-  [SerializeField] float spinnerMoveSpeed = 1;
-
+  //float lastTime;
   void Update()
   {
+#if DESTRUCTION_LIST
     for( int i = 0; i < DestructionList.Count; i++ )
-      GameObject.Destroy( DestructionList[i] );
+      Destroy( DestructionList[i] );
     DestructionList.Clear();
+#endif
 
+    frames++;
     Timer.UpdateTimers();
+    debugText2.text = "Active Timers: "+Timer.ActiveTimers.Count;
 
     if( !Updating )
       return;
@@ -391,99 +575,6 @@ public class Global : MonoBehaviour
     {
       //prog = Mathf.MoveTowards( prog, progTarget, Time.unscaledDeltaTime * progressSpeed );
       //progress.fillAmount = prog;
-
-      if( GameInput.GetKey( "MoveRight" ) )
-        spinner.transform.localPosition += Vector3.right * spinnerMoveSpeed * Time.unscaledDeltaTime;
-      //inputLeft = Input.GetKey( Global.instance.icsCurrent.keyMap["MoveLeft"] );
-    }
-
-    debugButtons.text = "";
-    for( int i = 0; i < 20; i++ )
-    {
-      //if( Input.GetKey( "joystick button " + i ) )
-      debugButtons.text += "Button " + i + "=" + Input.GetKey( "joystick button " + i ) + "\n";
-    }
-    for( int i = 0; i < 6; i++ )
-    {
-      debugButtons.text += "Axis " + i + "=" + Input.GetAxis( "Joy0Axis" + i ) + "\n";
-    }
-
-
-
-    if( Mathf.Abs( Input.GetAxis( "Zoom" ) ) > 0 )
-    {
-      if( Camera.main.orthographic )
-      {
-        CameraController.orthoTarget += Input.GetAxis( "Zoom" );
-        //Camera.main.orthographicSize += Input.GetAxis( "Zoom" );
-        debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
-      }
-      else
-      {
-        CameraController.zOffset += Input.GetAxis( "Zoom" );
-        debugText.text = CameraController.zOffset.ToString( "##.#" );
-      }
-    }
-
-    if( Input.GetKeyDown( KeyCode.O ) )
-    {
-      if( Slowed )
-        Global.instance.NoSlow();
-      else
-        Global.instance.Slow();
-    }
-
-    if( Input.GetButtonDown( "Screenshot" ) )
-    {
-      Screenshot();
-    }
-#if !UNITY_EDITOR
-    if( Input.GetKeyDown( KeyCode.P ) )
-    {
-      if( Paused )
-        Unpause();
-      else
-        Pause();
-    }
-    if( Input.GetKeyDown( KeyCode.Escape ) )
-    {
-      if( UnityEngine.Cursor.lockState == CursorLockMode.Locked )
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
-      else
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-    }
-#endif
-    if( Input.GetKeyDown( KeyCode.F1 ) )
-    {
-      Chopper chopper = FindObjectOfType<Chopper>();
-      if( (!Application.isEditor || Global.instance.SimulatePlayer) && chopper != null )
-        ChopDrop();
-      else
-        CurrentPlayer.transform.position = FindSpawnPosition();
-    }
-
-    if( GameInput.UsingKeyboard )
-    {
-      CursorDelta += new Vector3( Input.GetAxis( "Cursor X" ), Input.GetAxis( "Cursor Y" ), 0 ) * cursorSensitivity;
-    }
-    else
-    {
-      Vector3 raw = new Vector3( GameInput.GetAxisRaw( "AimX" ), -GameInput.GetAxisRaw( "AimY" ), 0 );
-      if( raw.sqrMagnitude > deadZone * deadZone )
-        aimRaw = raw;
-      else
-        aimRaw = Vector3.zero;
-    }
-
-    if( GameInput.GetKeyUp( "Menu" ) )
-    {
-      ShowMenu( !MenuShowing );
-#if UNITY_STANDALONE_LINUX
-      // hack: there is a Unity bug where the Canvas will not update when an object with a canvas renderer is disabled.
-      Canvas canvas = FindObjectOfType<Canvas>();
-      canvas.gameObject.SetActive( false );
-      canvas.gameObject.SetActive( true );
-#endif
     }
 
 #if UNITY_EDITOR_LINUX
@@ -491,6 +582,7 @@ public class Global : MonoBehaviour
     Cursor.lockState = CursorLockMode.None;
 #else
 #endif
+
     float H = 0;
     float S = 1;
     float V = 1;
@@ -498,19 +590,31 @@ public class Global : MonoBehaviour
     H += colorShiftSpeed * Time.unscaledDeltaTime;
     shiftyColor = Color.HSVToRGB( H, 1, 1 );
     shifty.color = shiftyColor;
-  }
 
+    if( Camera.main.orthographic )
+    {
+      if( Mathf.Abs( zoomDelta ) > 0 )
+      {
+        CameraController.orthoTarget += zoomDelta * Time.deltaTime;
+        CameraController.orthoTarget = Mathf.Clamp( CameraController.orthoTarget, 1, 10 );
+        FloatSetting["Zoom"].Value = CameraController.orthoTarget;
+      }
+      debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
+    }
+    else
+    {
+      CameraController.zOffset += zoomDelta * Time.deltaTime;
+      debugText.text = CameraController.zOffset.ToString( "##.#" );
+    }
+    zoomDelta = 0;
+
+  }
 
   void OnApplicationFocus( bool hasFocus )
   {
     UnityEngine.Cursor.lockState = hasFocus ? CursorLockMode.Locked : CursorLockMode.None;
     UnityEngine.Cursor.visible = !hasFocus;
   }
-
-  public Vector3 origin;
-  public float CursorFactor = 0.02f;
-  public Vector2 AimPosition;
-  public Vector2 CursorWorldPosition;
 
   void LateUpdate()
   {
@@ -519,99 +623,105 @@ public class Global : MonoBehaviour
 
     if( CurrentPlayer != null )
     {
-      if( GameInput.UsingKeyboard )
+      if( ActiveDiagetic != null )
       {
-        CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
+        /*
+        CursorWorldPosition = Camera.main.ScreenToWorldPoint( UnityEngine.Input.mousePosition );
+        CursorDelta = (CursorWorldPosition - (Vector2)CurrentPlayer.arm.position) / CursorFactor;
+        AimPosition = CursorWorldPosition;
+        Cursor.position = CursorWorldPosition;
+        */
       }
       else
       {
-        if( positionalCursor )
+#if UNITY_WEBGL && !UNITY_EDITOR
+        Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
+        delta.y = -delta.y;
+        cursorDelta += delta;
+#else
+        /*currentDelta = UnityEngine.InputSystem.Mouse.current.delta.ReadValue();
+        if( currentDelta.magnitude > 0 )
+          Debug.LogFormat( "current {0} {1}", currentDelta.x, currentDelta.y );
+        Vector2 aim = Controls.BipedActions.Aim.ReadValue<Vector2>();
+        if( aim.magnitude > 0 )
+          Debug.LogFormat( "aim {0} {1}", aim.x, aim.y );*/
+
+        cursorDelta += Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
+#endif
+        cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * CursorOuter ), 0.1f );
+        cursorOrigin = CurrentPlayer.arm.position;
+
+        if( AimSnap )
         {
-          CursorDelta += aimRaw * positionalCursorSpeed;
-          CursorDelta = CursorDelta.normalized * Mathf.Max( Mathf.Min( CursorDelta.magnitude, cursorOuter ), cursorInner );
+          // set cursor
+          Cursor.gameObject.SetActive( true );
+          CursorSnapped.gameObject.SetActive( true );
+
+          float angle = Mathf.Atan2( cursorDelta.x, cursorDelta.y ) / Mathf.PI;
+          float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
+          Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
+          AimPosition = cursorOrigin + snapped * SnapCursorDistance;
+          CursorSnapped.position = AimPosition;
+          CursorSnapped.rotation = Quaternion.LookRotation( Vector3.forward, snapped );
+          CursorWorldPosition = cursorOrigin + cursorDelta;
+          Cursor.position = CursorWorldPosition;
         }
         else
-          CursorDelta = Vector3.Lerp( CursorDelta, aimRaw * cursorOuter, Mathf.Clamp01( gamepadCursorLerp * Time.deltaTime ) );
-      }
-
-      Cursor.gameObject.SetActive( CursorDelta.sqrMagnitude > cursorInner * cursorInner );
-
-
-      if( CursorPlayerRelative )
-        origin = CurrentPlayer.arm.position;
-      else
-        origin = CameraController.transform.position;
-      origin.z = 0;
-
-      if( AimSnap )
-      {
-        // set cursor
-        Cursor.gameObject.SetActive( true );
-        CursorSnapped.gameObject.SetActive( true );
-
-        float angle = Mathf.Atan2( CursorDelta.x, CursorDelta.y ) / Mathf.PI;
-        float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
-        Vector3 snapped = new Vector3( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ), 0 );
-        AimPosition = origin + snapped * SnapCursorDistance;
-        CursorSnapped.position = AimPosition;
-        CursorWorldPosition = origin + CursorDelta * CursorFactor;
-        Cursor.position = CursorWorldPosition;
-      }
-      else
-      {
-        // set cursor
-        Cursor.gameObject.SetActive( true );
-        CursorSnapped.gameObject.SetActive( false );
-
-        AimPosition = origin + CursorDelta * CursorFactor;
-        CursorWorldPosition = AimPosition;
-        //Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
-        Cursor.position = CursorWorldPosition;
-      }
-
-
-      if( AutoAim )
-      {
-        CursorWorldPosition = origin + CursorDelta * CursorFactor;
-        RaycastHit2D[] hits = Physics2D.CircleCastAll( CurrentPlayer.transform.position, AutoAimCircleRadius, CursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
-        float distance = Mathf.Infinity;
-        Transform closest = null;
-        foreach( var hit in hits )
         {
-          float dist = Vector2.Distance( CursorWorldPosition, hit.transform.position );
-          if( dist < distance )
-          {
-            closest = hit.transform;
-            distance = dist;
-          }
+          // set cursor
+          Cursor.gameObject.SetActive( true );
+          CursorSnapped.gameObject.SetActive( false );
+
+          AimPosition = cursorOrigin + cursorDelta;
+          CursorWorldPosition = AimPosition;
+          //Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
+          Cursor.position = CursorWorldPosition;
         }
 
-        if( closest == null )
+        if( AutoAim )
+        {
+          CursorWorldPosition = cursorOrigin + cursorDelta;
+          RaycastHit2D[] hits = Physics2D.CircleCastAll( CurrentPlayer.transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
+          float distance = Mathf.Infinity;
+          Transform closest = null;
+          foreach( var hit in hits )
+          {
+            float dist = Vector2.Distance( CursorWorldPosition, hit.transform.position );
+            if( dist < distance )
+            {
+              closest = hit.transform;
+              distance = dist;
+            }
+          }
+
+          if( closest == null )
+          {
+            CursorAutoAim.gameObject.SetActive( false );
+          }
+          else
+          {
+            CursorAutoAim.gameObject.SetActive( true );
+            // todo adjust for flight path 
+            //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
+            AimPosition = closest.position;
+            CursorAutoAim.position = AimPosition;
+          }
+          Cursor.position = CursorWorldPosition;
+
+        }
+        else
         {
           CursorAutoAim.gameObject.SetActive( false );
         }
-        else
-        {
-          CursorAutoAim.gameObject.SetActive( true );
-          // todo adjust for flight path 
-          //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
-          AimPosition = closest.position;
-          CursorAutoAim.position = AimPosition;
-        }
-        Cursor.position = CursorWorldPosition;
-
       }
-      else
-      {
-        CursorAutoAim.gameObject.SetActive( false );
-      }
-
+    }
+    else
+    {
+      Cursor.gameObject.SetActive( false );
     }
 
     CameraController.CameraLateUpdate();
   }
-
-
 
   public void SpawnPlayer()
   {
@@ -619,6 +729,9 @@ public class Global : MonoBehaviour
     CurrentPlayer = go.GetComponent<PlayerController>();
     CameraController.LookTarget = CurrentPlayer.gameObject;
     CameraController.transform.position = CurrentPlayer.transform.position;
+
+    // settings are read before player is created, so set player settings here.
+    CurrentPlayer.SpeedFactorNormalized = FloatSetting["PlayerSpeedFactor"].Value;
   }
 
   GameObject FindSpawnPoint()
@@ -641,18 +754,11 @@ public class Global : MonoBehaviour
     return Vector3.zero;
   }
 
-
-  [Header( "Audio" )]
-  public UnityEngine.Audio.AudioMixer mixer;
-  public UnityEngine.Audio.AudioMixerSnapshot snapSlowmo;
-  public UnityEngine.Audio.AudioMixerSnapshot snapNormal;
-  public float AudioFadeDuration = 0.1f;
-
   public void Slow()
   {
-    Time.timeScale = Global.instance.slowtime;
-    Time.fixedDeltaTime = 0.01f * Time.timeScale;
     Slowed = true;
+    Time.timeScale = slowtime;
+    Time.fixedDeltaTime = 0.01f * Time.timeScale;
     mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
       snapNormal,
       snapSlowmo
@@ -664,12 +770,12 @@ public class Global : MonoBehaviour
 
   public void NoSlow()
   {
+    Slowed = false;
     Time.timeScale = 1;
     Time.fixedDeltaTime = 0.01f * Time.timeScale;
-    Slowed = false;
-    Global.instance.mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
-      Global.instance.snapNormal,
-      Global.instance.snapSlowmo
+    mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
+      snapNormal,
+      snapSlowmo
     }, new float[] {
       1,
       0
@@ -681,6 +787,8 @@ public class Global : MonoBehaviour
     Paused = true;
     Time.timeScale = 0;
     Time.fixedDeltaTime = 0;
+    instance.mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["MusicVolume"].Value * 0.8f ) );
+    instance.mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["SFXVolume"].Value * 0.8f ) );
   }
 
   public static void Unpause()
@@ -688,36 +796,102 @@ public class Global : MonoBehaviour
     Paused = false;
     Time.timeScale = 1;
     Time.fixedDeltaTime = 0.01f * Time.timeScale;
+    instance.mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["MusicVolume"].Value ) );
+    instance.mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["SFXVolume"].Value ) );
   }
 
   public void SetCursor( Sprite spr )
   {
     Cursor.GetComponent<SpriteRenderer>().sprite = spr;
-    Cursor.localScale = Vector3.one * cursorScale;
+    Cursor.localScale = Vector3.one * CursorScale;
   }
 
-  void ShowMenu( bool show )
+  public void ShowHUD()
   {
-    if( show )
+    HUD.SetActive( true );
+  }
+
+  public void HideHUD()
+  {
+    HUD.SetActive( false );
+  }
+
+  void ShowPauseMenu()
+  {
+    if( ScreenSettingsCountdownTimer.IsActive )
+      return;
+    Pause();
+    if( ActiveDiagetic != null )
     {
-      Pause();
-      MainMenu.SetActive( true );
-      HUD.SetActive( false );
-      UnityEngine.Cursor.lockState = CursorLockMode.None;
-      UnityEngine.Cursor.visible = true;
-      EnableRaycaster( true );
-      GameInputRemapper.OnShow();
+      ActiveDiagetic.InteractableOff();
     }
     else
     {
-      Unpause();
-      MainMenu.SetActive( false );
-      HUD.SetActive( true );
-      UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-      UnityEngine.Cursor.visible = false;
-      EnableRaycaster( false );
-      Input.ResetInputAxes();
+      Controls.MenuActions.Enable();
+      Controls.BipedActions.Disable();
     }
+    PauseMenu.Select();
+    HUD.SetActive( false );
+    //UnityEngine.Cursor.lockState = CursorLockMode.None;
+    UnityEngine.Cursor.visible = true;
+    EnableRaycaster( true );
+  }
+
+  void HidePauseMenu()
+  {
+    if( ScreenSettingsCountdownTimer.IsActive )
+      return;
+    Unpause();
+    PauseMenu.Unselect();
+    HUD.SetActive( true );
+    //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+    UnityEngine.Cursor.visible = false;
+    EnableRaycaster( false );
+    if( ActiveDiagetic != null )
+    {
+      ActiveDiagetic.InteractableOn();
+    }
+    else
+    {
+      Controls.BipedActions.Enable();
+      Controls.MenuActions.Disable();
+    }
+#if UNITY_WEBGL && !UNITY_EDITOR
+      // cannot write settings on exit in webgl builds, so write them here
+      WriteSettings();
+#endif
+  }
+
+  void TogglePauseMenu()
+  {
+    if( MenuShowing )
+      HidePauseMenu();
+    else
+      ShowPauseMenu();
+  }
+
+  public void DiageticMenuOn( DiageticUI dui )
+  {
+    ActiveDiagetic = dui;
+    Controls.MenuActions.Enable();
+    Controls.BipedActions.Disable();
+    AssignCameraPoly( dui.CameraPoly );
+    CameraController.EncompassBounds = true;
+    //UnityEngine.Cursor.lockState = CursorLockMode.None;
+    Cursor.gameObject.SetActive( false );
+  }
+
+  public void DiageticMenuOff()
+  {
+    ActiveDiagetic = null;
+    Controls.MenuActions.Disable();
+    Controls.BipedActions.Enable();
+    SceneScript ss = FindObjectOfType<SceneScript>();
+    if( ss != null )
+      AssignCameraPoly( ss.sb );
+    CameraController.EncompassBounds = false;
+    //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+    Cursor.gameObject.SetActive( true );
   }
 
   public void EnableRaycaster( bool enable = true )
@@ -746,12 +920,7 @@ public class Global : MonoBehaviour
     yield return null;
   }
 
-  IEnumerator HideLoadingScreenRoutine()
-  {
-    HideLoadingScreen();
-    yield return null;
-  }
-
+#if DESTRUCTION_LIST
   // This exists only because of a Unity crash bug when objects with active
   // Contacts are destroyed from within OnCollisionEnter2D()
   public void Destroy( GameObject go )
@@ -759,9 +928,7 @@ public class Global : MonoBehaviour
     go.SetActive( false );
     DestructionList.Add( go );
   }
-
-  public GameData gameData;
-  public Dictionary<string, GameObject> ResourceLookup = new Dictionary<string, GameObject>();
+#endif
 
   public GameObject Spawn( string resourceName, Vector3 position, Quaternion rotation, Transform parent = null, bool limit = true, bool initialize = true )
   {
@@ -809,7 +976,7 @@ public class Global : MonoBehaviour
   public void AudioOneShot( AudioClip clip, Vector3 position )
   {
     // independent, temporary positional sound object
-    GameObject go = GameObject.Instantiate( audioOneShotPrefab, position, Quaternion.identity );
+    GameObject go = Instantiate( audioOneShotPrefab, position, Quaternion.identity );
     AudioSource source = go.GetComponent<AudioSource>();
     source.PlayOneShot( clip );
     new Timer( clip.length, null, delegate
@@ -818,23 +985,12 @@ public class Global : MonoBehaviour
     } );
   }
 
-  public void ChopDrop()
-  {
-    //Camera.main.fieldOfView = 25;
-    chopper = FindObjectOfType<Chopper>();
-    if( chopper != null )
-    {
-      chopper.character = CurrentPlayer;
-      chopper.StartDrop();
-    }
-  }
-
   public void FadeBlack()
   {
     fader.color = new Color( fader.color.r, fader.color.g, fader.color.b, 0 );
     fadeTimer.Stop( true );
     // set gameObject active after Stop() because FadeClear() CompleteDelegate
-    // makes the gameObject insactive
+    // makes the gameObject inactive
     fader.gameObject.SetActive( true );
     TimerParams tp = new TimerParams
     {
@@ -880,17 +1036,6 @@ public class Global : MonoBehaviour
     fadeTimer.Start( tp );
   }
 
-  [Header( "Speech" )]
-  public GameObject SpeechBubble;
-  public Text SpeechText;
-  public Image SpeechIcon;
-  CharacterIdentity SpeechCharacter;
-  int SpeechPriority = 0;
-  public float SpeechRange = 8;
-  Timer SpeechTimer = new Timer();
-
-
-
   public void Speak( CharacterIdentity character, string text, float timeout, int priority = 0 )
   {
     // priority 0 = offhand remarks
@@ -925,22 +1070,28 @@ public class Global : MonoBehaviour
       SpeechBubble.SetActive( false );
       SpeechCharacter = null;
     } );
+
+    SpeechAnimator.runtimeAnimatorController = character.animationController;
+    SpeechAnimator.Play( "talk" );
   }
 
-  public SceneScript GetSceneScript()
+  public void AssignCameraPoly( Collider2D collider )
   {
-    return FindObjectOfType<SceneScript>();
+    CameraPoly = collider;
+    if( collider is PolygonCollider2D )
+    {
+      PolygonCollider2D poly = collider as PolygonCollider2D;
+      // camera poly bounds points are local to polygon
+      CameraBounds = new Bounds();
+      foreach( var p in poly.points )
+        CameraBounds.Encapsulate( p );
+    }
+    else if( collider is BoxCollider2D )
+    {
+      BoxCollider2D box = collider as BoxCollider2D;
+      CameraBounds = box.bounds;
+    }
   }
-
-  public void AssignCameraPoly( PolygonCollider2D poly )
-  {
-    CameraPoly = poly;
-    // camera poly bounds points are local to polygon
-    CameraPolyBounds = new Bounds();
-    foreach( var p in CameraPoly.points )
-      CameraPolyBounds.Encapsulate( p );
-  }
-
 
   void VerifyPersistentData()
   {
@@ -971,42 +1122,83 @@ public class Global : MonoBehaviour
 
   #region Settings
 
+  string[] resolutions = { "640x360", "640x400", "1024x512", "1280x720", "1280x800", "1920x1080" };
+  int ResolutionWidth;
+  int ResolutionHeight;
+
   void InitializeSettings()
   {
-    SettingUI[] settings = MainMenu.GetComponentsInChildren<SettingUI>( true );
+    SettingUI[] settings = PauseMenu.gameObject.GetComponentsInChildren<SettingUI>( true );
     // use existing UI objects, if they exist
     foreach( var s in settings )
     {
-      if( s.gameObject.GetInstanceID() == ToggleTemplate.GetInstanceID() || s.gameObject.GetInstanceID() == SliderTemplate.GetInstanceID() )
-        continue;
+      if( s.isString )
+      {
+        s.stringValue.Init();
+        StringSetting.Add( s.stringValue.name, s.stringValue );
+      }
       if( s.isInteger )
       {
         s.intValue.Init();
         FloatSetting.Add( s.intValue.name, s.intValue );
-      }
+      }S:
       if( s.isBool )
       {
         s.boolValue.Init();
         BoolSetting.Add( s.boolValue.name, s.boolValue );
       }
     }
+    // "Apply Screen Settings" is first button 
+    previousSelectable = PauseMenuFirstSelected.GetComponent<Selectable>();
+    // screen settings are applied explicitly when user pushes button
+    CreateBoolSetting( "Fullscreen", false, null );
+    CreateFloatSetting( "ResolutionSlider", 4, 0, resolutions.Length - 1, 1.0f / (resolutions.Length - 1), delegate ( float value )
+    {
+      string Resolution = resolutions[Mathf.FloorToInt( Mathf.Clamp( value, 0, resolutions.Length - 1 ) )];
+      string[] tokens = Resolution.Split( new char[] { 'x' } );
+      ResolutionWidth = int.Parse( tokens[0].Trim() );
+      ResolutionHeight = int.Parse( tokens[1].Trim() );
+      StringSetting["Resolution"].Value = ResolutionWidth.ToString() + "x" + ResolutionHeight.ToString();
+    } );
+    CreateStringSetting( "Resolution", "1280x800", null );
+    CreateFloatSetting( "UIScale", 1, 0.1f, 4, 0.05f, null );
 
-    CreateBoolSetting( "Fullscreen", false, null );  //delegate ( bool value ) { Fullscreen = value; } );
-    CreateFloatSetting( "ScreenWidth", 1024, null );  //delegate ( float value ) { ScreenWidth = Mathf.FloorToInt( value ); } );
-    CreateFloatSetting( "ScreenHeight", 1024, null );  //delegate ( float value ) { ScreenHeight = Mathf.FloorToInt( value ); } );
-    CreateFloatSetting( "UIScale", 1, null );// delegate ( float value ) { UI.GetComponent<CanvasScaler>().scaleFactor = value; } );
+    CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 0.05f, delegate ( float value ){ mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) ); } );
+    CreateFloatSetting( "MusicVolume", 0.9f, 0, 1, 0.05f, delegate ( float value ){ mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) ); } );
+    CreateFloatSetting( "SFXVolume", 1, 0, 1, 0.05f, delegate ( float value )
+    {
+      mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) );
+      if( Updating )
+        AudioOneShot( VolumeChangeNoise, Camera.main.transform.position );
+    } );
+    /*CreateFloatSetting( "MusicTrack", 0, 0, MusicLoops.Length - 1, 1.0f / (MusicLoops.Length - 1), delegate ( float value ){ PlayMusicLoop( MusicLoops[Mathf.FloorToInt( Mathf.Clamp( value, 0, MusicLoops.Length - 1 ) )] ); } );*/
 
+    CreateBoolSetting( "ShowOnboardingControls", true, OnboardingControls.SetActive );
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
-    CreateBoolSetting( "CursorInfluence", true, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
-    CreateBoolSetting( "AimSnap", true, delegate ( bool value ) { AimSnap = value; } );
-    CreateBoolSetting( "AutoAim", true, delegate ( bool value ) { AutoAim = value; } );
+    CreateBoolSetting( "CursorInfluence", false, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
+    CreateBoolSetting( "AimSnap", false, delegate ( bool value ) { AimSnap = value; } );
+    CreateBoolSetting( "AutoAim", false, delegate ( bool value ) { AutoAim = value; } );
 
-    CreateFloatSetting( "CursorOuterRadius", 150, delegate ( float value ) { cursorOuter = value; } );
-    CreateFloatSetting( "CameraLerpAlpha", 50, delegate ( float value ) { CameraController.lerpAlpha = value; } );
-    CreateFloatSetting( "ThumbstickDeadzone", 10, delegate ( float value ) { deadZone = value; } );
 
-    ToggleTemplate.gameObject.SetActive( false );
-    SliderTemplate.gameObject.SetActive( false );
+    CreateFloatSetting( "CursorOuter", 1, 0, 1, 0.05f, delegate ( float value ) { CursorOuter = value; } );
+    CreateFloatSetting( "CursorSensitivity", 0.1f, 0, 1, 0.05f, delegate ( float value ) { CursorSensitivity = value; } );
+    CreateFloatSetting( "CameraLerpAlpha", 20, 0, 50, 0.01f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
+    CreateFloatSetting( "Zoom", 3, 1, 5, 0.05f, delegate ( float value ) { CameraController.orthoTarget = value; } );
+    //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
+    CreateFloatSetting( "PlayerSpeedFactor", 0.3f, 0, 1, 0.1f, delegate ( float value ) { if( CurrentPlayer != null ) CurrentPlayer.SpeedFactorNormalized = value; } );
+  }
+
+  Selectable previousSelectable;
+  // explicit UI navigation
+  void NextNav( Selectable selectable )
+  {
+    Navigation previousNav = previousSelectable.navigation;
+    previousNav.selectOnDown = selectable;
+    previousSelectable.navigation = previousNav;
+    Navigation thisNav = selectable.navigation;
+    thisNav.selectOnUp = previousSelectable;
+    selectable.navigation = thisNav;
+    previousSelectable = selectable;
   }
 
   void CreateBoolSetting( string key, bool value, System.Action<bool> onChange )
@@ -1014,7 +1206,7 @@ public class Global : MonoBehaviour
     BoolValue bv;
     if( !BoolSetting.TryGetValue( key, out bv ) )
     {
-      GameObject go = Instantiate( ToggleTemplate, ToggleTemplate.transform.parent );
+      GameObject go = Instantiate( ToggleTemplate, SettingsParent.transform );
       SettingUI sss = go.GetComponent<SettingUI>();
       sss.isBool = true;
       bv = sss.boolValue;
@@ -1024,14 +1216,15 @@ public class Global : MonoBehaviour
     }
     bv.onValueChanged = onChange;
     bv.Value = value;
+    NextNav( bv.toggle );
   }
 
-  void CreateFloatSetting( string key, float value, System.Action<float> onChange )
+  void CreateFloatSetting( string key, float value, float min, float max, float normalizedStep, System.Action<float> onChange )
   {
     FloatValue bv;
     if( !FloatSetting.TryGetValue( key, out bv ) )
     {
-      GameObject go = Instantiate( SliderTemplate, SliderTemplate.transform.parent );
+      GameObject go = Instantiate( SliderTemplate, SettingsParent.transform );
       SettingUI sss = go.GetComponent<SettingUI>();
       sss.isInteger = true;
       bv = sss.intValue;
@@ -1039,9 +1232,33 @@ public class Global : MonoBehaviour
       bv.Init();
       FloatSetting.Add( key, bv );
     }
+    bv.slider.normalizedStep = normalizedStep;
+    bv.slider.minValue = min;
+    bv.slider.maxValue = max;
     bv.onValueChanged = onChange;
     bv.Value = value;
+    NextNav( bv.slider );
   }
+
+  void CreateStringSetting( string key, string value, System.Action<string> onChange )
+  {
+    StringValue val;
+    if( !StringSetting.TryGetValue( key, out val ) )
+    {
+      GameObject go = Instantiate( SliderTemplate, SettingsParent.transform );
+      SettingUI sss = go.GetComponent<SettingUI>();
+      sss.isString = true;
+      val = sss.stringValue;
+      val.name = key;
+      val.Init();
+      StringSetting.Add( key, val );
+    }
+    val.onValueChanged = onChange;
+    val.Value = value;
+    if( val.inputField != null )
+      NextNav( val.inputField );
+  }
+
 
   void ReadSettings()
   {
@@ -1056,10 +1273,13 @@ public class Global : MonoBehaviour
       }
 
       foreach( var pair in BoolSetting )
-        pair.Value.Value = JsonUtil.Read<bool>( pair.Value.Value, json, "settings", pair.Key );
+        pair.Value.Value = JsonUtil.Read( pair.Value.Value, json, "settings", pair.Key );
 
       foreach( var pair in FloatSetting )
-        pair.Value.Value = JsonUtil.Read<float>( pair.Value.Value, json, "settings", pair.Key );
+        pair.Value.Value = JsonUtil.Read( pair.Value.Value, json, "settings", pair.Key );
+
+      foreach( var pair in StringSetting )
+        pair.Value.Value = JsonUtil.Read( pair.Value.Value, json, "settings", pair.Key );
     }
   }
 
@@ -1071,6 +1291,11 @@ public class Global : MonoBehaviour
 
     writer.WritePropertyName( "settings" );
     writer.WriteObjectStart();
+    foreach( var pair in StringSetting )
+    {
+      writer.WritePropertyName( pair.Key );
+      writer.Write( pair.Value.Value );
+    }
     foreach( var pair in FloatSetting )
     {
       writer.WritePropertyName( pair.Key );
@@ -1084,33 +1309,55 @@ public class Global : MonoBehaviour
     writer.WriteObjectEnd();
 
     writer.WriteObjectEnd(); // root end
-    print( settingsPath );
+    //print( settingsPath );
     File.WriteAllText( settingsPath, writer.ToString() );
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    FileSync();
+#endif
   }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+  [DllImport( "__Internal" )]
+  private static extern void FileSync();
+#endif
 
   public void ApplyScreenSettings()
   {
-    Fullscreen = BoolSetting["Fullscreen"].Value;
-    ScreenWidth = (int)FloatSetting["ScreenWidth"].Value;
-    ScreenHeight = (int)FloatSetting["ScreenHeight"].Value;
-    UIScale = FloatSetting["UIScale"].Value;
-    Screen.SetResolution( ScreenWidth, ScreenHeight, Fullscreen );
-    UI.GetComponent<CanvasScaler>().scaleFactor = UIScale;
-
-    ScreenSettingsPrompt.SetActive( false );
+    string[] tokens = StringSetting["Resolution"].Value.Split( new char[] { 'x' } );
+    ResolutionWidth = int.Parse( tokens[0].Trim() );
+    ResolutionHeight = int.Parse( tokens[1].Trim() );
+#if UNITY_WEBGL
+    // let the web page determine the windowed size
+    if( BoolSetting["Fullscreen"].Value )
+      Screen.SetResolution( ResolutionWidth, ResolutionHeight, true );
+    else
+      Screen.fullScreen = false;
+#else
+    Screen.SetResolution( ResolutionWidth, ResolutionHeight, BoolSetting["Fullscreen"].Value );
+#endif
+    CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
     ScreenSettingsCountdownTimer.Stop( false );
+    ConfirmDialog.Unselect();
   }
+
+  struct ScreenSettings
+  {
+    public bool Fullscreen;
+    public string Resolution;
+    public float UIScale;
+  }
+  ScreenSettings CachedScreenSettings = new ScreenSettings();
 
   public void ScreenChangePrompt()
   {
-    Fullscreen = Screen.fullScreen;
-    ScreenWidth = Screen.width;
-    ScreenHeight = Screen.height;
-    // UIScale ?
+    CachedScreenSettings.Fullscreen = Screen.fullScreen;
+    CachedScreenSettings.Resolution = Screen.width.ToString() + "x" + Screen.height.ToString();
+    CachedScreenSettings.UIScale = CanvasScaler.scaleFactor;
 
-    ScreenSettingsPrompt.SetActive( true );
-    Screen.SetResolution( (int)FloatSetting["ScreenWidth"].Value, (int)FloatSetting["ScreenHeight"].Value, BoolSetting["Fullscreen"].Value );
-    UI.GetComponent<CanvasScaler>().scaleFactor = FloatSetting["UIScale"].Value;
+    ConfirmDialog.Select();
+    Screen.SetResolution( ResolutionWidth, ResolutionHeight, BoolSetting["Fullscreen"].Value );
+    CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
 
     TimerParams tp = new TimerParams
     {
@@ -1119,7 +1366,7 @@ public class Global : MonoBehaviour
       duration = 10,
       UpdateDelegate = delegate ( Timer obj )
       {
-        ScreenSettingsCountdown.text = "Accept changes or revert in " + (10 - obj.ProgressSeconds).ToString( "0" ) + " seconds";
+        ScreenSettingsCountdown.text = "Accept changes or revert in <color=orange>" + (10 - obj.ProgressSeconds).ToString( "0" ) + "</color> seconds";
       },
       CompleteDelegate = RevertScreenSettings
     };
@@ -1128,14 +1375,71 @@ public class Global : MonoBehaviour
 
   public void RevertScreenSettings()
   {
-    BoolSetting["Fullscreen"].Value = Fullscreen;
-    FloatSetting["ScreenWidth"].Value = ScreenWidth;
-    FloatSetting["ScreenHeight"].Value = ScreenHeight;
-    FloatSetting["UIScale"].Value = UIScale;
-
+    BoolSetting["Fullscreen"].Value = CachedScreenSettings.Fullscreen;
+    StringSetting["Resolution"].Value = CachedScreenSettings.Resolution;
+    FloatSetting["UIScale"].Value = CachedScreenSettings.UIScale;
     ApplyScreenSettings();
   }
 
   #endregion
 
+  static GameObject FindFirstEnabledSelectable( GameObject gameObject )
+  {
+    GameObject go = null;
+    var selectables = gameObject.GetComponentsInChildren<Selectable>( true );
+    foreach( var selectable in selectables )
+    {
+      if( selectable.IsActive() && selectable.IsInteractable() )
+      {
+        go = selectable.gameObject;
+        break;
+      }
+    }
+    return go;
+  }
+
+  public void StopMusic()
+  {
+    musicSource0.Stop();
+    musicSource1.Stop();
+  }
+
+  public void PlayMusic( AudioLoop audioLoop )
+  {
+    audioLoop.Play( musicSource0, musicSource1 );
+  }
+  /*
+ public void MusicTransition( AudioLoop loop )
+ {
+   Timer t = new Timer();
+   t.Start( MusicTransitionDuration, 
+   delegate ( Timer obj )
+   {
+     musicSource0.volume = 1 - obj.ProgressNormalized;
+     musicSource1.volume = 1 - obj.ProgressNormalized;
+   },
+   delegate
+   {
+     loop.Play( musicSource0, musicSource1 );
+     t.Start( MusicTransitionDuration, 
+     delegate ( Timer obj )
+     {
+       musicSource0.volume = obj.ProgressNormalized;
+       musicSource1.volume = obj.ProgressNormalized;
+     }, null );
+   }
+   );
+ }
+
+ public void CrossFadeToClip( AudioClip clip )
+ {
+   AudioSource next = (activeMusicSource == musicSource0) ? musicSource1 : musicSource0;
+   next.clip = clip;
+   Timer t = new Timer( MusicTransitionDuration, delegate ( Timer obj )
+   {
+     activeMusicSource.volume = obj.ProgressNormalized;
+     next.volume = 1 - obj.ProgressNormalized;
+   }, null );
+ }
+ */
 }

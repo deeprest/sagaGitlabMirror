@@ -2,64 +2,79 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+
 
 public class DiageticUI : WorldSelectable
 {
   [SerializeField] GraphicRaycaster raycaster;
-  [SerializeField] GameObject InitiallySelected;
   [SerializeField] Animator animator;
-  [SerializeField] GameObject indicator;
+  [SerializeField] Text instruction;
+  [SerializeField] string inactiveInstruction;
+  [SerializeField] string activeInstruction;
   [SerializeField] GameObject cameraTarget;
+  public PolygonCollider2D CameraPoly { get { return cameraTarget.GetComponent<PolygonCollider2D>(); } }
+  public GameObject InitiallySelected;
+  GameObject selectedObject;
+
+  void Start()
+  {
+    animator.Play( "idle" );
+    raycaster.enabled = false;
+    InteractableOff();
+    selectedObject = InitiallySelected;
+    instruction.gameObject.SetActive( false );
+  }
 
   public override void Highlight()
   {
     animator.Play( "highlight" );
+    instruction.gameObject.SetActive( true );
+    instruction.text = Global.instance.ReplaceWithControlNames( inactiveInstruction );
   }
   public override void Unhighlight()
   {
     animator.Play( "idle" );
+    instruction.gameObject.SetActive( false );
   }
 
   public override void Select()
   {
     animator.Play( "idle" );
-    indicator.SetActive( false );
-    //Global.instance.CameraController.LerpTo( cameraTarget );
-    Global.instance.AssignCameraPoly( cameraTarget.GetComponent<PolygonCollider2D>() );
-    Global.instance.CameraController.EncompassBounds = true;
-
-    Global.instance.UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( InitiallySelected );
-    Global.instance.EnableRaycaster( false );
+    instruction.text = Global.instance.ReplaceWithControlNames( activeInstruction );
     raycaster.enabled = true;
-    Cursor.lockState = CursorLockMode.None;
-    Cursor.visible = true;
+    Global.instance.DiageticMenuOn( this );
+    InteractableOn();
   }
 
   public override void Unselect()
   {
     animator.Play( "idle" );
-    indicator.SetActive( true );
-    SceneScript ss = Global.instance.GetSceneScript();
-    if( ss != null )
-      Global.instance.AssignCameraPoly( ss.sb );
-    Global.instance.CameraController.EncompassBounds = false;
-
-    Cursor.lockState = CursorLockMode.Locked;
-    Cursor.visible = false;
-    // avoid selecting things after we've left the menu
-    Global.instance.UI.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject( null );
-    Global.instance.EnableRaycaster( true );
+    instruction.text = Global.instance.ReplaceWithControlNames( inactiveInstruction );
     raycaster.enabled = false;
+    Global.instance.DiageticMenuOff();
+    InteractableOff();
   }
 
-  void Start()
+  public void InteractableOn()
   {
-    animator.Play( "idle" );
+    Selectable[] selectables = GetComponentsInChildren<Selectable>();
+    foreach( var sel in selectables )
+      sel.interactable = true;
+    EventSystem.current.SetSelectedGameObject( selectedObject );
   }
 
-
-
-
+  public void InteractableOff()
+  {
+    // warning: get the currentSelectedGameObject before setting interactable to false!
+    selectedObject = EventSystem.current.currentSelectedGameObject;
+    if( selectedObject == null || !selectedObject.transform.IsChildOf( transform ) )
+      selectedObject = InitiallySelected;
+    Selectable[] selectables = GetComponentsInChildren<Selectable>();
+    foreach( var sel in selectables )
+      sel.interactable = false;
+  }
 
 
 }

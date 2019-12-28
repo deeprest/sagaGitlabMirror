@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 3966323970981597271}
   - component: {fileID: 3966323970981597270}
   - component: {fileID: 3966323970981597265}
-  - component: {fileID: 3966323970981597264}
   - component: {fileID: 3966323970981597267}
   - component: {fileID: 3966323970981597266}
+  - component: {fileID: 5932741712758824715}
   m_Layer: 16
   m_Name: proto-pickup XBuster
   m_TagString: Untagged
@@ -60,6 +60,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -104,22 +105,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!58 &3966323970981597264
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3966323970981597261}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.109375
 --- !u!114 &3966323970981597267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,6 +119,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 3966323970981597266}
   weapon: {fileID: 11400000, guid: fd374035a3d2a4dfab5b20e9cd75ba10, type: 2}
+  ability: {fileID: 0}
+  box: {fileID: 5932741712758824715}
+  friction: 0.05
+  raylength: 0.01
+  contactSeparation: 0.01
+  IgnoreCollideObjects: []
 --- !u!95 &3966323970981597266
 Animator:
   serializedVersion: 3
@@ -153,3 +144,29 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!61 &5932741712758824715
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3966323970981597261}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.21875, y: 0.15625}
+    newSize: {x: 0.3125, y: 0.09375}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.21875, y: 0.15625}
+  m_EdgeRadius: 0

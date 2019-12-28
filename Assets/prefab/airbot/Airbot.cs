@@ -14,6 +14,11 @@ public class Airbot : Character
   bool hitpause = false;
   const float small = 0.1f;
 
+  private void OnDestroy()
+  {
+    hitPauseTimer.Stop( false );
+  }
+
   void Start()
   {
     CharacterStart();

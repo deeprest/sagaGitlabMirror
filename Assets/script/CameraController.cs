@@ -52,6 +52,7 @@ public class CameraController : MonoBehaviour
   public void CameraLateUpdate()
   {
     float ortho = orthoTarget;
+    pos.z = zOffset;
 
     if( !lerp.enabled && LookTarget != null )
     {
@@ -63,7 +64,7 @@ public class CameraController : MonoBehaviour
         lookTarget.z = zOffset;
       }
       pos.x = lookTarget.x;
-      pos.z = zOffset;
+      //pos.z = zOffset;
 
       if( UseVerticalRange )
       {
@@ -94,33 +95,36 @@ public class CameraController : MonoBehaviour
           hw = Mathf.Tan( xangle ) * -transform.position.z;
         }
 
-
-        Vector2 UL = (Vector2)pos + Vector2.left * hw + Vector2.up * hh;
-        if( ClipToInsidePolygon2D( Global.instance.CameraPoly, ref UL ) )
+        if( Global.instance.CameraPoly is PolygonCollider2D )
         {
-          if( pos.y > UL.y - hh ) pos.y = UL.y - hh;
-          if( pos.x < UL.x + hw ) pos.x = UL.x + hw;
-        }
+          PolygonCollider2D poly = Global.instance.CameraPoly as PolygonCollider2D;
+          Vector2 UL = (Vector2)pos + Vector2.left * hw + Vector2.up * hh;
+          if( ClipToInsidePolygon2D( poly, ref UL ) )
+          {
+            if( pos.y > UL.y - hh ) pos.y = UL.y - hh;
+            if( pos.x < UL.x + hw ) pos.x = UL.x + hw;
+          }
 
-        Vector2 UR = (Vector2)pos + Vector2.right * hw + Vector2.up * hh;
-        if( ClipToInsidePolygon2D( Global.instance.CameraPoly, ref UR ) )
-        {
-          if( pos.y > UR.y - hh ) pos.y = UR.y - hh;
-          if( pos.x > UR.x - hw ) pos.x = UR.x - hw;
-        }
+          Vector2 UR = (Vector2)pos + Vector2.right * hw + Vector2.up * hh;
+          if( ClipToInsidePolygon2D( poly, ref UR ) )
+          {
+            if( pos.y > UR.y - hh ) pos.y = UR.y - hh;
+            if( pos.x > UR.x - hw ) pos.x = UR.x - hw;
+          }
 
-        Vector2 LL = (Vector2)pos + Vector2.left * hw + Vector2.down * hh;
-        if( ClipToInsidePolygon2D( Global.instance.CameraPoly, ref LL ) )
-        {
-          if( pos.y < LL.y + hh ) pos.y = LL.y + hh;
-          if( pos.x < LL.x + hw ) pos.x = LL.x + hw;
-        }
+          Vector2 LL = (Vector2)pos + Vector2.left * hw + Vector2.down * hh;
+          if( ClipToInsidePolygon2D( poly, ref LL ) )
+          {
+            if( pos.y < LL.y + hh ) pos.y = LL.y + hh;
+            if( pos.x < LL.x + hw ) pos.x = LL.x + hw;
+          }
 
-        Vector2 LR = (Vector2)pos + Vector2.right * hw + Vector2.down * hh;
-        if( ClipToInsidePolygon2D( Global.instance.CameraPoly, ref LR ) )
-        {
-          if( pos.y < LR.y + hh ) pos.y = LR.y + hh;
-          if( pos.x > LR.x - hw ) pos.x = LR.x - hw;
+          Vector2 LR = (Vector2)pos + Vector2.right * hw + Vector2.down * hh;
+          if( ClipToInsidePolygon2D( poly, ref LR ) )
+          {
+            if( pos.y < LR.y + hh ) pos.y = LR.y + hh;
+            if( pos.x > LR.x - hw ) pos.x = LR.x - hw;
+          }
         }
 
 #if UNITY_EDITOR
@@ -137,12 +141,25 @@ public class CameraController : MonoBehaviour
 #endif
         if( EncompassBounds )
         {
-          pos.x = Global.instance.CameraPoly.transform.position.x + Global.instance.CameraPolyBounds.center.x;
-          pos.y = Global.instance.CameraPoly.transform.position.y + Global.instance.CameraPolyBounds.center.y;
-          Bounds bounds = Global.instance.CameraPolyBounds;
+          Bounds bounds = Global.instance.CameraBounds;
+          if( Global.instance.CameraPoly is PolygonCollider2D )
+          {
+            // PolygonCollider2D bounds does not have a usable center value
+            pos.x = Global.instance.CameraPoly.transform.position.x + bounds.center.x;
+            pos.y = Global.instance.CameraPoly.transform.position.y + bounds.center.y;
+          }
+          else
+          {
+            // BoxCollider2D bounds has a center value
+            pos.x = bounds.center.x;
+            pos.y = bounds.center.y;
+          }
           if( Camera.main.orthographic )
           {
-            ortho = bounds.extents.y;
+            if( bounds.extents.y > bounds.extents.x )
+              ortho = bounds.extents.y;
+            else
+              ortho = bounds.extents.x / Camera.main.aspect;
           }
           else
             pos.z = -Mathf.Max( bounds.extents.x / Mathf.Sin( xangle ), bounds.extents.y / Mathf.Sin( yangle ) );

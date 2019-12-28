@@ -3,25 +3,23 @@ using System.Collections;
 
 public class SceneCity : SceneScript
 {
+  [SerializeField] Chopper chopper;
 
   public override void StartScene()
   {
-    if( Application.isEditor && !Global.instance.SimulatePlayer && Global.instance.CurrentPlayer == null )
-    {
-      //Global.instance.SpawnPlayer();
-      return;
-    }
+    base.StartScene();
 
-    Global.instance.ChopDrop();
+    chopper.StartDrop( Global.instance.CurrentPlayer );
     //Global.instance.ready.SetActive( true );
-
-    Global.instance.CurrentPlayer.playerInput = false;
+    Global.instance.Controls.BipedActions.Disable();
+    Global.instance.Controls.BipedActions.Aim.Enable();
+    Global.instance.Controls.BipedActions.Fire.Enable();
     new Timer( 5, delegate
     {
       Global.instance.CurrentPlayer.inputRight = true;
     }, delegate
     {
-      Global.instance.CurrentPlayer.playerInput = true;
+      Global.instance.Controls.BipedActions.Enable();
     } );
   }
 

@@ -1,16 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RunOnStart : MonoBehaviour
 {
   [RuntimeInitializeOnLoadMethod]
   static void OnStart()
   {
-    Global global = FindObjectOfType<Global>();
-    if( global == null )
+    for( int i = 0; i < SceneManager.sceneCount; i++ )
     {
-      GameObject go = Instantiate( Resources.Load<GameObject>( "GLOBAL" ) );
+      Scene scene = SceneManager.GetSceneAt( i );
+      if( scene.name == "GLOBAL" )
+        return;
     }
+    Instantiate( Resources.Load<GameObject>( "GLOBAL" ) );
   }
 }
+

@@ -40,6 +40,12 @@ public class CustomUtility : EditorWindow
     todo = File.ReadAllText( Application.dataPath + "/../todo" );
   }
 
+  bool developmentBuild;
+  bool buildMacOS = true;
+  bool buildLinux = false;
+  bool buildWebGL = false;
+  bool buildWindows = false;
+
   int audioDoppler = 0;
   int audioDistanceMin = 1;
   int audioDistanceMax = 30;
@@ -57,7 +63,20 @@ public class CustomUtility : EditorWindow
   List<string> scenes;
   List<GameObject> gos;
   List<AnimSequence> ans;
+  List<string> assetPaths;
   int layer;
+
+  string replaceName;
+  GameObject replacePrefab;
+  bool replaceInScene;
+  bool fixInScene;
+  bool fixSpriteInScene;
+  string fixSpriteName;
+  string fixSpriteSubobjectName;
+  Sprite sprite;
+  Material material;
+  string subobjectName;
+  string[] guids;
 
   void StartJob( string message, int count, System.Action update, System.Action done )
   {
@@ -95,23 +114,85 @@ public class CustomUtility : EditorWindow
     EditorGUI.ProgressBar( EditorGUILayout.GetControlRect( false, 30 ), progress, progressMessage );
 
     GUILayout.Label( "Build", EditorStyles.boldLabel );
-    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Build Release" ) )
+    /*if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Run WebGL Build" ) )
+    {
+      string path = EditorUtility.OpenFolderPanel( "Select WebGL build folder", "", "" );
+      if( path.Length != 0 )
+      {
+        Debug.Log( path );
+        Util.Execute( new Util.Command { cmd = "exec /usr/local/bin/static", args = "", dir = path }, true );
+      }
+    }*/
+    developmentBuild = EditorGUILayout.ToggleLeft( "Development Build", developmentBuild );
+    EditorGUILayout.BeginHorizontal();
+    buildMacOS = EditorGUILayout.ToggleLeft( "MacOS", buildMacOS, GUILayout.MaxWidth( 60 ) );
+    buildLinux = EditorGUILayout.ToggleLeft( "Linux", buildLinux, GUILayout.MaxWidth( 60 ) );
+    buildWindows = EditorGUILayout.ToggleLeft( "Windows", buildWindows, GUILayout.MaxWidth( 60 ) );
+    buildWebGL = EditorGUILayout.ToggleLeft( "WebGL", buildWebGL, GUILayout.MaxWidth( 60 ) );
+    EditorGUILayout.EndHorizontal();
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Build" ) )
     {
       if( BuildPipeline.isBuildingPlayer )
         return;
-      BuildPlayerOptions bpo = new BuildPlayerOptions();
-      bpo.target = BuildTarget.StandaloneOSX;
       List<string> buildnames = new List<string>();
       for( int i = 0; i < SceneManager.sceneCountInBuildSettings; i++ )
       {
         buildnames.Add( SceneUtility.GetScenePathByBuildIndex( i ) );
         //string sceneName = path.Substring( 0, path.Length - 6 ).Substring( path.LastIndexOf( '/' ) + 1 );
       }
-      bpo.scenes = buildnames.ToArray();  //new string[] { "Assets/zero.unity", "Assets/mmx-city.unity" };
-      bpo.options = BuildOptions.CompressWithLz4; //BuildOptions.AutoRunPlayer;
-      bpo.locationPathName = Directory.GetParent( Application.dataPath ).FullName + "/SagaCity-" + Util.Timestamp().Replace( '.', '-' );
-      Debug.Log( bpo.locationPathName );
-      BuildPipeline.BuildPlayer( bpo );
+      BuildPlayerOptions bpo = new BuildPlayerOptions();
+      bpo.scenes = buildnames.ToArray();
+      if( developmentBuild )
+        bpo.options = BuildOptions.Development | BuildOptions.AutoRunPlayer;
+      else
+        bpo.options = BuildOptions.CompressWithLz4;
+
+      if( buildMacOS )
+      {
+        bpo.targetGroup = BuildTargetGroup.Standalone;
+        bpo.target = BuildTarget.StandaloneOSX;
+        string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/MacOS/";
+        Directory.CreateDirectory( outDir );
+        // the extension is replaced with ".app" by Unity
+        bpo.locationPathName = outDir += (developmentBuild ? "sagaDEV" : "Saga") + "." + Util.Timestamp() + ".extension";
+        BuildPipeline.BuildPlayer( bpo );
+        Debug.Log( bpo.locationPathName );
+      }
+      if( buildLinux )
+      {
+        bpo.targetGroup = BuildTargetGroup.Standalone;
+        bpo.target = BuildTarget.StandaloneLinux64;
+        string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/Linux";
+        outDir += "/Saga." + Util.Timestamp();
+        Directory.CreateDirectory( outDir );
+        bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + ".x86_64";
+        BuildPipeline.BuildPlayer( bpo );
+        Debug.Log( bpo.locationPathName );
+        // copy to shared folder
+        string shareDir = System.Environment.GetFolderPath( System.Environment.SpecialFolder.UserProfile ) + "/SHARE";
+        Util.DirectoryCopy( outDir, Path.Combine( shareDir, (developmentBuild ? "sagaDEV." : "Saga.") + Util.Timestamp() ) );
+      }
+      if( buildWindows )
+      {
+        bpo.targetGroup = BuildTargetGroup.Standalone;
+        bpo.target = BuildTarget.StandaloneWindows64;
+        string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/Windows";
+        outDir += "/Saga." + Util.Timestamp();
+        Directory.CreateDirectory( outDir );
+        bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + ".x86_64";
+        BuildPipeline.BuildPlayer( bpo );
+        Debug.Log( bpo.locationPathName );
+      }
+      if( buildWebGL )
+      {
+        bpo.targetGroup = BuildTargetGroup.WebGL;
+        bpo.target = BuildTarget.WebGL;
+        string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/WebGL";
+        Directory.CreateDirectory( outDir );
+        bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + "." + Util.Timestamp();
+        BuildPipeline.BuildPlayer( bpo );
+        Debug.Log( bpo.locationPathName );
+      }
     }
 
 #if false
@@ -153,8 +234,7 @@ public class CustomUtility : EditorWindow
     }
 #endif
 
-
-    GUILayout.Space( 10 );
+    /*GUILayout.Space( 10 );
     GUILayout.Label( "Audio Sources", EditorStyles.boldLabel );
     audioDistanceMin = EditorGUILayout.IntField( "audioDistanceMin", audioDistanceMin );
     audioDistanceMax = EditorGUILayout.IntField( "audioDistanceMax", audioDistanceMax );
@@ -180,8 +260,7 @@ public class CustomUtility : EditorWindow
         ass.rolloffMode = audioRolloff;
         ass.dopplerLevel = audioDoppler;
       }, null );
-    }
-
+    }*/
 
     GUILayout.Space( 10 );
     GUILayout.Label( "Generic Utils", EditorStyles.boldLabel );
@@ -212,20 +291,34 @@ public class CustomUtility : EditorWindow
         Debug.Log( Selection.objects[i].GetType().ToString() + " " + Selection.objects[i].name + " " + Selection.assetGUIDs[i] );
     }
 
-
+    fixInScene = EditorGUILayout.Toggle( "Fix in Scene", fixInScene );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Fix all Nav Obstacles" ) )
     {
-      gos = new List<GameObject>();
-      string[] guids = AssetDatabase.FindAssets( "t:prefab" );
-      foreach( string guid in guids )
+      int count;
+      if( fixInScene )
       {
-        GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>( AssetDatabase.GUIDToAssetPath( guid ) );
-        gos.Add( go );
+        gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
+        count = gos.Count;
       }
-      //gos = new List<GameObject>( Resources.FindObjectsOfTypeAll<GameObject>() );
-      StartJob( "Searching...", gos.Count, delegate ()
+      else
       {
-        GameObject go = gos[index];
+        assetPaths = new List<string>();
+        guids = AssetDatabase.FindAssets( replaceName + " t:prefab", new string[] { "Assets" } );
+        foreach( string guid in guids )
+          assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
+        count = assetPaths.Count;
+      }
+      StartJob( "Searching...", count, delegate ()
+      {
+        GameObject go;
+        if( fixInScene )
+        {
+          go = gos[index];
+        }
+        else
+        {
+          go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
+        }
         NavMeshObstacle[] navs = go.GetComponentsInChildren<NavMeshObstacle>();
         foreach( var nav in navs )
         {
@@ -234,41 +327,112 @@ public class CustomUtility : EditorWindow
           {
             nav.carving = true;
             nav.center = rdr.transform.worldToLocalMatrix.MultiplyPoint( rdr.bounds.center );
-            nav.size = new Vector3( rdr.size.x, rdr.size.y, 0.2f );
+            nav.size = new Vector3( rdr.size.x, rdr.size.y, 0.3f );
           }
         }
-
-      },
-        delegate ()
+        if( !fixInScene )
         {
-          AssetDatabase.SaveAssets();
-        } );
+          PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
+          PrefabUtility.UnloadPrefabContents( go );
+        }
+      },
+      null );
     }
 
-
-    /*GUILayout.Label( "AnimFix", EditorStyles.boldLabel );
-    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Apply" ) )
+    GUILayout.Label( "Replace Common Settings", EditorStyles.boldLabel );
+    replaceInScene = EditorGUILayout.Toggle( "Replace in Scene", replaceInScene );
+    replaceName = EditorGUILayout.TextField( "Find Assets/Objects (leave blank for all scene objects)", replaceName );
+    subobjectName = EditorGUILayout.TextField( "SubobjectName", subobjectName );
+    replacePrefab = (GameObject)EditorGUILayout.ObjectField( "Replace Prefab", replacePrefab, typeof( GameObject ), false, GUILayout.MinWidth( 50 ) );
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Replace GameObjects with Prefabs" ) )
     {
-      ans = new List<AnimSequence>();
-      string[] guids = AssetDatabase.FindAssets( "t:AnimSequence" );
-      foreach( string guid in guids )
+      int count;
+      if( replaceInScene )
       {
-        AnimSequence seq = AssetDatabase.LoadAssetAtPath<AnimSequence>( AssetDatabase.GUIDToAssetPath( guid ) );
-        ans.Add( seq );
+        gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
+        count = gos.Count;
       }
-      StartJob( "Applying...", ans.Count, delegate()
+      else
       {
-        AnimSequence seq = ans[ index ];
-        Debug.Log( "modified: " + seq.name + " " + index, seq );
-        seq.frames = new AnimFrame[seq.frames.Length];
-        for( int i = 0; i < seq.frames.Length; i++ )
+        assetPaths = new List<string>();
+        guids = AssetDatabase.FindAssets( replaceName + " t:prefab" );
+        foreach( string guid in guids )
+          assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
+        count = assetPaths.Count;
+      }
+      StartJob( "Searching...", count, delegate ()
+      {
+        GameObject go;
+        if( replaceInScene )
         {
-          seq.frames[ i ].sprite = seq.frames[i];
+          go = gos[index];
+          if( go.name.StartsWith( replaceName ) )
+            ReplaceObjectWithPrefabInstance( go, replacePrefab );
         }
+        else
+        {
+          go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
+          for( int i = 0; i < go.transform.childCount; i++ )
+          {
+            Transform tf = go.transform.GetChild( i );
+            if( tf.name.StartsWith( subobjectName ) )
+            {
+              ReplaceObjectWithPrefabInstance( tf.gameObject, replacePrefab );
+            }
+          }
+          PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
+          PrefabUtility.UnloadPrefabContents( go );
+        }
+      },
+      null );
+    }
 
-      }, null );
-    }*/
+    GUILayout.Label( "Fix Sprite", EditorStyles.boldLabel );
+    fixSpriteInScene = EditorGUILayout.Toggle( "In Scene", fixSpriteInScene );
+    fixSpriteName = EditorGUILayout.TextField( "Find Prefabs/Scene Objects", fixSpriteName );
+    fixSpriteSubobjectName = EditorGUILayout.TextField( "SubobjectName", fixSpriteSubobjectName );
+    sprite = (Sprite)EditorGUILayout.ObjectField( "Replace Sprite", sprite, typeof( Sprite ), false );
+    material = (Material)EditorGUILayout.ObjectField( "Replace Material", material, typeof( Material ), false );
 
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Fix Sprites" ) )
+    {
+      int count;
+      if( fixSpriteInScene )
+      {
+        gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
+        count = gos.Count;
+      }
+      else
+      {
+        assetPaths = new List<string>();
+        guids = AssetDatabase.FindAssets( fixSpriteName + " t:prefab" );
+        foreach( string guid in guids )
+          assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
+        count = assetPaths.Count;
+      }
+      StartJob( "Searching...", count, delegate ()
+      {
+        GameObject go;
+        if( replaceInScene )
+          go = gos[index];
+        else
+          go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
+        Transform[] tfs = go.GetComponentsInChildren<Transform>();
+        foreach( var tf in tfs )
+        {
+          if( fixSpriteSubobjectName.Length == 0 || tf.name.StartsWith( fixSpriteSubobjectName ) )
+          {
+            SpriteRenderer sr = tf.GetComponent<SpriteRenderer>();
+            if( sr != null )
+            {
+              sr.sprite = sprite;
+              sr.material = material;
+            }
+          }
+        }
+      },
+      AssetDatabase.SaveAssets );
+    }
 
     GUILayout.Label( "Character", EditorStyles.boldLabel );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Select Player Character" ) )
@@ -293,39 +457,78 @@ public class CustomUtility : EditorWindow
     }
 
 
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "write font data" ) )
+    {
+      string letter = " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+      string fontImageName = "mmx.png";
+      string outFontName = "mmx.fnt";
+      const int imageSize = 256;
+      const int cols = 16;
+      const int charWith = imageSize / cols;
+      string output = "info font=\"Base 5\" size=16 bold=0 italic=0 charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=2,2\n" +
+        "common lineHeight=6 base=12 scaleW="+ imageSize+" scaleH="+ imageSize+" pages=1 packed=0\n" +
+        "page id=0 file=\"" + fontImageName + "\"\nchars count=" + letter.Length + "\n";
+      for( int i = 0; i < letter.Length; i++ )
+        output += "char id=" + i + " x="+(i%cols)* charWith + " y="+(i/cols)* charWith + " width=14 height=14 xoffset=1 yoffset=1 xadvance=16 page=0 chnl=0 letter=\"" + letter[i] + "\"\n";
+      output += "kernings count=0";
+      File.WriteAllText( Application.dataPath + "/font/"+ outFontName, output );
+    }
+
   }
 
-
-  void ClearGroundImages()
+  void ReplaceObjectWithPrefabInstance( GameObject replaceThis, GameObject prefab )
   {
-    string[] dirs = Directory.GetDirectories( Application.persistentDataPath );
-    foreach( var dir in dirs )
+    GameObject go = (GameObject)PrefabUtility.InstantiatePrefab( prefab, replaceThis.transform.parent );
+    go.transform.position = replaceThis.transform.position;
+    go.transform.rotation = replaceThis.transform.rotation;
+    SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
+    SpriteRenderer tfsr = replaceThis.GetComponent<SpriteRenderer>();
+    if( sr != null && tfsr != null )
+      sr.size = tfsr.size;
+    NavMeshObstacle gonob = go.GetComponent<NavMeshObstacle>();
+    NavMeshObstacle nob = replaceThis.GetComponent<NavMeshObstacle>();
+    if( gonob != null && nob != null )
     {
-      Debug.Log( dir );
-      string[] files = Directory.GetFiles( dir, "*.png" );
-      foreach( var f in files )
-      {
-        File.Delete( f );
-      }
+      gonob.size = nob.size;
+      gonob.carving = nob.carving;
     }
-  }
-
-  void ClearGroundOverlayImages()
-  {
-    string[] dirs = Directory.GetDirectories( Application.persistentDataPath );
-    foreach( var dir in dirs )
-    {
-      Debug.Log( dir );
-      string[] files = Directory.GetFiles( dir, "*-dirt.png" );
-      foreach( var f in files )
-      {
-        File.Delete( f );
-      }
-    }
+    PrefabUtility.RecordPrefabInstancePropertyModifications( go.transform );
+    PrefabUtility.RecordPrefabInstancePropertyModifications( sr );
+    DestroyImmediate( replaceThis.gameObject );
   }
 }
 
 #if false
+void ClearGroundImages()
+{
+  string[] dirs = Directory.GetDirectories( Application.persistentDataPath );
+  foreach( var dir in dirs )
+  {
+    Debug.Log( dir );
+    string[] files = Directory.GetFiles( dir, "*.png" );
+    foreach( var f in files )
+    {
+      File.Delete( f );
+    }
+  }
+}
+
+void ClearGroundOverlayImages()
+{
+  string[] dirs = Directory.GetDirectories( Application.persistentDataPath );
+  foreach( var dir in dirs )
+  {
+    Debug.Log( dir );
+    string[] files = Directory.GetFiles( dir, "*-dirt.png" );
+    foreach( var f in files )
+    {
+      File.Delete( f );
+    }
+  }
+}
+
+
+
 // I wrote this for someone on the Unity forums
 public class ProgressUpdateExample : EditorWindow
 {

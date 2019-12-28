@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04394a018bd0446538c88f8afb7a48be, type: 3}
+  m_Name: Flame
+  m_EditorClassIdentifier: 
+  weaponType: 0
+  icon: {fileID: 332095783777437894, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
+  cursor: {fileID: 21300008, guid: bc748d72624e04e19a24fa8e2b977464, type: 3}
+  ProjectilePrefab: {fileID: 2774323745444708940, guid: 6524d8b96321840c492090c57e61ed35,
+    type: 3}
+  StartSound: {fileID: 8300000, guid: 8596645b112d3459d88e6d3dca818691, type: 3}
+  fullAuto: 1
+  HasInterval: 1
+  shootInterval: 0.08
+  speedIncrease: 0
+  projectileCount: 3
+  spread: 20
+  ChargeVariant: {fileID: 0}
+  ChargeEffect: {fileID: 0}
+  soundCharge: {fileID: 8300000, guid: 463f9d4c8e7ff4385b99c01babc3cdd5, type: 3}
+  soundChargeLoop: {fileID: 8300000, guid: 237ffd03c299f47f994b7c9ea35a11b2, type: 3}
+  soundChargeShot: {fileID: 8300000, guid: b1e338616507f47219c2415cb2fe710e, type: 3}
