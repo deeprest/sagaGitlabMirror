@@ -8,7 +8,7 @@ Font:
   m_PrefabAsset: {fileID: 0}
   m_Name: mmx
   serializedVersion: 5
-  m_LineSpacing: 11
+  m_LineSpacing: 6
   m_DefaultMaterial: {fileID: 781135732748285823}
   m_FontSize: 16
   m_Texture: {fileID: 0}
@@ -32,7 +32,7 @@ Font:
       y: 12
       width: 0
       height: 0
-    advance: 10
+    advance: 0
     flipped: 0
   - serializedVersion: 2
     index: 0
@@ -1573,12 +1573,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Font Material
-  m_Shader: {fileID: 4800000, guid: 35356541c0ab54e2f9c3425f8121ddec, type: 3}
+  m_Shader: {fileID: 10770, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: _ALPHAPREMULTIPLY_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
