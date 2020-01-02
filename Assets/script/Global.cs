@@ -1,4 +1,4 @@
-﻿#pragma warning disable 414
+//﻿#pragma warning disable 414
 //#define DESTRUCTION_LIST
 
 using System.Collections;
@@ -153,7 +153,7 @@ public class Global : MonoBehaviour
   [SerializeField] Image fader;
   public GameObject ready;
   [SerializeField] GameObject OnboardingControls;
-  // cursor 
+  // cursor
   [SerializeField] Transform Cursor;
   Vector2 cursorDelta;
   Vector2 cursorOrigin;
@@ -170,7 +170,7 @@ public class Global : MonoBehaviour
   public Transform CursorAutoAim;
   public float AutoAimCircleRadius = 1;
   public float AutoAimDistance = 5;
-  // status 
+  // status
   public Image weaponIcon;
   // settings
   public GameObject SettingsParent;
@@ -537,7 +537,7 @@ public class Global : MonoBehaviour
         musicSource1.volume = 1;
       }
     };
-    musicTimer.Start( musicTimerParamsFadeIn ); 
+    musicTimer.Start( musicTimerParamsFadeIn );
 
     HUD.SetActive( true );
 
@@ -701,7 +701,7 @@ public class Global : MonoBehaviour
           else
           {
             CursorAutoAim.gameObject.SetActive( true );
-            // todo adjust for flight path 
+            // todo adjust for flight path
             //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
             AimPosition = closest.position;
             CursorAutoAim.position = AimPosition;
@@ -915,7 +915,7 @@ public class Global : MonoBehaviour
   IEnumerator ShowLoadingScreenRoutine( string message = "Loading.." )
   {
     // This is a coroutine simply to wait a single frame after activating the loading screen.
-    // Otherwise the screen will not show! 
+    // Otherwise the screen will not show!
     ShowLoadingScreen( message );
     yield return null;
   }
@@ -1055,7 +1055,7 @@ public class Global : MonoBehaviour
     SpeechPriority = priority;
 
     SpeechIcon.sprite = SpeechCharacter.Icon;
-    /*string colorString = "#ffffff", 
+    /*string colorString = "#ffffff",
     Color color = Color.white;
     ColorUtility.TryParseHtmlString( colorString, out color );
     SpeechText.color = color;*/
@@ -1141,14 +1141,14 @@ public class Global : MonoBehaviour
       {
         s.intValue.Init();
         FloatSetting.Add( s.intValue.name, s.intValue );
-      }S:
+      }
       if( s.isBool )
       {
         s.boolValue.Init();
         BoolSetting.Add( s.boolValue.name, s.boolValue );
       }
     }
-    // "Apply Screen Settings" is first button 
+    // "Apply Screen Settings" is first button
     previousSelectable = PauseMenuFirstSelected.GetComponent<Selectable>();
     // screen settings are applied explicitly when user pushes button
     CreateBoolSetting( "Fullscreen", false, null );
@@ -1232,7 +1232,7 @@ public class Global : MonoBehaviour
       bv.Init();
       FloatSetting.Add( key, bv );
     }
-    bv.slider.normalizedStep = normalizedStep;
+    //bv.slider.normalizedStep = normalizedStep;
     bv.slider.minValue = min;
     bv.slider.maxValue = max;
     bv.onValueChanged = onChange;
@@ -1412,7 +1412,7 @@ public class Global : MonoBehaviour
  public void MusicTransition( AudioLoop loop )
  {
    Timer t = new Timer();
-   t.Start( MusicTransitionDuration, 
+   t.Start( MusicTransitionDuration,
    delegate ( Timer obj )
    {
      musicSource0.volume = 1 - obj.ProgressNormalized;
@@ -1421,7 +1421,7 @@ public class Global : MonoBehaviour
    delegate
    {
      loop.Play( musicSource0, musicSource1 );
-     t.Start( MusicTransitionDuration, 
+     t.Start( MusicTransitionDuration,
      delegate ( Timer obj )
      {
        musicSource0.volume = obj.ProgressNormalized;
