@@ -6,6 +6,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 using UnityEngine.AI;
+using UnityEditor.Build.Reporting;
 
 public static class ShowGUIDUtility
 {
@@ -45,11 +46,6 @@ public class CustomUtility : EditorWindow
   bool buildLinux = false;
   bool buildWebGL = false;
   bool buildWindows = false;
-
-  int audioDoppler = 0;
-  int audioDistanceMin = 1;
-  int audioDistanceMax = 30;
-  AudioRolloffMode audioRolloff = AudioRolloffMode.Logarithmic;
 
   string progressMessage = "";
   float progress = 0;
@@ -179,8 +175,8 @@ public class CustomUtility : EditorWindow
         string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/Windows";
         outDir += "/Saga." + Util.Timestamp();
         Directory.CreateDirectory( outDir );
-        bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + ".x86_64";
-        BuildPipeline.BuildPlayer( bpo );
+        bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + ".exe";
+        BuildReport report = BuildPipeline.BuildPlayer( bpo );
         Debug.Log( bpo.locationPathName );
       }
       if( buildWebGL )

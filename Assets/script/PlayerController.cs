@@ -233,7 +233,7 @@ public class PlayerController : Character, IDamage
     graphookTip.SetActive( false );
     grapCableRender.gameObject.SetActive( false );
     if( weapons.Count > 0 )
-      weapon = weapons[ CurrentWeaponIndex % weapons.Count ];
+      weapon = weapons[CurrentWeaponIndex % weapons.Count];
   }
 
   public override void PreSceneTransition()
@@ -440,7 +440,7 @@ public class PlayerController : Character, IDamage
       Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.grey );
 
     */
-    
+
     float down = jumping ? raydown - downOffset : raydown;
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
@@ -508,7 +508,7 @@ public class PlayerController : Character, IDamage
 
   void Shoot()
   {
-    if( weapon == null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
+    if( !CanShoot || weapon == null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
       return;
     if( !weapon.fullAuto )
       inputFire = false;
@@ -521,8 +521,12 @@ public class PlayerController : Character, IDamage
 
   void ShootCharged()
   {
-    if( weapon==null || weapon.ChargeVariant == null )
+    if( !CanShoot || weapon == null || weapon.ChargeVariant == null )
+    {
+      StopCharge();
       return;
+    }
+    // hack: chargeEffect is used to indicate charged state
     if( chargeEffect != null )
     {
       audio.Stop();
@@ -670,7 +674,7 @@ public class PlayerController : Character, IDamage
       return;
 
     // INPUTS
-    shoot = Global.instance.AimPosition - (Vector2)arm.position;
+    shoot = AimPosition - (Vector2)arm.position;
     shoot.z = 0;
 
     // if player controlled
@@ -885,7 +889,7 @@ public class PlayerController : Character, IDamage
     carryCharacter = null;
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
-     
+
     if( takingDamage )
       anim = "damage";
     else if( walljumping )
@@ -921,6 +925,139 @@ public class PlayerController : Character, IDamage
       transform.rotation = Quaternion.Euler( 0, 0, 0 );
 
     ResetInput();
+  }
+
+
+  [Header( "Cursor" )]
+  [SerializeField] Transform Cursor;
+  public Transform CursorSnapped;
+  public Transform CursorAutoAim;
+  public Vector2 AimPosition;
+  public Vector2 CursorWorldPosition;
+  public float CursorScale = 2;
+  public float SnapAngleDivide = 8;
+  public float SnapCursorDistance = 1;
+  public float AutoAimCircleRadius = 1;
+  public float AutoAimDistance = 5;
+  public float DirectionalMinimum = 0.3f;
+  public float DirectionalCursorDistance = 3;
+
+  bool CanShoot { get { return CursorAboveMinimumDistance; } }
+  Vector2 cursorDelta;
+  Vector2 cursorOrigin;
+  bool CursorAboveMinimumDistance;
+
+  void LateUpdate()
+  {
+    if( !Global.instance.Updating )
+      return;
+
+    /*if( Global.instance.ActiveDiagetic != null )
+    {
+
+    }
+    else*/
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
+        delta.y = -delta.y;
+        if( UsingGamepad )
+          cursorDelta = delta * DirectionalCursorDistance;
+        else
+          cursorDelta += delta;
+#else
+      if( Global.instance.UsingGamepad )
+      {
+        cursorDelta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
+      }
+      else
+      {
+        cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
+        cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
+      }
+#endif
+      cursorOrigin = arm.position;
+      CursorAboveMinimumDistance = cursorDelta.magnitude > DirectionalMinimum;
+
+      if( Global.instance.AimSnap )
+      {
+        if( CursorAboveMinimumDistance )
+        {
+          // set cursor
+          Cursor.gameObject.SetActive( true );
+          CursorSnapped.gameObject.SetActive( true );
+        }
+        else
+        {
+          Cursor.gameObject.SetActive( false );
+          CursorSnapped.gameObject.SetActive( false );
+        }
+
+        float angle = Mathf.Atan2( cursorDelta.x, cursorDelta.y ) / Mathf.PI;
+        float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
+        Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
+        AimPosition = cursorOrigin + snapped * SnapCursorDistance;
+        CursorSnapped.position = AimPosition;
+        CursorSnapped.rotation = Quaternion.LookRotation( Vector3.forward, snapped );
+        CursorWorldPosition = cursorOrigin + cursorDelta;
+        Cursor.position = CursorWorldPosition;
+      }
+      else
+      {
+        if( CursorAboveMinimumDistance )
+        {
+          // set cursor
+          Cursor.gameObject.SetActive( true );
+          CursorSnapped.gameObject.SetActive( false );
+        }
+        else
+        {
+          Cursor.gameObject.SetActive( false );
+          CursorSnapped.gameObject.SetActive( false );
+        }
+
+        AimPosition = cursorOrigin + cursorDelta;
+        CursorWorldPosition = AimPosition;
+        //Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
+        Cursor.position = CursorWorldPosition;
+      }
+
+      if( Global.instance.AutoAim )
+      {
+        CursorWorldPosition = cursorOrigin + cursorDelta;
+        RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
+        float distance = Mathf.Infinity;
+        Transform closest = null;
+        foreach( var hit in hits )
+        {
+          float dist = Vector2.Distance( CursorWorldPosition, hit.transform.position );
+          if( dist < distance )
+          {
+            closest = hit.transform;
+            distance = dist;
+          }
+        }
+
+        if( closest == null )
+        {
+          CursorAutoAim.gameObject.SetActive( false );
+        }
+        else
+        {
+          CursorAutoAim.gameObject.SetActive( true );
+          // todo adjust for flight path
+          //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
+          AimPosition = closest.position;
+          CursorAutoAim.position = AimPosition;
+        }
+        Cursor.position = CursorWorldPosition;
+
+      }
+      else
+      {
+        CursorAutoAim.gameObject.SetActive( false );
+      }
+    }
   }
 
   void StartJump()

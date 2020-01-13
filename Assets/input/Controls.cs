@@ -159,7 +159,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/*"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""DefaultControlScheme"",
+                    ""groups"": ""Default"",
                     ""action"": ""Any"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -517,7 +517,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""DefaultControlScheme"",
+                    ""groups"": ""Default"",
                     ""action"": ""Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -539,7 +539,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""DefaultControlScheme"",
+                    ""groups"": ""Default"",
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -572,7 +572,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""DefaultControlScheme"",
+                    ""groups"": ""Default"",
                     ""action"": ""Shield"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -660,7 +660,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""DefaultControlScheme"",
+                    ""groups"": ""Default"",
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -722,6 +722,17 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""2e9d39cc-c374-4c3f-8e72-1ae36b32c000"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MoveRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""28fb37e3-976b-4178-a397-df39cda9424e"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
@@ -735,6 +746,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""68a1a738-3e90-44b7-ae94-5bd25b6b7c40"",
                     ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MoveLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bd4d1fdb-69d1-4ba1-9e2c-e2123d1ecae2"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -791,8 +813,8 @@ public class @Controls : IInputActionCollection, IDisposable
     ],
     ""controlSchemes"": [
         {
-            ""name"": ""DefaultControlScheme"",
-            ""bindingGroup"": ""DefaultControlScheme"",
+            ""name"": ""Default"",
+            ""bindingGroup"": ""Default"",
             ""devices"": [
                 {
                     ""devicePath"": ""<Keyboard>"",
@@ -1164,13 +1186,13 @@ public class @Controls : IInputActionCollection, IDisposable
         }
     }
     public BipedActionsActions @BipedActions => new BipedActionsActions(this);
-    private int m_DefaultControlSchemeSchemeIndex = -1;
-    public InputControlScheme DefaultControlSchemeScheme
+    private int m_DefaultSchemeIndex = -1;
+    public InputControlScheme DefaultScheme
     {
         get
         {
-            if (m_DefaultControlSchemeSchemeIndex == -1) m_DefaultControlSchemeSchemeIndex = asset.FindControlSchemeIndex("DefaultControlScheme");
-            return asset.controlSchemes[m_DefaultControlSchemeSchemeIndex];
+            if (m_DefaultSchemeIndex == -1) m_DefaultSchemeIndex = asset.FindControlSchemeIndex("Default");
+            return asset.controlSchemes[m_DefaultSchemeIndex];
         }
     }
     public interface IGlobalActionsActions
