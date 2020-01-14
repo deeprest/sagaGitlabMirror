@@ -1,7 +1,7 @@
 #!/bin/bash
 
 macos=$(ls -td build/MacOS/Saga* | head -1)
-butler push --verbose --if-changed --fix-permissions $macos deeprest/saga2020:macos
+butler push --verbose --fix-permissions $macos deeprest/saga2020:macos
 
 linux=$(ls -td build/Linux/Saga* | head -1)
 # ditto -c -k --sequesterRsrc $linux $ziplinux
