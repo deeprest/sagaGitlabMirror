@@ -58,3 +58,10 @@ deployment
 
 - lift shake issue
 - lift push x
+
+- twinstick aiming. no cursor look
+minimum cursorDelta; cursor off and no shot when under min.
++directional aiming when gamepad
+cursor sensistivity lower with mouse, higher with gamepad (if non-directional)
+directional cursor distance = 3
+left thumbstick = move

@@ -1,3 +1,4 @@
+- menu navigation needs to be more clear. redesign with pages.
 
 ## issues
 - align shot with surface
@@ -11,7 +12,7 @@
 - hide arm while not shooting
 - add ability icon to hud
 - intro scene: no hud, no menu or biped controls
-- music scene switch
++ music scene switch
 - add spark effect to wall jump
 - highway loading screen borked
 - detect cmd-f fullscreen switch and update setting
@@ -133,7 +134,6 @@ Not arbitrary static points.
 
 
 # random
-Can gain other weapons from enemies.
 Chopdrop instead of teleportation.
 death -> You emerge from corpse as a small spiderbot that can gain control of other machines.
 death -> The player awakens in the lab, newly-rebuilt. The attending mechanic explains that the explosion destroyed your body but not your core. He has given you a new body but could not retrieve your weapons.
