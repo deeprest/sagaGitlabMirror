@@ -139,7 +139,7 @@ public class PlayerController : Character, IDamage
   public bool inputCharge;
   public bool inputChargeEnd;
   public bool inputGraphook;
-  public bool inputShield;
+  //public bool inputShield;
   public bool inputFire;
   Vector3 shoot;
 
@@ -196,9 +196,8 @@ public class PlayerController : Character, IDamage
   public float damageLift = 1f;
   public float damagePushAmount = 1f;
 
-  [Header( "Shield" )]
-  public GameObject Shield;
-  public bool HasShield;
+  //[Header( "Shield" )]
+  //public GameObject Shield;
 
   [Header( "Graphook" )]
   [SerializeField] GameObject graphookTip;
@@ -612,8 +611,8 @@ public class PlayerController : Character, IDamage
     Global.instance.Controls.BipedActions.Jump.canceled += ( obj ) => inputJumpEnd = true;
     Global.instance.Controls.BipedActions.Dash.started += ( obj ) => inputDashStart = true;
     Global.instance.Controls.BipedActions.Dash.canceled += ( obj ) => inputDashEnd = true;
-    Global.instance.Controls.BipedActions.Shield.started += ( obj ) => inputShield = true;
-    Global.instance.Controls.BipedActions.Shield.canceled += ( obj ) => inputShield = false;
+    //Global.instance.Controls.BipedActions.Shield.started += ( obj ) => inputShield = true;
+    //Global.instance.Controls.BipedActions.Shield.canceled += ( obj ) => inputShield = false;
     Global.instance.Controls.BipedActions.Graphook.performed += ( obj ) => inputGraphook = true; ;
     Global.instance.Controls.BipedActions.NextWeapon.performed += ( obj ) => NextWeapon();
     Global.instance.Controls.BipedActions.Charge.started += ( obj ) => inputChargeStart = true;
@@ -706,7 +705,7 @@ public class PlayerController : Character, IDamage
     if( inputGraphook )
       ShootGraphook();
 
-    Shield.SetActive( inputShield );
+    //Shield.SetActive( inputShield );
 
     if( inputChargeStart )
       StartCharge();
