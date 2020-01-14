@@ -156,7 +156,6 @@ public class Global : MonoBehaviour
   public GameObject ready;
   [SerializeField] GameObject OnboardingControls;
   // cursor
-  [SerializeField] Transform Cursor;
   public float CursorOuter = 1;
   public Vector2 CursorWorldPosition { get { if( CurrentPlayer != null ) return CurrentPlayer.CursorWorldPosition; else return Vector3.zero; } }
   public float CursorSensitivity = 1;
@@ -888,7 +887,7 @@ public class Global : MonoBehaviour
     AssignCameraPoly( dui.CameraPoly );
     CameraController.EncompassBounds = true;
     //UnityEngine.Cursor.lockState = CursorLockMode.None;
-    Cursor.gameObject.SetActive( false );
+    //Cursor.gameObject.SetActive( false );
   }
 
   public void DiageticMenuOff()
@@ -901,7 +900,7 @@ public class Global : MonoBehaviour
       AssignCameraPoly( ss.sb );
     CameraController.EncompassBounds = false;
     //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-    Cursor.gameObject.SetActive( true );
+    //Cursor.gameObject.SetActive( true );
   }
 
   public void EnableRaycaster( bool enable = true )

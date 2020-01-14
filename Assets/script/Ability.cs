@@ -11,6 +11,7 @@ public class Ability : ScriptableObject
   {
     //Ability
     go = Instantiate( activatePrefab, pc.armMount.position, Quaternion.identity, pc.armMount );
+    go.transform.localRotation = Quaternion.identity;
   }
   public void Deactivate()
   {

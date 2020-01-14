@@ -23,16 +23,19 @@ public class Pickup : WorldSelectable
   public override void Highlight()
   {
     base.Highlight();
-    animator.Play( "highlight" );
+    if( animator != null )
+      animator.Play( "highlight" );
   }
   public override void Unhighlight()
   {
     base.Unhighlight();
-    animator.Play( "idle" );
+    if( animator != null )
+      animator.Play( "idle" );
   }
   public override void Select()
   {
-    animator.Play( "selected" );
+    if( animator != null )
+      animator.Play( "selected" );
   }
   public override void Unselect()
   {
@@ -40,7 +43,8 @@ public class Pickup : WorldSelectable
 
   void Start()
   {
-    animator.Play( "idle" );
+    if( animator != null )
+      animator.Play( "idle" );
   }
 
   void Update()

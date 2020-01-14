@@ -174,11 +174,11 @@ public class Level : MonoBehaviour
     gos = new List<GameObject>( Resources.LoadAll<GameObject>( "LevelFreeNode/" + folder ) );
     List<NodeLink> links = new List<NodeLink>();
 
-    GameObject firstPrefab = gos[0];
+    /*GameObject firstPrefab = gos[0];
     GameObject first = Instantiate( firstPrefab, new Vector3( xpos, Random.Range( 10, 20 ), zDepth ), Quaternion.identity );
     first.name = firstPrefab.name;
     AddObject( first );
-    links.AddRange( first.GetComponentsInChildren<NodeLink>() );
+    links.AddRange( first.GetComponentsInChildren<NodeLink>() );*/
 
     for( int i = 0; i < max; i++ )
     {

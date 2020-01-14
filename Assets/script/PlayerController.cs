@@ -198,6 +198,7 @@ public class PlayerController : Character, IDamage
 
   [Header( "Shield" )]
   public GameObject Shield;
+  public bool HasShield;
 
   [Header( "Graphook" )]
   [SerializeField] GameObject graphookTip;
@@ -927,7 +928,7 @@ public class PlayerController : Character, IDamage
   [SerializeField] Transform Cursor;
   public Transform CursorSnapped;
   public Transform CursorAutoAim;
-  public Vector2 AimPosition;
+  Vector2 AimPosition;
   public Vector2 CursorWorldPosition;
   public float CursorScale = 2;
   public float SnapAngleDivide = 8;
@@ -937,7 +938,7 @@ public class PlayerController : Character, IDamage
   public float DirectionalMinimum = 0.3f;
   public float DirectionalCursorDistance = 3;
 
-  bool CanShoot { get { return CursorAboveMinimumDistance; } }
+  bool CanShoot { get { return true; } }// CursorAboveMinimumDistance; } }
   Vector2 cursorDelta;
   Vector2 cursorOrigin;
   bool CursorAboveMinimumDistance;
@@ -947,47 +948,34 @@ public class PlayerController : Character, IDamage
     if( !Global.instance.Updating )
       return;
 
-    /*if( Global.instance.ActiveDiagetic != null )
-    {
-
-    }
-    else*/
-    {
 #if UNITY_WEBGL && !UNITY_EDITOR
-        Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
-        delta.y = -delta.y;
-        if( UsingGamepad )
-          cursorDelta = delta * DirectionalCursorDistance;
-        else
-          cursorDelta += delta;
-#else
-      if( Global.instance.UsingGamepad )
-      {
-        cursorDelta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
-      }
+      Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
+      delta.y = -delta.y;
+      if( UsingGamepad )
+        cursorDelta = delta * DirectionalCursorDistance;
       else
-      {
-        cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
-        cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
-      }
+        cursorDelta += delta;
+#else
+    if( Global.instance.UsingGamepad )
+    {
+      cursorDelta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
+    }
+    else
+    {
+      cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
+      cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
+    }
 #endif
-      cursorOrigin = arm.position;
-      CursorAboveMinimumDistance = cursorDelta.magnitude > DirectionalMinimum;
+    cursorOrigin = arm.position;
+    CursorAboveMinimumDistance = cursorDelta.magnitude > DirectionalMinimum;
+    Cursor.gameObject.SetActive( CursorAboveMinimumDistance );
 
-      if( Global.instance.AimSnap )
+    if( Global.instance.AimSnap )
+    {
+      if( CursorAboveMinimumDistance )
       {
-        if( CursorAboveMinimumDistance )
-        {
-          // set cursor
-          Cursor.gameObject.SetActive( true );
-          CursorSnapped.gameObject.SetActive( true );
-        }
-        else
-        {
-          Cursor.gameObject.SetActive( false );
-          CursorSnapped.gameObject.SetActive( false );
-        }
-
+        // set cursor
+        CursorSnapped.gameObject.SetActive( true );
         float angle = Mathf.Atan2( cursorDelta.x, cursorDelta.y ) / Mathf.PI;
         float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
         Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
@@ -995,64 +983,57 @@ public class PlayerController : Character, IDamage
         CursorSnapped.position = AimPosition;
         CursorSnapped.rotation = Quaternion.LookRotation( Vector3.forward, snapped );
         CursorWorldPosition = cursorOrigin + cursorDelta;
-        Cursor.position = CursorWorldPosition;
       }
       else
       {
-        if( CursorAboveMinimumDistance )
-        {
-          // set cursor
-          Cursor.gameObject.SetActive( true );
-          CursorSnapped.gameObject.SetActive( false );
-        }
-        else
-        {
-          Cursor.gameObject.SetActive( false );
-          CursorSnapped.gameObject.SetActive( false );
-        }
-
+        CursorSnapped.gameObject.SetActive( false );
+      }
+    }
+    else
+    {
+      CursorSnapped.gameObject.SetActive( false );
+      if( CursorAboveMinimumDistance )
         AimPosition = cursorOrigin + cursorDelta;
-        CursorWorldPosition = AimPosition;
-        //Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
-        Cursor.position = CursorWorldPosition;
-      }
-
-      if( Global.instance.AutoAim )
-      {
-        CursorWorldPosition = cursorOrigin + cursorDelta;
-        RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
-        float distance = Mathf.Infinity;
-        Transform closest = null;
-        foreach( var hit in hits )
-        {
-          float dist = Vector2.Distance( CursorWorldPosition, hit.transform.position );
-          if( dist < distance )
-          {
-            closest = hit.transform;
-            distance = dist;
-          }
-        }
-
-        if( closest == null )
-        {
-          CursorAutoAim.gameObject.SetActive( false );
-        }
-        else
-        {
-          CursorAutoAim.gameObject.SetActive( true );
-          // todo adjust for flight path
-          //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
-          AimPosition = closest.position;
-          CursorAutoAim.position = AimPosition;
-        }
-        Cursor.position = CursorWorldPosition;
-
-      }
       else
+        AimPosition = cursorOrigin + (facingRight^wallsliding ? Vector2.right : Vector2.left);
+      CursorWorldPosition = AimPosition;
+    }
+
+    if( Global.instance.AutoAim )
+    {
+      CursorWorldPosition = cursorOrigin + cursorDelta;
+      RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
+      float distance = Mathf.Infinity;
+      Transform closest = null;
+      foreach( var hit in hits )
+      {
+        float dist = Vector2.Distance( CursorWorldPosition, hit.transform.position );
+        if( dist < distance )
+        {
+          closest = hit.transform;
+          distance = dist;
+        }
+      }
+
+      if( closest == null )
       {
         CursorAutoAim.gameObject.SetActive( false );
       }
+      else
+      {
+        CursorAutoAim.gameObject.SetActive( true );
+        // todo adjust for flight path
+        //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
+        AimPosition = closest.position;
+        CursorAutoAim.position = AimPosition;
+      }
     }
+    else
+    {
+      CursorAutoAim.gameObject.SetActive( false );
+    }
+
+    Cursor.position = CursorWorldPosition;
   }
 
   void StartJump()

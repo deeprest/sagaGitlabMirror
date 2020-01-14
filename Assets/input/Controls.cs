@@ -568,17 +568,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""7f7c4e10-bc56-489b-a7f3-113a1d228899"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Default"",
-                    ""action"": ""Shield"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""f8a413ad-0f47-424c-988c-02c8e67b95e4"",
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
@@ -603,6 +592,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""6709029a-2603-4009-ba2e-0ba7ee55ddb6"",
                     ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Graphook"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c431a4e6-c214-4e6c-b089-ad979431500b"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

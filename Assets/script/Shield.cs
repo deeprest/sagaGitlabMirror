@@ -27,6 +27,7 @@ public class Shield : MonoBehaviour, IDamage
   {
     sr.material.SetFloat( "_FlashAmount", 0 );
     light.intensity = 0;
+    character = GetComponentInParent<Character>();
   }
 
   void Update()
