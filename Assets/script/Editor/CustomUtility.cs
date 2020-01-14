@@ -6,6 +6,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 using UnityEngine.AI;
+using UnityEditor.Build.Reporting;
 
 public static class ShowGUIDUtility
 {
@@ -45,11 +46,6 @@ public class CustomUtility : EditorWindow
   bool buildLinux = false;
   bool buildWebGL = false;
   bool buildWindows = false;
-
-  int audioDoppler = 0;
-  int audioDistanceMin = 1;
-  int audioDistanceMax = 30;
-  AudioRolloffMode audioRolloff = AudioRolloffMode.Logarithmic;
 
   string progressMessage = "";
   float progress = 0;
@@ -147,17 +143,6 @@ public class CustomUtility : EditorWindow
       else
         bpo.options = BuildOptions.CompressWithLz4;
 
-      if( buildMacOS )
-      {
-        bpo.targetGroup = BuildTargetGroup.Standalone;
-        bpo.target = BuildTarget.StandaloneOSX;
-        string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/MacOS/";
-        Directory.CreateDirectory( outDir );
-        // the extension is replaced with ".app" by Unity
-        bpo.locationPathName = outDir += (developmentBuild ? "sagaDEV" : "Saga") + "." + Util.Timestamp() + ".extension";
-        BuildPipeline.BuildPlayer( bpo );
-        Debug.Log( bpo.locationPathName );
-      }
       if( buildLinux )
       {
         bpo.targetGroup = BuildTargetGroup.Standalone;
@@ -179,8 +164,8 @@ public class CustomUtility : EditorWindow
         string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/Windows";
         outDir += "/Saga." + Util.Timestamp();
         Directory.CreateDirectory( outDir );
-        bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + ".x86_64";
-        BuildPipeline.BuildPlayer( bpo );
+        bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + ".exe";
+        BuildReport report = BuildPipeline.BuildPlayer( bpo );
         Debug.Log( bpo.locationPathName );
       }
       if( buildWebGL )
@@ -190,6 +175,17 @@ public class CustomUtility : EditorWindow
         string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/WebGL";
         Directory.CreateDirectory( outDir );
         bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + "." + Util.Timestamp();
+        BuildPipeline.BuildPlayer( bpo );
+        Debug.Log( bpo.locationPathName );
+      }
+      if( buildMacOS )
+      {
+        bpo.targetGroup = BuildTargetGroup.Standalone;
+        bpo.target = BuildTarget.StandaloneOSX;
+        string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/MacOS/";
+        Directory.CreateDirectory( outDir );
+        // the extension is replaced with ".app" by Unity
+        bpo.locationPathName = outDir += (developmentBuild ? "sagaDEV" : "Saga") + "." + Util.Timestamp() + ".extension";
         BuildPipeline.BuildPlayer( bpo );
         Debug.Log( bpo.locationPathName );
       }

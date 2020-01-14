@@ -3,6 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+// hack: stub so that project can build without XR enabled
+namespace UnityEngine
+{
+  namespace XR
+  {
+  public class InputDeviceRole
+  {
+
+  }
+public class XRSupport
+{
+  public static void Initialize(){}
+}
+}
+}
+*/
 
 public static class Util
 {
@@ -53,8 +70,8 @@ public static class Util
 
   public static void DirectoryCopy( string sourceDirName, string destDirName, bool copySubDirs = true )
   {
-    // if you want to copy the source directory it self (similar that you have 
-    // right clicked on source folder and clicked copy then in the destination 
+    // if you want to copy the source directory it self (similar that you have
+    // right clicked on source folder and clicked copy then in the destination
     // folder you clicked paste) you should use like this:
     // DirectoryCopy(source, Path.Combine(dest, new DirectoryInfo(source).Name));
 

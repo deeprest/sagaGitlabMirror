@@ -1,4 +1,4 @@
-﻿#pragma warning disable 414
+//﻿#pragma warning disable 414
 //#define DESTRUCTION_LIST
 
 using System.Collections;
@@ -52,11 +52,13 @@ public class GlobalEditor : Editor
 
 public class WorldSelectable : MonoBehaviour
 {
-  public virtual void Highlight() {
+  public virtual void Highlight()
+  {
     Global.instance.InteractIndicator.SetActive( true );
     Global.instance.InteractIndicator.transform.position = transform.position;
   }
-  public virtual void Unhighlight() {
+  public virtual void Unhighlight()
+  {
     Global.instance.InteractIndicator.SetActive( false );
   }
   public virtual void Select() { }
@@ -153,24 +155,13 @@ public class Global : MonoBehaviour
   [SerializeField] Image fader;
   public GameObject ready;
   [SerializeField] GameObject OnboardingControls;
-  // cursor 
-  [SerializeField] Transform Cursor;
-  Vector2 cursorDelta;
-  Vector2 cursorOrigin;
+  // cursor
   public float CursorOuter = 1;
-  public Vector2 AimPosition;
-  public Vector2 CursorWorldPosition;
+  public Vector2 CursorWorldPosition { get { if( CurrentPlayer != null ) return CurrentPlayer.CursorWorldPosition; else return Vector3.zero; } }
   public float CursorSensitivity = 1;
-  public float CursorScale = 2;
   public bool AimSnap;
-  public float SnapAngleDivide = 8;
-  public float SnapCursorDistance = 1;
-  public Transform CursorSnapped;
   public bool AutoAim;
-  public Transform CursorAutoAim;
-  public float AutoAimCircleRadius = 1;
-  public float AutoAimDistance = 5;
-  // status 
+  // status
   public Image weaponIcon;
   // settings
   public GameObject SettingsParent;
@@ -537,7 +528,7 @@ public class Global : MonoBehaviour
         musicSource1.volume = 1;
       }
     };
-    musicTimer.Start( musicTimerParamsFadeIn ); 
+    musicTimer.Start( musicTimerParamsFadeIn );
 
     HUD.SetActive( true );
 
@@ -566,7 +557,7 @@ public class Global : MonoBehaviour
 
     frames++;
     Timer.UpdateTimers();
-    debugText2.text = "Active Timers: "+Timer.ActiveTimers.Count;
+    debugText2.text = "Active Timers: " + Timer.ActiveTimers.Count;
 
     if( !Updating )
       return;
@@ -621,6 +612,7 @@ public class Global : MonoBehaviour
     if( !Updating )
       return;
 
+#if false
     if( CurrentPlayer != null )
     {
       if( ActiveDiagetic != null )
@@ -637,25 +629,40 @@ public class Global : MonoBehaviour
 #if UNITY_WEBGL && !UNITY_EDITOR
         Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
         delta.y = -delta.y;
-        cursorDelta += delta;
+        if( UsingGamepad )
+          cursorDelta = delta * DirectionalCursorDistance;
+        else
+          cursorDelta += delta;
 #else
-        /*currentDelta = UnityEngine.InputSystem.Mouse.current.delta.ReadValue();
-        if( currentDelta.magnitude > 0 )
-          Debug.LogFormat( "current {0} {1}", currentDelta.x, currentDelta.y );
-        Vector2 aim = Controls.BipedActions.Aim.ReadValue<Vector2>();
-        if( aim.magnitude > 0 )
-          Debug.LogFormat( "aim {0} {1}", aim.x, aim.y );*/
-
-        cursorDelta += Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
+        if( UsingGamepad )
+        {
+          cursorDelta = Controls.BipedActions.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
+        }
+        else
+        {
+          cursorDelta += Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
+          cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * CursorOuter ), 0.1f );
+        }
 #endif
-        cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * CursorOuter ), 0.1f );
-        cursorOrigin = CurrentPlayer.arm.position;
+        cursorOrigin = CurrentPlayer.arm.position; 
+        CursorAboveMinimumDistance = cursorDelta.magnitude > DirectionalMinimum;
+
+        //if( CurrentPlayer != null )
+        //  CurrentPlayer.CanShoot = CursorAboveMinimumDistance;
 
         if( AimSnap )
         {
-          // set cursor
-          Cursor.gameObject.SetActive( true );
-          CursorSnapped.gameObject.SetActive( true );
+          if( CursorAboveMinimumDistance )
+          {
+            // set cursor
+            Cursor.gameObject.SetActive( true );
+            CursorSnapped.gameObject.SetActive( true );
+          }
+          else
+          {
+            Cursor.gameObject.SetActive( false );
+            CursorSnapped.gameObject.SetActive( false );
+          }
 
           float angle = Mathf.Atan2( cursorDelta.x, cursorDelta.y ) / Mathf.PI;
           float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
@@ -668,9 +675,17 @@ public class Global : MonoBehaviour
         }
         else
         {
-          // set cursor
-          Cursor.gameObject.SetActive( true );
-          CursorSnapped.gameObject.SetActive( false );
+          if( CursorAboveMinimumDistance )
+          {
+            // set cursor
+            Cursor.gameObject.SetActive( true );
+            CursorSnapped.gameObject.SetActive( false );
+          }
+          else
+          {
+            Cursor.gameObject.SetActive( false );
+            CursorSnapped.gameObject.SetActive( false );
+          }
 
           AimPosition = cursorOrigin + cursorDelta;
           CursorWorldPosition = AimPosition;
@@ -701,7 +716,7 @@ public class Global : MonoBehaviour
           else
           {
             CursorAutoAim.gameObject.SetActive( true );
-            // todo adjust for flight path 
+            // todo adjust for flight path
             //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
             AimPosition = closest.position;
             CursorAutoAim.position = AimPosition;
@@ -719,7 +734,7 @@ public class Global : MonoBehaviour
     {
       Cursor.gameObject.SetActive( false );
     }
-
+#endif
     CameraController.CameraLateUpdate();
   }
 
@@ -800,12 +815,6 @@ public class Global : MonoBehaviour
     instance.mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["SFXVolume"].Value ) );
   }
 
-  public void SetCursor( Sprite spr )
-  {
-    Cursor.GetComponent<SpriteRenderer>().sprite = spr;
-    Cursor.localScale = Vector3.one * CursorScale;
-  }
-
   public void ShowHUD()
   {
     HUD.SetActive( true );
@@ -878,7 +887,7 @@ public class Global : MonoBehaviour
     AssignCameraPoly( dui.CameraPoly );
     CameraController.EncompassBounds = true;
     //UnityEngine.Cursor.lockState = CursorLockMode.None;
-    Cursor.gameObject.SetActive( false );
+    //Cursor.gameObject.SetActive( false );
   }
 
   public void DiageticMenuOff()
@@ -891,7 +900,7 @@ public class Global : MonoBehaviour
       AssignCameraPoly( ss.sb );
     CameraController.EncompassBounds = false;
     //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-    Cursor.gameObject.SetActive( true );
+    //Cursor.gameObject.SetActive( true );
   }
 
   public void EnableRaycaster( bool enable = true )
@@ -915,7 +924,7 @@ public class Global : MonoBehaviour
   IEnumerator ShowLoadingScreenRoutine( string message = "Loading.." )
   {
     // This is a coroutine simply to wait a single frame after activating the loading screen.
-    // Otherwise the screen will not show! 
+    // Otherwise the screen will not show!
     ShowLoadingScreen( message );
     yield return null;
   }
@@ -1055,7 +1064,7 @@ public class Global : MonoBehaviour
     SpeechPriority = priority;
 
     SpeechIcon.sprite = SpeechCharacter.Icon;
-    /*string colorString = "#ffffff", 
+    /*string colorString = "#ffffff",
     Color color = Color.white;
     ColorUtility.TryParseHtmlString( colorString, out color );
     SpeechText.color = color;*/
@@ -1120,7 +1129,7 @@ public class Global : MonoBehaviour
     }
   }
 
-  #region Settings
+#region Settings
 
   string[] resolutions = { "640x360", "640x400", "1024x512", "1280x720", "1280x800", "1920x1080" };
   int ResolutionWidth;
@@ -1141,14 +1150,14 @@ public class Global : MonoBehaviour
       {
         s.intValue.Init();
         FloatSetting.Add( s.intValue.name, s.intValue );
-      }S:
+      }
       if( s.isBool )
       {
         s.boolValue.Init();
         BoolSetting.Add( s.boolValue.name, s.boolValue );
       }
     }
-    // "Apply Screen Settings" is first button 
+    // "Apply Screen Settings" is first button
     previousSelectable = PauseMenuFirstSelected.GetComponent<Selectable>();
     // screen settings are applied explicitly when user pushes button
     CreateBoolSetting( "Fullscreen", false, null );
@@ -1163,8 +1172,8 @@ public class Global : MonoBehaviour
     CreateStringSetting( "Resolution", "1280x800", null );
     CreateFloatSetting( "UIScale", 1, 0.1f, 4, 0.05f, null );
 
-    CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 0.05f, delegate ( float value ){ mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) ); } );
-    CreateFloatSetting( "MusicVolume", 0.9f, 0, 1, 0.05f, delegate ( float value ){ mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) ); } );
+    CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 0.05f, delegate ( float value ) { mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) ); } );
+    CreateFloatSetting( "MusicVolume", 0.9f, 0, 1, 0.05f, delegate ( float value ) { mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) ); } );
     CreateFloatSetting( "SFXVolume", 1, 0, 1, 0.05f, delegate ( float value )
     {
       mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) );
@@ -1181,7 +1190,7 @@ public class Global : MonoBehaviour
 
 
     CreateFloatSetting( "CursorOuter", 1, 0, 1, 0.05f, delegate ( float value ) { CursorOuter = value; } );
-    CreateFloatSetting( "CursorSensitivity", 0.1f, 0, 1, 0.05f, delegate ( float value ) { CursorSensitivity = value; } );
+    CreateFloatSetting( "CursorSensitivity", 0.01f, 0.01f, 0.1f, 0.1f, delegate ( float value ) { CursorSensitivity = value; } );
     CreateFloatSetting( "CameraLerpAlpha", 20, 0, 50, 0.01f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 0.05f, delegate ( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
@@ -1381,7 +1390,7 @@ public class Global : MonoBehaviour
     ApplyScreenSettings();
   }
 
-  #endregion
+#endregion
 
   static GameObject FindFirstEnabledSelectable( GameObject gameObject )
   {
@@ -1412,7 +1421,7 @@ public class Global : MonoBehaviour
  public void MusicTransition( AudioLoop loop )
  {
    Timer t = new Timer();
-   t.Start( MusicTransitionDuration, 
+   t.Start( MusicTransitionDuration,
    delegate ( Timer obj )
    {
      musicSource0.volume = 1 - obj.ProgressNormalized;
@@ -1421,7 +1430,7 @@ public class Global : MonoBehaviour
    delegate
    {
      loop.Play( musicSource0, musicSource1 );
-     t.Start( MusicTransitionDuration, 
+     t.Start( MusicTransitionDuration,
      delegate ( Timer obj )
      {
        musicSource0.volume = obj.ProgressNormalized;

@@ -37,8 +37,8 @@ public class Character : MonoBehaviour, IDamage
   public float WaypointRadii = 0.1f;
   public float DestinationRadius = 0.3f;
   public Vector3 DestinationPosition;
-  public System.Action OnPathEnd;
-  public System.Action OnPathCancel;
+  System.Action OnPathEnd;
+  System.Action OnPathCancel;
   public NavMeshPath nvp;
   float PathEventTime;
   public List<Vector3>.Enumerator waypointEnu;

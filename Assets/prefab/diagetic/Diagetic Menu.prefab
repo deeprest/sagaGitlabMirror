@@ -96,7 +96,7 @@ MonoBehaviour:
   raycaster: {fileID: 1025104320}
   animator: {fileID: 8270019299072384806}
   instruction: {fileID: 3153660553800860622}
-  inactiveInstruction: Press [WorldSelect]
+  inactiveInstruction: Press [Interact]
   activeInstruction: '[Accept] to select. Press [Back] to exit.'
   cameraTarget: {fileID: 5383780811586245162}
   InitiallySelected: {fileID: 1132333145988869456}
@@ -676,6 +676,11 @@ PrefabInstance:
       propertyPath: m_Text
       value: Aerobics
       objectReference: {fileID: 0}
+    - target: {fileID: 4096539023665083507, guid: c9593d83ddf4546b1be879b313295a63,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9593d83ddf4546b1be879b313295a63, type: 3}
 --- !u!224 &2247054407860917030 stripped
@@ -857,6 +862,11 @@ PrefabInstance:
       propertyPath: m_Text
       value: MET
       objectReference: {fileID: 0}
+    - target: {fileID: 4096539023665083507, guid: c9593d83ddf4546b1be879b313295a63,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9593d83ddf4546b1be879b313295a63, type: 3}
 --- !u!224 &110834166341365388 stripped
@@ -997,6 +1007,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1225401742}
+    - target: {fileID: 4096539023665083507, guid: c9593d83ddf4546b1be879b313295a63,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9593d83ddf4546b1be879b313295a63, type: 3}
 --- !u!1 &1132333145988869456 stripped
@@ -1183,6 +1198,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: SMCK
+      objectReference: {fileID: 0}
+    - target: {fileID: 4096539023665083507, guid: c9593d83ddf4546b1be879b313295a63,
+        type: 3}
+      propertyPath: m_Material
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9593d83ddf4546b1be879b313295a63, type: 3}

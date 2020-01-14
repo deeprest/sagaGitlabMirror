@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Switch : WorldSelectable
 {
+  [SerializeField] bool InvokeOnStart;
   [SerializeField] bool on;
   [SerializeField] Animator animator;
   public UnityEngine.Events.UnityEvent onActivate;
@@ -37,15 +38,18 @@ public class Switch : WorldSelectable
 
   void Start()
   {
-    if( on )
+    if( InvokeOnStart )
     {
-      animator.Play( "on" );
-      onActivate.Invoke();
-    }
-    else
-    {
-      animator.Play( "off" );
-      onDeactivate.Invoke();
+      if( on )
+      {
+        animator.Play( "on" );
+        onActivate.Invoke();
+      }
+      else
+      {
+        animator.Play( "off" );
+        onDeactivate.Invoke();
+      }
     }
   }
 
