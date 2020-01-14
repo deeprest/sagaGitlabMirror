@@ -158,20 +158,10 @@ public class Global : MonoBehaviour
   // cursor
   [SerializeField] Transform Cursor;
   public float CursorOuter = 1;
-  //public Vector2 AimPosition;
   public Vector2 CursorWorldPosition { get { if( CurrentPlayer != null ) return CurrentPlayer.CursorWorldPosition; else return Vector3.zero; } }
   public float CursorSensitivity = 1;
-  public float CursorScale = 2;
   public bool AimSnap;
-  //public float SnapAngleDivide = 8;
-  //public float SnapCursorDistance = 1;
-  //public Transform CursorSnapped;
   public bool AutoAim;
-  //public Transform CursorAutoAim;
-  //public float AutoAimCircleRadius = 1;
-  //public float AutoAimDistance = 5;
-  //public float DirectionalMinimum = 1;
-  //public float DirectionalCursorDistance = 3;
   // status
   public Image weaponIcon;
   // settings
@@ -824,12 +814,6 @@ public class Global : MonoBehaviour
     Time.fixedDeltaTime = 0.01f * Time.timeScale;
     instance.mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["MusicVolume"].Value ) );
     instance.mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["SFXVolume"].Value ) );
-  }
-
-  public void SetCursor( Sprite spr )
-  {
-    Cursor.GetComponent<SpriteRenderer>().sprite = spr;
-    Cursor.localScale = Vector3.one * CursorScale;
   }
 
   public void ShowHUD()

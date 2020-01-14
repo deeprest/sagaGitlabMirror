@@ -268,7 +268,7 @@ public class PlayerController : Character, IDamage
   {
     weapon = wpn;
     Global.instance.weaponIcon.sprite = weapon.icon;
-    Global.instance.SetCursor( weapon.cursor );
+    Cursor.GetComponent<SpriteRenderer>().sprite = weapon.cursor;
     StopCharge();
   }
 
@@ -620,14 +620,9 @@ public class PlayerController : Character, IDamage
     Global.instance.Controls.BipedActions.Down.performed += ( obj ) => hanging = false;
 
     Global.instance.Controls.BipedActions.Interact.performed += ( obj ) => {
-      if( WorldSelection != null )
-      {
+      if( WorldSelection != null && WorldSelection != closestISelect )
         WorldSelection.Unselect();
-      }
-      if( WorldSelection == closestISelect )
-        WorldSelection = null;
-      else
-        WorldSelection = closestISelect;
+      WorldSelection = closestISelect;
       if( WorldSelection != null )
       {
         WorldSelection.Select();
