@@ -48,18 +48,20 @@ public class GlobalEditor : Editor
 }
 #endif
 
-
-
 public class WorldSelectable : MonoBehaviour
 {
   public virtual void Highlight()
   {
-    Global.instance.InteractIndicator.SetActive( true );
-    Global.instance.InteractIndicator.transform.position = transform.position;
+    if( Global.instance.CurrentPlayer != null )
+    {
+      Global.instance.CurrentPlayer.InteractIndicator.SetActive( true );
+      Global.instance.CurrentPlayer.InteractIndicator.transform.position = transform.position;
+    }
   }
   public virtual void Unhighlight()
   {
-    Global.instance.InteractIndicator.SetActive( false );
+    if( Global.instance.CurrentPlayer != null )
+      Global.instance.CurrentPlayer.InteractIndicator.SetActive( false );
   }
   public virtual void Select() { }
   public virtual void Unselect() { }
@@ -74,6 +76,8 @@ public class Global : MonoBehaviour
   public static bool IsQuiting = false;
 
   [Header( "Global Settings" )]
+  [Tooltip( "Pretend this is a build we're running" )]
+  public bool SimulatePlayer = false;
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
   [SerializeField] string InitialSceneName;
@@ -83,8 +87,7 @@ public class Global : MonoBehaviour
   public Timer ScreenshotTimer = new Timer();
 
 
-  [Tooltip( "Pretend this is a build we're running" )]
-  public bool SimulatePlayer = false;
+  
   [SerializeField] float slowtime = 0.2f;
   Timer fadeTimer = new Timer();
   public float RepathInterval = 1;
@@ -129,7 +132,6 @@ public class Global : MonoBehaviour
   public CameraController CameraController;
   [SerializeField] Animator animator;
   [SerializeField] AudioClip VolumeChangeNoise;
-  public GameObject InteractIndicator;
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
@@ -1129,7 +1131,7 @@ public class Global : MonoBehaviour
     }
   }
 
-#region Settings
+  #region Settings
 
   string[] resolutions = { "640x360", "640x400", "1024x512", "1280x720", "1280x800", "1920x1080" };
   int ResolutionWidth;
@@ -1390,7 +1392,7 @@ public class Global : MonoBehaviour
     ApplyScreenSettings();
   }
 
-#endregion
+  #endregion
 
   static GameObject FindFirstEnabledSelectable( GameObject gameObject )
   {

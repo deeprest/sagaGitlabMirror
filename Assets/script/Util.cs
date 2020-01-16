@@ -63,6 +63,19 @@ public static class Util
     ScreenCapture.CaptureScreenshot( Application.persistentDataPath + "/" + now + ".png" );
   }
 
+  public static bool DoLinesIntersect( float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3 )
+  {
+    float d = (y3 - y2) * (x1 - x0) - (x3 - x2) * (y1 - y0);
+    if( Mathf.Abs( d ) > Mathf.Epsilon )
+    {
+      float ua = ((x3 - x2) * (y0 - y2) - (y3 - y2) * (x0 - x2)) / d;
+      float ub = ((x1 - x0) * (y0 - y2) - (y1 - y0) * (x0 - x2)) / d;
+      if( ua < 0.0 || ua > 1.0 || ub < 0.0 || ub > 1.0 ) ua = 0;
+      return ua > 0;
+    }
+    return false;
+  }
+
   public static Vector2 Project2D( Vector2 a, Vector2 b )
   {
     return new Vector2( (Vector2.Dot( a, b ) / (b.x * b.x + b.y * b.y)) * b.x, (Vector2.Dot( a, b ) / (b.x * b.x + b.y * b.y)) * b.y );

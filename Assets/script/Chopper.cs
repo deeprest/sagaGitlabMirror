@@ -8,7 +8,7 @@ public class Chopper : MonoBehaviour {
   public Transform chopperStartPoint;
   public float speed = 5;
   Timer timer = new Timer();
-  public float timeUntilDrop = 3;
+  public float timeUntilDrop = 1;
   float timeStart;
 
   public void StartDrop( PlayerController character )
@@ -26,7 +26,7 @@ public class Chopper : MonoBehaviour {
       {
         character.transform.parent = null;
         character.hanging = false;
-        character.Push( Vector2.right * speed, 3 );
+        character.Push( Vector2.right * speed, 1 );
         character = null;
       }
     } );

@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 591998084805524476}
   - component: {fileID: 7595769896330164111}
   m_Layer: 10
-  m_Name: Turret
+  m_Name: turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -205,9 +205,8 @@ MonoBehaviour:
   UseGravity: 0
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
-  inertia: {x: 0, y: 0}
+  carryCharacter: {fileID: 0}
   friction: 0.05
-  airFriction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
   IgnoreCollideObjects: []

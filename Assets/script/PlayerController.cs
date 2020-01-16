@@ -196,9 +196,6 @@ public class PlayerController : Character, IDamage
   public float damageLift = 1f;
   public float damagePushAmount = 1f;
 
-  //[Header( "Shield" )]
-  //public GameObject Shield;
-
   [Header( "Graphook" )]
   [SerializeField] GameObject graphookTip;
   [SerializeField] SpriteRenderer grapCableRender;
@@ -219,8 +216,6 @@ public class PlayerController : Character, IDamage
 
   void Awake()
   {
-    //Collider2D shieldCollider = Shield.GetComponent<Collider2D>();
-    //Physics2D.IgnoreCollision( box, shieldCollider );
     BindControls();
   }
 
@@ -234,6 +229,9 @@ public class PlayerController : Character, IDamage
     grapCableRender.gameObject.SetActive( false );
     if( weapons.Count > 0 )
       weapon = weapons[CurrentWeaponIndex % weapons.Count];
+    // unpack
+    InteractIndicator.SetActive( false );
+    InteractIndicator.transform.SetParent( null );
   }
 
   public override void PreSceneTransition()
@@ -241,13 +239,16 @@ public class PlayerController : Character, IDamage
     StopCharge();
     StopGrap();
     // "pack" the graphook with this gameobject
+    // graphook is unpacked when used
     graphookTip.transform.parent = gameObject.transform;
     grapCableRender.transform.parent = gameObject.transform;
+    InteractIndicator.transform.parent = gameObject.transform;
   }
 
   public override void PostSceneTransition()
   {
-
+    InteractIndicator.SetActive( false );
+    InteractIndicator.transform.SetParent( null );
   }
 
   void OnDestroy()
@@ -924,6 +925,7 @@ public class PlayerController : Character, IDamage
 
 
   [Header( "Cursor" )]
+  public GameObject InteractIndicator;
   [SerializeField] Transform Cursor;
   public Transform CursorSnapped;
   public Transform CursorAutoAim;

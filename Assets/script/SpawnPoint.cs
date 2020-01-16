@@ -156,9 +156,9 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
         CannonPuff.Play();
       if( AudioSource != null && CannonSound != null )
         AudioSource.PlayOneShot( CannonSound );
-      Rigidbody rb = go.GetComponent<Rigidbody>();
-      if( rb != null )
-        rb.velocity = transform.forward * CannonSpeed;
+      //Rigidbody rb = go.GetComponent<Rigidbody>();
+      //if( rb != null )
+      //  rb.velocity = transform.forward * CannonSpeed;
 
       SpawnedCharacters.Add( go );
 

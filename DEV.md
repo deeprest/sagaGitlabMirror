@@ -1,24 +1,44 @@
-- menu navigation needs to be more clear. redesign with pages.
+## review
++ highway scene: pillar top collision box is too high
++ home scene: lifts pos. when enter chamber, longer run right.
+
+## todo
+- fix diagetic text in front
+- cursor influence: under min, and walljump need exceptions
+- fix grap when using gamepad (double)
+- fix grap going through boxes
+- shield turrent settings adjustment. lower shields. shoot angle range. on ceiling.
+- interact indicator needs to update each frame
+- respawn using cyclic index
+- camera hitch on bottom, ~10+X
+
+- work on marching square nodes
+- bigsheet consolidate: mmx, door.
+- consolidate all sprites into bigsheet
+- align shot with surface when aiming into floor/wall
+- detect cmd-f fullscreen switch and update setting
+- add ability icon to hud
+
 
 ## issues
-- align shot with surface
 - gamepad double select diagetic menu
+- menu navigation needs to be more clear. redesign with pages.
 - release build screen fade in on level transition gets stuck
 - horizontal door trigger
 - reduce audiooneshot calls to avoid dropout
-- fix long slide clipping
-- UNITY bug: webgl audio loop Unity bug
-- UNITY bug: cursor movement in last direction when shoot
-- hide arm while not shooting
-- add ability icon to hud
-- intro scene: no hud, no menu or biped controls
-+ music scene switch
-- add spark effect to wall jump
-- highway loading screen borked
-- detect cmd-f fullscreen switch and update setting
-- consolidate all sprites into bigsheet
 - wheelbot box collider hits corners
 - reproducible: charge particles on after transition. reset player state on level transition
+
+### low priority
+- UNITY bug: cursor movement in last direction when shoot
+- intro scene: no hud, no menu or biped controls
+- hide arm while not shooting
+- add spark effect to wall jump
+- fix long slide clipping
+- highway loading screen borked
+
+## WebGL issues
+- UNITY bug: webgl audio loop Unity bug
 
 ## Linux Issues
 - support Ctrl-Q to quit
@@ -29,6 +49,7 @@
 - glitchy/wrong sprite shader for mech on linux
 
 ## ideas
+- bindings: json read/write, layouts
 - add airbot prop ability
 - align shot with surface
 - graphook foe
@@ -127,17 +148,18 @@ Not arbitrary static points.
 - no in-game currency to compulsively accumulate.
 ## does not use addiction mechanics
 - no achievements to leave you feeling underachieving.
-- no trophies to falsely prop up your ego.
+- no trophies
 ## not too complex. you have a life.
 - no complicated technology/skill tree
 - no story to ignore or lore to forget
 
 
-# random
+# random ideas
 Chopdrop instead of teleportation.
 death -> You emerge from corpse as a small spiderbot that can gain control of other machines.
 death -> The player awakens in the lab, newly-rebuilt. The attending mechanic explains that the explosion destroyed your body but not your core. He has given you a new body but could not retrieve your weapons.
 
 
 # thank you
-https://seansleblanc.itch.io/better-minimal-webgl-template
+https://seansleblanc.itch.io/better-minimal-webgl-template for webgl template
+https://etclundberg.itch.io/ for early feedback

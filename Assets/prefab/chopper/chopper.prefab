@@ -81,8 +81,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.46740922, y: 0.82141435}
-    oldSize: {x: 2.140625, y: 1.71875}
+    pivot: {x: 0.4480505, y: 0.83801484}
+    oldSize: {x: 2.09375, y: 1.671875}
     newSize: {x: 0.25, y: 0.375}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -129,7 +129,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: -10
-  m_Sprite: {fileID: 21300006, guid: eefa2060554ab451fb52f8390b7c3072, type: 3}
+  m_Sprite: {fileID: 21300000, guid: eefa2060554ab451fb52f8390b7c3072, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -152,13 +152,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentFrameIndex: 3
+  CurrentFrameIndex: 0
   sac: []
   sr: {fileID: 212343005596785154}
   image: {fileID: 0}
   flipX: 0
   CurrentSequence: {fileID: 11400000, guid: 3c39ae3b2a4284e04a46e5924d0a4063, type: 2}
-  isPlaying: 0
+  isPlaying: 1
   playAtAStart: 1
   anims: []
 --- !u!114 &114844931330827930
@@ -175,6 +175,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hangPoint: {fileID: 4066940549659038}
   chopperStartPoint: {fileID: 0}
-  character: {fileID: 0}
   speed: 8
-  timeUntilDrop: 1.5
+  timeUntilDrop: 1
