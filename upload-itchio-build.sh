@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# --if-changed 
+# --if-changed
 macos=$(ls -td build/MacOS/Saga* | head -1)
-butler push --verbose --fix-permissions $macos deeprest/saga2020:macos
+butler push --fix-permissions $macos deeprest/saga2020:macos
 
 linux=$(ls -td build/Linux/Saga* | head -1)
 butler push --fix-permissions $linux deeprest/saga2020:linux
