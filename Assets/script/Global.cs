@@ -115,6 +115,7 @@ public class Global : MonoBehaviour
   // check first before spawning to avoid colliding with these layers on the first frame
   public static string[] BouncyGrenadeCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" };
   public static string[] TurretSightLayers = { "Default", "character", "triggerAndCollision", "destructible" };
+  public static string[] EnemySightLayers = { "Default", "character", "triggerAndCollision", "destructible" };
 
   [Header( "Settings" )]
   public GameObject ToggleTemplate;

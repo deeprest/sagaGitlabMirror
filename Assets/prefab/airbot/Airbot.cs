@@ -5,14 +5,18 @@ using UnityEngine.AI;
 
 public class Airbot : Character
 {
+  [SerializeField] Transform sightOrigin;
   public float sightRange = 6;
   public float flySpeed = 2;
   public float targetOffset = 0.5f;
   const float hitPauseOffset = 0.5f;
-  Vector3 target;
-  Timer hitPauseTimer;
+  Vector3 targetPosition;
+  Timer hitPauseTimer = new Timer();
   bool hitpause = false;
   const float small = 0.1f;
+  Timer wanderTimer = new Timer();
+  const float WanderRadius = 2;
+  const float WanderInterval = 0.5f;
 
   private void OnDestroy()
   {
@@ -24,27 +28,57 @@ public class Airbot : Character
     CharacterStart();
     UpdateLogic = UpdateAirbot;
     UpdateHit = AirbotHit;
-    hitPauseTimer = new Timer();
   }
 
   void UpdateAirbot()
   {
     if( Global.instance.CurrentPlayer != null )
     {
-      if( !hitpause )
-        target = Global.instance.CurrentPlayer.transform.position + Vector3.up * targetOffset;
-      Vector3 delta = target - transform.position;
-      if( delta.sqrMagnitude < small * small )
-        MoveDirection = Vector3.zero;
-      else if( delta.sqrMagnitude < sightRange * sightRange )
+      Vector2 player = Global.instance.CurrentPlayer.transform.position;
+      Vector2 delta = player - (Vector2)transform.position;
+      if( delta.sqrMagnitude < sightRange * sightRange )
       {
-        SetPath( target );
+        if( !hitpause )
+        {
+          Transform target = null;
+          RaycastHit2D hit = Physics2D.Linecast( sightOrigin.position, player, LayerMask.GetMask( Global.EnemySightLayers ) );
+          if( hit.transform.root == Global.instance.CurrentPlayer.transform )
+            target = hit.transform;
+          if( target == null )
+          {
+            animator.Play( "idle" );
+            Wander();
+          }
+          else
+          {
+            animator.Play( "alert" );
+            SetPath( target.position + Vector3.up * targetOffset );
+          }
+        }
       }
+      else
+      {
+        animator.Play( "idle" );
+        Wander();
+      }
+    }
+    else
+    {
+      animator.Play( "idle" );
+      Wander();
     }
     UpdatePath();
     velocity = MoveDirection.normalized * flySpeed;
   }
 
+  void Wander()
+  {
+    if( !wanderTimer.IsActive )
+    {
+      SetPath( transform.position + (Vector3)(Random.insideUnitCircle * WanderRadius) );
+      wanderTimer.Start( WanderInterval );
+    }
+  }
 
   void AirbotHit()
   {
@@ -60,7 +94,7 @@ public class Airbot : Character
         if( dam.TakeDamage( dmg ) )
         {
           hitpause = true;
-          target = new Vector3( hit.point.x, hit.point.y, 0 ) + Vector3.up * hitPauseOffset;
+          SetPath( new Vector3( hit.point.x, hit.point.y, 0 ) + Vector3.up * hitPauseOffset );
           animator.Play( "laugh" );
           hitPauseTimer.Start( 1, null, delegate
           {

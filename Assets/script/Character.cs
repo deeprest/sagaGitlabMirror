@@ -445,7 +445,7 @@ public class Character : MonoBehaviour, IDamage
 #endif
   }
 
-  void ClearPath()
+  public void ClearPath()
   {
     HasPath = false;
     waypoint.Clear();
