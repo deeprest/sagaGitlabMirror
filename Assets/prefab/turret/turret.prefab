@@ -197,11 +197,8 @@ MonoBehaviour:
   box: {fileID: 993720593254393847}
   renderer: {fileID: 4083742519420547586}
   animator: {fileID: 416081150457209015}
-  colliders:
-  - {fileID: 993720593254393847}
-  spriteRenderers:
-  - {fileID: 4083742519420547586}
-  - {fileID: 3805808902274294778}
+  IgnoreCollideObjects: []
+  spriteRenderers: []
   UseGravity: 0
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
@@ -209,7 +206,6 @@ MonoBehaviour:
   friction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
-  IgnoreCollideObjects: []
   HasPath: 0
   WaypointRadii: 0.1
   DestinationRadius: 0.3

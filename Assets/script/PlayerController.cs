@@ -221,10 +221,8 @@ public class PlayerController : Character, IDamage
 
   void Start()
   {
-    colliders = GetComponentsInChildren<Collider2D>();
-    foreach( var cld in colliders )
-      IgnoreCollideObjects.Add( cld.transform );
-    spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+    IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
+    spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
     graphookTip.SetActive( false );
     grapCableRender.gameObject.SetActive( false );
     if( weapons.Count > 0 )
@@ -446,7 +444,7 @@ public class PlayerController : Character, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y > corner )
       {
@@ -464,7 +462,7 @@ public class PlayerController : Character, IDamage
     hits = Physics2D.BoxCastAll( adjust + Vector2.down * headboxy, headbox, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y < -corner )
       {
@@ -477,7 +475,7 @@ public class PlayerController : Character, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( contactSeparation, -velocity.x * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x > corner )
       {
@@ -492,7 +490,7 @@ public class PlayerController : Character, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( contactSeparation, velocity.x * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x < -corner )
       {

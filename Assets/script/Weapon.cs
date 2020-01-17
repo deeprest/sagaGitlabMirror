@@ -66,7 +66,7 @@ public class Weapon : ScriptableObject
         p.weapon = this;
         p.instigator = instigator;
         p.velocity = shoot.normalized * (p.speed + speedIncrease);
-        foreach( var c in instigator.colliders )
+        foreach( var c in instigator.IgnoreCollideObjects )
           Physics2D.IgnoreCollision( p.circle, c );
         if( playSound && StartSound != null )
           Global.instance.AudioOneShot( StartSound, pos );

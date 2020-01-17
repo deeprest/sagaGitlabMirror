@@ -11,8 +11,9 @@ public class Character : MonoBehaviour, IDamage
   public new SpriteRenderer renderer;
   public Animator animator;
 
-  public Collider2D[] colliders;
-  public SpriteRenderer[] spriteRenderers;
+  public List<Collider2D> IgnoreCollideObjects;
+  public List<SpriteRenderer> spriteRenderers;
+  Character parentCharacter;
 
   public bool UseGravity = true;
   public Vector2 velocity = Vector2.zero;
@@ -23,7 +24,6 @@ public class Character : MonoBehaviour, IDamage
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
 
-  public List<Transform> IgnoreCollideObjects;
   protected bool collideRight = false;
   protected bool collideLeft = false;
   protected bool collideTop = false;
@@ -86,10 +86,10 @@ public class Character : MonoBehaviour, IDamage
 
   protected void CharacterStart()
   {
-    colliders = GetComponentsInChildren<Collider2D>();
-    foreach( var cld in colliders )
-      IgnoreCollideObjects.Add( cld.transform );
-    spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+    if( transform.parent != null )
+      parentCharacter = transform.parent.GetComponent<Character>();
+    IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
+    spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
     UpdateHit = BoxHit;
     UpdateCollision = BoxCollision;
     UpdatePosition = BasicPosition;
@@ -98,6 +98,38 @@ public class Character : MonoBehaviour, IDamage
     nvp = new NavMeshPath();
     AgentTypeID = Global.instance.AgentType[AgentTypeName];
     RaycastHits = new RaycastHit2D[4];
+  }
+
+  public void CharacterOnDestroy()
+  {
+    if( parentCharacter != null )
+      parentCharacter.RemoveChild( this );
+  }
+
+  void OnDestroy()
+  {
+    CharacterOnDestroy();
+  }
+
+  public void RemoveChild( Character child )
+  {
+    Collider2D[] clds = IgnoreCollideObjects.ToArray();
+    for( int i = 0; i < clds.Length; i++ )
+    {
+      if( clds[i].transform == child.transform )
+      {
+        IgnoreCollideObjects.Remove( clds[i] );
+        break;
+      }
+    }
+
+    SpriteRenderer[] srs = spriteRenderers.ToArray();
+    for( int i = 0; i < srs.Length; i++ )
+    {
+      if( srs[i].transform == child.transform )
+        spriteRenderers.Remove( srs[i] );
+    }
+
   }
 
   void Update()
@@ -200,7 +232,7 @@ public class Character : MonoBehaviour, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y > corner )
       {
@@ -216,7 +248,7 @@ public class Character : MonoBehaviour, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.up, Mathf.Max( raylength, velocity.y * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y < -corner )
       {
@@ -228,7 +260,7 @@ public class Character : MonoBehaviour, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x > corner )
       {
@@ -242,7 +274,7 @@ public class Character : MonoBehaviour, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( raylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x < -corner )
       {

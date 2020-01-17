@@ -6,6 +6,7 @@ public class SceneScript : MonoBehaviour
 {
   public AudioLoop music;
   // generation
+  public bool GenerateLevelOnStart = true;
   public Level level;
   // the camera collider
   public Collider2D sb;
@@ -19,7 +20,7 @@ public class SceneScript : MonoBehaviour
       //return;
     }
     // level generation
-    if( level != null )
+    if( GenerateLevelOnStart && level != null )
       level.Generate();
 
     Global.instance.AssignCameraPoly( sb );

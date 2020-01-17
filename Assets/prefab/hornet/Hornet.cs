@@ -45,7 +45,7 @@ public class Hornet : Character
   protected override void Die()
   {
     dying = true;
-    foreach( var c in colliders )
+    foreach( var c in IgnoreCollideObjects )
       c.enabled = false;
     UpdateHit = null;
     //UpdateCollision = null;
