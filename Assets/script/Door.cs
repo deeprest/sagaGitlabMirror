@@ -5,14 +5,13 @@ using UnityEngine.AI;
 
 public class Door : MonoBehaviour, ITrigger
 {
-  [SerializeField] SpriteAnimator sa;
+  [SerializeField] Animator animator;
   [SerializeField] Collider2D cd;
   [SerializeField] AudioSource audio;
   [SerializeField] NavMeshObstacle obstacle;
   public bool isOpen = false;
   bool transitioning = false;
-  public AnimSequence open;
-  public AnimSequence close;
+  [SerializeField] float animationRate = 16;
   public int openFrame = 19;
   public int closeFrame = 3;
   Timer timer = new Timer();
@@ -48,9 +47,9 @@ public class Door : MonoBehaviour, ITrigger
   public void Open()
   {
     transitioning = true;
-    sa.Play( open );
+    animator.Play( "opening" );
     audio.PlayOneShot( soundOpen );
-    timer.Start( (1.0f / open.fps) * openFrame, null, delegate
+    timer.Start( (1.0f/animationRate) * openFrame, null, delegate
     {
       // if the door is toggled open/close, then set transitioning to false here
       // if it auto-closes on a timer, then transitioning should only end after closed. 
@@ -74,9 +73,9 @@ public class Door : MonoBehaviour, ITrigger
   public void Close()
   {
     transitioning = true;
-    sa.Play( close );
+    animator.Play( "closing" );
     audio.PlayOneShot( soundClose );
-    timer.Start( (1.0f / close.fps) * closeFrame, null, delegate
+    timer.Start( (1.0f / animationRate) * closeFrame, null, delegate
     {
       isOpen = false;
       cd.enabled = true;
