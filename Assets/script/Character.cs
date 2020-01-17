@@ -17,10 +17,19 @@ public class Character : MonoBehaviour, IDamage
 
   public bool UseGravity = true;
   public Vector2 velocity = Vector2.zero;
+  public Vector2 Velocity
+  {
+    get
+    {
+      if( carryCharacter == null )
+        return velocity;
+      else
+        return velocity + carryCharacter.Velocity;
+    }
+  }
   public Vector2 pushVelocity = Vector2.zero;
   public Character carryCharacter;
   public float friction = 0.05f;
-  //public float airFriction = 0.05f;
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
 
@@ -205,16 +214,7 @@ public class Character : MonoBehaviour, IDamage
     carryCharacter = null;
   }
 
-  public Vector2 Velocity
-  {
-    get
-    {
-      if( carryCharacter == null )
-        return velocity;
-      else
-        return velocity + carryCharacter.Velocity;
-    }
-  }
+
 
   protected void BoxCollision()
   {

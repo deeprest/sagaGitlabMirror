@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boss : Character
+public class Mech : Character
 {
   new public AudioSource audio;
 
