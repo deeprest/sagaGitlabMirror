@@ -7,7 +7,7 @@ TextureImporter:
     second: hornet-prop-0
   - first:
       213: 21300002
-    second: enemies-1-diffuse_1
+    second: sticky0
   - first:
       213: 21300004
     second: missile
@@ -34,7 +34,7 @@ TextureImporter:
     second: hornet-prop-2
   - first:
       213: 21300020
-    second: enemies-1-diffuse_10
+    second: sticky1
   - first:
       213: 21300022
     second: enemies-1-diffuse_11
@@ -43,7 +43,7 @@ TextureImporter:
     second: hornet-body
   - first:
       213: 21300026
-    second: enemies-1-diffuse_13
+    second: sticky2
   - first:
       213: 21300028
     second: enemies-1-diffuse_14
@@ -392,6 +392,18 @@ TextureImporter:
   - first:
       213: -3741573112334478744
     second: box
+  - first:
+      213: -7947611921849211345
+    second: icon-tri
+  - first:
+      213: 7949111743751955053
+    second: icon-magnet
+  - first:
+      213: 445421092411261529
+    second: icon-autotarget
+  - first:
+      213: -3422296157070212591
+    second: icon- graphook
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -509,13 +521,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: enemies-1-diffuse_1
+      name: sticky0
       rect:
         serializedVersion: 2
-        x: 135
-        y: 241
-        width: 10
-        height: 12
+        x: 204
+        y: 51
+        width: 12
+        height: 10
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -533,8 +545,8 @@ TextureImporter:
       name: missile
       rect:
         serializedVersion: 2
-        x: 148
-        y: 242
+        x: 184
+        y: 51
         width: 16
         height: 11
       alignment: 0
@@ -554,8 +566,8 @@ TextureImporter:
       name: enemies-1-diffuse_3
       rect:
         serializedVersion: 2
-        x: 166
-        y: 242
+        x: 167
+        y: 51
         width: 16
         height: 11
       alignment: 0
@@ -575,8 +587,8 @@ TextureImporter:
       name: enemies-1-diffuse_4
       rect:
         serializedVersion: 2
-        x: 184
-        y: 244
+        x: 157
+        y: 52
         width: 8
         height: 8
       alignment: 0
@@ -596,8 +608,8 @@ TextureImporter:
       name: enemies-1-diffuse_5
       rect:
         serializedVersion: 2
-        x: 195
-        y: 244
+        x: 147
+        y: 52
         width: 7
         height: 8
       alignment: 0
@@ -698,15 +710,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: enemies-1-diffuse_10
+      name: sticky1
       rect:
         serializedVersion: 2
-        x: 133
-        y: 229
-        width: 14
-        height: 10
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 218
+        y: 49
+        width: 10
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5911163, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -761,15 +773,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: enemies-1-diffuse_13
+      name: sticky2
       rect:
         serializedVersion: 2
-        x: 133
-        y: 218
-        width: 14
-        height: 10
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 229
+        y: 49
+        width: 10
+        height: 14
+      alignment: 9
+      pivot: {x: 0.59111786, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -3115,7 +3127,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -3123,6 +3135,90 @@ TextureImporter:
       bones: []
       spriteID: 1a1d9add0d25641dd81391cc4c4ca4a4
       internalID: -3741573112334478744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon-tri
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 2
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a8dc7f7c1bd75412bb79844d2e55d9dd
+      internalID: -7947611921849211345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon-magnet
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 2
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a89f2384a54ea4333b0b3757a5a5b851
+      internalID: 7949111743751955053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon-autotarget
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 1
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 16672070ec86e495497ae161a00be758
+      internalID: 445421092411261529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon- graphook
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 2
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b994ce863ef354dff826d49354a85bc5
+      internalID: -3422296157070212591
       vertices: []
       indices: 
       edges: []

@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 58790195297255388}
   - component: {fileID: 212190135428314220}
   - component: {fileID: 4025981189729564986}
-  - component: {fileID: 4831291083865458239}
+  - component: {fileID: 1394271922403032522}
+  - component: {fileID: -3073899829896725638}
   m_Layer: 11
-  m_Name: XBusterShot
+  m_Name: StickyBomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1227316525270448}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.613, y: -1.668, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4658682313527278}
@@ -50,7 +51,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.05
+  m_Radius: 0.01
 --- !u!212 &212190135428314220
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -89,8 +90,7 @@ SpriteRenderer:
   m_SortingLayerID: 1445702261
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4289353735146823145, guid: 64314a0420c93471b9990c7b9f080a39,
-    type: 3}
+  m_Sprite: {fileID: 21300002, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -111,7 +111,7 @@ Animator:
   m_GameObject: {fileID: 1227316525270448}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f5c757d042c22456ca369dd98990b1ea, type: 2}
+  m_Controller: {fileID: 9100000, guid: baf72c6a9f091482ba1494f6d9cb1a68, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -120,7 +120,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &4831291083865458239
+--- !u!114 &1394271922403032522
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -129,23 +129,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 1227316525270448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 623c33749afb44d32889ba3fb0c1fbb3, type: 3}
+  m_Script: {fileID: 11500000, guid: d9c1c306af9e44c1bbaeba276143f31a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 4025981189729564986}
   circle: {fileID: 58790195297255388}
   weapon: {fileID: 0}
   instigator: {fileID: 0}
-  ContactDamage: {fileID: 11400000, guid: 601397d903e4744ad818ea898f162fff, type: 2}
+  ContactDamage: {fileID: 11400000, guid: 9ee6504c4d3a34696b22db80eccab972, type: 2}
   speed: 10
-  raycastDistance: 0.2
-  timeout: 3
+  raycastDistance: 0.1
+  timeout: 5
   velocity: {x: 0, y: 0}
   ignore: []
+  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
+  pulseInterval: 0.05
   light: {fileID: 108267418089597158}
-  DieAfterHitCount: 1
+  radiusFudge: 0
   AlignRotationToVelocity: 1
-  hitPrefab: {fileID: 1227316525270448, guid: 501808a31aa284cf4a2ffd0c05c1e0c9, type: 3}
+  AttachDuration: 2
+  BoomRadius: 1
+--- !u!50 &-3073899829896725638
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227316525270448}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1921470626033100
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,7 +180,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4658682313527278}
   - component: {fileID: 108267418089597158}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +195,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1921470626033100}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.1}
+  m_LocalPosition: {x: -0.053, y: 0, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4978265925886940}
@@ -187,7 +211,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 9
   m_Type: 2
-  m_Color: {r: 0.972, g: 0.6144693, b: 0.38588408, a: 1}
+  m_Color: {r: 0.99264705, g: 0.35336626, b: 0.26275954, a: 1}
   m_Intensity: 2
   m_Range: 3
   m_SpotAngle: 30

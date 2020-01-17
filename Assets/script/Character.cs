@@ -291,7 +291,6 @@ public class Character : MonoBehaviour, IDamage
   protected virtual void Die()
   {
     Instantiate( explosion, transform.position, Quaternion.identity );
-    //Global.instance.Destroy( gameObject );
     Destroy( gameObject );
     if( spawnWhenDead != null && Random.Range( 0, spawnChance ) == 0 )
       Instantiate( spawnWhenDead, transform.position, Quaternion.identity );

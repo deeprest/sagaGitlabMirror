@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4563639244953318}
   - component: {fileID: 212038896940401040}
-  - component: {fileID: 114920460158742564}
   - component: {fileID: 82444511704660630}
   - component: {fileID: 5130550921420999613}
+  - component: {fileID: 5089512346376276334}
   m_Layer: 0
   m_Name: explosion0
   m_TagString: Untagged
@@ -85,34 +85,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &114920460158742564
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1814662161405744}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c73fc4152377f42699f7dbef37ed6441, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ps: {fileID: 0}
-  duration: 0.5
-  OnTimeout:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 114920460158742564}
-        m_MethodName: Die
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!82 &82444511704660630
 AudioSource:
   m_ObjectHideFlags: 0
@@ -125,7 +97,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 243862331985139506, guid: 1c39f8c58cb83400089739cd8e4d9c58,
     type: 2}
   m_audioClip: {fileID: 8300000, guid: b3db5825c92794225a64e16a4eaac92f, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -229,6 +201,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &5089512346376276334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1814662161405744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8242d0354c2e94d5fa043927836a289d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7817963604074257293
 GameObject:
   m_ObjectHideFlags: 0
