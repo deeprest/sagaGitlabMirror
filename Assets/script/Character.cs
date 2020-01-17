@@ -57,8 +57,7 @@ public class Character : MonoBehaviour, IDamage
   public string AgentTypeName = "Small";
   public Vector2 MoveDirection;
   // sidestep
-  public bool SidestepAvoidance = true;
-  bool DefaultSidestepAvoidance = true;
+  public bool SidestepAvoidance = false;
   float SidestepLast;
   Vector2 Sidestep;
   RaycastHit2D[] RaycastHits;
@@ -136,7 +135,10 @@ public class Character : MonoBehaviour, IDamage
     for( int i = 0; i < srs.Length; i++ )
     {
       if( srs[i].transform == child.transform )
+      {
         spriteRenderers.Remove( srs[i] );
+        break;
+      }
     }
 
   }
@@ -214,8 +216,6 @@ public class Character : MonoBehaviour, IDamage
     carryCharacter = null;
   }
 
-
-
   protected void BoxCollision()
   {
     collideRight = false;
@@ -284,16 +284,9 @@ public class Character : MonoBehaviour, IDamage
         break;
       }
     }
-#if KINEMATIC
-    ugh = adjust - boxOffset;
-#else
-    transform.position = adjust - boxOffset;
-#endif
-  }
 
-#if KINEMATIC
-  public Vector2 ugh;
-#endif
+    transform.position = adjust - boxOffset;
+  }
 
   protected virtual void Die()
   {
@@ -356,12 +349,12 @@ public class Character : MonoBehaviour, IDamage
         // follow path if waypoints exist
         Vector3 waypointFlat = waypointEnu.Current;
         waypointFlat.z = 0;
-        if( Vector3.SqrMagnitude( transform.position - waypointFlat ) > (Time.timeScale * WaypointRadii) * (WaypointRadii * Time.timeScale) )
+        if( Vector3.SqrMagnitude( transform.position - waypointFlat ) > WaypointRadii * WaypointRadii )
         {
           MoveDirection = (Vector2)waypointEnu.Current - (Vector2)transform.position;
         }
         else
-        if( waypointEnu.MoveNext() && Vector3.SqrMagnitude( transform.position - DestinationPosition ) > DestinationRadius * DestinationRadius )
+        if( waypointEnu.MoveNext() )
         {
           MoveDirection = (Vector2)waypointEnu.Current - (Vector2)transform.position;
         }
@@ -419,18 +412,15 @@ public class Character : MonoBehaviour, IDamage
           {
             float raycastDistance = Mathf.Min( distanceToWaypoint, Global.instance.SidestepRaycastDistance );
             int count = Physics2D.CircleCastNonAlloc( transform.position, 0.5f/*box.edgeRadius*/, MoveDirection.normalized, RaycastHits, raycastDistance, LayerMask.GetMask( Global.CharacterSidestepLayers ) );
-            if( count > 0 )
+            for( int i = 0; i < count; i++ )
             {
-              for( int i = 0; i < count; i++ )
+              RaycastHit2D hit = RaycastHits[i];
+              Character other = hit.transform.root.GetComponent<Character>();
+              if( other != null && other != this )
               {
-                RaycastHit2D hit = RaycastHits[i];
-                Character other = hit.transform.root.GetComponent<Character>();
-                if( other != null && other != this )
-                {
-                  Vector3 delta = other.transform.position - transform.position;
-                  Sidestep = ((transform.position + Vector3.Project( delta, MoveDirection.normalized )) - other.transform.position).normalized * Global.instance.SidestepDistance;
-                  break;
-                }
+                Vector3 delta = other.transform.position - transform.position;
+                Sidestep = ((transform.position + Vector3.Project( delta, MoveDirection.normalized )) - other.transform.position).normalized * Global.instance.SidestepDistance;
+                break;
               }
             }
           }
@@ -461,12 +451,12 @@ public class Character : MonoBehaviour, IDamage
 
     Vector3 EndPosition = TargetPosition;
     NavMeshHit hit;
-    if( NavMesh.SamplePosition( TargetPosition, out hit, 5.0f, NavMesh.AllAreas ) )
+    if( NavMesh.SamplePosition( TargetPosition, out hit, 1.0f, NavMesh.AllAreas ) )
       EndPosition = hit.position;
     DestinationPosition = EndPosition;
 
     Vector3 StartPosition = transform.position;
-    if( NavMesh.SamplePosition( StartPosition, out hit, 5.0f, NavMesh.AllAreas ) )
+    if( NavMesh.SamplePosition( StartPosition, out hit, 1.0f, NavMesh.AllAreas ) )
       StartPosition = hit.position;
 
 

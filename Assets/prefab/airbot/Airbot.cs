@@ -73,7 +73,7 @@ public class Airbot : Character
 
   void Wander()
   {
-    if( !wanderTimer.IsActive )
+    if( !wanderTimer.IsActive && !HasPath )
     {
       SetPath( transform.position + (Vector3)(Random.insideUnitCircle * WanderRadius) );
       wanderTimer.Start( WanderInterval );

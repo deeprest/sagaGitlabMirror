@@ -81,7 +81,6 @@ public class Global : MonoBehaviour
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
   [SerializeField] string InitialSceneName;
-  public float deadZone = 0.1f;
   // screenshot timer
   public int screenshotInterval;
   public Timer ScreenshotTimer = new Timer();

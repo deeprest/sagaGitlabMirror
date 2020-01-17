@@ -168,7 +168,7 @@ MonoBehaviour:
   box: {fileID: 61733048714469916}
   renderer: {fileID: 212979940915122146}
   animator: {fileID: 4874249801477483448}
-  colliders: []
+  IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 0
   velocity: {x: 0, y: 0}
@@ -177,7 +177,6 @@ MonoBehaviour:
   friction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
-  IgnoreCollideObjects: []
   HasPath: 0
   WaypointRadii: 0.1
   DestinationRadius: 0.3
@@ -198,9 +197,11 @@ MonoBehaviour:
   ContactDamage: {fileID: 0}
   flySpeed: 3
   waitDuration: 2
+  origin: {x: 0, y: 0}
   path:
   - {x: 0, y: 0}
   - {x: 0, y: 3}
+  pingpong: 0
 --- !u!208 &1928618165654571599
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -283,8 +284,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1643776171
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300066, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

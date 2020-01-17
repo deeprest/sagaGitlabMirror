@@ -1,24 +1,21 @@
 ## review
 + highway scene: pillar top collision box is too high
 + home scene: lifts pos. when enter chamber, longer run right.
++ shield turrent settings adjustment. lower shields. shoot angle range. on ceiling.
++ fix diagetic text in front
 
 ## todo
-- fix diagetic text in front
 - cursor influence: under min, and walljump need exceptions
 - fix grap when using gamepad (double)
 - fix grap going through boxes
-- shield turrent settings adjustment. lower shields. shoot angle range. on ceiling.
 - interact indicator needs to update each frame
 - respawn using cyclic index
 - camera hitch on bottom, ~10+X
-
 - work on marching square nodes
-- bigsheet consolidate: mmx, door.
 - consolidate all sprites into bigsheet
 - align shot with surface when aiming into floor/wall
 - detect cmd-f fullscreen switch and update setting
 - add ability icon to hud
-
 
 ## issues
 - gamepad double select diagetic menu
@@ -143,19 +140,18 @@ Not arbitrary static points.
 - (single player) no internet connection required to play.
 - remap controls
 ## is not commercialized
-- no ads. You pay with you soul.
+- no ads. You pay with your soul. (fake ads?)
 - no microtransactions.
-- no in-game currency to compulsively accumulate.
+- no in-game currency to compulsively accumulate. (or make it useless?)
 ## does not use addiction mechanics
 - no achievements to leave you feeling underachieving.
 - no trophies
 ## not too complex. you have a life.
 - no complicated technology/skill tree
-- no story to ignore or lore to forget
+- no story to ignore or lore to forget (maybe dialogue but no narrative?)
 
 
 # random ideas
-Chopdrop instead of teleportation.
 death -> You emerge from corpse as a small spiderbot that can gain control of other machines.
 death -> The player awakens in the lab, newly-rebuilt. The attending mechanic explains that the explosion destroyed your body but not your core. He has given you a new body but could not retrieve your weapons.
 
