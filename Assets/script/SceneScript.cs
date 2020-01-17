@@ -36,6 +36,11 @@ public class SceneScript : MonoBehaviour
     Global.instance.Controls.BipedActions.Disable();
   }
 
+  public void CameraZoom( float value )
+  {
+    Global.instance.CameraController.orthoTarget = value;
+  }
+
   public void ReplaceCameraPoly( Collider2D collider )
   {
     Global.instance.AssignCameraPoly( collider );

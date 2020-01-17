@@ -87,7 +87,7 @@ public class Global : MonoBehaviour
   public Timer ScreenshotTimer = new Timer();
 
 
-  
+
   [SerializeField] float slowtime = 0.2f;
   Timer fadeTimer = new Timer();
   public float RepathInterval = 1;
@@ -342,7 +342,10 @@ public class Global : MonoBehaviour
 #endif
   }
 
-  public string ReplaceWithControlNames( string source )
+  Dictionary<string, string> ReplaceControlNames = new Dictionary<string, string>();
+
+
+  public string ReplaceWithControlNames( string source, bool colorize = true )
   {
     // todo support composites
     string outstr = "";
@@ -368,7 +371,14 @@ public class Global : MonoBehaviour
           controlName = ic.shortDisplayName;
         else
           controlName = ic.name.ToUpper();
-        outstr += "<color=#" + ColorUtility.ToHtmlStringRGB( ControlNameColor ) + ">" + controlName + "</color>";
+
+        if( ReplaceControlNames.ContainsKey( controlName.ToUpper() ) )
+          controlName = ReplaceControlNames[controlName.ToUpper()];
+
+        if( colorize )
+          outstr += "<color=#" + ColorUtility.ToHtmlStringRGB( ControlNameColor ) + ">" + controlName + "</color>";
+        else
+          outstr += controlName;
         outstr += ugh[1];
       }
       else
@@ -379,6 +389,14 @@ public class Global : MonoBehaviour
 
   void InitializeControls()
   {
+    ReplaceControlNames.Add( "DELTA", "Mouse" );
+    ReplaceControlNames.Add( "LMB", "Left Mouse Button" );
+    ReplaceControlNames.Add( "RMB", "Right Mouse Button" );
+    ReplaceControlNames.Add( "LB", "Left Bumper" );
+    ReplaceControlNames.Add( "RB", "Right Bumper" );
+    ReplaceControlNames.Add( "LT", "Left Trigger" );
+    ReplaceControlNames.Add( "RT", "Right Trigger" );
+
     Controls = new Controls();
     Controls.Enable();
     Controls.MenuActions.Disable();
