@@ -770,11 +770,15 @@ public class Global : MonoBehaviour
     CurrentPlayer.SpeedFactorNormalized = FloatSetting["PlayerSpeedFactor"].Value;
   }
 
+  int spawnIndex = 0;
   GameObject FindSpawnPoint()
   {
     GameObject[] spawns = GameObject.FindGameObjectsWithTag( "Respawn" );
     if( spawns.Length > 0 )
-      return spawns[Random.Range( 0, spawns.Length )];
+    {
+      spawnIndex %= spawns.Length;
+      return spawns[spawnIndex++];
+    }
     return null;
   }
 
