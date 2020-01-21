@@ -3,16 +3,15 @@
 + home scene: lifts pos. when enter chamber, longer run right.
 + shield turrent settings adjustment. lower shields. shoot angle range. on ceiling.
 + fix diagetic text in front
++ respawn using cyclic index
 
 ## todo
 - cursor influence: under min, and walljump need exceptions
 - fix grap when using gamepad (double)
 - fix grap going through boxes
 - interact indicator needs to update each frame
-- respawn using cyclic index
 - camera hitch on bottom, ~10+X
 - work on marching square nodes
-- consolidate all sprites into bigsheet
 - align shot with surface when aiming into floor/wall
 - detect cmd-f fullscreen switch and update setting
 - add ability icon to hud
@@ -27,6 +26,8 @@
 - reproducible: charge particles on after transition. reset player state on level transition
 
 ### low priority
+- consolidate all sprites into bigsheet
+- replace old sprite anims with unity animators
 - UNITY bug: cursor movement in last direction when shoot
 - intro scene: no hud, no menu or biped controls
 - hide arm while not shooting

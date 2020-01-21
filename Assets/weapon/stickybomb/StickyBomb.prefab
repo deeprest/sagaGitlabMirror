@@ -51,7 +51,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.01
+  m_Radius: 0.05
 --- !u!212 &212190135428314220
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
   ContactDamage: {fileID: 11400000, guid: 9ee6504c4d3a34696b22db80eccab972, type: 2}
   speed: 10
   raycastDistance: 0.1
-  timeout: 5
+  timeout: 4
   velocity: {x: 0, y: 0}
   ignore: []
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}

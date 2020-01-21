@@ -110,8 +110,11 @@ public class Character : MonoBehaviour, IDamage
 
   public void CharacterOnDestroy()
   {
+    flashTimer.Stop( false );
+    pushTimer.Stop( false );
     if( parentCharacter != null )
       parentCharacter.RemoveChild( this );
+    parentCharacter = null;
   }
 
   void OnDestroy()
@@ -291,9 +294,9 @@ public class Character : MonoBehaviour, IDamage
   protected virtual void Die()
   {
     Instantiate( explosion, transform.position, Quaternion.identity );
-    Destroy( gameObject );
     if( spawnWhenDead != null && Random.Range( 0, spawnChance ) == 0 )
       Instantiate( spawnWhenDead, transform.position, Quaternion.identity );
+    Destroy( gameObject );
   }
 
   public virtual bool TakeDamage( Damage d )

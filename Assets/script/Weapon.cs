@@ -67,10 +67,10 @@ public class Weapon : ScriptableObject
         p.instigator = instigator;
         p.velocity = shoot.normalized * (p.speed + speedIncrease);
         foreach( var c in instigator.IgnoreCollideObjects )
-          Physics2D.IgnoreCollision( p.circle, c );
+          Physics2D.IgnoreCollision( p.circle, c, true );
         if( playSound && StartSound != null )
           Global.instance.AudioOneShot( StartSound, pos );
-        // color shifting for no reason
+        // color shifting
         /*SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
         if( sr != null )
           sr.color = Global.instance.shiftyColor;

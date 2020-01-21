@@ -41,7 +41,6 @@ public class Shield : MonoBehaviour, IDamage
     {
       source.clip = soundHit;
       source.Play();
-      //Global.instance.AudioOneShot( soundHit, transform.position );
     }
 
     sr.material.SetFloat( "_FlashAmount", 1 );
@@ -64,26 +63,25 @@ public class Shield : MonoBehaviour, IDamage
         chr.TakeDamage( damage );
       chr.Push( hitPushSpeed * ((Vector2)(d.instigator.transform.position - transform.position)).normalized, hitPushDuration );
     }
+
     Projectile projectile = d.instigator.GetComponent<Projectile>();
     if( projectile != null )
     {
-      // Instantiate the projectile because the original has called Physics2D.IgnoreCollision() and cannot be undone.
-      Vector2 pos = transform.position + Vector3.Project( (Vector3)d.point - transform.position, transform.right );
-      GameObject go = Instantiate( projectile.gameObject, pos, Quaternion.identity );
-      Projectile newProjectile = go.GetComponent<Projectile>();
-      if( character != null )
-        newProjectile.instigator = character;
-      newProjectile.velocity = Vector3.Reflect( newProjectile.velocity, transform.up );
-      newProjectile.transform.position = pos;
-      newProjectile.ignore.Add( transform );
-
       switch( projectile.weapon.weaponType )
       {
         case Weapon.WeaponType.Projectile:
-        Destroy( projectile.gameObject );
+          projectile.transform.position = transform.position + Vector3.Project( (Vector3)d.point - transform.position, transform.right );
+          projectile.velocity = Vector3.Reflect( projectile.velocity, transform.up );
+          Physics2D.IgnoreCollision( projectile.circle, collider, false );
+          foreach( var cldr in projectile.instigator.IgnoreCollideObjects )
+            Physics2D.IgnoreCollision( projectile.circle, cldr, false );
+          if( character != null )
+            projectile.instigator = character;
+          projectile.ignore.Add( transform );
         break;
 
         case Weapon.WeaponType.Laser:
+        // create second beam
         break;
       }
 

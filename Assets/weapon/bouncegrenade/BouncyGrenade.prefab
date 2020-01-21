@@ -51,7 +51,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.06
+  m_Radius: 0.08
 --- !u!212 &212190135428314220
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -120,14 +120,14 @@ MonoBehaviour:
   instigator: {fileID: 0}
   ContactDamage: {fileID: 11400000, guid: 9ee6504c4d3a34696b22db80eccab972, type: 2}
   speed: 10
-  raycastDistance: 0.2
+  raycastDistance: 0.1
   timeout: 3
   velocity: {x: 0, y: 0}
   ignore: []
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   pulseInterval: 0.1
   light: {fileID: 108267418089597158}
-  radiusFudge: 0.1
+  radiusFudge: 0
 --- !u!50 &2679187230314664582
 Rigidbody2D:
   serializedVersion: 4
@@ -147,7 +147,7 @@ Rigidbody2D:
   m_Material: {fileID: 6200000, guid: 3244c00f1bd4b4f5bbd799a080ea2dcf, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!95 &2738584566118510243
 Animator:

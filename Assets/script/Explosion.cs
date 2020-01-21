@@ -15,10 +15,7 @@ public class Explosion : MonoBehaviour
     Active++;
     Destroy( gameObject, timeout );
     if( Active <= MaxExplosionSoundsAtOnce )
-    {
-      Debug.Log( "boom sound: "+ Active );
       GetComponent<AudioSource>().Play();
-    }
   }
 
   private void OnDestroy()

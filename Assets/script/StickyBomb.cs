@@ -41,13 +41,12 @@ public class StickyBomb : Projectile, IDamage
 
   public bool TakeDamage( Damage damage )
   {
-    if( gameObject != null && !gameObject.activeSelf )
-      return false;
     if( alreadyBoom )
       return false;
     alreadyBoom = true;
+    // disable collider before explosion to avoid unnecessary OnCollisionEnter2D() calls
+    GetComponent<Collider2D>().enabled = false;
     timeoutTimer.Stop( false );
-
     Collider2D[] clds = Physics2D.OverlapCircleAll( transform.position, BoomRadius, LayerMask.GetMask( Global.StickyBombCollideLayers ) );
     for( int i = 0; i < clds.Length; i++ )
     {
@@ -63,7 +62,6 @@ public class StickyBomb : Projectile, IDamage
         }
       }
     }
-
     Destroy( gameObject );
     Instantiate( explosion, transform.position, Quaternion.identity );
     return true;
@@ -74,18 +72,21 @@ public class StickyBomb : Projectile, IDamage
     if( (LayerMask.GetMask( Global.StickyBombCollideLayers ) & (1 << hit.gameObject.layer)) > 0 )
       if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator.transform )) && !ignore.Contains( hit.transform ) )
       {
+        // ignore projectiles from this instigator
+        Projectile projectile = hit.transform.GetComponent<Projectile>();
+        if( projectile != null && instigator != null && projectile.instigator != null && projectile.instigator == instigator )
+          return;
+
         AlignRotationToVelocity = false;
         transform.parent = hit.transform;
         // +X = forward
         transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( -hit.contacts[0].normal.y, -hit.contacts[0].normal.x ) ) );
+        //body.simulated = false;
         body.bodyType = RigidbodyType2D.Static;
-        //body.freezeRotation = true;
         animator.Play( "flash" );
         hitTransform = hit.transform;
         timeoutTimer.Start( AttachDuration, null, delegate
         {
-          if( alreadyBoom )
-            return;
           Damage selfDamage = Instantiate( ContactDamage );
           selfDamage.instigator = transform;
           selfDamage.point = transform.position;
