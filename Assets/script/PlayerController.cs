@@ -1093,8 +1093,8 @@ public class PlayerController : Character, IDamage
         audio2.loop = true;
         audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
         foreach( var sr in spriteRenderers )
-          sr.color = chargeColor;
-          //sr.material.SetColor( "_FlashColor", chargeColor );
+          //sr.color = chargeColor;
+          sr.material.SetColor( "_FlashColor", chargeColor );
         ChargePulseFlip();
         if( chargeEffectGO != null )
           Destroy( chargeEffectGO );

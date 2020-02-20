@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: bigsheet background
-  m_Shader: {fileID: 4800000, guid: e260cfa7296ee7642b167f1eb5be5023, type: 3}
+  m_Shader: {fileID: 4800000, guid: 698b4065d906744df93d4201355cfa71, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA _GLOSSYREFLECTIONS_OFF _METALLICGLOSSMAP _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -24,7 +24,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissiveTex:
-        m_Texture: {fileID: 2800000, guid: 0d190377119ef491aa72c1efdfe79531, type: 3}
+        m_Texture: {fileID: 2800000, guid: a9fdde22e777d4e54a557321ec3e9b87, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -46,8 +46,8 @@ Material:
     m_Floats:
     - _BlendAmount: 0
     - _Cutoff: 0.001
-    - _EmissiveAmount: 0.2
-    - _FlashAmount: 0
+    - _EmissiveAmount: 0
+    - _FlashAmount: 0.5
     - _FlipX: 0
     - _Glossiness: 0.2
     - _Metallic: 0

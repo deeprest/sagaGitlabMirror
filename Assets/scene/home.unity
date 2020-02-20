@@ -6061,8 +6061,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -497722091
+  m_SortingLayer: -2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300076, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -12846,11 +12846,21 @@ PrefabInstance:
         type: 3}
       propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1003717237}
     - target: {fileID: 191140229709778300, guid: 7180ac3f1d2174895aee42c1f7a9a586,
         type: 3}
       propertyPath: onDeactivate.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 1003717237}
+    - target: {fileID: 191140229709778300, guid: 7180ac3f1d2174895aee42c1f7a9a586,
+        type: 3}
+      propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: set_enabled
+      objectReference: {fileID: 0}
+    - target: {fileID: 191140229709778300, guid: 7180ac3f1d2174895aee42c1f7a9a586,
+        type: 3}
+      propertyPath: onDeactivate.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: set_enabled
       objectReference: {fileID: 0}
     - target: {fileID: 4166701312526541177, guid: 7180ac3f1d2174895aee42c1f7a9a586,
         type: 3}

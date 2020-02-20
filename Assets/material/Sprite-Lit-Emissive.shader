@@ -94,8 +94,7 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Emissive"
             {
                 half4 main = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
                 //half4 mask = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, i.uv);
-                return CombinedShapeLightShared(main, main, i.lightingUV) + SAMPLE_TEXTURE2D(_EmissiveTex, sampler_EmissiveTex, i.uv) * main.a;
-            }
+                return CombinedShapeLightShared(main, main, i.lightingUV) + SAMPLE_TEXTURE2D(_EmissiveTex, sampler_EmissiveTex, i.uv) * main.a;           }
             ENDHLSL
         }
 
