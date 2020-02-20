@@ -1,11 +1,17 @@
-Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Emissive"
+Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Emissive Indexed"
 {
     Properties
     {
         _MainTex("Diffuse", 2D) = "white" {}
-        _MaskTex("Mask", 2D) = "white" {}
+        //_MaskTex("Mask", 2D) = "white" {}
         _NormalMap("Normal Map", 2D) = "bump" {}
         _EmissiveTex ("Emissive", 2D) = "white" {}
+
+_EmissiveAmount ("Amount", Range(0,1)) = 0.0
+_IndexColor ("Index 1", Color) = (1,0,0,1)
+_IndexColor2 ("Index 2", Color) = (1,0,0,1)
+//_FlashColor ("Flash Color", Color) = (1,1,1,1)
+_FlashAmount("Flash", Range(0.0, 1.0)) = 0
     }
 
     HLSLINCLUDE
@@ -51,14 +57,20 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Emissive"
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
-            TEXTURE2D(_MaskTex);
-            SAMPLER(sampler_MaskTex);
+            //TEXTURE2D(_MaskTex);
+            //SAMPLER(sampler_MaskTex);
             TEXTURE2D(_NormalMap);
             SAMPLER(sampler_NormalMap);
             half4 _MainTex_ST;
             half4 _NormalMap_ST;
             TEXTURE2D(_EmissiveTex);
             SAMPLER(sampler_EmissiveTex);
+
+half _EmissiveAmount;
+half4 _IndexColor;
+half4 _IndexColor2;
+//half4 _FlashColor;
+half _FlashAmount;
 
             #if USE_SHAPE_LIGHT_TYPE_0
             SHAPE_LIGHT(0)
@@ -92,9 +104,18 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Emissive"
 
             half4 CombinedShapeLightFragment(Varyings i) : SV_Target
             {
-                half4 main = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
-                half4 mask = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, i.uv);
-                return CombinedShapeLightShared(main, mask, i.lightingUV) + SAMPLE_TEXTURE2D(_EmissiveTex, sampler_EmissiveTex, i.uv);
+                half4 c = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+                int r = (int)(c.r * 255.0);
+                if( r==1 )
+                    c.rgb = lerp( _IndexColor.rgb * min(1.0,c.g*2.0), float4(1,1,1,1), (c.g-0.5)*2.0 );
+                if( r==2 )
+                    c.rgb = lerp( _IndexColor2.rgb * min(1.0,c.g*2.0), float4(1,1,1,1), (c.g-0.5)*2.0 );
+                    
+                // uses i.color instead of _FlashColor
+                half4 emissive = (c + i.color * 0.7) * _FlashAmount + SAMPLE_TEXTURE2D(_EmissiveTex, sampler_EmissiveTex, i.uv)  * _EmissiveAmount;
+                half4 main = c;
+                //half4 mask = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, i.uv);
+                return (CombinedShapeLightShared(main, main, i.lightingUV) + emissive) * main.a;
             }
             ENDHLSL
         }

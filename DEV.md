@@ -33,7 +33,7 @@
 - hide arm while not shooting
 - add spark effect to wall jump
 - fix long slide clipping
-- highway loading screen borked
+- highway loading screen
 
 ## WebGL issues
 - UNITY bug: webgl audio loop Unity bug

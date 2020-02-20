@@ -1093,7 +1093,8 @@ public class PlayerController : Character, IDamage
         audio2.loop = true;
         audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
         foreach( var sr in spriteRenderers )
-          sr.material.SetColor( "_FlashColor", chargeColor );
+          sr.color = chargeColor;
+          //sr.material.SetColor( "_FlashColor", chargeColor );
         ChargePulseFlip();
         if( chargeEffectGO != null )
           Destroy( chargeEffectGO );
@@ -1125,7 +1126,7 @@ public class PlayerController : Character, IDamage
       chargePulseOn = !chargePulseOn;
       if( chargePulseOn )
         foreach( var sr in spriteRenderers )
-          sr.material.SetFloat( "_FlashAmount", 0.5f );
+          sr.material.SetFloat( "_FlashAmount", 1 );
       else
         foreach( var sr in spriteRenderers )
           sr.material.SetFloat( "_FlashAmount", 0 );
