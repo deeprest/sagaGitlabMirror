@@ -13,7 +13,7 @@ public class Wheelbot : Character, IDamage
   {
     CharacterStart();
     UpdateHit = null;
-    UpdateCollision = null;
+    //UpdateCollision = null;
     UpdateLogic = UpdateWheel;
     velocity.x = wheelVelocity;
   }

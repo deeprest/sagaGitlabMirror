@@ -65,6 +65,7 @@ public class CustomUtility : EditorWindow
   string replaceName;
   GameObject replacePrefab;
   bool replaceInScene;
+  bool replaceSelected;
   bool fixInScene;
   bool fixSpriteInScene;
   string fixSpriteName;
@@ -337,13 +338,22 @@ public class CustomUtility : EditorWindow
 
     GUILayout.Label( "Replace Common Settings", EditorStyles.boldLabel );
     replaceInScene = EditorGUILayout.Toggle( "Replace in Scene", replaceInScene );
+    replaceSelected = EditorGUILayout.Toggle( "Replace Selected", replaceSelected );
     replaceName = EditorGUILayout.TextField( "Find Assets/Objects (leave blank for all scene objects)", replaceName );
     subobjectName = EditorGUILayout.TextField( "SubobjectName", subobjectName );
     replacePrefab = (GameObject)EditorGUILayout.ObjectField( "Replace Prefab", replacePrefab, typeof( GameObject ), false, GUILayout.MinWidth( 50 ) );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Replace GameObjects with Prefabs" ) )
     {
-      int count;
-      if( replaceInScene )
+      int count = 0;
+      if( replaceSelected )
+      {
+        if( Selection.gameObjects.Length > 0 )
+        {
+          gos = new List<GameObject>( Selection.gameObjects );
+          count = gos.Count;
+        }
+      }
+      else if( replaceInScene )
       {
         gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
         count = gos.Count;
@@ -356,31 +366,34 @@ public class CustomUtility : EditorWindow
           assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
         count = assetPaths.Count;
       }
-      StartJob( "Searching...", count, delegate ()
+      if( count > 0 )
       {
-        GameObject go;
-        if( replaceInScene )
+        StartJob( "Searching...", count, delegate ()
         {
-          go = gos[index];
-          if( go.name.StartsWith( replaceName ) )
-            ReplaceObjectWithPrefabInstance( go, replacePrefab );
-        }
-        else
-        {
-          go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
-          for( int i = 0; i < go.transform.childCount; i++ )
+          GameObject go;
+          if( replaceInScene || replaceSelected )
           {
-            Transform tf = go.transform.GetChild( i );
-            if( tf.name.StartsWith( subobjectName ) )
-            {
-              ReplaceObjectWithPrefabInstance( tf.gameObject, replacePrefab );
-            }
+            go = gos[index];
+            if( go.name.StartsWith( replaceName ) )
+              ReplaceObjectWithPrefabInstance( go, replacePrefab );
           }
-          PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
-          PrefabUtility.UnloadPrefabContents( go );
-        }
-      },
-      null );
+          else
+          {
+            go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
+            for( int i = 0; i < go.transform.childCount; i++ )
+            {
+              Transform tf = go.transform.GetChild( i );
+              if( tf.name.StartsWith( subobjectName ) )
+              {
+                ReplaceObjectWithPrefabInstance( tf.gameObject, replacePrefab );
+              }
+            }
+            PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
+            PrefabUtility.UnloadPrefabContents( go );
+          }
+        },
+        null );
+      }
     }
 
     GUILayout.Label( "Fix Sprite", EditorStyles.boldLabel );
