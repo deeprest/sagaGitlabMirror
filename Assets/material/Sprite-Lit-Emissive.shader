@@ -3,7 +3,6 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Emissive"
     Properties
     {
         _MainTex("Diffuse", 2D) = "white" {}
-        //_MaskTex("Mask", 2D) = "white" {}
         _NormalMap("Normal Map", 2D) = "bump" {}
         _EmissiveTex ("Emissive", 2D) = "white" {}
     }
@@ -51,8 +50,6 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Emissive"
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
-            //TEXTURE2D(_MaskTex);
-            //SAMPLER(sampler_MaskTex);
             TEXTURE2D(_NormalMap);
             SAMPLER(sampler_NormalMap);
             half4 _MainTex_ST;
@@ -93,8 +90,8 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Emissive"
             half4 CombinedShapeLightFragment(Varyings i) : SV_Target
             {
                 half4 main = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
-                //half4 mask = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, i.uv);
-                return CombinedShapeLightShared(main, main, i.lightingUV) + SAMPLE_TEXTURE2D(_EmissiveTex, sampler_EmissiveTex, i.uv) * main.a;           }
+                return CombinedShapeLightShared(main, main, i.lightingUV) + SAMPLE_TEXTURE2D(_EmissiveTex, sampler_EmissiveTex, i.uv);           
+            }
             ENDHLSL
         }
 

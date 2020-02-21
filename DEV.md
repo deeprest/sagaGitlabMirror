@@ -6,13 +6,12 @@
 + respawn using cyclic index
 
 ## todo
+- align shot with surface when aiming into floor/wall
 - cursor influence: under min, and walljump need exceptions
 - fix grap when using gamepad (double)
 - fix grap going through boxes
-- interact indicator needs to update each frame
 - camera hitch on bottom, ~10+X
 - work on marching square nodes
-- align shot with surface when aiming into floor/wall
 - detect cmd-f fullscreen switch and update setting
 - add ability icon to hud
 
@@ -36,7 +35,7 @@
 - highway loading screen
 
 ## WebGL issues
-- UNITY bug: webgl audio loop Unity bug
+- UNITY bug: webgl audio loop
 
 ## Linux Issues
 - support Ctrl-Q to quit
@@ -49,7 +48,6 @@
 ## ideas
 - bindings: json read/write, layouts
 - add airbot prop ability
-- align shot with surface
 - graphook foe
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
 - FSM: enemies should react to projectiles in proximity
