@@ -53,7 +53,7 @@ public class SceneScript : MonoBehaviour
     Global.instance.CameraController.EncompassBounds = true;
   }
 
-  Timer runTimer = new Timer();
+  /*Timer runTimer = new Timer();
   public void RunLeft( float duration )
   {
     Global.instance.Controls.BipedActions.Disable();
@@ -92,6 +92,6 @@ public class SceneScript : MonoBehaviour
       }
     };
     runTimer.Start( tp );
-  }
+  }*/
 
 }

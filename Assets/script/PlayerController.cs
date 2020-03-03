@@ -269,6 +269,11 @@ public class PlayerController : Character, IDamage
     Global.instance.weaponIcon.sprite = weapon.icon;
     Cursor.GetComponent<SpriteRenderer>().sprite = weapon.cursor;
     StopCharge();
+    foreach( var sr in spriteRenderers )
+    {
+      sr.material.SetColor( "_IndexColor", weapon.Color0 );
+      sr.material.SetColor( "_IndexColor2", weapon.Color1 );
+    }
   }
 
   void NextWeapon()

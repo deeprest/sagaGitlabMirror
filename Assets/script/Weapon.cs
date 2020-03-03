@@ -13,6 +13,8 @@ public class Weapon : ScriptableObject
   public WeaponType weaponType;
   public Sprite icon;
   public Sprite cursor;
+  public Color Color0;
+  public Color Color1;
 
   public Projectile ProjectilePrefab;
   public AudioClip StartSound;

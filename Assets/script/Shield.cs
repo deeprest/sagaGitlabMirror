@@ -70,14 +70,19 @@ public class Shield : MonoBehaviour, IDamage
       switch( projectile.weapon.weaponType )
       {
         case Weapon.WeaponType.Projectile:
-          projectile.transform.position = transform.position + Vector3.Project( (Vector3)d.point - transform.position, transform.right );
-          projectile.velocity = Vector3.Reflect( projectile.velocity, transform.up );
-          Physics2D.IgnoreCollision( projectile.circle, collider, false );
-          foreach( var cldr in projectile.instigator.IgnoreCollideObjects )
+        projectile.transform.position = transform.position + Vector3.Project( (Vector3)d.point - transform.position, transform.right );
+        projectile.velocity = Vector3.Reflect( projectile.velocity, transform.up );
+        Physics2D.IgnoreCollision( projectile.circle, collider, false );
+        foreach( var cldr in projectile.instigator.IgnoreCollideObjects )
+        {
+          if( cldr == null )
+            Debug.Log( "ignorecolideobjects null" );
+          else
             Physics2D.IgnoreCollision( projectile.circle, cldr, false );
-          if( character != null )
-            projectile.instigator = character;
-          projectile.ignore.Add( transform );
+        }
+        if( character != null )
+          projectile.instigator = character;
+        projectile.ignore.Add( transform );
         break;
 
         case Weapon.WeaponType.Laser:
