@@ -3,12 +3,11 @@ Shader "Lightweight Render Pipeline/2D/Sprite-Background"
     Properties
     {
         _MainTex("Diffuse", 2D) = "white" {}
-        //_MaskTex("Mask", 2D) = "white" {}
         _NormalMap("Normal Map", 2D) = "bump" {}
         _EmissiveTex ("Emissive", 2D) = "white" {}
 
-        _FlashColor ("Flash Color", Color) = (1,1,1,1)
-_FlashAmount("Flash", Range(0.0, 1.0)) = 0
+        _FadeColor ("Flash Color", Color) = (1,1,1,1)
+        _FadeAmount("Flash", Range(0.0, 1.0)) = 0
     }
 
     HLSLINCLUDE
@@ -54,8 +53,6 @@ _FlashAmount("Flash", Range(0.0, 1.0)) = 0
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
-            //TEXTURE2D(_MaskTex);
-            //SAMPLER(sampler_MaskTex);
             TEXTURE2D(_NormalMap);
             SAMPLER(sampler_NormalMap);
             half4 _MainTex_ST;
@@ -63,8 +60,8 @@ _FlashAmount("Flash", Range(0.0, 1.0)) = 0
             TEXTURE2D(_EmissiveTex);
             SAMPLER(sampler_EmissiveTex);
 
-            half4 _FlashColor;
-half _FlashAmount;
+            half4 _FadeColor;
+            half _FadeAmount;
 
             #if USE_SHAPE_LIGHT_TYPE_0
             SHAPE_LIGHT(0)
@@ -98,8 +95,8 @@ half _FlashAmount;
 
             half4 CombinedShapeLightFragment(Varyings i) : SV_Target
             {
-                half4 main = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
-                return lerp(CombinedShapeLightShared(main, main, i.lightingUV), _FlashColor, _FlashAmount) * main.a;
+                half4 main = lerp( i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv), _FadeColor, _FadeAmount);
+                return CombinedShapeLightShared(main, main, i.lightingUV) * main.a;
             }
             ENDHLSL
         }

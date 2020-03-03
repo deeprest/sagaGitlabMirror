@@ -24,7 +24,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissiveTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 0d190377119ef491aa72c1efdfe79531, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -40,14 +40,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: 18ba25556d0fb47b790986e99ee0e9a5, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7f01739e8fe7846549bff1066366809f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BlendAmount: 0
     - _Cutoff: 0.001
     - _EmissiveAmount: 0
-    - _FlashAmount: 0.75
+    - _FadeAmount: 0.75
+    - _FlashAmount: 0.672
     - _FlipX: 0
     - _Glossiness: 0.2
     - _Metallic: 0
@@ -56,6 +57,7 @@ Material:
     m_Colors:
     - _BlendColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _FadeColor: {r: 0.25, g: 0.25, b: 0.25, a: 1}
     - _FlashColor: {r: 0.25, g: 0.25, b: 0.25, a: 1}
     - _IndexColor: {r: 1, g: 0, b: 0, a: 1}
     - _IndexColor2: {r: 1, g: 0, b: 0, a: 1}

@@ -1,8 +1,8 @@
 ﻿#if UNITY_EDITOR
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 using UnityEngine.AI;
@@ -75,6 +75,9 @@ public class CustomUtility : EditorWindow
   string subobjectName;
   string[] guids;
 
+  // font output
+  Texture2D fontImage;
+
   void StartJob( string message, int count, System.Action update, System.Action done )
   {
     progressMessage = message;
@@ -134,7 +137,9 @@ public class CustomUtility : EditorWindow
       List<string> buildnames = new List<string>();
       for( int i = 0; i < SceneManager.sceneCountInBuildSettings; i++ )
       {
-        buildnames.Add( SceneUtility.GetScenePathByBuildIndex( i ) );
+        string bn = SceneUtility.GetScenePathByBuildIndex( i );
+        if( bn != null )
+          buildnames.Add( bn );
         //string sceneName = path.Substring( 0, path.Length - 6 ).Substring( path.LastIndexOf( '/' ) + 1 );
       }
       BuildPlayerOptions bpo = new BuildPlayerOptions();
@@ -457,6 +462,40 @@ public class CustomUtility : EditorWindow
       //      }
     }
 
+    // tested on Unity 2019.2.6f1
+    fontImage = (Texture2D)EditorGUILayout.ObjectField( "Pixel Font Image", fontImage, typeof(Texture2D), false );
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Create Pixel Font" ) )
+    {
+      string letter = " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+      const int imageSize = 256;
+      const int cols = 16;
+      const int charWith = imageSize / cols;
+      string output = "info font=\"Base 5\" size=32 bold=0 italic=0 charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=2,2\n" +
+        "common lineHeight=10 base=12 scaleW="+ imageSize+" scaleH="+ imageSize+" pages=1 packed=0\n" +
+        "page id=0 file=\"" + fontImage.name + ".png\"\nchars count=" + letter.Length + "\n";
+      for( int i = 0; i < letter.Length; i++ )
+        output += "char id=" + i + " x="+(i%cols)* charWith + " y="+(i/cols)* charWith + " width=14 height=14 xoffset=1 yoffset=1 xadvance=16 page=0 chnl=0 letter=\"" + letter[i] + "\"\n";
+      output += "kernings count=0";
+      File.WriteAllText( Application.dataPath + "/font/"+ fontImage.name+".fnt", output );
+      AssetDatabase.SaveAssets();
+
+      string fntpath = Path.ChangeExtension( AssetDatabase.GetAssetPath( fontImage ), "fnt" );
+      Debug.Log( fntpath );
+      AssetDatabase.ImportAsset( fntpath, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport );
+      AssetDatabase.Refresh();
+      litefeel.BFImporter.DoImportBitmapFont( fntpath );
+
+      // set default font values
+      string fontsettings = Path.ChangeExtension( AssetDatabase.GetAssetPath( fontImage ), "fontsettings" );
+      Font font = AssetDatabase.LoadAssetAtPath<Font>( fontsettings );
+      UnityEditor.SerializedObject so = new UnityEditor.SerializedObject( font );
+      so.Update();
+      so.FindProperty( "m_AsciiStartOffset" ).intValue = 32;
+      so.FindProperty( "m_Tracking" ).floatValue = 0.5f;
+      so.FindProperty( "m_CharacterRects" ).GetArrayElementAtIndex( 0 ).FindPropertyRelative( "advance" ).floatValue = 16;
+      so.ApplyModifiedProperties();
+      so.SetIsDifferentCacheDirty();
+    }
 
     string td = EditorGUILayout.TextArea( todo, new GUILayoutOption[] { GUILayout.Height( 200 ) } );
     if( td != todo )
@@ -464,26 +503,9 @@ public class CustomUtility : EditorWindow
       todo = td;
       File.WriteAllText( Application.dataPath + "/../todo", todo );
     }
-
-
-    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "write font data" ) )
-    {
-      string letter = " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-      string fontImageName = "mmx.png";
-      string outFontName = "mmx.fnt";
-      const int imageSize = 256;
-      const int cols = 16;
-      const int charWith = imageSize / cols;
-      string output = "info font=\"Base 5\" size=16 bold=0 italic=0 charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=2,2\n" +
-        "common lineHeight=6 base=12 scaleW="+ imageSize+" scaleH="+ imageSize+" pages=1 packed=0\n" +
-        "page id=0 file=\"" + fontImageName + "\"\nchars count=" + letter.Length + "\n";
-      for( int i = 0; i < letter.Length; i++ )
-        output += "char id=" + i + " x="+(i%cols)* charWith + " y="+(i/cols)* charWith + " width=14 height=14 xoffset=1 yoffset=1 xadvance=16 page=0 chnl=0 letter=\"" + letter[i] + "\"\n";
-      output += "kernings count=0";
-      File.WriteAllText( Application.dataPath + "/font/"+ outFontName, output );
-    }
-
   }
+
+  string ugh;
 
   void ReplaceObjectWithPrefabInstance( GameObject replaceThis, GameObject prefab )
   {

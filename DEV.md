@@ -46,6 +46,7 @@
 - glitchy/wrong sprite shader for mech on linux
 
 ## ideas
+- death -> You emerge from corpse as a small spiderbot that can gain control of other machines.
 - bindings: json read/write, layouts
 - add airbot prop ability
 - graphook foe
@@ -107,16 +108,6 @@ no instant-death spikes or bottomless pits
 AI, navigation mesh
 
 ## aesthetics
-1. animation
-+ idle
-+ run cycle
-+ jump, fall
-+ wall slide
-+ dash
-+ weapon charge
-+ take damage
-- low health
-
 1. atmosphere.
 
 2. sounds
@@ -125,7 +116,7 @@ Consistent with instruments in the music.
 energy. melody.
 
 1. Camera view range.
-Camera can center on an imaginary point around the player, in the aiming direction. Allow for variance in zoom, depending on how cozy the surroundings (raycast in a few directions to determine).
+Camera can center on an imaginary point around the player, in the aiming direction. Allow for variance in zoom, depending on how cozy the surroundings.
 2. Full range of aim.
 MegamanX can only shoot forwards, not upwards or even slightly higher. The ability to shoot upwards in games like Contra is an improvement. Having weapons that spread out when shot can make this limitation feel less awkward.
 3. Enemies respawn at logical locations.
@@ -146,15 +137,11 @@ Not arbitrary static points.
 - no achievements to leave you feeling underachieving.
 - no trophies
 ## not too complex. you have a life.
+- no story to ignore or lore to forget (dialogue but no narrative)
 - no complicated technology/skill tree
-- no story to ignore or lore to forget (maybe dialogue but no narrative?)
-
-
-# random ideas
-death -> You emerge from corpse as a small spiderbot that can gain control of other machines.
-death -> The player awakens in the lab, newly-rebuilt. The attending mechanic explains that the explosion destroyed your body but not your core. He has given you a new body but could not retrieve your weapons.
 
 
 # thank you
 https://seansleblanc.itch.io/better-minimal-webgl-template for webgl template
 https://etclundberg.itch.io/ for early feedback
+jbarrios on TIGSource forums
