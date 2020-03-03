@@ -4,6 +4,7 @@ using System.Collections;
 public class SceneCity : SceneScript
 {
   [SerializeField] Chopper chopper;
+  [SerializeField] float runRightDuration = 3;
 
   public override void StartScene()
   {
@@ -14,7 +15,7 @@ public class SceneCity : SceneScript
     Global.instance.Controls.BipedActions.Disable();
     Global.instance.Controls.BipedActions.Aim.Enable();
     Global.instance.Controls.BipedActions.Fire.Enable();
-    new Timer( 5, delegate
+    new Timer( runRightDuration, delegate
     {
       Global.instance.CurrentPlayer.inputRight = true;
     }, delegate

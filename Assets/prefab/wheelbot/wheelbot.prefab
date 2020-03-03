@@ -126,17 +126,15 @@ MonoBehaviour:
   box: {fileID: 61147437956396782}
   renderer: {fileID: 212949075796312028}
   animator: {fileID: 0}
-  colliders: []
+  IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 1
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
-  inertia: {x: 0, y: 0}
+  carryCharacter: {fileID: 0}
   friction: 0.1
-  airFriction: 0.01
   raylength: 0.01
   contactSeparation: 0.01
-  IgnoreCollideObjects: []
   HasPath: 0
   WaypointRadii: 0.1
   DestinationRadius: 0.3
@@ -157,7 +155,7 @@ MonoBehaviour:
   ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
   rotator: {fileID: 110268027408849183}
   wheelAnimRate: -3
-  wheelVelocity: 1
+  wheelVelocity: -2
 --- !u!50 &88018454292964798
 Rigidbody2D:
   serializedVersion: 4

@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Experimental.Rendering.LWRP;
 
 public class FlameProjectile : Projectile, IDamage
 {
-  public new Light light;
+  public new Light2D light;
   public Vector2 constantAcceleration;
   Timer timeoutTimer;
   int HitCount;

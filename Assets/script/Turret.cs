@@ -62,6 +62,10 @@ public class Turret : Character
         }
 
       }
+      else
+      {
+        animator.Play( "idle" );
+      }
     }
   }
 

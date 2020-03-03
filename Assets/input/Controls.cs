@@ -79,7 +79,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f76ed92c-c61d-417e-9270-e5239ed52fdb"",
-                    ""path"": ""<Keyboard>/m"",
+                    ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

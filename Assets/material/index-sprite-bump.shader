@@ -74,12 +74,11 @@
        c.rgb = lerp( _IndexColor2.rgb * min(1.0,c.g*2.0), float4(1,1,1,1), (c.g-0.5)*2.0 );
        
      o.Albedo = lerp( c.rgb, _Tint.rgb, _TintAmount );
-    float3 norm = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
-    if( _FlipX )
-    {
-      norm.x = -norm.x;
-      norm.y = -norm.y;
-    }
+     float3 norm = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+     if( _FlipX )
+     {
+       norm.y = -norm.y;
+     }
      o.Normal = norm;
      o.Metallic = _Metallic * (1.0 - tex2D( _MetallicTex, IN.uv_MainTex ));
      o.Smoothness = _Glossiness;

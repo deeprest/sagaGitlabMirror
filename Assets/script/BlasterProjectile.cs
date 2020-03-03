@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Experimental.Rendering.LWRP;
 
 public class BlasterProjectile : Projectile, IDamage
 {
-  public new Light light;
+  public new Light2D light;
   Timer timeoutTimer;
   int HitCount;
   public int DieAfterHitCount;

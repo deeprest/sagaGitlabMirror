@@ -48,18 +48,20 @@ public class GlobalEditor : Editor
 }
 #endif
 
-
-
 public class WorldSelectable : MonoBehaviour
 {
   public virtual void Highlight()
   {
-    Global.instance.InteractIndicator.SetActive( true );
-    Global.instance.InteractIndicator.transform.position = transform.position;
+    if( Global.instance.CurrentPlayer != null )
+    {
+      Global.instance.CurrentPlayer.InteractIndicator.SetActive( true );
+      Global.instance.CurrentPlayer.InteractIndicator.transform.position = transform.position;
+    }
   }
   public virtual void Unhighlight()
   {
-    Global.instance.InteractIndicator.SetActive( false );
+    if( Global.instance.CurrentPlayer != null )
+      Global.instance.CurrentPlayer.InteractIndicator.SetActive( false );
   }
   public virtual void Select() { }
   public virtual void Unselect() { }
@@ -74,17 +76,17 @@ public class Global : MonoBehaviour
   public static bool IsQuiting = false;
 
   [Header( "Global Settings" )]
+  [Tooltip( "Pretend this is a build we're running" )]
+  public bool SimulatePlayer = false;
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
   [SerializeField] string InitialSceneName;
-  public float deadZone = 0.1f;
   // screenshot timer
   public int screenshotInterval;
   public Timer ScreenshotTimer = new Timer();
 
 
-  [Tooltip( "Pretend this is a build we're running" )]
-  public bool SimulatePlayer = false;
+
   [SerializeField] float slowtime = 0.2f;
   Timer fadeTimer = new Timer();
   public float RepathInterval = 1;
@@ -111,7 +113,9 @@ public class Global : MonoBehaviour
   public static string[] FlameProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" };
   // check first before spawning to avoid colliding with these layers on the first frame
   public static string[] BouncyGrenadeCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" };
+  public static string[] StickyBombCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" };
   public static string[] TurretSightLayers = { "Default", "character", "triggerAndCollision", "destructible" };
+  public static string[] EnemySightLayers = { "Default", "character", "triggerAndCollision", "destructible" };
 
   [Header( "Settings" )]
   public GameObject ToggleTemplate;
@@ -129,7 +133,6 @@ public class Global : MonoBehaviour
   public CameraController CameraController;
   [SerializeField] Animator animator;
   [SerializeField] AudioClip VolumeChangeNoise;
-  public GameObject InteractIndicator;
 
   [Header( "Prefabs" )]
   public GameObject audioOneShotPrefab;
@@ -340,7 +343,10 @@ public class Global : MonoBehaviour
 #endif
   }
 
-  public string ReplaceWithControlNames( string source )
+  Dictionary<string, string> ReplaceControlNames = new Dictionary<string, string>();
+
+
+  public string ReplaceWithControlNames( string source, bool colorize = true )
   {
     // todo support composites
     string outstr = "";
@@ -366,7 +372,14 @@ public class Global : MonoBehaviour
           controlName = ic.shortDisplayName;
         else
           controlName = ic.name.ToUpper();
-        outstr += "<color=#" + ColorUtility.ToHtmlStringRGB( ControlNameColor ) + ">" + controlName + "</color>";
+
+        if( ReplaceControlNames.ContainsKey( controlName.ToUpper() ) )
+          controlName = ReplaceControlNames[controlName.ToUpper()];
+
+        if( colorize )
+          outstr += "<color=#" + ColorUtility.ToHtmlStringRGB( ControlNameColor ) + ">" + controlName + "</color>";
+        else
+          outstr += controlName;
         outstr += ugh[1];
       }
       else
@@ -377,6 +390,14 @@ public class Global : MonoBehaviour
 
   void InitializeControls()
   {
+    ReplaceControlNames.Add( "DELTA", "Mouse" );
+    ReplaceControlNames.Add( "LMB", "Left Mouse Button" );
+    ReplaceControlNames.Add( "RMB", "Right Mouse Button" );
+    ReplaceControlNames.Add( "LB", "Left Bumper" );
+    ReplaceControlNames.Add( "RB", "Right Bumper" );
+    ReplaceControlNames.Add( "LT", "Left Trigger" );
+    ReplaceControlNames.Add( "RT", "Right Trigger" );
+
     Controls = new Controls();
     Controls.Enable();
     Controls.MenuActions.Disable();
@@ -749,11 +770,15 @@ public class Global : MonoBehaviour
     CurrentPlayer.SpeedFactorNormalized = FloatSetting["PlayerSpeedFactor"].Value;
   }
 
+  int spawnIndex = 0;
   GameObject FindSpawnPoint()
   {
     GameObject[] spawns = GameObject.FindGameObjectsWithTag( "Respawn" );
     if( spawns.Length > 0 )
-      return spawns[Random.Range( 0, spawns.Length )];
+    {
+      spawnIndex %= spawns.Length;
+      return spawns[spawnIndex++];
+    }
     return null;
   }
 
@@ -1129,7 +1154,7 @@ public class Global : MonoBehaviour
     }
   }
 
-#region Settings
+  #region Settings
 
   string[] resolutions = { "640x360", "640x400", "1024x512", "1280x720", "1280x800", "1920x1080" };
   int ResolutionWidth;
@@ -1390,7 +1415,7 @@ public class Global : MonoBehaviour
     ApplyScreenSettings();
   }
 
-#endregion
+  #endregion
 
   static GameObject FindFirstEnabledSelectable( GameObject gameObject )
   {

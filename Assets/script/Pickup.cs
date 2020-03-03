@@ -34,8 +34,9 @@ public class Pickup : WorldSelectable
   }
   public override void Select()
   {
-    if( animator != null )
-      animator.Play( "selected" );
+    Destroy( gameObject );
+    /*if( animator != null )
+      animator.Play( "selected" );*/
   }
   public override void Unselect()
   {

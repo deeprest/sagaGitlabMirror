@@ -41,8 +41,8 @@ GameObject:
   - component: {fileID: 4252371820229170}
   - component: {fileID: 61107250239624328}
   - component: {fileID: 212343005596785154}
-  - component: {fileID: 114314405037397694}
   - component: {fileID: 114844931330827930}
+  - component: {fileID: 1263690815390439729}
   m_Layer: 10
   m_Name: chopper
   m_TagString: Untagged
@@ -81,8 +81,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.46740922, y: 0.82141435}
-    oldSize: {x: 2.140625, y: 1.71875}
+    pivot: {x: 0.4931457, y: 0.8388868}
+    oldSize: {x: 2.3125, y: 1.703125}
     newSize: {x: 0.25, y: 0.375}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -129,7 +129,7 @@ SpriteRenderer:
   m_SortingLayerID: 1643776171
   m_SortingLayer: 1
   m_SortingOrder: -10
-  m_Sprite: {fileID: 21300006, guid: eefa2060554ab451fb52f8390b7c3072, type: 3}
+  m_Sprite: {fileID: 21300002, guid: eefa2060554ab451fb52f8390b7c3072, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -140,27 +140,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &114314405037397694
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1918067062961258}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b33ff9aa3132f4a8380ec0f254583519, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurrentFrameIndex: 3
-  sac: []
-  sr: {fileID: 212343005596785154}
-  image: {fileID: 0}
-  flipX: 0
-  CurrentSequence: {fileID: 11400000, guid: 3c39ae3b2a4284e04a46e5924d0a4063, type: 2}
-  isPlaying: 0
-  playAtAStart: 1
-  anims: []
 --- !u!114 &114844931330827930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,6 +154,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hangPoint: {fileID: 4066940549659038}
   chopperStartPoint: {fileID: 0}
-  character: {fileID: 0}
   speed: 8
-  timeUntilDrop: 1.5
+  timeUntilDrop: 1
+--- !u!95 &1263690815390439729
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918067062961258}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a50424cd077aa4f79af2ec8ece611fe2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

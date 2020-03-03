@@ -76,12 +76,13 @@ public class OnboardingControls : MonoBehaviour
 
   void Start()
   {
+    AddInputAction( Global.instance.Controls.GlobalActions.Menu );
+    AddInputAction( Global.instance.Controls.GlobalActions.DEVRespawn );
+
     IEnumerator<InputAction> enumerator = Global.instance.Controls.BipedActions.Get().GetEnumerator();
     while( enumerator.MoveNext() )
       AddInputAction( enumerator.Current );
 
-    AddInputAction( Global.instance.Controls.GlobalActions.Menu );
-    AddInputAction( Global.instance.Controls.GlobalActions.DEVRespawn );
 
     updateTextTimer.Start( int.MaxValue, 1, delegate ( Timer obj ) { UpdateText(); }, null );
   }

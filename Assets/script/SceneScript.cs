@@ -6,6 +6,7 @@ public class SceneScript : MonoBehaviour
 {
   public AudioLoop music;
   // generation
+  public bool GenerateLevelOnStart = true;
   public Level level;
   // the camera collider
   public Collider2D sb;
@@ -19,7 +20,7 @@ public class SceneScript : MonoBehaviour
       //return;
     }
     // level generation
-    if( level != null )
+    if( GenerateLevelOnStart && level != null )
       level.Generate();
 
     Global.instance.AssignCameraPoly( sb );
@@ -35,6 +36,11 @@ public class SceneScript : MonoBehaviour
     Global.instance.Controls.BipedActions.Disable();
   }
 
+  public void CameraZoom( float value )
+  {
+    Global.instance.CameraController.orthoTarget = value;
+  }
+
   public void ReplaceCameraPoly( Collider2D collider )
   {
     Global.instance.AssignCameraPoly( collider );
@@ -47,7 +53,7 @@ public class SceneScript : MonoBehaviour
     Global.instance.CameraController.EncompassBounds = true;
   }
 
-  Timer runTimer = new Timer();
+  /*Timer runTimer = new Timer();
   public void RunLeft( float duration )
   {
     Global.instance.Controls.BipedActions.Disable();
@@ -86,6 +92,6 @@ public class SceneScript : MonoBehaviour
       }
     };
     runTimer.Start( tp );
-  }
+  }*/
 
 }

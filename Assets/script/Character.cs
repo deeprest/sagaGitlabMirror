@@ -11,19 +11,28 @@ public class Character : MonoBehaviour, IDamage
   public new SpriteRenderer renderer;
   public Animator animator;
 
-  public Collider2D[] colliders;
-  public SpriteRenderer[] spriteRenderers;
+  public List<Collider2D> IgnoreCollideObjects;
+  public List<SpriteRenderer> spriteRenderers;
+  Character parentCharacter;
 
   public bool UseGravity = true;
   public Vector2 velocity = Vector2.zero;
+  public Vector2 Velocity
+  {
+    get
+    {
+      if( carryCharacter == null )
+        return velocity;
+      else
+        return velocity + carryCharacter.Velocity;
+    }
+  }
   public Vector2 pushVelocity = Vector2.zero;
   public Character carryCharacter;
   public float friction = 0.05f;
-  //public float airFriction = 0.05f;
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
 
-  public List<Transform> IgnoreCollideObjects;
   protected bool collideRight = false;
   protected bool collideLeft = false;
   protected bool collideTop = false;
@@ -48,8 +57,7 @@ public class Character : MonoBehaviour, IDamage
   public string AgentTypeName = "Small";
   public Vector2 MoveDirection;
   // sidestep
-  public bool SidestepAvoidance = true;
-  bool DefaultSidestepAvoidance = true;
+  public bool SidestepAvoidance = false;
   float SidestepLast;
   Vector2 Sidestep;
   RaycastHit2D[] RaycastHits;
@@ -86,10 +94,10 @@ public class Character : MonoBehaviour, IDamage
 
   protected void CharacterStart()
   {
-    colliders = GetComponentsInChildren<Collider2D>();
-    foreach( var cld in colliders )
-      IgnoreCollideObjects.Add( cld.transform );
-    spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+    if( transform.parent != null )
+      parentCharacter = transform.parent.GetComponent<Character>();
+    IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
+    spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
     UpdateHit = BoxHit;
     UpdateCollision = BoxCollision;
     UpdatePosition = BasicPosition;
@@ -98,6 +106,44 @@ public class Character : MonoBehaviour, IDamage
     nvp = new NavMeshPath();
     AgentTypeID = Global.instance.AgentType[AgentTypeName];
     RaycastHits = new RaycastHit2D[4];
+  }
+
+  public void CharacterOnDestroy()
+  {
+    flashTimer.Stop( false );
+    pushTimer.Stop( false );
+    if( parentCharacter != null )
+      parentCharacter.RemoveChild( this );
+    parentCharacter = null;
+  }
+
+  void OnDestroy()
+  {
+    CharacterOnDestroy();
+  }
+
+  public void RemoveChild( Character child )
+  {
+    Collider2D[] clds = IgnoreCollideObjects.ToArray();
+    for( int i = 0; i < clds.Length; i++ )
+    {
+      if( clds[i].transform == child.transform )
+      {
+        IgnoreCollideObjects.Remove( clds[i] );
+        break;
+      }
+    }
+
+    SpriteRenderer[] srs = spriteRenderers.ToArray();
+    for( int i = 0; i < srs.Length; i++ )
+    {
+      if( srs[i].transform == child.transform )
+      {
+        spriteRenderers.Remove( srs[i] );
+        break;
+      }
+    }
+
   }
 
   void Update()
@@ -173,17 +219,6 @@ public class Character : MonoBehaviour, IDamage
     carryCharacter = null;
   }
 
-  public Vector2 Velocity
-  {
-    get
-    {
-      if( carryCharacter == null )
-        return velocity;
-      else
-        return velocity + carryCharacter.Velocity;
-    }
-  }
-
   protected void BoxCollision()
   {
     collideRight = false;
@@ -200,7 +235,7 @@ public class Character : MonoBehaviour, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y > corner )
       {
@@ -216,7 +251,7 @@ public class Character : MonoBehaviour, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.up, Mathf.Max( raylength, velocity.y * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y < -corner )
       {
@@ -228,7 +263,7 @@ public class Character : MonoBehaviour, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x > corner )
       {
@@ -242,7 +277,7 @@ public class Character : MonoBehaviour, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( raylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x < -corner )
       {
@@ -252,24 +287,16 @@ public class Character : MonoBehaviour, IDamage
         break;
       }
     }
-#if KINEMATIC
-    ugh = adjust - boxOffset;
-#else
-    transform.position = adjust - boxOffset;
-#endif
-  }
 
-#if KINEMATIC
-  public Vector2 ugh;
-#endif
+    transform.position = adjust - boxOffset;
+  }
 
   protected virtual void Die()
   {
     Instantiate( explosion, transform.position, Quaternion.identity );
-    //Global.instance.Destroy( gameObject );
-    Destroy( gameObject );
     if( spawnWhenDead != null && Random.Range( 0, spawnChance ) == 0 )
       Instantiate( spawnWhenDead, transform.position, Quaternion.identity );
+    Destroy( gameObject );
   }
 
   public virtual bool TakeDamage( Damage d )
@@ -324,12 +351,12 @@ public class Character : MonoBehaviour, IDamage
         // follow path if waypoints exist
         Vector3 waypointFlat = waypointEnu.Current;
         waypointFlat.z = 0;
-        if( Vector3.SqrMagnitude( transform.position - waypointFlat ) > (Time.timeScale * WaypointRadii) * (WaypointRadii * Time.timeScale) )
+        if( Vector3.SqrMagnitude( transform.position - waypointFlat ) > WaypointRadii * WaypointRadii )
         {
           MoveDirection = (Vector2)waypointEnu.Current - (Vector2)transform.position;
         }
         else
-        if( waypointEnu.MoveNext() && Vector3.SqrMagnitude( transform.position - DestinationPosition ) > DestinationRadius * DestinationRadius )
+        if( waypointEnu.MoveNext() )
         {
           MoveDirection = (Vector2)waypointEnu.Current - (Vector2)transform.position;
         }
@@ -387,18 +414,15 @@ public class Character : MonoBehaviour, IDamage
           {
             float raycastDistance = Mathf.Min( distanceToWaypoint, Global.instance.SidestepRaycastDistance );
             int count = Physics2D.CircleCastNonAlloc( transform.position, 0.5f/*box.edgeRadius*/, MoveDirection.normalized, RaycastHits, raycastDistance, LayerMask.GetMask( Global.CharacterSidestepLayers ) );
-            if( count > 0 )
+            for( int i = 0; i < count; i++ )
             {
-              for( int i = 0; i < count; i++ )
+              RaycastHit2D hit = RaycastHits[i];
+              Character other = hit.transform.root.GetComponent<Character>();
+              if( other != null && other != this )
               {
-                RaycastHit2D hit = RaycastHits[i];
-                Character other = hit.transform.root.GetComponent<Character>();
-                if( other != null && other != this )
-                {
-                  Vector3 delta = other.transform.position - transform.position;
-                  Sidestep = ((transform.position + Vector3.Project( delta, MoveDirection.normalized )) - other.transform.position).normalized * Global.instance.SidestepDistance;
-                  break;
-                }
+                Vector3 delta = other.transform.position - transform.position;
+                Sidestep = ((transform.position + Vector3.Project( delta, MoveDirection.normalized )) - other.transform.position).normalized * Global.instance.SidestepDistance;
+                break;
               }
             }
           }
@@ -413,7 +437,7 @@ public class Character : MonoBehaviour, IDamage
 #endif
   }
 
-  void ClearPath()
+  public void ClearPath()
   {
     HasPath = false;
     waypoint.Clear();
@@ -429,12 +453,12 @@ public class Character : MonoBehaviour, IDamage
 
     Vector3 EndPosition = TargetPosition;
     NavMeshHit hit;
-    if( NavMesh.SamplePosition( TargetPosition, out hit, 5.0f, NavMesh.AllAreas ) )
+    if( NavMesh.SamplePosition( TargetPosition, out hit, 1.0f, NavMesh.AllAreas ) )
       EndPosition = hit.position;
     DestinationPosition = EndPosition;
 
     Vector3 StartPosition = transform.position;
-    if( NavMesh.SamplePosition( StartPosition, out hit, 5.0f, NavMesh.AllAreas ) )
+    if( NavMesh.SamplePosition( StartPosition, out hit, 1.0f, NavMesh.AllAreas ) )
       StartPosition = hit.position;
 
 

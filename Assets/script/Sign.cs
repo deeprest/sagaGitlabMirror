@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Sign : MonoBehaviour
 {
   [SerializeField] Text message;
+  [SerializeField] bool Colorize = true;
   string initialText;
 
   private void Awake()
@@ -15,6 +16,6 @@ public class Sign : MonoBehaviour
 
   void Update()
   {
-    message.text = Global.instance.ReplaceWithControlNames( initialText );
+    message.text = Global.instance.ReplaceWithControlNames( initialText, Colorize );
   }
 }

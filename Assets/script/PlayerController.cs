@@ -196,9 +196,6 @@ public class PlayerController : Character, IDamage
   public float damageLift = 1f;
   public float damagePushAmount = 1f;
 
-  //[Header( "Shield" )]
-  //public GameObject Shield;
-
   [Header( "Graphook" )]
   [SerializeField] GameObject graphookTip;
   [SerializeField] SpriteRenderer grapCableRender;
@@ -219,21 +216,20 @@ public class PlayerController : Character, IDamage
 
   void Awake()
   {
-    //Collider2D shieldCollider = Shield.GetComponent<Collider2D>();
-    //Physics2D.IgnoreCollision( box, shieldCollider );
     BindControls();
   }
 
   void Start()
   {
-    colliders = GetComponentsInChildren<Collider2D>();
-    foreach( var cld in colliders )
-      IgnoreCollideObjects.Add( cld.transform );
-    spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+    IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
+    spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
     graphookTip.SetActive( false );
     grapCableRender.gameObject.SetActive( false );
     if( weapons.Count > 0 )
       weapon = weapons[CurrentWeaponIndex % weapons.Count];
+    // unpack
+    InteractIndicator.SetActive( false );
+    InteractIndicator.transform.SetParent( null );
   }
 
   public override void PreSceneTransition()
@@ -241,13 +237,16 @@ public class PlayerController : Character, IDamage
     StopCharge();
     StopGrap();
     // "pack" the graphook with this gameobject
+    // graphook is unpacked when used
     graphookTip.transform.parent = gameObject.transform;
     grapCableRender.transform.parent = gameObject.transform;
+    InteractIndicator.transform.parent = gameObject.transform;
   }
 
   public override void PostSceneTransition()
   {
-
+    InteractIndicator.SetActive( false );
+    InteractIndicator.transform.SetParent( null );
   }
 
   void OnDestroy()
@@ -270,6 +269,11 @@ public class PlayerController : Character, IDamage
     Global.instance.weaponIcon.sprite = weapon.icon;
     Cursor.GetComponent<SpriteRenderer>().sprite = weapon.cursor;
     StopCharge();
+    foreach( var sr in spriteRenderers )
+    {
+      sr.material.SetColor( "_IndexColor", weapon.Color0 );
+      sr.material.SetColor( "_IndexColor2", weapon.Color1 );
+    }
   }
 
   void NextWeapon()
@@ -445,7 +449,7 @@ public class PlayerController : Character, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y > corner )
       {
@@ -463,7 +467,7 @@ public class PlayerController : Character, IDamage
     hits = Physics2D.BoxCastAll( adjust + Vector2.down * headboxy, headbox, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y < -corner )
       {
@@ -476,7 +480,7 @@ public class PlayerController : Character, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( contactSeparation, -velocity.x * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x > corner )
       {
@@ -491,7 +495,7 @@ public class PlayerController : Character, IDamage
     hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( contactSeparation, velocity.x * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
     foreach( var hit in hits )
     {
-      if( IgnoreCollideObjects.Contains( hit.transform ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x < -corner )
       {
@@ -924,6 +928,7 @@ public class PlayerController : Character, IDamage
 
 
   [Header( "Cursor" )]
+  public GameObject InteractIndicator;
   [SerializeField] Transform Cursor;
   public Transform CursorSnapped;
   public Transform CursorAutoAim;
@@ -1093,6 +1098,7 @@ public class PlayerController : Character, IDamage
         audio2.loop = true;
         audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
         foreach( var sr in spriteRenderers )
+          //sr.color = chargeColor;
           sr.material.SetColor( "_FlashColor", chargeColor );
         ChargePulseFlip();
         if( chargeEffectGO != null )
@@ -1125,7 +1131,7 @@ public class PlayerController : Character, IDamage
       chargePulseOn = !chargePulseOn;
       if( chargePulseOn )
         foreach( var sr in spriteRenderers )
-          sr.material.SetFloat( "_FlashAmount", 0.5f );
+          sr.material.SetFloat( "_FlashAmount", 1 );
       else
         foreach( var sr in spriteRenderers )
           sr.material.SetFloat( "_FlashAmount", 0 );

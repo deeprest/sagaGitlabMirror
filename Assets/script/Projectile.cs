@@ -17,45 +17,4 @@ public class Projectile : MonoBehaviour
   public Vector2 velocity;
 
   public List<Transform> ignore = new List<Transform>();
-
-  /*
-    void OnDestroy()
-    {
-      timeoutTimer.Stop( false );
-    }
-
-    void Start()
-    {
-      if( StartSound!=null )
-        Global.instance.AudioOneShot( StartSound, transform.position );
-
-      timeoutTimer = new Timer( timeout, null, delegate ()
-      {
-        if( gameObject != null )
-          Destroy( gameObject );
-      } );
-    }
-
-
-      private void Update()
-    {
-      RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( CollideLayers ) );
-      if( hit.transform != null && (instigator == null || hit.transform != instigator) )
-      {
-        IDamage dam = hit.transform.GetComponent<IDamage>();
-        if( dam != null )
-        {
-          Damage dmg = Instantiate<Damage>( ContactDamage );
-          dmg.instigator = transform;
-          dmg.point = hit.point;
-          dam.TakeDamage( dmg );
-        }
-        Destroy( gameObject );
-      }
-      else
-      {
-        transform.position += velocity * Time.deltaTime;
-      }
-    }
-    */
 }

@@ -13,6 +13,8 @@ public class Weapon : ScriptableObject
   public WeaponType weaponType;
   public Sprite icon;
   public Sprite cursor;
+  public Color Color0;
+  public Color Color1;
 
   public Projectile ProjectilePrefab;
   public AudioClip StartSound;
@@ -66,11 +68,11 @@ public class Weapon : ScriptableObject
         p.weapon = this;
         p.instigator = instigator;
         p.velocity = shoot.normalized * (p.speed + speedIncrease);
-        foreach( var c in instigator.colliders )
-          Physics2D.IgnoreCollision( p.circle, c );
+        foreach( var c in instigator.IgnoreCollideObjects )
+          Physics2D.IgnoreCollision( p.circle, c, true );
         if( playSound && StartSound != null )
           Global.instance.AudioOneShot( StartSound, pos );
-        // color shifting for no reason
+        // color shifting
         /*SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
         if( sr != null )
           sr.color = Global.instance.shiftyColor;

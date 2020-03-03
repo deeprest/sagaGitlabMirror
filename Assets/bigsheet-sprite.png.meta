@@ -3,11 +3,14 @@ guid: 64314a0420c93471b9990c7b9f080a39
 TextureImporter:
   internalIDToNameTable:
   - first:
+      213: -8667428133320005161
+    second: mmx-sprite 1_0
+  - first:
       213: 21300000
     second: hornet-prop-0
   - first:
       213: 21300002
-    second: enemies-1-diffuse_1
+    second: sticky0
   - first:
       213: 21300004
     second: missile
@@ -34,7 +37,7 @@ TextureImporter:
     second: hornet-prop-2
   - first:
       213: 21300020
-    second: enemies-1-diffuse_10
+    second: sticky1
   - first:
       213: 21300022
     second: enemies-1-diffuse_11
@@ -43,7 +46,7 @@ TextureImporter:
     second: hornet-body
   - first:
       213: 21300026
-    second: enemies-1-diffuse_13
+    second: sticky2
   - first:
       213: 21300028
     second: enemies-1-diffuse_14
@@ -392,6 +395,117 @@ TextureImporter:
   - first:
       213: -3741573112334478744
     second: box
+  - first:
+      213: -7947611921849211345
+    second: icon-tri
+  - first:
+      213: 7949111743751955053
+    second: icon-magnet
+  - first:
+      213: 445421092411261529
+    second: icon-autotarget
+  - first:
+      213: -3422296157070212591
+    second: icon- graphook
+  - first:
+      213: -2816585416807857111
+    second: bigenergy0
+  - first:
+      213: -4167461112645842714
+    second: bigenergy1
+  - first:
+      213: 7559660143352184087
+    second: bigenergy2
+  - first:
+      213: -7826832691570071239
+    second: bigenergy3
+  - first:
+      213: 8477700371242646036
+    second: wea0
+  - first:
+      213: -6450172056967931864
+    second: wea1
+  - first:
+      213: -2559366190253449857
+    second: wea2
+  - first:
+      213: 5553498074208340942
+    second: door0
+  - first:
+      213: -1590901961983980844
+    second: door1
+  - first:
+      213: 6507648222238292473
+    second: door2
+  - first:
+      213: -5548072383600701443
+    second: door3
+  - first:
+      213: -6817464639422060475
+    second: door4
+  - first:
+      213: 5818061169864382572
+    second: door5
+  - first:
+      213: 7036776042523454921
+    second: door6
+  - first:
+      213: 776527509756445523
+    second: door7
+  - first:
+      213: 585820402676743325
+    second: door8
+  - first:
+      213: 2389143729250184603
+    second: door9
+  - first:
+      213: -7563146152494684709
+    second: smoke0
+  - first:
+      213: 1612392339144577644
+    second: smoke1
+  - first:
+      213: 4680064052781019248
+    second: smoke2
+  - first:
+      213: -5998828961821496541
+    second: smoke3
+  - first:
+      213: 709582824438758730
+    second: cross-0
+  - first:
+      213: -7418066093621697925
+    second: cross-1
+  - first:
+      213: -431505762946199038
+    second: cross-2
+  - first:
+      213: 5629195679260521713
+    second: cross-3
+  - first:
+      213: 4025853158518018833
+    second: cross-4
+  - first:
+      213: -1299243491995080028
+    second: cross-5
+  - first:
+      213: -8707006518711066485
+    second: cross-6
+  - first:
+      213: 6710513174221640168
+    second: cross-7
+  - first:
+      213: 2330203045032020808
+    second: cross-8
+  - first:
+      213: 3437735957064962526
+    second: cross-9
+  - first:
+      213: -5087703361143020843
+    second: cross-10
+  - first:
+      213: 2008927550669943001
+    second: snap-cursor
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -509,13 +623,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: enemies-1-diffuse_1
+      name: sticky0
       rect:
         serializedVersion: 2
-        x: 135
-        y: 241
-        width: 10
-        height: 12
+        x: 204
+        y: 51
+        width: 12
+        height: 10
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -533,8 +647,8 @@ TextureImporter:
       name: missile
       rect:
         serializedVersion: 2
-        x: 148
-        y: 242
+        x: 184
+        y: 51
         width: 16
         height: 11
       alignment: 0
@@ -554,8 +668,8 @@ TextureImporter:
       name: enemies-1-diffuse_3
       rect:
         serializedVersion: 2
-        x: 166
-        y: 242
+        x: 167
+        y: 51
         width: 16
         height: 11
       alignment: 0
@@ -575,8 +689,8 @@ TextureImporter:
       name: enemies-1-diffuse_4
       rect:
         serializedVersion: 2
-        x: 184
-        y: 244
+        x: 157
+        y: 52
         width: 8
         height: 8
       alignment: 0
@@ -596,8 +710,8 @@ TextureImporter:
       name: enemies-1-diffuse_5
       rect:
         serializedVersion: 2
-        x: 195
-        y: 244
+        x: 147
+        y: 52
         width: 7
         height: 8
       alignment: 0
@@ -698,15 +812,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: enemies-1-diffuse_10
+      name: sticky1
       rect:
         serializedVersion: 2
-        x: 133
-        y: 229
-        width: 14
-        height: 10
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 218
+        y: 49
+        width: 10
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5911163, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -761,15 +875,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: enemies-1-diffuse_13
+      name: sticky2
       rect:
         serializedVersion: 2
-        x: 133
-        y: 218
-        width: 14
-        height: 10
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 229
+        y: 49
+        width: 10
+        height: 14
+      alignment: 9
+      pivot: {x: 0.59111786, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -3115,7 +3229,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -3123,6 +3237,804 @@ TextureImporter:
       bones: []
       spriteID: 1a1d9add0d25641dd81391cc4c4ca4a4
       internalID: -3741573112334478744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon-tri
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 2
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a8dc7f7c1bd75412bb79844d2e55d9dd
+      internalID: -7947611921849211345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon-magnet
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 2
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a89f2384a54ea4333b0b3757a5a5b851
+      internalID: 7949111743751955053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon-autotarget
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 1
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 16672070ec86e495497ae161a00be758
+      internalID: 445421092411261529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: icon- graphook
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 2
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b994ce863ef354dff826d49354a85bc5
+      internalID: -3422296157070212591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bigenergy0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 34
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d78903936cfde44ad94ea15f08ed1613
+      internalID: -2816585416807857111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bigenergy1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 34
+        width: 16
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 250ebf3ae178543a0b3e5b46ee8508bb
+      internalID: -4167461112645842714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bigenergy2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 34
+        width: 16
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6a9ae8bfb51e4c63a194916829b589e
+      internalID: 7559660143352184087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bigenergy3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 34
+        width: 16
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c60a6e4e3cdb4bb39ba6a3297a2f489
+      internalID: -7826832691570071239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wea0
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 33
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c1c51effe2f694f1aafb72212c8be4a6
+      internalID: 8477700371242646036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wea1
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 33
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3afc5a8fc68e042e0a5bb15ca4a6fb7a
+      internalID: -6450172056967931864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wea2
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 33
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dc735f11db0a345a5be403a9bbad2a85
+      internalID: -2559366190253449857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: door0
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 17
+        width: 16
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f2114513765bb479281c71103e7dd02c
+      internalID: 5553498074208340942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: door1
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 17
+        width: 16
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ea90b54e4a7b4a4f903c9a9846e8467
+      internalID: -1590901961983980844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: door2
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 17
+        width: 16
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 44f8c1736e7de4c7fa4b58905b4a1fcd
+      internalID: 6507648222238292473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: door3
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 17
+        width: 16
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74eb99d5074924f408b8f2b680d7cbf4
+      internalID: -5548072383600701443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: door4
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 17
+        width: 16
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d154b1e5ecf6f475ba563e6fc9c0efc5
+      internalID: -6817464639422060475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: door5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 17
+        width: 16
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eaac75b6d812441b0b601568a18a95f4
+      internalID: 5818061169864382572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: door6
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 17
+        width: 16
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c201c0fec1b547d0aa69ab10ecfe832
+      internalID: 7036776042523454921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: door7
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 17
+        width: 16
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 338c64fa309054e2fa0e8789506b2c8f
+      internalID: 776527509756445523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: door8
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 17
+        width: 16
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e26756aa2124c4b18bc394697d25a1c0
+      internalID: 585820402676743325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: door9
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 17
+        width: 16
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bc90976fa264478a9fc2273a72825a6
+      internalID: 2389143729250184603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mmx-sprite 1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 50
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d6c5592b45ac842bdad802415a49c523
+      internalID: -8667428133320005161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoke0
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 245
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c0af17b60f8dc4040b8ff6c238c15c98
+      internalID: -7563146152494684709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoke1
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 243
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 986c1eb8c11574e3dbdba52aee377635
+      internalID: 1612392339144577644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoke2
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 242
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 86e7ed2b9f12e4ac4a5b16cb2c5676f1
+      internalID: 4680064052781019248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoke3
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 242
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de19ac23e65164142b1dc90a1ddbb5de
+      internalID: -5998828961821496541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cross-0
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 13
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a19a5e4c1dc7248dbba08ed5a4026469
+      internalID: 709582824438758730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cross-1
+      rect:
+        serializedVersion: 2
+        x: 779
+        y: 12
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3bb715af5030e40db9e71fcf6d4e11c1
+      internalID: -7418066093621697925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cross-2
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 11
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a868eb2b72504fa4bd792904208b732
+      internalID: -431505762946199038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cross-3
+      rect:
+        serializedVersion: 2
+        x: 807
+        y: 10
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf062bfea44db4122a80601a4394c2ed
+      internalID: 5629195679260521713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cross-4
+      rect:
+        serializedVersion: 2
+        x: 824
+        y: 10
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6bf231f533cb24c0e96c61e47565797d
+      internalID: 4025853158518018833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cross-5
+      rect:
+        serializedVersion: 2
+        x: 841
+        y: 10
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e9f0002221e3245f59da363a5ed77916
+      internalID: -1299243491995080028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cross-6
+      rect:
+        serializedVersion: 2
+        x: 862
+        y: 6
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ad117140fc7c34ef48ff027a9f4aec72
+      internalID: -8707006518711066485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cross-7
+      rect:
+        serializedVersion: 2
+        x: 891
+        y: 2
+        width: 31
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a6693b9dbee244ba1b4df89aacf87c2f
+      internalID: 6710513174221640168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cross-8
+      rect:
+        serializedVersion: 2
+        x: 925
+        y: 3
+        width: 29
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca073c84ee3ff474c9d6a0238c014df3
+      internalID: 2330203045032020808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cross-9
+      rect:
+        serializedVersion: 2
+        x: 957
+        y: 2
+        width: 31
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b90336a17d454a1481338584f5366bd
+      internalID: 3437735957064962526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cross-10
+      rect:
+        serializedVersion: 2
+        x: 989
+        y: 1
+        width: 33
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8d4ecb0628bed447d9e3368397f3d3b4
+      internalID: -5087703361143020843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: snap-cursor
+      rect:
+        serializedVersion: 2
+        x: 760
+        y: 11
+        width: 3
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7bb2bda0413684c6392edc9b60e5852e
+      internalID: 2008927550669943001
       vertices: []
       indices: 
       edges: []
@@ -3136,7 +4048,9 @@ TextureImporter:
     indices: 
     edges: []
     weights: []
-    secondaryTextures: []
+    secondaryTextures:
+    - texture: {fileID: 2800000, guid: 7f01739e8fe7846549bff1066366809f, type: 3}
+      name: _NormalMap
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

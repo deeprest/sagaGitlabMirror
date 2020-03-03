@@ -1,24 +1,41 @@
-- menu navigation needs to be more clear. redesign with pages.
+## review
++ highway scene: pillar top collision box is too high
++ home scene: lifts pos. when enter chamber, longer run right.
++ shield turrent settings adjustment. lower shields. shoot angle range. on ceiling.
++ fix diagetic text in front
++ respawn using cyclic index
+
+## todo
+- align shot with surface when aiming into floor/wall
+- cursor influence: under min, and walljump need exceptions
+- fix grap when using gamepad (double)
+- fix grap going through boxes
+- camera hitch on bottom, ~10+X
+- work on marching square nodes
+- detect cmd-f fullscreen switch and update setting
+- add ability icon to hud
 
 ## issues
-- align shot with surface
 - gamepad double select diagetic menu
+- menu navigation needs to be more clear. redesign with pages.
 - release build screen fade in on level transition gets stuck
 - horizontal door trigger
 - reduce audiooneshot calls to avoid dropout
-- fix long slide clipping
-- UNITY bug: webgl audio loop Unity bug
-- UNITY bug: cursor movement in last direction when shoot
-- hide arm while not shooting
-- add ability icon to hud
-- intro scene: no hud, no menu or biped controls
-+ music scene switch
-- add spark effect to wall jump
-- highway loading screen borked
-- detect cmd-f fullscreen switch and update setting
-- consolidate all sprites into bigsheet
 - wheelbot box collider hits corners
 - reproducible: charge particles on after transition. reset player state on level transition
+
+### low priority
+- consolidate all sprites into bigsheet
+- replace old sprite anims with unity animators
+- UNITY bug: cursor movement in last direction when shoot
+- intro scene: no hud, no menu or biped controls
+- hide arm while not shooting
+- add spark effect to wall jump
+- fix long slide clipping
+- highway loading screen
+
+## WebGL issues
+- UNITY bug: webgl audio loop
 
 ## Linux Issues
 - support Ctrl-Q to quit
@@ -29,8 +46,9 @@
 - glitchy/wrong sprite shader for mech on linux
 
 ## ideas
+- death -> You emerge from corpse as a small spiderbot that can gain control of other machines.
+- bindings: json read/write, layouts
 - add airbot prop ability
-- align shot with surface
 - graphook foe
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
 - FSM: enemies should react to projectiles in proximity
@@ -90,16 +108,6 @@ no instant-death spikes or bottomless pits
 AI, navigation mesh
 
 ## aesthetics
-1. animation
-+ idle
-+ run cycle
-+ jump, fall
-+ wall slide
-+ dash
-+ weapon charge
-+ take damage
-- low health
-
 1. atmosphere.
 
 2. sounds
@@ -108,7 +116,7 @@ Consistent with instruments in the music.
 energy. melody.
 
 1. Camera view range.
-Camera can center on an imaginary point around the player, in the aiming direction. Allow for variance in zoom, depending on how cozy the surroundings (raycast in a few directions to determine).
+Camera can center on an imaginary point around the player, in the aiming direction. Allow for variance in zoom, depending on how cozy the surroundings.
 2. Full range of aim.
 MegamanX can only shoot forwards, not upwards or even slightly higher. The ability to shoot upwards in games like Contra is an improvement. Having weapons that spread out when shot can make this limitation feel less awkward.
 3. Enemies respawn at logical locations.
@@ -122,22 +130,18 @@ Not arbitrary static points.
 - (single player) no internet connection required to play.
 - remap controls
 ## is not commercialized
-- no ads. You pay with you soul.
+- no ads. You pay with your soul. (fake ads?)
 - no microtransactions.
-- no in-game currency to compulsively accumulate.
+- no in-game currency to compulsively accumulate. (or make it useless?)
 ## does not use addiction mechanics
 - no achievements to leave you feeling underachieving.
-- no trophies to falsely prop up your ego.
+- no trophies
 ## not too complex. you have a life.
+- no story to ignore or lore to forget (dialogue but no narrative)
 - no complicated technology/skill tree
-- no story to ignore or lore to forget
-
-
-# random
-Chopdrop instead of teleportation.
-death -> You emerge from corpse as a small spiderbot that can gain control of other machines.
-death -> The player awakens in the lab, newly-rebuilt. The attending mechanic explains that the explosion destroyed your body but not your core. He has given you a new body but could not retrieve your weapons.
 
 
 # thank you
-https://seansleblanc.itch.io/better-minimal-webgl-template
+https://seansleblanc.itch.io/better-minimal-webgl-template for webgl template
+https://etclundberg.itch.io/ for early feedback
+jbarrios on TIGSource forums

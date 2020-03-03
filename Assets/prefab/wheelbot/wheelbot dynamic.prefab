@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!58 &8919826531815619443
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1294340739892426156}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.26
+--- !u!1001 &1294340739892426231
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1094346900350558, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+      propertyPath: m_Name
+      value: wheelbot dynamic
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032389116732274, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032389116732274, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032389116732274, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032389116732274, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032389116732274, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032389116732274, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032389116732274, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032389116732274, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032389116732274, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032389116732274, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032389116732274, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8402770076920746544, guid: d602960e06ef345db9212ecac4516ddb,
+        type: 3}
+      propertyPath: box
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8402770076920746544, guid: d602960e06ef345db9212ecac4516ddb,
+        type: 3}
+      propertyPath: UseGravity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8402770076920746544, guid: d602960e06ef345db9212ecac4516ddb,
+        type: 3}
+      propertyPath: SidestepAvoidance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8402770076920746544, guid: d602960e06ef345db9212ecac4516ddb,
+        type: 3}
+      propertyPath: wheelVelocity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 88018454292964798, guid: d602960e06ef345db9212ecac4516ddb,
+        type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 88018454292964798, guid: d602960e06ef345db9212ecac4516ddb,
+        type: 3}
+      propertyPath: m_GravityScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 88018454292964798, guid: d602960e06ef345db9212ecac4516ddb,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: f17f632b6bcfe4f13a3600e266e7d849, type: 2}
+    m_RemovedComponents:
+    - {fileID: 61147437956396782, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
+--- !u!1 &1294340739892426156 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1094346900350558, guid: d602960e06ef345db9212ecac4516ddb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1294340739892426231}
+  m_PrefabAsset: {fileID: 0}
