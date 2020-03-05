@@ -18,20 +18,18 @@ public class Door : MonoBehaviour, ITrigger
   public AudioClip soundOpen;
   public AudioClip soundClose;
 
-  bool Entering;
   public Transform inside;
   Transform instigator;
-  //public UnityEngine.Events.UnityEvent onEnterTrigger;
-  //public UnityEngine.Events.UnityEvent onExitTrigger;
-  //public UnityEngine.Events.UnityEvent onEnter;
-  //public UnityEngine.Events.UnityEvent onExit;
 
   [SerializeField] Collider2D CameraIn;
   [SerializeField] Collider2D CameraOut;
 
+  Timer doorTimer = new Timer();
   Timer runTimer = new Timer();
-  Timer cameraDelay = new Timer();
-  [SerializeField] float openDuration = 1;
+  [SerializeField] float openDuration = 3;
+  [SerializeField] bool MMXStyleDoorTransition = true;
+  [SerializeField] float doorRunDistance = 0.5f;
+  [SerializeField] float runDuration = 0.5f;
 
   void OnDestroy()
   {
@@ -43,44 +41,132 @@ public class Door : MonoBehaviour, ITrigger
     if( transitioning )
       return;
     this.instigator = instigator;
-    SceneScript sceneScript = FindObjectOfType<SceneScript>();
-    if( Global.instance.CurrentPlayer != null && instigator.IsChildOf( Global.instance.CurrentPlayer.transform ) )
-      sceneScript.PlayerInputOff();
-    Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
-    /*if( Entering )
-      onEnterTrigger.Invoke();
-    else
-      onExitTrigger.Invoke();*/
-    //if( Entering )
-    Open();
 
-    cameraDelay.Start( 1, null, delegate
+    // is player?
+    if( Global.instance.CurrentPlayer != null && instigator.IsChildOf( Global.instance.CurrentPlayer.transform ) )
     {
-      if( Entering )
+      bool right = Vector3.Dot( (transform.position - instigator.position).normalized, inside.right ) > 0;
+      if( MMXStyleDoorTransition )
       {
-        if( CameraIn != null )
-          sceneScript.ReplaceCameraPolyEncompass( CameraIn );
-        else
-          sceneScript.ReplaceCameraPoly( sceneScript.sb );
+        DoMMXStyleDoorTransition();
       }
       else
       {
-        if( CameraOut != null )
-          sceneScript.ReplaceCameraPolyEncompass( CameraOut );
-        else
-          sceneScript.ReplaceCameraPoly( sceneScript.sb );
+        bool Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
+        SceneScript sceneScript = FindObjectOfType<SceneScript>();
+        if( sceneScript != null && ((Entering && CameraIn != null) || (!Entering && CameraOut)) )
+          Global.instance.Controls.BipedActions.Disable();
+        OpenAndClose( openDuration, delegate
+        {
+          if( Entering )
+          {
+            if( CameraIn != null )
+            {
+              sceneScript.ReplaceCameraPolyEncompass( CameraIn );
+              runTimer.Start( runDuration, delegate
+              {
+                if( right ) Global.instance.CurrentPlayer.inputRight = true;
+                else Global.instance.CurrentPlayer.inputLeft = true;
+              }, delegate
+              {
+                Global.instance.Controls.BipedActions.Enable();
+              } );
+            }
+            else sceneScript.ReplaceCameraPoly( sceneScript.sb );
+          }
+          else
+          {
+            if( CameraOut != null )
+            {
+              sceneScript.ReplaceCameraPolyEncompass( CameraOut );
+              runTimer.Start( runDuration, delegate
+              {
+                if( right ) Global.instance.CurrentPlayer.inputRight = true;
+                else Global.instance.CurrentPlayer.inputLeft = true;
+              }, delegate
+              {
+                Global.instance.Controls.BipedActions.Enable();
+              } );
+            }
+            else sceneScript.ReplaceCameraPoly( sceneScript.sb );
+          }
+        }, null );
       }
-
-    } );
-
+    }
+    else
+    {
+      OpenAndClose( openDuration, null, null );
+    }
   }
 
-  public void Open()
+  void DoMMXStyleDoorTransition()
+  {
+    bool right = Vector3.Dot( (transform.position - instigator.position).normalized, inside.right ) > 0;
+    animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+    Global.Pause();
+    Global.instance.Controls.BipedActions.Disable();
+    OpenAndClose( openDuration, delegate
+    {
+      // open
+      SceneScript sceneScript = FindObjectOfType<SceneScript>();
+      bool Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
+      if( Entering )
+      {
+        if( CameraIn != null ) sceneScript.ReplaceCameraPolyEncompass( CameraIn );
+        else sceneScript.ReplaceCameraPoly( sceneScript.sb );
+      }
+      else
+      {
+        if( CameraOut != null ) sceneScript.ReplaceCameraPolyEncompass( CameraOut );
+        else sceneScript.ReplaceCameraPoly( sceneScript.sb );
+      }
+      Global.instance.CurrentPlayer.DoorRun( right, openDuration, doorRunDistance );
+    },
+    delegate
+    {
+      // close
+      Global.instance.Controls.BipedActions.Enable();
+      Global.Unpause();
+    } );
+  }
+
+  public void OpenAndClose( float duration, System.Action onOpen, System.Action onClose )
+  {
+    Open( delegate
+    {
+      if( Global.instance.CurrentPlayer != null && instigator.IsChildOf( Global.instance.CurrentPlayer.transform ) )
+      {
+        if( onOpen != null )
+          onOpen();
+        TimerParams tp = new TimerParams
+        {
+          unscaledTime = Global.Paused,
+          repeat = false,
+          duration = duration,
+          CompleteDelegate = delegate
+          {
+            Close( null );
+            if( onClose != null )
+              onClose();
+          }
+        };
+        doorTimer.Start( tp );
+      }
+    } );
+  }
+
+  public void Open( System.Action onOpen = null )
   {
     transitioning = true;
     animator.Play( "opening" );
     audio.PlayOneShot( soundOpen );
-    timer.Start( (1.0f / animationRate) * openFrame, null, delegate
+    TimerParams timerParams = new TimerParams
+    {
+      unscaledTime = Global.Paused,
+      repeat = false,
+      duration = (1.0f / animationRate) * openFrame,
+      UpdateDelegate = null,
+      CompleteDelegate = delegate
       {
         // if the door is toggled open/close, then set transitioning to false here
         // if it auto-closes on a timer, then transitioning should only end after closed. 
@@ -88,47 +174,14 @@ public class Door : MonoBehaviour, ITrigger
         isOpen = true;
         cd.enabled = false;
         obstacle.enabled = false;
-
-        if( Global.instance.CurrentPlayer != null && instigator.IsChildOf( Global.instance.CurrentPlayer.transform ) )
-        {
-          //Time.timeScale = 0;
-          bool right = Vector3.Dot( (transform.position - instigator.position).normalized, inside.right ) > 0;
-          Global.instance.Controls.BipedActions.Disable();
-          TimerParams tp = new TimerParams
-          {
-            unscaledTime = true,
-            repeat = false,
-            duration = 1,
-            UpdateDelegate = delegate ( Timer t )
-            {
-              if( right )
-                Global.instance.CurrentPlayer.inputRight = true;
-              else
-                Global.instance.CurrentPlayer.inputLeft = true;
-            },
-            CompleteDelegate = delegate
-            {
-              Global.instance.Controls.BipedActions.Enable();
-              //Time.timeScale = 1;
-            }
-          };
-          runTimer.Start( tp );
-
-          /*if( Entering )
-          onEnter.Invoke();
-        else
-          onExit.Invoke();*/
-          timer.Start( openDuration, null, delegate
-          {
-            Close();
-          } );
-        }
-      } );
-
-
+        if( onOpen != null )
+          onOpen();
+      }
+    };
+    timer.Start( timerParams );
   }
 
-  public void Close()
+  public void Close( System.Action onClosed = null )
   {
     transitioning = true;
     animator.Play( "closing" );
@@ -141,6 +194,8 @@ public class Door : MonoBehaviour, ITrigger
       timer.Start( 2, null, delegate
       {
         transitioning = false;
+        if( onClosed != null )
+          onClosed();
       } );
     } );
   }

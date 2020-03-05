@@ -174,12 +174,12 @@ public class CameraController : MonoBehaviour
     if( Camera.main.orthographic )
     {
       //Camera.main.orthographicSize = Mathf.MoveTowards( Camera.main.orthographicSize, ortho, orthoSpeed * Time.deltaTime );
-      Camera.main.orthographicSize = Mathf.Lerp( Camera.main.orthographicSize, ortho, Mathf.Clamp01( orthoSpeed * Time.deltaTime ) );
+      Camera.main.orthographicSize = Mathf.Lerp( Camera.main.orthographicSize, ortho, Mathf.Clamp01( orthoSpeed * Time.unscaledDeltaTime ) );
     }
 
     if( lerpAlpha > 0 )
     {
-      transform.position = Vector3.Lerp( transform.position, pos, Mathf.Clamp01( lerpAlpha * Time.deltaTime ) );
+      transform.position = Vector3.Lerp( transform.position, pos, Mathf.Clamp01( lerpAlpha * Time.unscaledDeltaTime ) );
       //transform.position = Vector3.MoveTowards( transform.position, pos, SmoothSpeed * Time.deltaTime );
     }
     else

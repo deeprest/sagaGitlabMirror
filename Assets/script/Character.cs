@@ -148,6 +148,9 @@ public class Character : MonoBehaviour, IDamage
 
   void Update()
   {
+    if( Global.Paused )
+      return;
+
     if( UpdateLogic != null )
       UpdateLogic();
 

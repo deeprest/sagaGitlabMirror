@@ -38,6 +38,12 @@ PrefabInstance:
       propertyPath: shotOrigin
       value: 
       objectReference: {fileID: 2867757829137858661}
+    - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: ContactDamage
+      value: 
+      objectReference: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c,
+        type: 2}
     - target: {fileID: 4045851430560821422, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -103,11 +109,6 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 14
       objectReference: {fileID: 0}
-    - target: {fileID: 5409591350307037476, guid: 2347122d03bc54cd8aae519c83ae52ba,
-        type: 3}
-      propertyPath: m_Layer
-      value: 14
-      objectReference: {fileID: 0}
     - target: {fileID: 3891050234502034460, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
       propertyPath: m_Layer
@@ -122,12 +123,17 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 14
       objectReference: {fileID: 0}
+    - target: {fileID: 3080994399749504100, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 7307121025556308680, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
       propertyPath: m_Layer
       value: 14
       objectReference: {fileID: 0}
-    - target: {fileID: 3080994399749504100, guid: 2347122d03bc54cd8aae519c83ae52ba,
+    - target: {fileID: 5409591350307037476, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
       propertyPath: m_Layer
       value: 14
@@ -139,6 +145,46 @@ PrefabInstance:
     - target: {fileID: 471290841, guid: 2347122d03bc54cd8aae519c83ae52ba, type: 3}
       propertyPath: m_Layer
       value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_FalloffIntensity
+      value: 0.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.9430667
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.57299995
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_UseNormalMap
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_PointLightQuality
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_ShapeLightParametricSides
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_ShapeLightFalloffSize
+      value: 2.41
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2347122d03bc54cd8aae519c83ae52ba, type: 3}

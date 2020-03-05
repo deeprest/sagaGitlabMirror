@@ -13,6 +13,7 @@ public class LerpToTarget : MonoBehaviour
   //
   public Vector3 localOffset;
   public float duration = 1f;
+  public bool unscaledTime;
   public System.Action OnLerpEnd;
 
   float timeAccum = 0f;
@@ -59,7 +60,7 @@ public class LerpToTarget : MonoBehaviour
       targetRotation = targetTransform.rotation;
     else
       targetRotation = Quaternion.LookRotation( targetRotationForward, targetRotationUp );
-    
+
     if( Scale )
       startScale = moveTransform.localScale.x;
 
@@ -83,7 +84,10 @@ public class LerpToTarget : MonoBehaviour
     Vector3 position = targetPositionWorld;
     if( targetTransform != null )
       position = targetTransform.localToWorldMatrix.MultiplyPoint( localOffset );
-    timeAccum += Time.deltaTime;
+    if( unscaledTime )
+      timeAccum += Time.unscaledDeltaTime;
+    else
+      timeAccum += Time.deltaTime;
     alpha = Mathf.Clamp01( timeAccum / duration );
     float moveAlpha = alpha;
     if( lerpType == LerpType.Curve && translateCurve != null )
@@ -132,6 +136,6 @@ public class LerpToTarget : MonoBehaviour
           OnLerpEnd.Invoke();
       }
     }
-    
+
   }
 }

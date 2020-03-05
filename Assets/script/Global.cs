@@ -632,130 +632,6 @@ public class Global : MonoBehaviour
   {
     if( !Updating )
       return;
-
-#if false
-    if( CurrentPlayer != null )
-    {
-      if( ActiveDiagetic != null )
-      {
-        /*
-        CursorWorldPosition = Camera.main.ScreenToWorldPoint( UnityEngine.Input.mousePosition );
-        CursorDelta = (CursorWorldPosition - (Vector2)CurrentPlayer.arm.position) / CursorFactor;
-        AimPosition = CursorWorldPosition;
-        Cursor.position = CursorWorldPosition;
-        */
-      }
-      else
-      {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
-        delta.y = -delta.y;
-        if( UsingGamepad )
-          cursorDelta = delta * DirectionalCursorDistance;
-        else
-          cursorDelta += delta;
-#else
-        if( UsingGamepad )
-        {
-          cursorDelta = Controls.BipedActions.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
-        }
-        else
-        {
-          cursorDelta += Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
-          cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * CursorOuter ), 0.1f );
-        }
-#endif
-        cursorOrigin = CurrentPlayer.arm.position; 
-        CursorAboveMinimumDistance = cursorDelta.magnitude > DirectionalMinimum;
-
-        //if( CurrentPlayer != null )
-        //  CurrentPlayer.CanShoot = CursorAboveMinimumDistance;
-
-        if( AimSnap )
-        {
-          if( CursorAboveMinimumDistance )
-          {
-            // set cursor
-            Cursor.gameObject.SetActive( true );
-            CursorSnapped.gameObject.SetActive( true );
-          }
-          else
-          {
-            Cursor.gameObject.SetActive( false );
-            CursorSnapped.gameObject.SetActive( false );
-          }
-
-          float angle = Mathf.Atan2( cursorDelta.x, cursorDelta.y ) / Mathf.PI;
-          float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
-          Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
-          AimPosition = cursorOrigin + snapped * SnapCursorDistance;
-          CursorSnapped.position = AimPosition;
-          CursorSnapped.rotation = Quaternion.LookRotation( Vector3.forward, snapped );
-          CursorWorldPosition = cursorOrigin + cursorDelta;
-          Cursor.position = CursorWorldPosition;
-        }
-        else
-        {
-          if( CursorAboveMinimumDistance )
-          {
-            // set cursor
-            Cursor.gameObject.SetActive( true );
-            CursorSnapped.gameObject.SetActive( false );
-          }
-          else
-          {
-            Cursor.gameObject.SetActive( false );
-            CursorSnapped.gameObject.SetActive( false );
-          }
-
-          AimPosition = cursorOrigin + cursorDelta;
-          CursorWorldPosition = AimPosition;
-          //Cursor.anchoredPosition = Camera.main.WorldToScreenPoint( CursorWorldPosition );
-          Cursor.position = CursorWorldPosition;
-        }
-
-        if( AutoAim )
-        {
-          CursorWorldPosition = cursorOrigin + cursorDelta;
-          RaycastHit2D[] hits = Physics2D.CircleCastAll( CurrentPlayer.transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
-          float distance = Mathf.Infinity;
-          Transform closest = null;
-          foreach( var hit in hits )
-          {
-            float dist = Vector2.Distance( CursorWorldPosition, hit.transform.position );
-            if( dist < distance )
-            {
-              closest = hit.transform;
-              distance = dist;
-            }
-          }
-
-          if( closest == null )
-          {
-            CursorAutoAim.gameObject.SetActive( false );
-          }
-          else
-          {
-            CursorAutoAim.gameObject.SetActive( true );
-            // todo adjust for flight path
-            //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
-            AimPosition = closest.position;
-            CursorAutoAim.position = AimPosition;
-          }
-          Cursor.position = CursorWorldPosition;
-
-        }
-        else
-        {
-          CursorAutoAim.gameObject.SetActive( false );
-        }
-      }
-    }
-    else
-    {
-      Cursor.gameObject.SetActive( false );
-    }
-#endif
     CameraController.CameraLateUpdate();
   }
 
@@ -827,8 +703,6 @@ public class Global : MonoBehaviour
     Paused = true;
     Time.timeScale = 0;
     Time.fixedDeltaTime = 0;
-    instance.mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["MusicVolume"].Value * 0.8f ) );
-    instance.mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["SFXVolume"].Value * 0.8f ) );
   }
 
   public static void Unpause()
@@ -836,8 +710,6 @@ public class Global : MonoBehaviour
     Paused = false;
     Time.timeScale = 1;
     Time.fixedDeltaTime = 0.01f * Time.timeScale;
-    instance.mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["MusicVolume"].Value ) );
-    instance.mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( instance.FloatSetting["SFXVolume"].Value ) );
   }
 
   public void ShowHUD()
@@ -855,6 +727,8 @@ public class Global : MonoBehaviour
     if( ScreenSettingsCountdownTimer.IsActive )
       return;
     Pause();
+    mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value * 0.8f ) );
+    mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value * 0.8f ) );
     if( ActiveDiagetic != null )
     {
       ActiveDiagetic.InteractableOff();
@@ -876,6 +750,8 @@ public class Global : MonoBehaviour
     if( ScreenSettingsCountdownTimer.IsActive )
       return;
     Unpause();
+    mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value ) );
+    mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
     PauseMenu.Unselect();
     HUD.SetActive( true );
     //UnityEngine.Cursor.lockState = CursorLockMode.Locked;

@@ -55,7 +55,6 @@ public class Pawn : Character, IDamage
 
 /*
 // todo call Update directly from global
-// todo instead of assigning animation every frame, only change when needed
 // todo refactor logic: inputs, collision, velocity, state vars, timers -> state vars, anims, velocity
 
 inputs
@@ -128,7 +127,6 @@ public class PlayerController : Character, IDamage
   public float wallSlideFactor = 0.5f;
 
   [Header( "Input" )]
-  // input / control
   public bool inputRight;
   public bool inputLeft;
   public bool inputJumpStart;
@@ -144,7 +142,6 @@ public class PlayerController : Character, IDamage
   Vector3 shoot;
 
   [Header( "State" )]
-  // state
   [SerializeField] bool facingRight = true;
   [SerializeField] bool onGround;
   [SerializeField] bool jumping;
@@ -999,7 +996,7 @@ public class PlayerController : Character, IDamage
       if( CursorAboveMinimumDistance )
         AimPosition = cursorOrigin + cursorDelta;
       else
-        AimPosition = cursorOrigin + (facingRight^wallsliding ? Vector2.right : Vector2.left);
+        AimPosition = cursorOrigin + (facingRight ^ wallsliding ? Vector2.right : Vector2.left);
       CursorWorldPosition = AimPosition;
     }
 
@@ -1198,6 +1195,30 @@ public class PlayerController : Character, IDamage
     return true;
   }
 
-
+  public void DoorRun( bool right, float duration, float distance )
+  {
+    enabled = false;
+    damageTimer.Stop( true );
+    facingRight = right;
+    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
+    renderer.material.SetInt( "_FlipX", facingRight ? 0 : 1 );
+    arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
+    animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+    animator.Play( "run" );
+    LerpToTarget lerp = gameObject.GetComponent<LerpToTarget>();
+    if( lerp == null )
+      lerp = gameObject.AddComponent<LerpToTarget>();
+    lerp.moveTransform = transform;
+    lerp.WorldTarget = true;
+    lerp.targetPositionWorld = transform.position + ((right ? Vector3.right : Vector3.left) * distance);
+    lerp.duration = duration;
+    lerp.unscaledTime = true;
+    lerp.enabled = true;
+    lerp.OnLerpEnd = delegate
+    {
+      enabled = true;
+      animator.updateMode = AnimatorUpdateMode.Normal;
+    };
+  }
 
 }
