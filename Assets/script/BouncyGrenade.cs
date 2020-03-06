@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.Experimental.Rendering.LWRP;
+using UnityEngine.Experimental.Rendering.Universal;
 
 public class BouncyGrenade : Projectile, IDamage
 {
@@ -8,7 +8,7 @@ public class BouncyGrenade : Projectile, IDamage
   Timer timeoutTimer = new Timer();
   Timer pulseTimer = new Timer();
   [SerializeField] float pulseInterval = 0.2f;
-  [SerializeField] new Light2D light;
+  [SerializeField] new UnityEngine.Experimental.Rendering.Universal.Light2D light;
   [SerializeField] float radiusFudge;
 
   void Start()

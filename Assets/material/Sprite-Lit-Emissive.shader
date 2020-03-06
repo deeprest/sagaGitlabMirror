@@ -1,4 +1,4 @@
-Shader "Lightweight Render Pipeline/2D/Sprite-Lit-Emissive"
+Shader "Custom/2D/Sprite-Lit-Emissive"
 {
     Properties
     {
@@ -11,7 +11,7 @@ _FlashAmount("Flash", Range(0.0, 1.0)) = 0
     }
 
     HLSLINCLUDE
-    #include "Packages/com.unity.render-pipelines.lightweight/ShaderLibrary/Core.hlsl"
+    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
     ENDHLSL
 
     SubShader
@@ -49,7 +49,7 @@ _FlashAmount("Flash", Range(0.0, 1.0)) = 0
                 float2	lightingUV  : TEXCOORD1;
             };
 
-            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/2D/Include/LightingUtility.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/LightingUtility.hlsl"
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
@@ -91,7 +91,7 @@ half _FlashAmount;
                 return o;
             }
 
-            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/2D/Include/CombinedShapeLightShared.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/CombinedShapeLightShared.hlsl"
 
             half4 CombinedShapeLightFragment(Varyings i) : SV_Target
             {
@@ -147,7 +147,7 @@ half _FlashAmount;
                 return o;
             }
 
-            #include "Packages/com.unity.render-pipelines.lightweight/Shaders/2D/Include/NormalsRenderingShared.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/NormalsRenderingShared.hlsl"
 
             float4 NormalsRenderingFragment(Varyings i) : SV_Target
             {

@@ -1142,7 +1142,7 @@ public class Global : MonoBehaviour
       bv.Init();
       FloatSetting.Add( key, bv );
     }
-    bv.slider.normalizedStep = normalizedStep;
+    //bv.slider.wholeNumbers = true;
     bv.slider.minValue = min;
     bv.slider.maxValue = max;
     bv.onValueChanged = onChange;
