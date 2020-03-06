@@ -74,6 +74,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -251,6 +252,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -361,11 +363,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7674903736374466933, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
-        type: 3}
-      propertyPath: m_Name
-      value: armored turret
-      objectReference: {fileID: 0}
     - target: {fileID: 6898653218402988711, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -420,6 +417,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595769896330164111, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+        type: 3}
+      propertyPath: m_Extents.x
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595769896330164111, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+        type: 3}
+      propertyPath: m_Extents.y
+      value: 0.1796875
+      objectReference: {fileID: 0}
+    - target: {fileID: 7674903736374466933, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+        type: 3}
+      propertyPath: m_Name
+      value: armored turret
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d53fb5c3630e94a43aa0fc05a1ad949d, type: 3}

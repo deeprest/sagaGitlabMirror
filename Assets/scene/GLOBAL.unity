@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 0
 --- !u!196 &4
@@ -127,6 +128,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 497188665, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1563210130524808, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
       propertyPath: m_Name
       value: GLOBAL
@@ -175,9 +180,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 497188665, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}
-      propertyPath: m_NavMeshData
-      value: 
+    - target: {fileID: 1516093413535141986, guid: a303ea602a9de415ea4561c7d9c43d4e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -60.58008
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a303ea602a9de415ea4561c7d9c43d4e, type: 3}

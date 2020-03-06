@@ -63,6 +63,9 @@ MonoBehaviour:
   CameraIn: {fileID: 0}
   CameraOut: {fileID: 0}
   openDuration: 2
+  MMXStyleDoorTransition: 0
+  doorRunDistance: 0.5
+  runDuration: 0.5
 --- !u!61 &6919952749474211989
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -103,6 +106,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

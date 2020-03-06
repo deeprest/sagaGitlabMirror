@@ -6,12 +6,11 @@
 + respawn using cyclic index
 
 ## todo
+- work on marching square nodes
 - align shot with surface when aiming into floor/wall
 - cursor influence: under min, and walljump need exceptions
 - fix grap when using gamepad (double)
 - fix grap going through boxes
-- camera hitch on bottom, ~10+X
-- work on marching square nodes
 - detect cmd-f fullscreen switch and update setting
 - add ability icon to hud
 

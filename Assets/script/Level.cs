@@ -446,9 +446,20 @@ public class Level : MonoBehaviour
       GameObject go = null;
       Vector3 pos = new Vector3( x * cellsize.x, y * cellsize.y, 0 );
       if( Application.isPlaying )
+      {
         go = Global.instance.Spawn( prefab, pos, Quaternion.identity, null, false, true );
+        /*LevelNode levelNode = go.GetComponent<LevelNode>();
+        if( levelNode != null )
+          levelNode.Initialize();*/
+      }
       else
-        go = Instantiate( prefab, pos, Quaternion.identity, null );
+      {
+        go = (GameObject)PrefabUtility.InstantiatePrefab( prefab );
+        go.transform.position = pos;
+        LevelNode levelNode = go.GetComponent<LevelNode>();
+        if( levelNode != null )
+          levelNode.Initialize();
+      }
 
       GenerationVariant[] vars = go.GetComponentsInChildren<GenerationVariant>();
       foreach( var cmp in vars )

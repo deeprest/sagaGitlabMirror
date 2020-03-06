@@ -7,15 +7,46 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7674903736374466933, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+    - target: {fileID: 993720593254393847, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
         type: 3}
-      propertyPath: m_Name
-      value: Grenade Turret
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7674903736374466933, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+    - target: {fileID: 1208635628828000764, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
         type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      propertyPath: weapon
+      value: 
+      objectReference: {fileID: 11400000, guid: 05b894a545b9c41628e13114acdb675c,
+        type: 2}
+    - target: {fileID: 1208635628828000764, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+        type: 3}
+      propertyPath: min
+      value: -80
+      objectReference: {fileID: 0}
+    - target: {fileID: 1208635628828000764, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+        type: 3}
+      propertyPath: max
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 1208635628828000764, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+        type: 3}
+      propertyPath: maxShootAngle
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 3604313625396497800, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3604313625396497800, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3604313625396497800, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6898653218402988711, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
         type: 3}
@@ -72,32 +103,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1208635628828000764, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
-        type: 3}
-      propertyPath: weapon
-      value: 
-      objectReference: {fileID: 11400000, guid: 05b894a545b9c41628e13114acdb675c,
-        type: 2}
-    - target: {fileID: 1208635628828000764, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
-        type: 3}
-      propertyPath: min
-      value: -80
-      objectReference: {fileID: 0}
-    - target: {fileID: 1208635628828000764, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
-        type: 3}
-      propertyPath: max
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 1208635628828000764, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
-        type: 3}
-      propertyPath: maxShootAngle
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 993720593254393847, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7595769896330164111, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
         type: 3}
       propertyPath: m_Extents.z
@@ -108,20 +113,25 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3604313625396497800, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+    - target: {fileID: 7595769896330164111, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
         type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
+      propertyPath: m_Extents.x
+      value: 0.25
       objectReference: {fileID: 0}
-    - target: {fileID: 3604313625396497800, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+    - target: {fileID: 7595769896330164111, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
         type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
+      propertyPath: m_Extents.y
+      value: 0.1796875
       objectReference: {fileID: 0}
-    - target: {fileID: 3604313625396497800, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+    - target: {fileID: 7674903736374466933, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
         type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      propertyPath: m_Name
+      value: Grenade Turret
+      objectReference: {fileID: 0}
+    - target: {fileID: 7674903736374466933, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d53fb5c3630e94a43aa0fc05a1ad949d, type: 3}

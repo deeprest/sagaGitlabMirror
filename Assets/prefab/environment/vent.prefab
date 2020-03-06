@@ -48,6 +48,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -141,17 +142,15 @@ MonoBehaviour:
   box: {fileID: 4596207536373528512}
   renderer: {fileID: 4596207536373528513}
   animator: {fileID: 0}
-  colliders: []
+  IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 0
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
-  inertia: {x: 0, y: 0}
+  carryCharacter: {fileID: 0}
   friction: 0.05
-  airFriction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
-  IgnoreCollideObjects: []
   HasPath: 0
   WaypointRadii: 0.1
   DestinationRadius: 0.3

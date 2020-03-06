@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3541514896135360188}
   - component: {fileID: 3541514896135360190}
   m_Layer: 0
-  m_Name: ceil
+  m_Name: red light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,6 +55,8 @@ MonoBehaviour:
   m_UseNormalMap: 1
   m_LightOrder: 0
   m_AlphaBlendOnOverlap: 0
+  m_ShadowIntensity: 0
+  m_ShadowVolumeIntensity: 0
   m_PointLightInnerAngle: 146.56
   m_PointLightOuterAngle: 180
   m_PointLightInnerRadius: 0
@@ -85,6 +87,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

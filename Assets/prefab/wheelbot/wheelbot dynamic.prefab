@@ -6,7 +6,7 @@ CircleCollider2D:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1294340739892426156}
+  m_GameObject: {fileID: 1294098002739925929}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -71,6 +71,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 88018454292964798, guid: d602960e06ef345db9212ecac4516ddb,
+        type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 88018454292964798, guid: d602960e06ef345db9212ecac4516ddb,
+        type: 3}
+      propertyPath: m_GravityScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 88018454292964798, guid: d602960e06ef345db9212ecac4516ddb,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: f17f632b6bcfe4f13a3600e266e7d849, type: 2}
     - target: {fileID: 8402770076920746544, guid: d602960e06ef345db9212ecac4516ddb,
         type: 3}
       propertyPath: box
@@ -91,25 +106,10 @@ PrefabInstance:
       propertyPath: wheelVelocity
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 88018454292964798, guid: d602960e06ef345db9212ecac4516ddb,
-        type: 3}
-      propertyPath: m_BodyType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 88018454292964798, guid: d602960e06ef345db9212ecac4516ddb,
-        type: 3}
-      propertyPath: m_GravityScale
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 88018454292964798, guid: d602960e06ef345db9212ecac4516ddb,
-        type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 6200000, guid: f17f632b6bcfe4f13a3600e266e7d849, type: 2}
     m_RemovedComponents:
     - {fileID: 61147437956396782, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
---- !u!1 &1294340739892426156 stripped
+--- !u!1 &1294098002739925929 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1094346900350558, guid: d602960e06ef345db9212ecac4516ddb,
     type: 3}
