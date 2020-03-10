@@ -1,6 +1,6 @@
 
-# thought
-In my opinion, Megaman X1-X3 suffers from the same problems: small viewing area, can only shoot forward, enemies respawn immediately out of sight, levels are static.
+# opinion
+Megaman X1-X3 suffers from the same problems: small viewing area, can only shoot forward, enemies respawn immediately out of sight, levels are static.
 Megaman X4 is so bad that I never played another MMX game again. I've watched gameplay videos to keep up to date with the MMX games, but it seems the series never recovered.
 
 

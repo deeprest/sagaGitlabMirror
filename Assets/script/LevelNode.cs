@@ -6,10 +6,10 @@ public class LevelNode : MonoBehaviour
 {
   public int openBitmask;
   public int yindex;
+  [SerializeField] TextMesh label;
 
   public void Initialize()
   {
-    TextMesh label = GetComponent<TextMesh>();
     if( label != null )
       label.text = name;
   }

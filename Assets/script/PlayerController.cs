@@ -950,9 +950,9 @@ public class PlayerController : Character, IDamage
       return;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-      Vector2 delta = Controls.BipedActions.Aim.ReadValue<Vector2>() * CursorSensitivity;
+      Vector2 delta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
       delta.y = -delta.y;
-      if( UsingGamepad )
+      if( Global.instance.UsingGamepad )
         cursorDelta = delta * DirectionalCursorDistance;
       else
         cursorDelta += delta;

@@ -1092,7 +1092,7 @@ public class Global : MonoBehaviour
 
     CreateFloatSetting( "CursorOuter", 1, 0, 1, 0.05f, delegate ( float value ) { CursorOuter = value; } );
     CreateFloatSetting( "CursorSensitivity", 0.01f, 0.01f, 0.1f, 0.1f, delegate ( float value ) { CursorSensitivity = value; } );
-    CreateFloatSetting( "CameraLerpAlpha", 20, 0, 50, 0.01f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
+    CreateFloatSetting( "CameraLerpAlpha", 10, 1, 10, 0.01f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 0.05f, delegate ( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
     CreateFloatSetting( "PlayerSpeedFactor", 0.3f, 0, 1, 0.1f, delegate ( float value ) { if( CurrentPlayer != null ) CurrentPlayer.SpeedFactorNormalized = value; } );

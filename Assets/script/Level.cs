@@ -454,11 +454,13 @@ public class Level : MonoBehaviour
       }
       else
       {
+#if UNITY_EDITOR
         go = (GameObject)PrefabUtility.InstantiatePrefab( prefab );
         go.transform.position = pos;
         LevelNode levelNode = go.GetComponent<LevelNode>();
         if( levelNode != null )
           levelNode.Initialize();
+#endif
       }
 
       GenerationVariant[] vars = go.GetComponentsInChildren<GenerationVariant>();
