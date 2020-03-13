@@ -24,7 +24,7 @@ public class Wheelbot : Character, IDamage
       velocity.x = wheelVelocity;
     if( collideRight )
       velocity.x = -wheelVelocity;
-    wheelVelocity = Mathf.Abs( velocity.x );
+    //wheelVelocity = Mathf.Abs( velocity.x );
     wheelTime += velocity.x * wheelAnimRate * Time.timeScale;
     rotator.rotation = Quaternion.Euler( new Vector3( 0, 0, wheelTime ) );
   }

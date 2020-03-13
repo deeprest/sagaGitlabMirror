@@ -124,13 +124,18 @@ PrefabInstance:
         type: 3}
       propertyPath: shotOrigin
       value: 
-      objectReference: {fileID: 2867757829137858661}
+      objectReference: {fileID: 2867757828336256086}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
       propertyPath: ContactDamage
       value: 
       objectReference: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c,
         type: 2}
+    - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: health
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
       propertyPath: m_FalloffIntensity
@@ -188,7 +193,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2347122d03bc54cd8aae519c83ae52ba, type: 3}
---- !u!4 &2867757829137858661 stripped
+--- !u!4 &2867757828336256086 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 810516725, guid: 2347122d03bc54cd8aae519c83ae52ba,
     type: 3}

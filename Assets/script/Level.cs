@@ -24,6 +24,8 @@ public class LevelEditor : Editor
     EditorGUILayout.EndHorizontal();
     if( GUI.Button( EditorGUILayout.GetControlRect(), "Destroy" ) )
       level.DestroyAll();
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "Write png" ) )
+      level.WriteStructurePNG();
     DrawDefaultInspector();
   }
 }
@@ -46,31 +48,38 @@ public static class PixelBit
 [ExecuteInEditMode]
 public class Level : MonoBehaviour
 {
-  public Vector2Int dimension = new Vector2Int( 1, 1 );
 
 
-  string StructurePath { get { return Application.persistentDataPath + "/" + name + "/" + "structure.png"; } }
-  Texture2D StructureTexture;
+  string StructurePath { get { return Application.persistentDataPath + "/structure.png"; } }
+  [SerializeField] Texture2D StructureTexture;
   Dictionary<int, List<GameObject>> built = new Dictionary<int, List<GameObject>>();
   Color32[] structureData;
 
-  [Header( "Marching Squares" )]
+  [Header( "Generation" )]
+  public Vector2Int dimension = new Vector2Int( 16, 6 );
   // marching squares
-  public Vector2Int cellsize = new Vector2Int( 10, 10 );
   public List<Column> columns = new List<Column>();
+  private Vector2Int cellsize = new Vector2Int( 10, 10 );
   public int GroundY = 2;
+  [SerializeField] int spaceMin = 1;
+  [SerializeField] int spaceMax = 2;
+  [SerializeField] int buildingWidthMin = 1;
+  [SerializeField] int buildingWidthMax = 3;
+  // bit 128, city
   public MarchingSquareData building;
+  // bit 128, city-underground
   public MarchingSquareData underground;
   List<MarchingSquareData> msd;
-
   // nodelinks
   List<GameObject> gens = new List<GameObject>();
   List<GameObject> gos;
-  public int max = 20;
+  public int MaxLinkPasses = 30;
   List<LineSegment> debugSegments = new List<LineSegment>();
   public int seed;
-
   public GameObject spawnPointPrefab;
+  [SerializeField] float highwayYMin = 10;
+  [SerializeField] float highwayYMax = 20;
+  [SerializeField] int density = 3;
 
   private void Awake()
   {
@@ -103,6 +112,14 @@ public class Level : MonoBehaviour
     Random.InitState( seed );
     bounds.Encapsulate( Vector3.right * dimension.x * cellsize.x );
     bounds.Encapsulate( Vector3.up * dimension.y * cellsize.y );
+    // encapsulate existing objects in scene
+    GameObject[] gos = gameObject.scene.GetRootGameObjects();
+    foreach( var go in gos )
+    {
+      Collider2D[] collider = go.GetComponentsInChildren<Collider2D>();
+      foreach( var c in collider )
+        bounds.Encapsulate( c.bounds );
+    }
 
     InitializeStructure();
     Vector2Int pos = new Vector2Int( 1, 1 );
@@ -119,40 +136,57 @@ public class Level : MonoBehaviour
       }
       else
       {
-        int height = Mathf.CeilToInt( Random.Range( 0, dimension.y - 1 ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
-        for( int y = 0; y < height; y++ )
+        int buidingWidth = Random.Range( buildingWidthMin, buildingWidthMax + 1 );
+        ////pos.y = Random.Range( 1, dimension.y - 1 );
+        for( int bw = 0; bw < buidingWidth; bw++ )
         {
-          SetStructureBitOn( pos.x, pos.y, PixelBit.Building );
-          pos.y++;
+          //  int height = Mathf.CeilToInt( Random.Range( 1, dimension.y - 1 ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
+          //  if( bw == 0 || bw == buidingWidth - 1 )
+          //  {
+          //    pos.y = 1;
+          //  }
+          //  else
+          //  {
+          //    pos.y = Random.Range( 1, height - 1 );
+          //  }
+          //for( ; pos.y < height; pos.y++ )
+          //  SetStructureBitOn( pos.x, pos.y, PixelBit.Building );
+
+          for( int y = 1; y < dimension.y; y++ )
+          {
+            int height = Mathf.CeilToInt( Random.Range( 1, dimension.y - 1 ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
+            if( y < height && Random.Range( 0, density ) > 0 )
+              SetStructureBitOn( pos.x, y, PixelBit.Building );
+          }
+          //pos.x++;
         }
-        pos.x += Random.Range( 1, 3 );
+        pos.x += Random.Range( spaceMin, spaceMax + 1 );
       }
       pos.y = 1;
     }
     UpdateStructure( 0, 0, dimension.x, dimension.y );
 
     //AddObject( Instantiate( spawnPointPrefab, new Vector3( 2, (GroundY+1)*cellsize.y, 0 ), Quaternion.identity ) );
-    GenerateChain( "street bg", false, 0, 3 );
-    GenerateChain( "street", true );
+    GenerateChain( "street bg", new Vector2( 0, Random.Range( highwayYMin, highwayYMax ) ), false );
+    GenerateChain( "street", new Vector2( 0, Random.Range( highwayYMin, highwayYMax ) ), true );
 
-    /*
+
     SceneScript ss = FindObjectOfType<SceneScript>();
     if( ss != null )
     {
-      if( ss.sb != null && ss.sb is BoxCollider2D )
+      if( ss.NavmeshBox != null )
       {
         //bounds.Encapsulate( ss.sb.bounds );
-        BoxCollider2D box = ss.sb as BoxCollider2D;
-        box.size = bounds.size;
-        box.transform.position = bounds.center;
-
-        ss.NavmeshBox.size = new Vector3( bounds.size.x, .1f, bounds.size.y );
-        ss.NavmeshBox.transform.position = bounds.center;
+        ss.NavmeshBox.size = new Vector3( bounds.size.x, 0, bounds.size.y );
+        Vector3 boxpos = bounds.center; boxpos.z = 0;
+        ss.NavmeshBox.transform.position = boxpos;
       }
     }
-    */
+
     Profiler.EndSample();
   }
+
+
 
 #if UNITY_EDITOR
   void EditorApplication_PlayModeStateChanged( PlayModeStateChange obj )
@@ -169,18 +203,13 @@ public class Level : MonoBehaviour
   }
 #endif
 
-  void GenerateChain( string folder, bool overlapCheck = true, float xpos = 0, float zDepth = 0 )
+  void GenerateChain( string folder, Vector2 pos, bool overlapCheck = true )
   {
     gos = new List<GameObject>( Resources.LoadAll<GameObject>( "LevelFreeNode/" + folder ) );
     List<NodeLink> links = new List<NodeLink>();
-
-    /*GameObject firstPrefab = gos[0];
-    GameObject first = Instantiate( firstPrefab, new Vector3( xpos, Random.Range( 10, 20 ), zDepth ), Quaternion.identity );
-    first.name = firstPrefab.name;
-    AddObject( first );
-    links.AddRange( first.GetComponentsInChildren<NodeLink>() );*/
-
-    for( int i = 0; i < max; i++ )
+    // first link
+    CreateChainLink( gos[0], pos, links );
+    for( int i = 0; i < MaxLinkPasses; i++ )
     {
       List<NodeLink> newlinks = new List<NodeLink>();
       List<NodeLink> removelinks = new List<NodeLink>();
@@ -188,7 +217,7 @@ public class Level : MonoBehaviour
       {
         if( link.transform.position.x > cellsize.x * dimension.x )
           continue;
-        GameObject prefab = link.AllowedToLink[Random.Range( 0, link.AllowedToLink.Length )];
+        GameObject prefab = link.linkSet.AllowedToLink[Random.Range( 0, link.linkSet.AllowedToLink.Length )];
 
         if( overlapCheck )
         {
@@ -215,25 +244,19 @@ public class Level : MonoBehaviour
 
           if( conflict.Count == 0 )
           {
-            GameObject go = Instantiate( prefab, link.transform.position, Quaternion.identity );
-            go.name = prefab.name;
-            AddObject( go );
-            newlinks.AddRange( go.GetComponentsInChildren<NodeLink>() );
+            CreateChainLink( prefab, link.transform.position, newlinks );
           }
           else
           {
             string conflictnames = "";
             foreach( var cn in conflict )
               conflictnames += cn.name + " ";
-            Debug.Log( "prefab " + prefab.name + " will not spawn due to overlap with " + conflictnames, conflict[0] );
+            //Debug.Log( "prefab " + prefab.name + " will not spawn due to overlap with " + conflictnames, conflict[0] );
           }
         }
         else
         {
-          GameObject go = Instantiate( prefab, link.transform.position, Quaternion.identity );
-          go.name = prefab.name;
-          AddObject( go );
-          newlinks.AddRange( go.GetComponentsInChildren<NodeLink>() );
+          CreateChainLink( prefab, link.transform.position, newlinks );
         }
         removelinks.Add( link );
       }
@@ -244,6 +267,25 @@ public class Level : MonoBehaviour
         links.Remove( ugh );
       }
     }
+  }
+
+  void CreateChainLink( GameObject prefab, Vector2 pos, List<NodeLink> newLinks )
+  {
+    GameObject go = null;
+    if( Application.isPlaying )
+    {
+      go = Instantiate( prefab, pos, Quaternion.identity );
+    }
+    else
+    {
+#if UNITY_EDITOR
+      go = (GameObject)PrefabUtility.InstantiatePrefab( prefab );
+      go.transform.position = pos;
+#endif
+    }
+    go.name = prefab.name;
+    AddObject( go );
+    newLinks.AddRange( go.GetComponentsInChildren<NodeLink>() );
   }
 
   public void DestroyAll()
@@ -296,6 +338,20 @@ public class Level : MonoBehaviour
         structureData[i] = black;
     }
     UpdateStructure( 0, 0, dimension.x, dimension.y );
+  }
+
+  public void WriteStructurePNG()
+  {
+    for( int x = 0; x < StructureTexture.width; x++ )
+    {
+      for( int y = 0; y < StructureTexture.height; y++ )
+      {
+        Color32 color32 = structureData[x + y * dimension.x];
+        StructureTexture.SetPixel( x, y, new Color((float)color32.r/255, (float)color32.r/255, (float)color32.r/255,1) );
+      }
+    }
+    StructureTexture.Apply();
+    File.WriteAllBytes( StructurePath, StructureTexture.EncodeToPNG() );
   }
 
   public void SetStructureValue( int x, int y, byte value )
@@ -448,18 +504,12 @@ public class Level : MonoBehaviour
       if( Application.isPlaying )
       {
         go = Global.instance.Spawn( prefab, pos, Quaternion.identity, null, false, true );
-        /*LevelNode levelNode = go.GetComponent<LevelNode>();
-        if( levelNode != null )
-          levelNode.Initialize();*/
       }
       else
       {
 #if UNITY_EDITOR
         go = (GameObject)PrefabUtility.InstantiatePrefab( prefab );
         go.transform.position = pos;
-        LevelNode levelNode = go.GetComponent<LevelNode>();
-        if( levelNode != null )
-          levelNode.Initialize();
 #endif
       }
 

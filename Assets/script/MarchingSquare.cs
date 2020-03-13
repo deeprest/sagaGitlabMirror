@@ -42,9 +42,11 @@ public class MarchingSquareCell
 [CreateAssetMenu]
 public class MarchingSquare : ScriptableObject
 {
+  [SerializeField]
   public MarchingSquareCell[] Cells = new MarchingSquareCell[16];
 
   [Tooltip( "These are parsed by name. Example: \"shack-3\" or \"wall-15-top\"" )]
+  [SerializeField]
   public GameObject[] Prefabs;
 #if UNITY_EDITOR
   public void PrefabsToCells()
@@ -73,6 +75,7 @@ public class MarchingSquare : ScriptableObject
           Debug.LogError( "parsing of marching squares" );
       }
     }
+    EditorUtility.SetDirty( this );
   }
 
   public void FromFolder()
@@ -85,6 +88,7 @@ public class MarchingSquare : ScriptableObject
       gos.Add( go );
     }
     Prefabs = gos.ToArray();
+    EditorUtility.SetDirty( this );
   }
 
   public static string GetCurrentAssetDirectory()

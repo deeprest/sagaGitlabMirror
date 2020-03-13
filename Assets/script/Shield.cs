@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
 
 public class Shield : MonoBehaviour, IDamage
 {
   [SerializeField] Character character;
-  [SerializeField] Collider2D collider;
+  [SerializeField] new Collider2D collider;
   public AudioSource source;
   public AudioClip soundHit;
   public Damage damage;
   public float lightIntensity;
-  public Light light;
+  public new Light2D light;
   public SpriteRenderer sr;
   public float pulseDuration = 1;
   Timer pulseTimer = new Timer();

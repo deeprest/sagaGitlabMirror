@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using LitJson;
 
-[RequireComponent(typeof(JabberPlayer),typeof(Animator))]
+[RequireComponent( typeof( JabberPlayer ), typeof( Animator ) )]
 public class Talker : WorldSelectable
 {
   public CharacterIdentity identity;
@@ -24,11 +25,25 @@ public class Talker : WorldSelectable
     animator.Play( "talk" );
     Timer talk = new Timer( 4, null, delegate { animator.Play( "idle" ); } );
     jabber.Play( "jibber jabber" );
-    Global.instance.Speak( identity, "You! This struggle is philosophical!", 4 );
+
+    string say = "blah";
+    JsonData json = new JsonData();
+    string gameJson = identity.TextAsset.text;
+    if( gameJson.Length > 0 )
+    {
+      JsonReader reader = new JsonReader( gameJson );
+      json = JsonMapper.ToObject( reader );
+
+      int count = json["randomdrcain"].Count;
+      say = json["randomdrcain"][Random.Range( 0, count )].GetString();
+    }
+
+    Global.instance.Speak( identity, say, 4 );
+
   }
 
   public override void Unselect()
-  { 
-  
+  {
+
   }
 }

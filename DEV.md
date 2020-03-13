@@ -4,31 +4,33 @@
 + shield turrent settings adjustment. lower shields. shoot angle range. on ceiling.
 + fix diagetic text in front
 + respawn using cyclic index
++ work on marching square nodes
 
 ## todo
-- work on marching square nodes
+- level gen composition
 - align shot with surface when aiming into floor/wall
 - cursor influence: under min, and walljump need exceptions
-- fix grap when using gamepad (double)
-- fix grap going through boxes
 - detect cmd-f fullscreen switch and update setting
 - add ability icon to hud
+- menu navigation needs to be more clear. redesign with pages.
+- horizontal door trigger
 
 ## issues
 - gamepad double select diagetic menu
-- menu navigation needs to be more clear. redesign with pages.
+- fix grap when using gamepad (double)
+- fix grap going through boxes
 - release build screen fade in on level transition gets stuck
-- horizontal door trigger
 - reduce audiooneshot calls to avoid dropout
 - wheelbot box collider hits corners
 - reproducible: charge particles on after transition. reset player state on level transition
 
 ### low priority
+- hide arm while not shooting
+- sprite body turn when aiming behind
 - consolidate all sprites into bigsheet
 - replace old sprite anims with unity animators
 - UNITY bug: cursor movement in last direction when shoot
 - intro scene: no hud, no menu or biped controls
-- hide arm while not shooting
 - add spark effect to wall jump
 - fix long slide clipping
 - highway loading screen

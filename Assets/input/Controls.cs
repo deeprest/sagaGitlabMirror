@@ -73,6 +73,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Minimap"",
+                    ""type"": ""Button"",
+                    ""id"": ""18da85fc-9082-4a9e-ba9f-0ea832cbf286"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -194,6 +202,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Dev-Slowmo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c60d80aa-398d-4d95-ab21-069c28fc62b4"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Minimap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -847,6 +866,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_GlobalActions_CursorLockToggle = m_GlobalActions.FindAction("CursorLockToggle", throwIfNotFound: true);
         m_GlobalActions_DEVRespawn = m_GlobalActions.FindAction("DEV-Respawn", throwIfNotFound: true);
         m_GlobalActions_DevSlowmo = m_GlobalActions.FindAction("Dev-Slowmo", throwIfNotFound: true);
+        m_GlobalActions_Minimap = m_GlobalActions.FindAction("Minimap", throwIfNotFound: true);
         // MenuActions
         m_MenuActions = asset.FindActionMap("MenuActions", throwIfNotFound: true);
         m_MenuActions_Move = m_MenuActions.FindAction("Move", throwIfNotFound: true);
@@ -924,6 +944,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_GlobalActions_CursorLockToggle;
     private readonly InputAction m_GlobalActions_DEVRespawn;
     private readonly InputAction m_GlobalActions_DevSlowmo;
+    private readonly InputAction m_GlobalActions_Minimap;
     public struct GlobalActionsActions
     {
         private @Controls m_Wrapper;
@@ -935,6 +956,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @CursorLockToggle => m_Wrapper.m_GlobalActions_CursorLockToggle;
         public InputAction @DEVRespawn => m_Wrapper.m_GlobalActions_DEVRespawn;
         public InputAction @DevSlowmo => m_Wrapper.m_GlobalActions_DevSlowmo;
+        public InputAction @Minimap => m_Wrapper.m_GlobalActions_Minimap;
         public InputActionMap Get() { return m_Wrapper.m_GlobalActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -965,6 +987,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @DevSlowmo.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDevSlowmo;
                 @DevSlowmo.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDevSlowmo;
                 @DevSlowmo.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDevSlowmo;
+                @Minimap.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMinimap;
+                @Minimap.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMinimap;
+                @Minimap.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMinimap;
             }
             m_Wrapper.m_GlobalActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -990,6 +1015,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @DevSlowmo.started += instance.OnDevSlowmo;
                 @DevSlowmo.performed += instance.OnDevSlowmo;
                 @DevSlowmo.canceled += instance.OnDevSlowmo;
+                @Minimap.started += instance.OnMinimap;
+                @Minimap.performed += instance.OnMinimap;
+                @Minimap.canceled += instance.OnMinimap;
             }
         }
     }
@@ -1198,6 +1226,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnCursorLockToggle(InputAction.CallbackContext context);
         void OnDEVRespawn(InputAction.CallbackContext context);
         void OnDevSlowmo(InputAction.CallbackContext context);
+        void OnMinimap(InputAction.CallbackContext context);
     }
     public interface IMenuActionsActions
     {

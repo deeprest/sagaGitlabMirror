@@ -245,6 +245,7 @@ public class Global : MonoBehaviour
     return true;
   }
 
+  NavMeshSurface[] meshSurfaces;
   void Awake()
   {
     if( instance != null )
@@ -288,7 +289,7 @@ public class Global : MonoBehaviour
     foreach( GameObject go in res )
       ResourceLookup.Add( go.name, go );
 
-    NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
+    meshSurfaces = FindObjectsOfType<NavMeshSurface>();
     foreach( var mesh in meshSurfaces )
       AgentType[NavMesh.GetSettingsNameFromID( mesh.agentTypeID )] = mesh.agentTypeID;
 
@@ -439,6 +440,8 @@ public class Global : MonoBehaviour
       {
         CurrentPlayer.transform.position = FindSpawnPosition();
         CurrentPlayer.velocity = Vector2.zero;
+        if( sceneScript != null )
+          sceneScript.ReplaceCameraPoly( sceneScript.sb );
       }
     };
 
@@ -449,11 +452,33 @@ public class Global : MonoBehaviour
       if( ActiveDiagetic != null && !MenuShowing && CurrentPlayer != null )
         CurrentPlayer.UnselectWorldSelection();
     };
+
     // DEVELOPMENT
     Controls.BipedActions.DEVZoom.started += ( obj ) => {
       zoomDelta += obj.ReadValue<float>();
     };
+
+    Controls.GlobalActions.Minimap.performed += ( obj ) => {
+      ToggleMinimap();
+    };
+
+    /*Controls.MenuActions.Move.performed += ( obj ) => {
+      if( Minimap.activeInHierarchy )
+      {
+        Vector2 move = obj.ReadValue<Vector2>();
+        Debug.Log( move.x + " " + move.y );
+
+      }
+    };*/
   }
+
+  [Header( "Minimap" )]
+  [SerializeField] Camera MinimapCamera;
+  [SerializeField] GameObject Minimap;
+  [SerializeField] RectTransform MinimapScroller;
+  Vector2 mmScroll = Vector2.zero;
+  [SerializeField] float mmScrollSpeed = 1000;
+  [SerializeField] Vector2 minimapOrigin;
 
   public void LoadScene( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true )
   {
@@ -519,20 +544,6 @@ public class Global : MonoBehaviour
     }
     loadingScene = false;
 
-    NavMeshSurface[] meshSurfaces = FindObjectsOfType<NavMeshSurface>();
-    foreach( var mesh in meshSurfaces )
-      mesh.BuildNavMesh();
-
-    if( CurrentPlayer == null )
-    {
-      if( spawnPlayer )
-        SpawnPlayer();
-    }
-    else
-    {
-      CurrentPlayer.PostSceneTransition();
-    }
-
     TimerParams musicTimerParamsFadeIn = new TimerParams
     {
       unscaledTime = true,
@@ -556,6 +567,19 @@ public class Global : MonoBehaviour
     sceneScript = FindObjectOfType<SceneScript>();
     if( sceneScript != null )
       sceneScript.StartScene();
+
+    foreach( var mesh in meshSurfaces )
+      mesh.BuildNavMesh();
+
+    if( CurrentPlayer == null )
+    {
+      if( spawnPlayer )
+        SpawnPlayer();
+    }
+    else
+    {
+      CurrentPlayer.PostSceneTransition();
+    }
 
     Unpause();
     if( showLoadingScreen )
@@ -620,6 +644,15 @@ public class Global : MonoBehaviour
     }
     zoomDelta = 0;
 
+    //if( Controls.MenuActions.Move.enabled && Minimap.activeInHierarchy )
+    //  MinimapScroller.anchoredPosition += -Controls.MenuActions.Move.ReadValue<Vector2>() * mmScrollSpeed * Time.unscaledDeltaTime;
+
+    if( Minimap.activeInHierarchy )
+    {
+      float scale = MinimapScroller.sizeDelta.x / (float)MinimapCamera.targetTexture.width;
+      if( CurrentPlayer != null )
+        MinimapScroller.anchoredPosition = -((Vector2)CurrentPlayer.transform.position - minimapOrigin) * scale;
+    }
   }
 
   void OnApplicationFocus( bool hasFocus )
@@ -802,6 +835,28 @@ public class Global : MonoBehaviour
     CameraController.EncompassBounds = false;
     //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
     //Cursor.gameObject.SetActive( true );
+  }
+
+  public void ShowMinimap()
+  {
+    Minimap.SetActive( true );
+    Controls.MenuActions.Enable();
+    Controls.BipedActions.Disable();
+  }
+
+  public void HideMinimap()
+  {
+    Minimap.SetActive( false );
+    Controls.MenuActions.Disable();
+    Controls.BipedActions.Enable();
+  }
+
+  public void ToggleMinimap()
+  {
+    if( Minimap.activeInHierarchy )
+      HideMinimap();
+    else
+      ShowMinimap();
   }
 
   public void EnableRaycaster( bool enable = true )
@@ -1219,7 +1274,7 @@ public class Global : MonoBehaviour
     writer.WriteObjectEnd();
 
     writer.WriteObjectEnd(); // root end
-    //print( settingsPath );
+                             //print( settingsPath );
     File.WriteAllText( settingsPath, writer.ToString() );
 
 #if UNITY_WEBGL && !UNITY_EDITOR
