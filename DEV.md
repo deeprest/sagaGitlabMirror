@@ -54,7 +54,7 @@
 - pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
 - FSM: enemies should react to projectiles in proximity
 - SERIALIZEDOBJECT: (design) save/load game; player status, serializedobjects
-- weapon ideas: +bouncygrenade, +multishot, rockets, seeking missiles, beam/laser, stickybomb/magnet, invisible/cloaking
+- weapon ideas: +bouncygrenade, +multishot, rockets, seeking missiles, +beam/laser, +stickybomb/magnet, invisible/cloaking
 - powerups: speedboost, slowtime, reflective shield, supercharge
 - permanent mods: run speed, wall slide speed, dash duration, rapid shot, extra projectiles
 - 4 color buttons: change weapon, menu, interact, use item/powerup
@@ -64,7 +64,7 @@
 - wall slide at angle in and out. building exterior
 - claw: ceiling claw climbing. dash with claw slash
 - enemy creature that collects parts and builds onto itself
-- city subway. fast travel or GTA2 style train?
+- city subway. fast travel or GTA2 style train
 
 # DESIGN
 ## Design Mistakes to Avoid

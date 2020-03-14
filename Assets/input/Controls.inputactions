@@ -60,14 +60,6 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
-                },
-                {
-                    "name": "Minimap",
-                    "type": "Button",
-                    "id": "18da85fc-9082-4a9e-ba9f-0ea832cbf286",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -189,17 +181,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Dev-Slowmo",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c60d80aa-398d-4d95-ab21-069c28fc62b4",
-                    "path": "<Keyboard>/m",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Minimap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -528,6 +509,14 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Minimap",
+                    "type": "Button",
+                    "id": "0f90ef74-ed44-45eb-9e8f-c77310b2ce21",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -814,6 +803,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f10ebd40-e9a9-4762-a6d2-5059ab26337f",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Minimap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

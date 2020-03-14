@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: New 2D Renderer Data
   m_EditorClassIdentifier: 
   m_RendererFeatures: []
-  m_TransparencySortMode: 0
+  m_TransparencySortMode: 2
   m_TransparencySortAxis: {x: 0, y: 1, z: 0}
   m_HDREmulationScale: 1
   m_LightBlendStyles:
@@ -27,12 +27,12 @@ MonoBehaviour:
       additive: 0
   - enabled: 0
     name: Blend Style 1
-    maskTextureChannel: 0
+    maskTextureChannel: 4
     renderTextureScale: 1
-    blendMode: 1
+    blendMode: 0
     customBlendFactors:
       multiplicative: 0
-      additive: 0
+      additive: -2.55
   - enabled: 0
     name: Blend Style 2
     maskTextureChannel: 0

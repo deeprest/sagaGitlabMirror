@@ -310,6 +310,7 @@ public class Global : MonoBehaviour
       Camera.main.fieldOfView = 20;
 
     HideHUD();
+    HideMinimap();
     HidePauseMenu();
     HideLoadingScreen();
     SpeechBubble.SetActive( false );
@@ -458,7 +459,7 @@ public class Global : MonoBehaviour
       zoomDelta += obj.ReadValue<float>();
     };
 
-    Controls.GlobalActions.Minimap.performed += ( obj ) => {
+    Controls.BipedActions.Minimap.performed += ( obj ) => {
       ToggleMinimap();
     };
 
@@ -475,10 +476,8 @@ public class Global : MonoBehaviour
   [Header( "Minimap" )]
   [SerializeField] Camera MinimapCamera;
   [SerializeField] GameObject Minimap;
-  [SerializeField] RectTransform MinimapScroller;
-  Vector2 mmScroll = Vector2.zero;
-  [SerializeField] float mmScrollSpeed = 1000;
-  [SerializeField] Vector2 minimapOrigin;
+  [SerializeField] float mmScrollSpeed = 10;
+  [SerializeField] float mmOrthoSize = 1;
 
   public void LoadScene( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true )
   {
@@ -644,16 +643,24 @@ public class Global : MonoBehaviour
     }
     zoomDelta = 0;
 
-    //if( Controls.MenuActions.Move.enabled && Minimap.activeInHierarchy )
-    //  MinimapScroller.anchoredPosition += -Controls.MenuActions.Move.ReadValue<Vector2>() * mmScrollSpeed * Time.unscaledDeltaTime;
 
-    if( Minimap.activeInHierarchy )
+    if( MinimapCamera.enabled )
     {
-      float scale = MinimapScroller.sizeDelta.x / (float)MinimapCamera.targetTexture.width;
-      if( CurrentPlayer != null )
-        MinimapScroller.anchoredPosition = -((Vector2)CurrentPlayer.transform.position - minimapOrigin) * scale;
+      if( Controls.MenuActions.Move.enabled )
+        MinimapCamera.transform.position += (Vector3)(Controls.MenuActions.Move.ReadValue<Vector2>() * mmScrollSpeed * Time.unscaledDeltaTime);
+      MinimapCamera.orthographicSize = mmOrthoSize;
+
+/*      pixelsize = (MinimapCamera.orthographicSize * 2f) / (float)MinimapCamera.targetTexture.height;
+      Vector3 pix = MinimapCamera.transform.position * pixelsize;
+      pix = new Vector3( Mathf.Floor( pix.x ), Mathf.Floor( pix.y ), pix.z );
+      pix /= pixelsize;
+      if( halfpixel )
+        pix += new Vector3( 1, 1, 0 ) * 0.5f * pixelsize;*/
     }
   }
+
+  //public bool halfpixel;
+  //public float pixelsize;
 
   void OnApplicationFocus( bool hasFocus )
   {
@@ -840,15 +847,18 @@ public class Global : MonoBehaviour
   public void ShowMinimap()
   {
     Minimap.SetActive( true );
-    Controls.MenuActions.Enable();
-    Controls.BipedActions.Disable();
+    MinimapCamera.enabled = true;
+    MinimapCamera.transform.position = CameraController.transform.position;
+    //Controls.MenuActions.Enable();
+    //Controls.BipedActions.Disable();
   }
 
   public void HideMinimap()
   {
     Minimap.SetActive( false );
-    Controls.MenuActions.Disable();
-    Controls.BipedActions.Enable();
+    MinimapCamera.enabled = false;
+    //Controls.MenuActions.Disable();
+    //Controls.BipedActions.Enable();
   }
 
   public void ToggleMinimap()
