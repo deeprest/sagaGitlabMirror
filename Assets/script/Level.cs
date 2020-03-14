@@ -41,7 +41,7 @@ public static class PixelBit
 {
   public const byte None = 0;
   //public const byte Door = 32;
-  //public const byte Wall = 64;
+  public const byte BuildingBackground = 64;
   public const byte Building = 128;
 }
 
@@ -57,29 +57,27 @@ public class Level : MonoBehaviour
 
   [Header( "Generation" )]
   public Vector2Int dimension = new Vector2Int( 16, 6 );
-  // marching squares
-  public List<Column> columns = new List<Column>();
   private Vector2Int cellsize = new Vector2Int( 10, 10 );
+  Bounds bounds;
+  public int seed;
   public int GroundY = 2;
-  [SerializeField] int spaceMin = 1;
+  [SerializeField] int density = 3;
+  public bool SineCurve;
+  public bool UseDensity;
   [SerializeField] int spaceMax = 2;
-  [SerializeField] int buildingWidthMin = 1;
   [SerializeField] int buildingWidthMax = 3;
-  // bit 128, city
+  public GameObject spawnPointPrefab;
+  [SerializeField] float highwayYMin = 10;
+  [SerializeField] float highwayYMax = 20;
+  public int MaxLinkPasses = 30;
+
   public MarchingSquareData building;
-  // bit 128, city-underground
+  public MarchingSquareData buildingBG;
   public MarchingSquareData underground;
   List<MarchingSquareData> msd;
   // nodelinks
   List<GameObject> gens = new List<GameObject>();
-  List<GameObject> gos;
-  public int MaxLinkPasses = 30;
   List<LineSegment> debugSegments = new List<LineSegment>();
-  public int seed;
-  public GameObject spawnPointPrefab;
-  [SerializeField] float highwayYMin = 10;
-  [SerializeField] float highwayYMax = 20;
-  [SerializeField] int density = 3;
 
   private void Awake()
   {
@@ -94,7 +92,6 @@ public class Level : MonoBehaviour
       Debug.DrawLine( segment.a, segment.b, Color.red );
   }
 
-  Bounds bounds = new Bounds();
 
   void AddObject( GameObject go )
   {
@@ -103,66 +100,57 @@ public class Level : MonoBehaviour
       bounds.Encapsulate( cld.bounds );
     gens.Add( go );
   }
-
+  
   public void Generate()
   {
     Profiler.BeginSample( "Level Generation" );
 
     DestroyAll();
     Random.InitState( seed );
+    bounds = new Bounds();
     bounds.Encapsulate( Vector3.right * dimension.x * cellsize.x );
     bounds.Encapsulate( Vector3.up * dimension.y * cellsize.y );
     // encapsulate existing objects in scene
     GameObject[] gos = gameObject.scene.GetRootGameObjects();
     foreach( var go in gos )
     {
-      Collider2D[] collider = go.GetComponentsInChildren<Collider2D>();
-      foreach( var c in collider )
+      Collider2D[] cld = go.GetComponentsInChildren<Collider2D>();
+      foreach( var c in cld )
         bounds.Encapsulate( c.bounds );
     }
 
     InitializeStructure();
-    Vector2Int pos = new Vector2Int( 1, 1 );
+    int buildingWidth = 1;
     for( int x = 0; x <= dimension.x; x++ )
     {
-      Column column = new Column();
-      columns.Add( column );
-      column.xindex = pos.x;
       if( x == 0 || x == dimension.x )
       {
         for( int y = 0; y < dimension.y; y++ )
           SetStructureValue( x, y, 0 );
-        pos.x++;
       }
       else
       {
-        int buidingWidth = Random.Range( buildingWidthMin, buildingWidthMax + 1 );
-        ////pos.y = Random.Range( 1, dimension.y - 1 );
-        for( int bw = 0; bw < buidingWidth; bw++ )
+        SetStructureBitOn( x, 1, PixelBit.Building );
+        for( int y = 1; y < dimension.y; y++ )
         {
-          //  int height = Mathf.CeilToInt( Random.Range( 1, dimension.y - 1 ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
-          //  if( bw == 0 || bw == buidingWidth - 1 )
-          //  {
-          //    pos.y = 1;
-          //  }
-          //  else
-          //  {
-          //    pos.y = Random.Range( 1, height - 1 );
-          //  }
-          //for( ; pos.y < height; pos.y++ )
-          //  SetStructureBitOn( pos.x, pos.y, PixelBit.Building );
-
-          for( int y = 1; y < dimension.y; y++ )
+          int height = dimension.y;
+          if( SineCurve )
+            height = Mathf.RoundToInt( dimension.y * Mathf.Sin( ((float)x / (float)dimension.x) * Mathf.PI ) + 0.5f );
+          if( y < height )
           {
-            int height = Mathf.CeilToInt( Random.Range( 1, dimension.y - 1 ) * Mathf.Sin( ((float)pos.x / (float)dimension.x) * Mathf.PI ) + 0.5f );
-            if( y < height && Random.Range( 0, density ) > 0 )
-              SetStructureBitOn( pos.x, y, PixelBit.Building );
+            if( !UseDensity || Random.Range( 0, density ) > 0 )
+              SetStructureBitOn( x, y, PixelBit.Building | PixelBit.BuildingBackground );
+            else
+              SetStructureBitOn( x, y, PixelBit.BuildingBackground );
           }
-          //pos.x++;
         }
-        pos.x += Random.Range( spaceMin, spaceMax + 1 );
+        buildingWidth--;
+        if( buildingWidth == 0 )
+        {
+          buildingWidth = Random.Range( 1, buildingWidthMax + 1 );
+          x += Random.Range( 1, spaceMax + 1 );
+        }
       }
-      pos.y = 1;
     }
     UpdateStructure( 0, 0, dimension.x, dimension.y );
 
@@ -205,7 +193,7 @@ public class Level : MonoBehaviour
 
   void GenerateChain( string folder, Vector2 pos, bool overlapCheck = true )
   {
-    gos = new List<GameObject>( Resources.LoadAll<GameObject>( "LevelFreeNode/" + folder ) );
+    List<GameObject> gos = new List<GameObject>( Resources.LoadAll<GameObject>( "LevelFreeNode/" + folder ) );
     List<NodeLink> links = new List<NodeLink>();
     // first link
     CreateChainLink( gos[0], pos, links );
@@ -312,6 +300,7 @@ public class Level : MonoBehaviour
   {
     msd = new List<MarchingSquareData>();
     msd.Add( building );
+    msd.Add( buildingBG );
     //msd.Add( wall );
     foreach( var ms in msd )
       ms.indexBuffer = new int[dimension.x, dimension.y];
@@ -347,7 +336,7 @@ public class Level : MonoBehaviour
       for( int y = 0; y < StructureTexture.height; y++ )
       {
         Color32 color32 = structureData[x + y * dimension.x];
-        StructureTexture.SetPixel( x, y, new Color((float)color32.r/255, (float)color32.r/255, (float)color32.r/255,1) );
+        StructureTexture.SetPixel( x, y, new Color( (float)color32.r / 255, 0, 0, 1 ) );
       }
     }
     StructureTexture.Apply();
@@ -457,6 +446,13 @@ public class Level : MonoBehaviour
         else
         {
           GameObject[] prefabs = building.ms.Cells[buildingIndex].prefab;
+          if( prefabs.Length > 0 )
+            SingleCell( key, x, y, prefabs[Random.Range( 0, prefabs.Length )] );
+        }
+
+        {
+          int buildingBackgroundIndex = buildingBG.indexBuffer[x, y];
+          GameObject[] prefabs = buildingBG.ms.Cells[buildingBackgroundIndex].prefab;
           if( prefabs.Length > 0 )
             SingleCell( key, x, y, prefabs[Random.Range( 0, prefabs.Length )] );
         }
