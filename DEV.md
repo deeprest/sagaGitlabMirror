@@ -1,37 +1,36 @@
-## review
-+ highway scene: pillar top collision box is too high
-+ home scene: lifts pos. when enter chamber, longer run right.
-+ shield turret settings adjustment. lower shields. shoot angle range. on ceiling.
-+ fix diagetic text in front
-+ respawn using cyclic index
-+ work on marching square nodes
+pP
 
-## todo
-- level gen composition
-- minimap. Needs shader/coloring. Should follow player position, not camera
-- align shot with surface when aiming into floor/wall
-- cursor influence: under min, and walljump need exceptions
-- detect cmd-f fullscreen switch and update setting
-- add ability icon to hud
-- menu navigation needs redesign.
-- horizontal door trigger / downward boxcast for triggers
+## review
+
+# features
+weapons: blaster, bouncygrenade, stickybomb, flame, laser
+abilities: graphook, shield, bullet-time
+boss
+generated city
 
 ## issues
 - gamepad double select diagetic menu
 - fix grap when using gamepad (double)
 - fix grap going through boxes
-- fix stickybomb goes through vents
+- fix stickybomb going through vents
 - release build screen fade in on level transition gets stuck
 - reduce audiooneshot calls to avoid dropout
 - wheelbot box collider hits corners
 - reproducible: charge particles on after transition. reset player state on level transition
+- UNITY bug: cursor movement in last direction when shoot
 
-### low priority
+## improvements
+- minimap. Needs shader/coloring. Should follow player position, not camera
+- align shot with surface when aiming into floor/wall
+- horizontal door trigger / downward boxcast for triggers
+- use line renderer for laser. simplifies shield reflection code.
+- detect cmd-f fullscreen switch and update setting
+- menu navigation needs redesign.
 - hide arm while not shooting
 - sprite body turn when aiming behind
+- cursor influence: under min, and walljump need exceptions
 - consolidate all sprites into bigsheet
 + replace old sprite anims with unity animators
-- UNITY bug: cursor movement in last direction when shoot
 - add spark effect to wall jump
 - fix long slide clipping
 - improve loading screen

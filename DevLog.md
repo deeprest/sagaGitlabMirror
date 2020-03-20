@@ -64,3 +64,9 @@ minimum cursorDelta; cursor off and no shot when under min.
 cursor sensistivity lower with mouse, higher with gamepad (if non-directional)
 directional cursor distance = 3
 left thumbstick = move
+
++ home scene: lifts pos. when enter chamber, longer run right.
++ shield turret settings adjustment. lower shields. shoot angle range. on ceiling.
++ fix diagetic text in front
++ respawn using cyclic index
++ work on marching square nodes

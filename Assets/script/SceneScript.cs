@@ -5,30 +5,24 @@ using System.Collections;
 public class SceneScript : MonoBehaviour
 {
   public AudioLoop music;
-  // generation
-  public bool GenerateLevelOnStart = true;
-  public Level level;
   // the camera collider
   public Collider2D sb;
   public BoxCollider NavmeshBox;
 
-  public virtual void StartScene() 
+  public virtual void StartScene()
   {
     if( Application.isEditor && !Global.instance.SimulatePlayer && Global.instance.CurrentPlayer == null )
     {
       Global.instance.SpawnPlayer();
       //return;
     }
-    // level generation
-    if( GenerateLevelOnStart && level != null )
-      level.Generate();
 
     Global.instance.AssignCameraPoly( sb );
 
     // music fade in
     if( music != null )
       Global.instance.PlayMusic( music );
-      
+
   }
 
   public void PlayerInputOff()
@@ -93,5 +87,7 @@ public class SceneScript : MonoBehaviour
     };
     runTimer.Start( tp );
   }*/
+
+  
 
 }

@@ -49,10 +49,4 @@ public class SceneHome : SceneScript
   //#endif
   #endregion
 
-
-  public void GenerateNext()
-  {
-    level.seed++;
-    level.Generate();
-  }
 }
