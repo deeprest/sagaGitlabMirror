@@ -59,6 +59,7 @@ public class Level : MonoBehaviour
   public Vector2Int dimension = new Vector2Int( 16, 6 );
   private Vector2Int cellsize = new Vector2Int( 10, 10 );
   Bounds bounds;
+  public bool RandomSeedOnStart = false;
   public int seed;
   public int GroundY = 2;
   [SerializeField] int density = 3;
@@ -106,6 +107,8 @@ public class Level : MonoBehaviour
     Profiler.BeginSample( "Level Generation" );
 
     DestroyAll();
+    if( RandomSeedOnStart )
+      seed = System.DateTime.Now.Second;
     Random.InitState( seed );
     bounds = new Bounds();
     bounds.Encapsulate( Vector3.right * dimension.x * cellsize.x );

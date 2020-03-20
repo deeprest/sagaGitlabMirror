@@ -76,6 +76,7 @@ public class Global : MonoBehaviour
   public static bool IsQuiting = false;
 
   [Header( "Global Settings" )]
+  public bool RandomSeedOnStart = false;
   [Tooltip( "Pretend this is a build we're running" )]
   public bool SimulatePlayer = false;
   public static float Gravity = 16;
@@ -435,11 +436,11 @@ public class Global : MonoBehaviour
 #endif
     Controls.GlobalActions.DEVRespawn.performed += ( obj ) => {
       Chopper chopper = FindObjectOfType<Chopper>();
-      if( (!Application.isEditor || SimulatePlayer) && chopper != null )
+      if( chopper != null )
         chopper.StartDrop( CurrentPlayer );
       else
       {
-        CurrentPlayer.transform.position = FindSpawnPosition();
+        CurrentPlayer.transform.position = FindRandomSpawnPosition();
         CurrentPlayer.velocity = Vector2.zero;
         if( sceneScript != null )
           sceneScript.ReplaceCameraPoly( sceneScript.sb );
@@ -650,12 +651,12 @@ public class Global : MonoBehaviour
         MinimapCamera.transform.position += (Vector3)(Controls.MenuActions.Move.ReadValue<Vector2>() * mmScrollSpeed * Time.unscaledDeltaTime);
       MinimapCamera.orthographicSize = mmOrthoSize;
 
-/*      pixelsize = (MinimapCamera.orthographicSize * 2f) / (float)MinimapCamera.targetTexture.height;
-      Vector3 pix = MinimapCamera.transform.position * pixelsize;
-      pix = new Vector3( Mathf.Floor( pix.x ), Mathf.Floor( pix.y ), pix.z );
-      pix /= pixelsize;
-      if( halfpixel )
-        pix += new Vector3( 1, 1, 0 ) * 0.5f * pixelsize;*/
+      /*      pixelsize = (MinimapCamera.orthographicSize * 2f) / (float)MinimapCamera.targetTexture.height;
+            Vector3 pix = MinimapCamera.transform.position * pixelsize;
+            pix = new Vector3( Mathf.Floor( pix.x ), Mathf.Floor( pix.y ), pix.z );
+            pix /= pixelsize;
+            if( halfpixel )
+              pix += new Vector3( 1, 1, 0 ) * 0.5f * pixelsize;*/
     }
   }
 
@@ -686,21 +687,27 @@ public class Global : MonoBehaviour
     CurrentPlayer.SpeedFactorNormalized = FloatSetting["PlayerSpeedFactor"].Value;
   }
 
-  int spawnIndex = 0;
-  GameObject FindSpawnPoint()
+  public Vector3 FindSpawnPosition()
   {
+    // todo find more appropriate position based on some criteria
+    GameObject go = null;
+    go = GameObject.FindGameObjectWithTag( "FirstSpawn" );
+    if( go != null )
+      return go.transform.position;
+    return Vector3.zero;
+  }
+
+  int spawnCycleIndex = 0;
+  public Vector3 FindRandomSpawnPosition()
+  {
+    // cycle through random spawn points
+    GameObject go = null;
     GameObject[] spawns = GameObject.FindGameObjectsWithTag( "Respawn" );
     if( spawns.Length > 0 )
     {
-      spawnIndex %= spawns.Length;
-      return spawns[spawnIndex++];
+      spawnCycleIndex %= spawns.Length;
+      go = spawns[spawnCycleIndex++];
     }
-    return null;
-  }
-
-  public Vector3 FindSpawnPosition()
-  {
-    GameObject go = FindSpawnPoint();
     if( go != null )
     {
       Vector3 pos = go.transform.position;

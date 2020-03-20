@@ -1,24 +1,26 @@
 ## review
 + highway scene: pillar top collision box is too high
 + home scene: lifts pos. when enter chamber, longer run right.
-+ shield turrent settings adjustment. lower shields. shoot angle range. on ceiling.
++ shield turret settings adjustment. lower shields. shoot angle range. on ceiling.
 + fix diagetic text in front
 + respawn using cyclic index
 + work on marching square nodes
 
 ## todo
 - level gen composition
+- minimap. Needs shader/coloring. Should follow player position, not camera
 - align shot with surface when aiming into floor/wall
 - cursor influence: under min, and walljump need exceptions
 - detect cmd-f fullscreen switch and update setting
 - add ability icon to hud
-- menu navigation needs to be more clear. redesign with pages.
-- horizontal door trigger
+- menu navigation needs redesign.
+- horizontal door trigger / downward boxcast for triggers
 
 ## issues
 - gamepad double select diagetic menu
 - fix grap when using gamepad (double)
 - fix grap going through boxes
+- fix stickybomb goes through vents
 - release build screen fade in on level transition gets stuck
 - reduce audiooneshot calls to avoid dropout
 - wheelbot box collider hits corners
@@ -28,12 +30,11 @@
 - hide arm while not shooting
 - sprite body turn when aiming behind
 - consolidate all sprites into bigsheet
-- replace old sprite anims with unity animators
++ replace old sprite anims with unity animators
 - UNITY bug: cursor movement in last direction when shoot
-- intro scene: no hud, no menu or biped controls
 - add spark effect to wall jump
 - fix long slide clipping
-- highway loading screen
+- improve loading screen
 
 ## WebGL issues
 - UNITY bug: webgl audio loop
@@ -98,15 +99,15 @@ safety timer after taking damage
 
 ## changes
 only shoot forward -> aiming
-teleportation -> airdrop from chopper
-character/robot styles
+projectiles collide with walls
 camera view size changes
 camera movement follows aiming
-projectiles collide with walls
-lighting, normal mapped sprites, emissive
 arbitrary ground and wall angles
 no instant-death spikes or bottomless pits
 AI, navigation mesh
+teleportation -> airdrop from chopper
+lighting, normal mapped sprites, emissive
+character/robot styles
 
 ## aesthetics
 1. atmosphere.
@@ -122,7 +123,6 @@ Camera can center on an imaginary point around the player, in the aiming directi
 MegamanX can only shoot forwards, not upwards or even slightly higher. The ability to shoot upwards in games like Contra is an improvement. Having weapons that spread out when shot can make this limitation feel less awkward.
 3. Enemies respawn at logical locations.
 Not arbitrary static points.
-
 
 # Design Requirements
 ## accessibly
