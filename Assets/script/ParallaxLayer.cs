@@ -27,6 +27,10 @@ public class ParallaxLayer : MonoBehaviour
 
   void LateUpdate()
   {
+#if UNITY_EDITOR
+    if( cam == null )
+      cam = SceneView.GetAllSceneCameras()[0].transform;
+#endif
     if( cam != null )
       transform.position = Vector3.Scale( cam.position, Scale ) * (Reverse ? -1f : 1f);
   }
