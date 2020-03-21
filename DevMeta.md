@@ -1,5 +1,14 @@
 
-# Fan Games
+
+# THANK YOU!
+"jbarrios" for creating a feedback video on TIGSource feedback forum.
+MET for his awesome music.
+https://seansleblanc.itch.io/better-minimal-webgl-template for webgl template
+https://etclundberg.itch.io/ for early feedback
+
+
+
+# Other Fan Games
 ["Cancelled/Dead Mega Man X Fangames"](https://www.youtube.com/watch?v=PB8pMBSK8AU)
 ["Mega Man X Elf Wars (aiming)"](https://youtu.be/xGahhqoooT0?t=109)
 ["Mega Man X++"](https://www.youtube.com/watch?v=twI3res-obs)
@@ -23,6 +32,7 @@ Steam
 itch.io
 tigsource forums
 indiegamesplus
+pixelprospector
 gamejolt
 reddit
 twitter

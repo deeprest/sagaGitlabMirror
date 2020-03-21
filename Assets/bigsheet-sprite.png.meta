@@ -509,6 +509,48 @@ TextureImporter:
   - first:
       213: -6707915615547073563
     second: wall-1
+  - first:
+      213: 8213676459231634764
+    second: tower0
+  - first:
+      213: 8495009227289463920
+    second: tower1
+  - first:
+      213: -513759390154006316
+    second: tower1
+  - first:
+      213: 4453747471903493003
+    second: tower2
+  - first:
+      213: -8437873994384850885
+    second: city-background
+  - first:
+      213: -513759390154006316
+    second: tower1
+  - first:
+      213: -513759390154006316
+    second: tower1
+  - first:
+      213: 8495009227289463920
+    second: tower1
+  - first:
+      213: -513759390154006316
+    second: city-background-sky
+  - first:
+      213: -8787417832074258909
+    second: towerWTF
+  - first:
+      213: 8495009227289463920
+    second: city-background-sky
+  - first:
+      213: 8495009227289463920
+    second: city-bg-sky
+  - first:
+      213: 373466179721341685
+    second: city-bg-bottom
+  - first:
+      213: -513759390154006316
+    second: city-bg-sky
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -541,9 +583,9 @@ TextureImporter:
     filterMode: 0
     aniso: -1
     mipBias: -100
-    wrapU: 1
-    wrapV: 1
-    wrapW: 1
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -4059,6 +4101,153 @@ TextureImporter:
       bones: []
       spriteID: 5eb5508a942b8e2a0800000000000000
       internalID: -6707915615547073563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tower0
+      rect:
+        serializedVersion: 2
+        x: 895
+        y: 35
+        width: 129
+        height: 103
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 1, z: 0, w: 38}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c456d74c837dcf170800000000000000
+      internalID: 8213676459231634764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tower2
+      rect:
+        serializedVersion: 2
+        x: 911
+        y: 513
+        width: 112
+        height: 135
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 39}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8b0a1e8ab3eecd30800000000000000
+      internalID: 4453747471903493003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: city-background
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 672
+        width: 637
+        height: 352
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b304f21de46a6ea80800000000000000
+      internalID: -8437873994384850885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: towerWTF
+      rect:
+        serializedVersion: 2
+        x: 911
+        y: 139
+        width: 112
+        height: 63
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 31}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 326d74a1a02dc0680800000000000000
+      internalID: -8787417832074258909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: city-bg-sky
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 1017
+        width: 12
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07c014c32e554e570800000000000000
+      internalID: 8495009227289463920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: city-bg-bottom
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 672
+        width: 12
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5faa9e10381de2500800000000000000
+      internalID: 373466179721341685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: junk
+      rect:
+        serializedVersion: 2
+        x: 328
+        y: 988
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4d069d18e82ced8f0800000000000000
+      internalID: -513759390154006316
       vertices: []
       indices: 
       edges: []

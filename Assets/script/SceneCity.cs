@@ -115,11 +115,13 @@ public class SceneCity : SceneScript
     if( obj == PlayModeStateChange.ExitingEditMode )
     {
       DestroyAll();
+      Debug.Log( "destroyed generated objects." );
     }
     if( obj == PlayModeStateChange.ExitingPlayMode )
     {
       // restore objects from ids
       DestroyAll();
+      Debug.Log( "returned from play mode" );
     }
   }
 #endif

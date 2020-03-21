@@ -1,50 +1,14 @@
 pP
 
-## review
+# DONE
 
-# features
+## REVIEW
+
+# FEATURES
 weapons: blaster, bouncygrenade, stickybomb, flame, laser
 abilities: graphook, shield, bullet-time
-boss
-generated city
-
-## issues
-- gamepad double select diagetic menu
-- fix grap when using gamepad (double)
-- fix grap going through boxes
-- fix stickybomb going through vents
-- release build screen fade in on level transition gets stuck
-- reduce audiooneshot calls to avoid dropout
-- wheelbot box collider hits corners
-- reproducible: charge particles on after transition. reset player state on level transition
-- UNITY bug: cursor movement in last direction when shoot
-
-## improvements
-- minimap. Needs shader/coloring. Should follow player position, not camera
-- align shot with surface when aiming into floor/wall
-- horizontal door trigger / downward boxcast for triggers
-- use line renderer for laser. simplifies shield reflection code.
-- detect cmd-f fullscreen switch and update setting
-- menu navigation needs redesign.
-- hide arm while not shooting
-- sprite body turn when aiming behind
-- cursor influence: under min, and walljump need exceptions
-- consolidate all sprites into bigsheet
-+ replace old sprite anims with unity animators
-- add spark effect to wall jump
-- fix long slide clipping
-- improve loading screen
-
-## WebGL issues
-- UNITY bug: webgl audio loop
-
-## Linux Issues
-- support Ctrl-Q to quit
-- no per-pixel lights (check OpenGL/Vulcan support)
-- control names are not converted in diagetics (but okay in menu)
-- scroll wheel sensitivity is too low
-- mouse sensitivity is too high even on lowest setting (0.05)
-- glitchy/wrong sprite shader for mech on linux
+boss. 'stage intro'; boss intro; chamber fight; death sequence; get weapon/post-death;
+generated city.
 
 ## ideas
 - death -> You emerge from corpse as a small spiderbot that can gain control of other machines.
@@ -66,82 +30,40 @@ generated city
 - enemy creature that collects parts and builds onto itself
 - city subway. fast travel or GTA2 style train
 
-# DESIGN
-## Design Mistakes to Avoid
-starting too big
-onboarding player, ease of learning mechanics
-idea commitment
-overly rigid design
-story upfront
-polish lots
-add things arbitrarily
-
-## player perspective
-primary = xbuster, grenade, flame
-primary charge = charged blast
-secondary = graphook, shield, slowmo
-? maybe the current pickup modifies current weapon?
-? Weapon limit. infinite, multiple, single(Contra).
-? Abilities: persistent, temporary, limited. Ex: persistent shields, temporary powerup, limited ammo.
+## improvements
+- minimap. Needs shader/coloring. Should follow player position, not camera
+- align shot with surface when aiming into floor/wall
+- horizontal door trigger / downward boxcast for triggers
+- use line renderer for laser. simplifies shield reflection code.
+- detect cmd-f fullscreen switch and update setting
+- menu navigation needs redesign.
+- hide arm while not shooting
+- sprite body turn when aiming behind
+- cursor influence: under min, and walljump need exceptions
+- consolidate all sprites into bigsheet
++ replace old sprite anims with unity animators
+- add spark effect to wall jump
+- fix long slide clipping
+- improve loading screen
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
 
-## keep
-special case inertia
-dash feels good
-wall jump
-wall slide
-charge weapon
-bosses
-collect weapons from defeated bosses
-destroying enemies is satisfying
-safety timer after taking damage
+# ISSUES
+- hornet friendly fire
+- gamepad double select diagetic menu
+- fix grap when using gamepad (double)
+- fix grap going through boxes
+- fix stickybomb going through vents
+- release build screen fade in on level transition gets stuck
+- reduce audiooneshot calls to avoid dropout
+- wheelbot box collider hits corners
+- reproducible: charge particles on after transition. reset player state on level transition
+- UNITY bug: cursor movement in last direction when shoot
+- UNITY bug: webgl audio loop
 
-## changes
-only shoot forward -> aiming
-projectiles collide with walls
-camera view size changes
-camera movement follows aiming
-arbitrary ground and wall angles
-no instant-death spikes or bottomless pits
-AI, navigation mesh
-teleportation -> airdrop from chopper
-lighting, normal mapped sprites, emissive
-character/robot styles
-
-## aesthetics
-1. atmosphere.
-
-2. sounds
-Consistent with instruments in the music.
-3. music
-energy. melody.
-
-1. Camera view range.
-Camera can center on an imaginary point around the player, in the aiming direction. Allow for variance in zoom, depending on how cozy the surroundings.
-2. Full range of aim.
-MegamanX can only shoot forwards, not upwards or even slightly higher. The ability to shoot upwards in games like Contra is an improvement. Having weapons that spread out when shot can make this limitation feel less awkward.
-3. Enemies respawn at logical locations.
-Not arbitrary static points.
-
-# Design Requirements
-## accessibly
-- Linux, MacOS, WebGL if possible
-- runs smoothly on lower-spec machines
-- (single player) no internet connection required to play.
-- remap controls
-## is not commercialized
-- no ads. You pay with your soul. (fake ads?)
-- no microtransactions.
-- no in-game currency to compulsively accumulate. (or make it useless?)
-## does not use addiction mechanics
-- no achievements to leave you feeling underachieving.
-- no trophies
-## not too complex. you have a life.
-- no story to ignore or lore to forget (dialogue but no narrative)
-- no complicated technology/skill tree
-
-
-# thank you
-https://seansleblanc.itch.io/better-minimal-webgl-template for webgl template
-https://etclundberg.itch.io/ for early feedback
-jbarrios on TIGSource forums
+### Linux Issues
+- support Ctrl-Q to quit
+- no per-pixel lights (check OpenGL/Vulcan support)
+- control names are not converted in diagetics (but okay in menu)
+- scroll wheel sensitivity is too low
+- mouse sensitivity is too high even on lowest setting (0.05)
+- glitchy/wrong sprite shader for mech on linux

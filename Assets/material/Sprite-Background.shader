@@ -95,8 +95,10 @@ Shader "Custom/2D/Sprite-Background"
 
             half4 CombinedShapeLightFragment(Varyings i) : SV_Target
             {
-                half4 main = lerp( i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv), _FadeColor, _FadeAmount);
-                return CombinedShapeLightShared(main, main, i.lightingUV) * main.a;
+                half4 main = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+                half4 color = lerp( i.color * main, _FadeColor, _FadeAmount);
+                color.a = main.a;
+                return CombinedShapeLightShared(color, color, i.lightingUV) * color.a;
             }
             ENDHLSL
         }
