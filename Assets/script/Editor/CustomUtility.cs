@@ -266,6 +266,34 @@ public class CustomUtility : EditorWindow
 
     GUILayout.Space( 10 );
     GUILayout.Label( "Generic Utils", EditorStyles.boldLabel );
+
+    /*if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Combine Mesh" ) )
+    {
+      List<Collider2D> colliders = new List<Collider2D>();
+      foreach( var so in Selection.gameObjects )
+      {
+        Collider2D cld = so.GetComponent<Collider2D>();
+        if( cld != null )
+        {
+          colliders.Add( cld );
+        }
+      }
+      CombineInstance[] combine = new CombineInstance[colliders.Count];
+      for( int i = 0; i < colliders.Count; i++ )
+      {
+        combine[i].mesh = colliders[i].CreateMesh( false, false );
+        combine[i].transform = colliders[i].transform.localToWorldMatrix;
+      }
+
+      GameObject go = new GameObject( "combined mesh" );
+      go.AddComponent<MeshRenderer>();
+      MeshFilter mf = go.AddComponent<MeshFilter>();
+      mf.sharedMesh = new Mesh();
+      mf.sharedMesh.CombineMeshes( combine, true, false );
+    }*/
+
+
+
     layer = (LayerMask)EditorGUILayout.IntField( "layer", layer );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Find GameObjects by Layer" ) )
     {
@@ -463,7 +491,7 @@ public class CustomUtility : EditorWindow
     }
 
     // tested on Unity 2019.2.6f1
-    fontImage = (Texture2D)EditorGUILayout.ObjectField( "Pixel Font Image", fontImage, typeof(Texture2D), false );
+    fontImage = (Texture2D)EditorGUILayout.ObjectField( "Pixel Font Image", fontImage, typeof( Texture2D ), false );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Create Pixel Font" ) )
     {
       string letter = " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
@@ -471,12 +499,12 @@ public class CustomUtility : EditorWindow
       const int cols = 16;
       const int charWith = imageSize / cols;
       string output = "info font=\"Base 5\" size=32 bold=0 italic=0 charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=2,2\n" +
-        "common lineHeight=10 base=12 scaleW="+ imageSize+" scaleH="+ imageSize+" pages=1 packed=0\n" +
+        "common lineHeight=10 base=12 scaleW=" + imageSize + " scaleH=" + imageSize + " pages=1 packed=0\n" +
         "page id=0 file=\"" + fontImage.name + ".png\"\nchars count=" + letter.Length + "\n";
       for( int i = 0; i < letter.Length; i++ )
-        output += "char id=" + i + " x="+(i%cols)* charWith + " y="+(i/cols)* charWith + " width=14 height=14 xoffset=1 yoffset=1 xadvance=16 page=0 chnl=0 letter=\"" + letter[i] + "\"\n";
+        output += "char id=" + i + " x=" + (i % cols) * charWith + " y=" + (i / cols) * charWith + " width=14 height=14 xoffset=1 yoffset=1 xadvance=16 page=0 chnl=0 letter=\"" + letter[i] + "\"\n";
       output += "kernings count=0";
-      File.WriteAllText( Application.dataPath + "/font/"+ fontImage.name+".fnt", output );
+      File.WriteAllText( Application.dataPath + "/font/" + fontImage.name + ".fnt", output );
       AssetDatabase.SaveAssets();
 
       string fntpath = Path.ChangeExtension( AssetDatabase.GetAssetPath( fontImage ), "fnt" );

@@ -103,7 +103,7 @@ public class SceneCity : SceneScript
   // nodelinks
   List<GameObject> gens = new List<GameObject>();
   List<LineSegment> debugSegments = new List<LineSegment>();
-
+  /*
 #if UNITY_EDITOR
   private void Awake()
   {
@@ -125,7 +125,7 @@ public class SceneCity : SceneScript
     }
   }
 #endif
-
+*/
 
   public void EncapsulateNavmesh( Bounds bounds )
   {

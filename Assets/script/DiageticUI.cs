@@ -14,7 +14,7 @@ public class DiageticUI : WorldSelectable
   [SerializeField] string inactiveInstruction;
   [SerializeField] string activeInstruction;
   [SerializeField] GameObject cameraTarget;
-  public PolygonCollider2D CameraPoly { get { return cameraTarget.GetComponent<PolygonCollider2D>(); } }
+  public CameraZone CameraZone { get { return cameraTarget.GetComponent<CameraZone>(); } }
   public GameObject InitiallySelected;
   GameObject selectedObject;
 

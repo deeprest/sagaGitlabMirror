@@ -3,24 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/*
-// hack: stub so that project can build without XR enabled
-namespace UnityEngine
-{
-  namespace XR
-  {
-  public class InputDeviceRole
-  {
-
-  }
-public class XRSupport
-{
-  public static void Initialize(){}
-}
-}
-}
-*/
-
 public static class Util
 {
   public static float DbFromNormalizedVolume( float normalizedVolume )
@@ -63,6 +45,11 @@ public static class Util
     ScreenCapture.CaptureScreenshot( Application.persistentDataPath + "/" + now + ".png" );
   }
 
+  public static Vector2 Project2D( Vector2 a, Vector2 b )
+  {
+    return new Vector2( (Vector2.Dot( a, b ) / (b.x * b.x + b.y * b.y)) * b.x, (Vector2.Dot( a, b ) / (b.x * b.x + b.y * b.y)) * b.y );
+  }
+
   public static bool DoLinesIntersect( float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3 )
   {
     float d = (y3 - y2) * (x1 - x0) - (x3 - x2) * (y1 - y0);
@@ -76,10 +63,156 @@ public static class Util
     return false;
   }
 
-  public static Vector2 Project2D( Vector2 a, Vector2 b )
+  // Thank you cecarlsen, Minassian, and CgPanda!
+  // https://forum.unity.com/threads/line-intersection.17384/
+  public static bool LineSegmentsIntersectionWithPrecisonControl( Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, ref Vector2 intersection, float fSelfDefinedEpsilon = 0.0001f )
   {
-    return new Vector2( (Vector2.Dot( a, b ) / (b.x * b.x + b.y * b.y)) * b.x, (Vector2.Dot( a, b ) / (b.x * b.x + b.y * b.y)) * b.y );
+    UnityEngine.Assertions.Assert.IsTrue( fSelfDefinedEpsilon > 0 );
+    float Ax, Bx, Cx, Ay, By, Cy, d, e, f, num;
+    float x1lo, x1hi, y1lo, y1hi;
+    Ax = p2.x - p1.x;
+    Bx = p3.x - p4.x;
+    // X bound box test
+    if( Ax < 0 )
+    {
+      x1lo = p2.x;
+      x1hi = p1.x;
+    }
+    else
+    {
+      x1hi = p2.x;
+      x1lo = p1.x;
+    }
+    if( Bx > 0 )
+    {
+      if( (x1hi < p4.x && Mathf.Abs( x1hi - p4.x ) > fSelfDefinedEpsilon) || (p3.x < x1lo && Mathf.Abs( p3.x - x1lo ) > fSelfDefinedEpsilon) )
+        return false;
+    }
+    else
+    {
+      if( (x1hi < p3.x && Mathf.Abs( x1hi - p3.x ) > fSelfDefinedEpsilon) || (p4.x < x1lo && Mathf.Abs( p4.x - x1lo ) > fSelfDefinedEpsilon) )
+        return false;
+    }
+    Ay = p2.y - p1.y;
+    By = p3.y - p4.y;
+    // Y bound box test
+    if( Ay < 0 )
+    {
+      y1lo = p2.y;
+      y1hi = p1.y;
+    }
+    else
+    {
+      y1hi = p2.y;
+      y1lo = p1.y;
+    }
+    if( By > 0 )
+    {
+      if( (y1hi < p4.y && Mathf.Abs( y1hi - p4.y ) > fSelfDefinedEpsilon) || (p3.y < y1lo && Mathf.Abs( p3.y - y1lo ) > fSelfDefinedEpsilon) )
+        return false;
+    }
+    else
+    {
+      if( (y1hi < p3.y && Mathf.Abs( y1hi - p3.y ) > fSelfDefinedEpsilon) || (p4.y < y1lo && Mathf.Abs( p4.y - y1lo ) > fSelfDefinedEpsilon) )
+        return false;
+    }
+    Cx = p1.x - p3.x;
+    Cy = p1.y - p3.y;
+    d = By * Cx - Bx * Cy;  // alpha numerator
+    f = Ay * Bx - Ax * By;  // both denominator
+    // alpha tests
+    if( f > 0 )
+    {
+      if( (d < 0 && Mathf.Abs( d ) > fSelfDefinedEpsilon) || (d > f && Mathf.Abs( d - f ) > fSelfDefinedEpsilon) )
+        return false;
+    }
+    else
+    {
+      if( (d > 0 && Mathf.Abs( d ) > fSelfDefinedEpsilon) || (d < f && Mathf.Abs( d - f ) > fSelfDefinedEpsilon) )
+        return false;
+    }
+    e = Ax * Cy - Ay * Cx;  // beta numerator
+    // beta tests
+    if( f > 0 )
+    {
+      if( (e < 0 && Mathf.Abs( e ) > fSelfDefinedEpsilon) || (e > f) && Mathf.Abs( e - f ) > fSelfDefinedEpsilon )
+        return false;
+    }
+    else
+    {
+      if( (e > 0 && Mathf.Abs( e ) > fSelfDefinedEpsilon) || (e < f && Mathf.Abs( e - f ) > fSelfDefinedEpsilon) )
+        return false;
+    }
+    // check if they are parallel
+    if( Mathf.Abs( f ) < fSelfDefinedEpsilon )
+      return false;
+    // compute intersection coordinates
+    num = d * Ax; // numerator
+    intersection.x = p1.x + num / f;
+    num = d * Ay;
+    intersection.y = p1.y + num / f;
+    return true;
   }
+
+  public static float Cross( Vector2 a, Vector2 v )
+  {
+    return a.x * v.y - a.y * v.x;
+  }
+  static bool IsZero( float value )
+  {
+    return Mathf.Abs( value ) < Mathf.Epsilon;
+  }
+
+  // https://www.codeproject.com/tips/862988/find-the-intersection-point-of-two-line-segments
+  /// <see cref="http://stackoverflow.com/a/14143738/292237"/>
+  public static bool LineSegementsIntersect( Vector2 p, Vector2 p2, Vector2 q, Vector2 q2, ref Vector2 intersection, bool considerCollinearOverlapAsIntersect = false )
+  {
+    Vector2 r = p2 - p;
+    Vector2 s = q2 - q;
+    float rxs = Cross( r, s );
+    float qpxr = Cross( (q - p), r );
+
+    // If r x s = 0 and (q - p) x r = 0, then the two lines are collinear.
+    if( IsZero( rxs ) && IsZero( qpxr ) )
+    {
+      // 1. If either  0 <= (q - p) * r <= r * r or 0 <= (p - q) * s <= * s
+      // then the two lines are overlapping,
+      if( considerCollinearOverlapAsIntersect )
+        if( (0 <= Cross( q - p, r ) && Cross( q - p, r ) <= Cross( r, r )) || (0 <= Cross( p - q, s ) && Cross( p - q, s ) <= Cross( s, s )) )
+          return true;
+
+      // 2. If neither 0 <= (q - p) * r = r * r nor 0 <= (p - q) * s <= s * s
+      // then the two lines are collinear but disjoint.
+      // No need to implement this expression, as it follows from the expression above.
+      return false;
+    }
+
+    // 3. If r x s = 0 and (q - p) x r != 0, then the two lines are parallel and non-intersecting.
+    if( IsZero( rxs ) && !IsZero( qpxr ) )
+      return false;
+
+    // t = (q - p) x s / (r x s)
+    var t = Cross( q - p, s ) / rxs;
+
+    // u = (q - p) x r / (r x s)
+
+    var u = Cross( q - p, r ) / rxs;
+
+    // 4. If r x s != 0 and 0 <= t <= 1 and 0 <= u <= 1
+    // the two line segments meet at the point p + t r = q + u s.
+    if( !IsZero( rxs ) && (0 <= t && t <= 1) && (0 <= u && u <= 1) )
+    {
+      // We can calculate the intersection point using either t or u.
+      intersection = p + t * r;
+
+      // An intersection was found.
+      return true;
+    }
+
+    // 5. Otherwise, the two line segments are not parallel but do not intersect.
+    return false;
+  }
+
 
   public static void DirectoryCopy( string sourceDirName, string destDirName, bool copySubDirs = true )
   {

@@ -141,8 +141,6 @@ public class Global : MonoBehaviour
 
   [Header( "Transient (Assigned at runtime)" )]
   public bool Updating = false;
-  public Collider2D CameraPoly;
-  public Bounds CameraBounds;
   SceneScript sceneScript;
   public PlayerController CurrentPlayer;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
@@ -443,7 +441,7 @@ public class Global : MonoBehaviour
         CurrentPlayer.transform.position = FindRandomSpawnPosition();
         CurrentPlayer.velocity = Vector2.zero;
         if( sceneScript != null )
-          sceneScript.ReplaceCameraPoly( sceneScript.sb );
+          sceneScript.AssignCameraZone( sceneScript.CameraZone );
       }
     };
 
@@ -827,13 +825,14 @@ public class Global : MonoBehaviour
       ShowPauseMenu();
   }
 
+  CameraZone cachedCameraZone;
   public void DiageticMenuOn( DiageticUI dui )
   {
     ActiveDiagetic = dui;
     Controls.MenuActions.Enable();
     Controls.BipedActions.Disable();
-    AssignCameraPoly( dui.CameraPoly );
-    CameraController.EncompassBounds = true;
+    cachedCameraZone = CameraController.ActiveCameraZone;
+    AssignCameraZone( dui.CameraZone );
     //UnityEngine.Cursor.lockState = CursorLockMode.None;
     //Cursor.gameObject.SetActive( false );
   }
@@ -843,10 +842,7 @@ public class Global : MonoBehaviour
     ActiveDiagetic = null;
     Controls.MenuActions.Disable();
     Controls.BipedActions.Enable();
-    SceneScript ss = FindObjectOfType<SceneScript>();
-    if( ss != null )
-      AssignCameraPoly( ss.sb );
-    CameraController.EncompassBounds = false;
+     AssignCameraZone( cachedCameraZone );
     //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
     //Cursor.gameObject.SetActive( true );
   }
@@ -1057,22 +1053,9 @@ public class Global : MonoBehaviour
     SpeechAnimator.Play( "talk" );
   }
 
-  public void AssignCameraPoly( Collider2D collider )
+  public void AssignCameraZone( CameraZone zone )
   {
-    CameraPoly = collider;
-    if( collider is PolygonCollider2D )
-    {
-      PolygonCollider2D poly = collider as PolygonCollider2D;
-      // camera poly bounds points are local to polygon
-      CameraBounds = new Bounds();
-      foreach( var p in poly.points )
-        CameraBounds.Encapsulate( p );
-    }
-    else if( collider is BoxCollider2D )
-    {
-      BoxCollider2D box = collider as BoxCollider2D;
-      CameraBounds = box.bounds;
-    }
+    CameraController.ActiveCameraZone = zone;
   }
 
   void VerifyPersistentData()

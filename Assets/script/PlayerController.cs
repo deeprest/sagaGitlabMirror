@@ -993,10 +993,10 @@ public class PlayerController : Character, IDamage
     else
     {
       CursorSnapped.gameObject.SetActive( false );
-      if( CursorAboveMinimumDistance )
+      /*if( CursorAboveMinimumDistance )*/
         AimPosition = cursorOrigin + cursorDelta;
-      else
-        AimPosition = cursorOrigin + (facingRight ^ wallsliding ? Vector2.right : Vector2.left);
+      /*else
+          AimPosition = cursorOrigin + (facingRight ^ wallsliding ? Vector2.right : Vector2.left);*/
       CursorWorldPosition = AimPosition;
     }
 

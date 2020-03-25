@@ -5,8 +5,7 @@ using System.Collections;
 public class SceneScript : MonoBehaviour
 {
   public AudioLoop music;
-  // the camera collider
-  public Collider2D sb;
+  public CameraZone CameraZone;
   public BoxCollider NavmeshBox;
 
   public virtual void StartScene()
@@ -17,7 +16,7 @@ public class SceneScript : MonoBehaviour
       //return;
     }
 
-    Global.instance.AssignCameraPoly( sb );
+    Global.instance.AssignCameraZone( CameraZone );
 
     // music fade in
     if( music != null )
@@ -35,16 +34,9 @@ public class SceneScript : MonoBehaviour
     Global.instance.CameraController.orthoTarget = value;
   }
 
-  public void ReplaceCameraPoly( Collider2D collider )
+  public void AssignCameraZone( CameraZone  zone )
   {
-    Global.instance.AssignCameraPoly( collider );
-    Global.instance.CameraController.EncompassBounds = false;
-  }
-
-  public void ReplaceCameraPolyEncompass( Collider2D collider )
-  {
-    Global.instance.AssignCameraPoly( collider );
-    Global.instance.CameraController.EncompassBounds = true;
+    Global.instance.AssignCameraZone( zone );
   }
 
   /*Timer runTimer = new Timer();

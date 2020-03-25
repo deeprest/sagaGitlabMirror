@@ -21,8 +21,8 @@ public class Door : MonoBehaviour, ITrigger
   public Transform inside;
   Transform instigator;
 
-  [SerializeField] Collider2D CameraIn;
-  [SerializeField] Collider2D CameraOut;
+  [SerializeField] CameraZone CameraIn;
+  [SerializeField] CameraZone CameraOut;
 
   Timer doorTimer = new Timer();
   Timer runTimer = new Timer();
@@ -62,7 +62,7 @@ public class Door : MonoBehaviour, ITrigger
           {
             if( CameraIn != null )
             {
-              sceneScript.ReplaceCameraPolyEncompass( CameraIn );
+              sceneScript.AssignCameraZone( CameraIn );
               runTimer.Start( runDuration, delegate
               {
                 if( right ) Global.instance.CurrentPlayer.inputRight = true;
@@ -72,13 +72,13 @@ public class Door : MonoBehaviour, ITrigger
                 Global.instance.Controls.BipedActions.Enable();
               } );
             }
-            else sceneScript.ReplaceCameraPoly( sceneScript.sb );
+            else sceneScript.AssignCameraZone( sceneScript.CameraZone );
           }
           else
           {
             if( CameraOut != null )
             {
-              sceneScript.ReplaceCameraPolyEncompass( CameraOut );
+              sceneScript.AssignCameraZone( CameraOut );
               runTimer.Start( runDuration, delegate
               {
                 if( right ) Global.instance.CurrentPlayer.inputRight = true;
@@ -88,7 +88,7 @@ public class Door : MonoBehaviour, ITrigger
                 Global.instance.Controls.BipedActions.Enable();
               } );
             }
-            else sceneScript.ReplaceCameraPoly( sceneScript.sb );
+            else sceneScript.AssignCameraZone( sceneScript.CameraZone );
           }
         }, null );
       }
@@ -112,13 +112,13 @@ public class Door : MonoBehaviour, ITrigger
       bool Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
       if( Entering )
       {
-        if( CameraIn != null ) sceneScript.ReplaceCameraPolyEncompass( CameraIn );
-        else sceneScript.ReplaceCameraPoly( sceneScript.sb );
+        if( CameraIn != null ) sceneScript.AssignCameraZone( CameraIn );
+        else sceneScript.AssignCameraZone( sceneScript.CameraZone );
       }
       else
       {
-        if( CameraOut != null ) sceneScript.ReplaceCameraPolyEncompass( CameraOut );
-        else sceneScript.ReplaceCameraPoly( sceneScript.sb );
+        if( CameraOut != null ) sceneScript.AssignCameraZone( CameraOut );
+        else sceneScript.AssignCameraZone( sceneScript.CameraZone );
       }
       Global.instance.CurrentPlayer.DoorRun( right, openDuration, doorRunDistance );
     },
