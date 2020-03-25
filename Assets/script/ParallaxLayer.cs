@@ -11,6 +11,9 @@ public class ParallaxLayer : MonoBehaviour
   public bool Reverse;
   private Transform cam;
 
+#if UNITY_EDITOR
+  public bool Enabled = true;
+#endif
   void Start()
   {
     if( Application.isPlaying )
@@ -20,7 +23,10 @@ public class ParallaxLayer : MonoBehaviour
   Vector3 cached;
   void LateUpdate()
   {
-#if UNITY_EDITOR 
+#if UNITY_EDITOR
+    // avoid changing the transform unnecessarily, which makes the scene dirty.
+    if( !Enabled )
+      return;
     if( cam == null )
       cam = SceneView.GetAllSceneCameras()[0].transform;
 #endif

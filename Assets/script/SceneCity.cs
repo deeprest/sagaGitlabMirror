@@ -96,10 +96,10 @@ public class SceneCity : SceneScript
   [SerializeField] Texture2D StructureTexture;
   Dictionary<int, List<GameObject>> built = new Dictionary<int, List<GameObject>>();
   Color32[] structureData;
-  public MarchingSquareData building;
-  public MarchingSquareData buildingBG;
-  public MarchingSquareData underground;
-  List<MarchingSquareData> msd;
+  public MarchingSquare.MarchingSquareData building;
+  public MarchingSquare.MarchingSquareData buildingBG;
+  public MarchingSquare.MarchingSquareData underground;
+  List<MarchingSquare.MarchingSquareData> msd;
   // nodelinks
   List<GameObject> gens = new List<GameObject>();
   List<LineSegment> debugSegments = new List<LineSegment>();
@@ -344,7 +344,7 @@ public class SceneCity : SceneScript
 
   public void InitializeStructure()
   {
-    msd = new List<MarchingSquareData>();
+    msd = new List<MarchingSquare.MarchingSquareData>();
     msd.Add( building );
     msd.Add( buildingBG );
     //msd.Add( wall );

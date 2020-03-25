@@ -1,52 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
-
 #if UNITY_EDITOR
 using UnityEditor;
-
-[CustomEditor( typeof( MarchingSquare ) )]
-public class MarchingSquareEditor : Editor
-{
-  public override void OnInspectorGUI()
-  {
-    MarchingSquare ms = target as MarchingSquare;
-    if( GUI.Button( EditorGUILayout.GetControlRect(), "prefab to cell" ) )
-      ms.PrefabsToCells();
-    if( GUI.Button( EditorGUILayout.GetControlRect(), "populate from selected folder" ) )
-    {
-      ms.FromFolder( );
-      ms.PrefabsToCells();
-    }
-    DrawDefaultInspector();
-  }
-}
 #endif
-
-[System.Serializable]
-public class MarchingSquareData
-{
-  public byte bit = 0;
-  public MarchingSquare ms;
-  // transient
-  public int[,] indexBuffer;
-}
-
-[System.Serializable]
-public class MarchingSquareCell
-{
-  public GameObject[] prefab;
-}
 
 [CreateAssetMenu]
 public class MarchingSquare : ScriptableObject
 {
+  [System.Serializable]
+  public class MarchingSquareData
+  {
+    public byte bit = 0;
+    public MarchingSquare ms;
+    // transient
+    public int[,] indexBuffer;
+  }
+
+  [System.Serializable]
+  public class MarchingSquareCell
+  {
+    public GameObject[] prefab;
+  }
+
   [SerializeField]
   public MarchingSquareCell[] Cells = new MarchingSquareCell[16];
 
   [Tooltip( "These are parsed by name. Example: \"shack-3\" or \"wall-15-top\"" )]
-  [SerializeField]
   public GameObject[] Prefabs;
 #if UNITY_EDITOR
   public void PrefabsToCells()

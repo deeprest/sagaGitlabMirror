@@ -78,7 +78,6 @@ SpriteShapeRenderer:
   m_ShapeTexture: {fileID: 0}
   m_Sprites:
   - {fileID: 6825659192612115017, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
-  - {fileID: -5684354853190400451, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   - {fileID: 6825659192612115017, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   - {fileID: 6825659192612115017, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   - {fileID: 21300052, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
@@ -130,13 +129,13 @@ MonoBehaviour:
   m_AdaptiveUV: 0
   m_StretchUV: 0
   m_WorldSpaceUV: 0
-  m_CornerAngleThreshold: 53.7
-  m_ColliderDetail: 8
+  m_CornerAngleThreshold: 44.5
+  m_ColliderDetail: 4
   m_ColliderOffset: 0
   m_UpdateCollider: 1
   m_OptimizeCollider: 1
   m_OptimizeGeometry: 1
-  m_EnableTangents: 0
+  m_EnableTangents: 1
 --- !u!68 &7057584180108774259
 EdgeCollider2D:
   m_ObjectHideFlags: 0
