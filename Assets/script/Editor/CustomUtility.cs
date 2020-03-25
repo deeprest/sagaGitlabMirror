@@ -74,6 +74,7 @@ public class CustomUtility : EditorWindow
   Material material;
   string subobjectName;
   string[] guids;
+  float fudgeFactor;
 
   // font output
   Texture2D fontImage;
@@ -110,6 +111,71 @@ public class CustomUtility : EditorWindow
       // this call "drives" OnGUI to be called repeatedly instead of on-demand
       Repaint();
     }
+
+    fudgeFactor = EditorGUILayout.FloatField( "fudge", fudgeFactor );
+
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Generate Edge Collider Nav Obstacles" ) )
+    {
+      GameObject go = new GameObject( "Nav Obstacle" );
+      go.transform.position = Vector3.back;
+      go.layer = LayerMask.NameToLayer( "Ignore Raycast" );
+      //go.AddComponent<MeshRenderer>();
+      //MeshFilter mf = go.AddComponent<MeshFilter>();
+
+      List<CombineInstance> combine = new List<CombineInstance>();
+      EdgeCollider2D[] edges = FindObjectsOfType<EdgeCollider2D>();
+      for( int e = 0; e < edges.Length; e++ )
+      {
+        EdgeCollider2D edge = edges[e];
+        /*
+        Vector3[] v = new Vector3[(edge.points.Length - 1) * 4];
+        int[] indices = new int[(edge.points.Length) * 4];
+        Vector3[] n = new Vector3[v.Length];
+        for( int i = 0; i < edge.points.Length - 1; i++ )
+        {
+          Vector2 a = edge.points[i];
+          Vector2 b = edge.points[i + 1];
+          Vector2 segment = b - a;
+          Vector2 fudge = segment.normalized * fudgeFactor;
+          Vector2 cross = (new Vector2( -segment.y, segment.x )).normalized * (edge.edgeRadius + fudgeFactor);
+          v[i * 4] = a + cross - fudge;
+          v[i * 4 + 1] = a + cross + segment + fudge;
+          v[i * 4 + 2] = a - cross + segment + fudge;
+          v[i * 4 + 3] = a - cross - fudge;
+          n[i * 4] = Vector3.back;
+          n[i * 4 + 1] = Vector3.back;
+          n[i * 4 + 2] = Vector3.back;
+          n[i * 4 + 3] = Vector3.back;
+          indices[i * 4] = i * 4;
+          indices[i * 4 + 1] = i * 4 + 1;
+          indices[i * 4 + 2] = i * 4 + 2;
+          indices[i * 4 + 3] = i * 4 + 3;
+        }
+        */
+        CombineInstance ci = new CombineInstance();
+        ci.transform = edge.transform.localToWorldMatrix;
+        //ci.mesh = new Mesh();
+        ci.mesh = edge.CreateMesh( false, false );
+        //ci.mesh.vertices = v;
+        //ci.mesh.normals = n;
+        //ci.mesh.SetIndices( indices, MeshTopology.Quads, 0 );
+        combine.Add( ci );
+      }
+
+      Mesh mesh = new Mesh();
+      if( combine.Count == 1 )
+      {
+        mesh = combine[0].mesh;
+        //go.transform.position = (Vector3)combine[0].transform.GetColumn( 3 );
+      }
+      else
+        mesh.CombineMeshes( combine.ToArray(), false, false );
+
+      MeshCollider mc = go.AddComponent<MeshCollider>();
+      mc.sharedMesh = mesh;
+      //mf.sharedMesh = mesh;
+    }
+
     EditorGUILayout.Space();
     EditorGUI.ProgressBar( EditorGUILayout.GetControlRect( false, 30 ), progress, progressMessage );
 

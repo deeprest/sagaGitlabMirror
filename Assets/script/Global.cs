@@ -322,8 +322,10 @@ public class Global : MonoBehaviour
       sceneScript = FindObjectOfType<SceneScript>();
       if( sceneScript != null )
         sceneScript.StartScene();
+      GameObject generatedMeshCollider = Util.GenerateNavMeshForEdgeColliders();
       foreach( var mesh in meshSurfaces )
         mesh.BuildNavMesh();
+      Destroy( generatedMeshCollider );
     }
     else
     {
@@ -566,8 +568,10 @@ public class Global : MonoBehaviour
     if( sceneScript != null )
       sceneScript.StartScene();
 
+    GameObject generatedMeshCollider = Util.GenerateNavMeshForEdgeColliders();
     foreach( var mesh in meshSurfaces )
       mesh.BuildNavMesh();
+    Destroy( generatedMeshCollider );
 
     if( CurrentPlayer == null )
     {

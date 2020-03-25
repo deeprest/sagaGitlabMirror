@@ -41,9 +41,12 @@ public class Airbot : Character
         if( !hitpause )
         {
           Transform target = null;
+          // for debug
+          //target = Global.instance.CurrentPlayer.transform;
           RaycastHit2D hit = Physics2D.Linecast( sightOrigin.position, player, LayerMask.GetMask( Global.EnemySightLayers ) );
           if( hit.transform.root == Global.instance.CurrentPlayer.transform )
             target = hit.transform;
+
           if( target == null )
           {
             animator.Play( "idle" );

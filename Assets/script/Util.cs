@@ -298,6 +298,35 @@ public static class Util
     }
     return res;
   }
+
+
+  public static GameObject GenerateNavMeshForEdgeColliders()
+  {
+    GameObject go = new GameObject( "EdgeCollider2D Generated Mesh Collider" );
+    go.transform.position = Vector3.back;
+    go.layer = LayerMask.NameToLayer( "Ignore Raycast" );
+
+    List<CombineInstance> combine = new List<CombineInstance>();
+    EdgeCollider2D[] edges = Object.FindObjectsOfType<EdgeCollider2D>();
+    for( int e = 0; e < edges.Length; e++ )
+    {
+      EdgeCollider2D edge = edges[e];
+      CombineInstance ci = new CombineInstance();
+      ci.transform = edge.transform.localToWorldMatrix;
+      ci.mesh = edge.CreateMesh( false, false );
+      combine.Add( ci );
+    }
+
+    Mesh mesh = new Mesh();
+    if( combine.Count == 1 )
+      mesh = combine[0].mesh;
+    else
+      mesh.CombineMeshes( combine.ToArray(), false, false );
+
+    MeshCollider mc = go.AddComponent<MeshCollider>();
+    mc.sharedMesh = mesh;
+    return go;
+  }
 }
 
 [System.Serializable]
