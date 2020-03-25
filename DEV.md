@@ -3,41 +3,40 @@ pP
 # DONE
 
 ## REVIEW
++ camera zones
++ removed cursor min snap
++ parallax optimization in editor
 
 # FEATURES
-weapons: blaster, bouncygrenade, stickybomb, flame, laser
-abilities: graphook, shield, bullet-time
 boss. 'stage intro'; boss intro; chamber fight; death sequence; get weapon/post-death;
 generated city.
+abilities: graphook, shield, bullet-time
+weapons: blaster, bouncygrenade, stickybomb, flame, laser
 
 ## ideas
 - death -> You emerge from corpse as a small spiderbot that can gain control of other machines.
-- bindings: json read/write, layouts
-- add airbot prop ability
-- graphook foe
-- pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
-- FSM: enemies should react to projectiles in proximity
-- SERIALIZEDOBJECT: (design) save/load game; player status, serializedobjects
-- weapon ideas: +bouncygrenade, +multishot, rockets, seeking missiles, +beam/laser, +stickybomb/magnet, invisible/cloaking
-- powerups: speedboost, slowtime, reflective shield, supercharge
-- permanent mods: run speed, wall slide speed, dash duration, rapid shot, extra projectiles
-- 4 color buttons: change weapon, menu, interact, use item/powerup
-- idea: generate an area by connecting random nodes that represent the player's movement- run(duration increments), jump parabola, dash-jump, wall-jump, wall-slide, graphook,
-- idea: z-doors/manifold-doors to other rooms that exist in the same space. keep all objects live, allow enemies to enter doors.
-- idea: AI ability to navigate/traverse environment to follow player/attack. First pathfind, then plot out movement using "movement-nodes"
-- wall slide at angle in and out. building exterior
-- claw: ceiling claw climbing. dash with claw slash
 - enemy creature that collects parts and builds onto itself
+- pickup temporary weapons from defeated foes. (undermines weapon mastery, but appropriate for one-off weapons)
+- add airbot prop ability
+- claw: ceiling claw climbing. dash with claw slash
+- idea: generate an area by connecting random nodes that represent the player's movement- run(duration increments), jump parabola, dash-jump, wall-jump, wall-slide, graphook. AI ability to navigate/traverse environment to follow player/attack. First pathfind, then plot out movement using "movement-nodes".
 - city subway. fast travel or GTA2 style train
+- idea: z-doors/manifold-doors to other rooms that exist in the same space. keep all objects live, allow enemies to enter doors.
 
 ## improvements
+- hide arm while not shooting
 - minimap. Needs shader/coloring. Should follow player position, not camera
+- weapon ideas: +bouncygrenade, +multishot, rockets, seeking missiles, +beam/laser, +stickybomb/magnet, invisible/cloaking
+- temporary powerups: speedboost, slowtime, reflective shield, supercharge
+- permanent mods: run speed, wall slide speed, dash duration, rapid shot, extra projectiles
+- FSM: enemies should react to projectiles in proximity
+- 4 color buttons: change weapon, menu, interact, use item/powerup
+- bindings: read/write, layouts
 - align shot with surface when aiming into floor/wall
 - horizontal door trigger / downward boxcast for triggers
 - use line renderer for laser. simplifies shield reflection code.
 - detect cmd-f fullscreen switch and update setting
 - menu navigation needs redesign.
-- hide arm while not shooting
 - sprite body turn when aiming behind
 - cursor influence: under min, and walljump need exceptions
 - consolidate all sprites into bigsheet

@@ -13,7 +13,8 @@ public class ParallaxLayer : MonoBehaviour
 
   void Start()
   {
-    cam = Global.instance.CameraController.transform;
+    if( Application.isPlaying )
+      cam = Global.instance.CameraController.transform;
   }
 
   Vector3 cached;

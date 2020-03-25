@@ -267,33 +267,6 @@ public class CustomUtility : EditorWindow
     GUILayout.Space( 10 );
     GUILayout.Label( "Generic Utils", EditorStyles.boldLabel );
 
-    /*if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Combine Mesh" ) )
-    {
-      List<Collider2D> colliders = new List<Collider2D>();
-      foreach( var so in Selection.gameObjects )
-      {
-        Collider2D cld = so.GetComponent<Collider2D>();
-        if( cld != null )
-        {
-          colliders.Add( cld );
-        }
-      }
-      CombineInstance[] combine = new CombineInstance[colliders.Count];
-      for( int i = 0; i < colliders.Count; i++ )
-      {
-        combine[i].mesh = colliders[i].CreateMesh( false, false );
-        combine[i].transform = colliders[i].transform.localToWorldMatrix;
-      }
-
-      GameObject go = new GameObject( "combined mesh" );
-      go.AddComponent<MeshRenderer>();
-      MeshFilter mf = go.AddComponent<MeshFilter>();
-      mf.sharedMesh = new Mesh();
-      mf.sharedMesh.CombineMeshes( combine, true, false );
-    }*/
-
-
-
     layer = (LayerMask)EditorGUILayout.IntField( "layer", layer );
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Find GameObjects by Layer" ) )
     {

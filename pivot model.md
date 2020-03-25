@@ -3,7 +3,7 @@ https://www.youtube.com/watch?v=xsplKRCL7dA
 sandbox seems like full of possibility
 But real life is dull / dangerous
 experience of going to movie seems more important/relevant than the story within the movie.
-Story OF the gameplay is important, the story IN the game is not.
+Story of the gameplay is important, the story in the game is not.
 example: sports, such as football.
 ---
 1. mechanics: toy
