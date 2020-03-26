@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /*
-// todo brains and pawns
 // todo PlayerController -> PlayerPawn
 // Separate inputs from actions.
 // Bind the same action functions to input delegates driven by an AI brain.
@@ -86,6 +85,8 @@ public class PlayerController : Character, IDamage
   public AudioSource audio2;
   public ParticleSystem dashSmoke;
   public GameObject dashflashPrefab;
+  public GameObject walljumpEffect;
+  [SerializeField] Transform WallkickPosition;
   public Transform arm;
 
   const float raydown = 0.2f;
@@ -791,11 +792,13 @@ public class PlayerController : Character, IDamage
           Push( Vector2.left * (inputDashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
           jumpRepeatTimer.Start( jumpRepeatInterval );
           walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
+          audio.PlayOneShot( soundJump );
+          Instantiate( walljumpEffect, WallkickPosition.position, Quaternion.identity );
         }
         else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
         {
-          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           wallsliding = true;
+          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
           if( !dashSmoke.isPlaying )
             dashSmoke.Play();
@@ -810,11 +813,13 @@ public class PlayerController : Character, IDamage
           Push( Vector2.right * (inputDashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
           jumpRepeatTimer.Start( jumpRepeatInterval );
           walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
+          audio.PlayOneShot( soundJump );
+          Instantiate( walljumpEffect, WallkickPosition.position, Quaternion.identity );
         }
         else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
         {
-          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           wallsliding = true;
+          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
           dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
           if( !dashSmoke.isPlaying )
             dashSmoke.Play();
