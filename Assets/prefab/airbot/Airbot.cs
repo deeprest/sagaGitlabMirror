@@ -7,7 +7,9 @@ public class Airbot : Character
 {
   [SerializeField] Transform sightOrigin;
   public float sightRange = 6;
-  public float flySpeed = 2;
+  [SerializeField] float WanderSpeed = 1.5f;
+  [SerializeField] float AttackSpeed = 3;
+  private float speed;
   public float targetOffset = 0.5f;
   const float hitPauseOffset = 0.5f;
   Vector3 targetPosition;
@@ -56,6 +58,7 @@ public class Airbot : Character
           {
             animator.Play( "alert" );
             SetPath( target.position + Vector3.up * targetOffset );
+            speed = AttackSpeed;
           }
         }
       }
@@ -71,11 +74,12 @@ public class Airbot : Character
       Wander();
     }
     UpdatePath();
-    velocity = MoveDirection.normalized * flySpeed;
+    velocity = MoveDirection.normalized * speed;
   }
 
   void Wander()
   {
+    speed = WanderSpeed;
     if( !wanderTimer.IsActive && !HasPath )
     {
       SetPath( transform.position + (Vector3)(Random.insideUnitCircle * WanderRadius) );

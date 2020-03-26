@@ -513,6 +513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01c8a48ffc903431bbba0f54487eff92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RandomSeedOnStart: 0
   SimulatePlayer: 0
   InitialSceneName: home
   screenshotInterval: 0
@@ -537,10 +538,6 @@ MonoBehaviour:
   AvatarPrefab: {fileID: 1789244597324514, guid: b9ab9fa9feaf64647b54a4f4a828b2d4,
     type: 3}
   Updating: 0
-  CameraPoly: {fileID: 0}
-  CameraBounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
   CurrentPlayer: {fileID: 0}
   UI: {fileID: 1243218848029664}
   PauseMenu: {fileID: 7306387041750429296}
@@ -843,7 +840,6 @@ MonoBehaviour:
   SmoothSpeed: 10
   zOffset: -10.67
   yHalfWidth: 0.5
-  EncompassBounds: 0
   orthoTarget: 2
   orthoSpeed: 10
   snapToPixel: 0
@@ -851,6 +847,7 @@ MonoBehaviour:
   pixelSnap: 1
   presnap: 0
   snapped: 0
+  ActiveCameraZone: {fileID: 0}
 --- !u!114 &114891334979047146
 MonoBehaviour:
   m_ObjectHideFlags: 0

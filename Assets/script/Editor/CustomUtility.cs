@@ -58,6 +58,7 @@ public class CustomUtility : EditorWindow
   List<AudioSource> auds;
   List<string> scenes;
   List<GameObject> gos;
+  List<Object> objects;
   List<AnimSequence> ans;
   List<string> assetPaths;
   int layer;
@@ -108,9 +109,30 @@ public class CustomUtility : EditorWindow
         ProgressUpdate();
         progress = (float)index++ / (float)length;
       }
-      // this call "drives" OnGUI to be called repeatedly instead of on-demand
+      // this call forces OnGUI to be called repeatedly instead of on-demand
       Repaint();
     }
+
+    /*
+    if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "NEW ACTION" ) )
+    {
+      int count = 0;
+      if( Selection.objects.Length > 0 )
+      {
+        objects = new List<Object>( Selection.objects );
+        count = objects.Count;
+      }
+      if( count > 0 )
+      {
+        StartJob( "Searching...", count, delegate ()
+        {
+          
+            //objects[index]
+          
+        }, null );
+      }
+    }
+    */
 
     fudgeFactor = EditorGUILayout.FloatField( "fudge", fudgeFactor );
 

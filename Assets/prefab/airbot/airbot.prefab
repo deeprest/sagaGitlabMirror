@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4739618571392748}
+  - component: {fileID: 781258803751863346}
   - component: {fileID: 61733048714469916}
   - component: {fileID: 212979940915122146}
-  - component: {fileID: 781258803751863346}
   - component: {fileID: 4874249801477483448}
   - component: {fileID: 9109282300699132467}
   m_Layer: 14
@@ -36,6 +36,54 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &781258803751863346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268720782321642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67e5d864805334a2195c67774fadae3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  body: {fileID: 9109282300699132467}
+  box: {fileID: 61733048714469916}
+  renderer: {fileID: 212979940915122146}
+  animator: {fileID: 4874249801477483448}
+  IgnoreCollideObjects: []
+  spriteRenderers: []
+  UseGravity: 0
+  velocity: {x: 0, y: 0}
+  pushVelocity: {x: 0, y: 0}
+  carryCharacter: {fileID: 0}
+  friction: 0.5
+  raylength: 0.01
+  contactSeparation: 0.01
+  HasPath: 0
+  WaypointRadii: 0.1
+  DestinationRadius: 0.3
+  DestinationPosition: {x: 0, y: 0, z: 0}
+  waypoint: []
+  debugPath: []
+  AgentTypeName: Small
+  MoveDirection: {x: 0, y: 0}
+  SidestepAvoidance: 1
+  CanTakeDamage: 1
+  health: 1
+  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
+  soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
+  spawnChance: 2
+  spawnWhenDead: {fileID: 0}
+  flashInterval: 0.05
+  flashCount: 1
+  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  sightOrigin: {fileID: 4739618571392748}
+  sightRange: 6
+  WanderSpeed: 1.5
+  AttackSpeed: 3
+  targetOffset: 0.1
 --- !u!61 &61733048714469916
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -112,53 +160,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &781258803751863346
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1268720782321642}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67e5d864805334a2195c67774fadae3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  body: {fileID: 9109282300699132467}
-  box: {fileID: 61733048714469916}
-  renderer: {fileID: 212979940915122146}
-  animator: {fileID: 4874249801477483448}
-  IgnoreCollideObjects: []
-  spriteRenderers: []
-  UseGravity: 0
-  velocity: {x: 0, y: 0}
-  pushVelocity: {x: 0, y: 0}
-  carryCharacter: {fileID: 0}
-  friction: 0.5
-  raylength: 0.01
-  contactSeparation: 0.01
-  HasPath: 0
-  WaypointRadii: 0.1
-  DestinationRadius: 0.3
-  DestinationPosition: {x: 0, y: 0, z: 0}
-  waypoint: []
-  debugPath: []
-  AgentTypeName: Small
-  MoveDirection: {x: 0, y: 0}
-  SidestepAvoidance: 1
-  CanTakeDamage: 1
-  health: 1
-  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
-  soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  spawnChance: 2
-  spawnWhenDead: {fileID: 0}
-  flashInterval: 0.05
-  flashCount: 1
-  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
-  sightOrigin: {fileID: 4739618571392748}
-  sightRange: 6
-  flySpeed: 1.5
-  targetOffset: 0.1
 --- !u!95 &4874249801477483448
 Animator:
   serializedVersion: 3
