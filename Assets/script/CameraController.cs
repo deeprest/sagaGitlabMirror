@@ -184,86 +184,6 @@ public class CameraController : MonoBehaviour
           }
         }
         */
-
-
-        foreach( var cld in ActiveCameraZone.colliders )
-        {
-          Vector2 UL = (Vector2)pos + Vector2.left * hw + Vector2.up * hh;
-          if( ClipToInsideCollider2D( cld, ref UL, origin ) )
-          {
-            bool adjust = true;
-            foreach( var ccc in ActiveCameraZone.colliders )
-            {
-              if( ccc != cld && ccc.OverlapPoint( UL + (project * (Vector2.up + Vector2.left)) ) )
-              {
-                adjust = false;
-                break;
-              }
-            }
-            if( adjust )
-            {
-              if( pos.x < UL.x + hw ) pos.x = UL.x + hw;
-              if( pos.y > UL.y - hh ) pos.y = UL.y - hh;
-            }
-          }
-
-          Vector2 UR = (Vector2)pos + Vector2.right * hw + Vector2.up * hh;
-          if( ClipToInsideCollider2D( cld, ref UR, origin ) )
-          {
-            bool adjust = true;
-            foreach( var ccc in ActiveCameraZone.colliders )
-            {
-              if( ccc != cld && ccc.OverlapPoint( UR + (project * (Vector2.up + Vector2.right)) ) )
-              {
-                adjust = false;
-                break;
-              }
-            }
-            if( adjust )
-            {
-              if( pos.x > UR.x - hw ) pos.x = UR.x - hw;
-              if( pos.y > UR.y - hh ) pos.y = UR.y - hh;
-            }
-          }
-
-          Vector2 LL = (Vector2)pos + Vector2.left * hw + Vector2.down * hh;
-          if( ClipToInsideCollider2D( cld, ref LL, origin ) )
-          {
-            bool adjust = true;
-            foreach( var ccc in ActiveCameraZone.colliders )
-            {
-              if( ccc != cld && ccc.OverlapPoint( LL + (project * (Vector2.down + Vector2.left)) ) )
-              {
-                adjust = false;
-                break;
-              }
-            }
-            if( adjust )
-            {
-              if( pos.x < LL.x + hw ) pos.x = LL.x + hw;
-              if( pos.y < LL.y + hh ) pos.y = LL.y + hh;
-            }
-          }
-
-          Vector2 LR = (Vector2)pos + Vector2.right * hw + Vector2.down * hh;
-          if( ClipToInsideCollider2D( cld, ref LR, origin ) )
-          {
-            bool adjust = true;
-            foreach( var ccc in ActiveCameraZone.colliders )
-            {
-              if( ccc != cld && ccc.OverlapPoint( LR + (project * (Vector2.down + Vector2.right)) ) )
-              {
-                adjust = false;
-                break;
-              }
-            }
-            if( adjust )
-            {
-              if( pos.x > LR.x - hw ) pos.x = LR.x - hw;
-              if( pos.y < LR.y + hh ) pos.y = LR.y + hh;
-            }
-          }
-        }
 #endif
 
         foreach( var cld in ActiveCameraZone.colliders )
@@ -319,6 +239,7 @@ public class CameraController : MonoBehaviour
         if( ActiveCameraZone.EncompassBounds )
         {
           Bounds bounds = new Bounds();
+          bounds.center = ActiveCameraZone.colliders[0].transform.position;
           foreach( var wtf in ActiveCameraZone.colliders )
             bounds.Encapsulate( wtf.bounds );
 
