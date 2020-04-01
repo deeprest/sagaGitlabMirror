@@ -23,6 +23,7 @@ public class Door : MonoBehaviour, ITrigger
 
   [SerializeField] CameraZone CameraIn;
   [SerializeField] CameraZone CameraOut;
+  [SerializeField] AudioLoop Music;
 
   Timer doorTimer = new Timer();
   Timer runTimer = new Timer();
@@ -109,16 +110,23 @@ public class Door : MonoBehaviour, ITrigger
     {
       // open
       SceneScript sceneScript = FindObjectOfType<SceneScript>();
-      bool Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
-      if( Entering )
+      if( sceneScript != null )
       {
-        if( CameraIn != null ) sceneScript.AssignCameraZone( CameraIn );
-        else sceneScript.AssignCameraZone( sceneScript.CameraZone );
-      }
-      else
-      {
-        if( CameraOut != null ) sceneScript.AssignCameraZone( CameraOut );
-        else sceneScript.AssignCameraZone( sceneScript.CameraZone );
+        bool Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
+        if( Entering )
+        {
+          if( CameraIn != null ) sceneScript.AssignCameraZone( CameraIn );
+          else sceneScript.AssignCameraZone( sceneScript.CameraZone );
+          if( Music != null )
+            Global.instance.MusicTransition( Music );
+        }
+        else
+        {
+          if( CameraOut != null ) sceneScript.AssignCameraZone( CameraOut );
+          else sceneScript.AssignCameraZone( sceneScript.CameraZone );
+          if( Music != null )
+            Global.instance.MusicTransition( sceneScript.music );
+        }
       }
       Global.instance.CurrentPlayer.DoorRun( right, openDuration, doorRunDistance );
     },

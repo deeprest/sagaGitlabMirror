@@ -1,0 +1,52 @@
+fileFormatVersion: 2
+guid: d6e8d89485619412a8ccf7547c8534b3
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 25a63327f814cd04cbdbd7e8ae6dfcf9, type: 3}
+  textureSettings:
+    textureType: 8
+    pixelsPerUnit: 32
+    transparentMask: 0
+    transparentColor: {r: 1, g: 0, b: 1, a: 1}
+    meshType: 1
+    extrudeEdges: 1
+    spritePivot: {x: 0.5, y: 0.5}
+    generatePhysics: 1
+    wrapMode: 1
+    filterMode: 0
+    tileSize: {x: 32, y: 32}
+    tilePadding: {x: 0, y: 0}
+    tileOffset: {x: 0, y: 0}
+  animationSettings:
+  - animationName: damage
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 2"
+  - animationName: idle
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 7; To: 10"
+  - animationName: jump
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 15; To: 17"
+  - animationName: fall
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 18; To: 19"
+  - animationName: land
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 20; To: 21"
+  - animationName: dash
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 22; To: 23"
+  - animationName: run
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 25; To: 34"
+  - animationName: walljump
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 38; To: 39"
+  atlas: {instanceID: 0}
+  importType: 0
+  sampleRate: 30

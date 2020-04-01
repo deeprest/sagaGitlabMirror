@@ -49,13 +49,13 @@ shoots flames
 shoots oil slicks onto conveyor belt
 horn switches direction of conveyor belt on floor
 
-## Boomer Kuwanger
+## Boomer Kuwanger (Boom Boom)
 dashes
 throws a boomerang
 teleports
 will grab you and throw you into ceiling
 
-## Spark Mandrill
+## Spark Mandrill  (Shockey Monkey)
 * clingy ceiling
 dash-punch at you
 close range punch
@@ -63,8 +63,7 @@ shoot Electric Sparks that follow the edges of the room
 jump across the screen and try to crush you
 swing across the ceiling and try to drop on you
 
-## Armored Armadillo
-
+## Armadillo
 roll at you, bounce around room
 shoots energy pulse
 arm shields

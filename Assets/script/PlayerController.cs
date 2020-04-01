@@ -328,17 +328,19 @@ public class PlayerController : Character, IDamage
     return closest;
   }
 
-  new void UpdateCollision( float dT )
+  new void UpdateHit( float dT )
   {
-    collideRight = false;
-    collideLeft = false;
-    collideTop = false;
-    collideBottom = false;
+    pups.Clear();
 
-    //RaycastHit2D[] hits;
-    hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( Global.TriggerLayers ) );
+    List<string> layers = new List<string>();
+    layers.AddRange( Global.TriggerLayers );
+    layers.AddRange( Global.CharacterDamageLayers );
+
+    hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( layers.ToArray() ) );
     foreach( var hit in hits )
     {
+      if( hit.transform.IsChildOf( transform ) )
+        continue;
       ITrigger tri = hit.transform.GetComponent<ITrigger>();
       if( tri != null )
       {
@@ -405,6 +407,16 @@ public class PlayerController : Character, IDamage
     foreach( var pup in highlightedPickupsRemove )
       highlightedPickups.Remove( pup );
     */
+  }
+
+  new void UpdateCollision( float dT )
+  {
+    collideRight = false;
+    collideLeft = false;
+    collideTop = false;
+    collideBottom = false;
+
+
 
     Vector2 adjust = transform.position;
     /*
@@ -888,6 +900,8 @@ public class PlayerController : Character, IDamage
 
     transform.position += (Vector3)Velocity * Time.deltaTime;
     carryCharacter = null;
+
+    UpdateHit( Time.deltaTime );
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
 
@@ -999,7 +1013,7 @@ public class PlayerController : Character, IDamage
     {
       CursorSnapped.gameObject.SetActive( false );
       /*if( CursorAboveMinimumDistance )*/
-        AimPosition = cursorOrigin + cursorDelta;
+      AimPosition = cursorOrigin + cursorDelta;
       /*else
           AimPosition = cursorOrigin + (facingRight ^ wallsliding ? Vector2.right : Vector2.left);*/
       CursorWorldPosition = AimPosition;

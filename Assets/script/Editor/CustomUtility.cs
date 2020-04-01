@@ -59,7 +59,6 @@ public class CustomUtility : EditorWindow
   List<string> scenes;
   List<GameObject> gos;
   List<Object> objects;
-  List<AnimSequence> ans;
   List<string> assetPaths;
   int layer;
 

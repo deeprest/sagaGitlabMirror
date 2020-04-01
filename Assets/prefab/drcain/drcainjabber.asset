@@ -12,19 +12,104 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a370af930822f4d6fb0a3c1d0e703af1, type: 3}
   m_Name: drcainjabber
   m_EditorClassIdentifier: 
-  LettersPerPhoneme: 1
-  PhonemeLength: 0.1
+  LettersPerPhoneme: 2
+  PhonemeLength: 0.08
   SilenceLength: 0.1
+  PitchOffset: -0.1
   PitchSine: 0
-  PitchRange: 0.1
-  PitchSinSpeed: 20
+  PitchRange: 0.2
+  PitchSinSpeed: 1
   PitchRandom: 1
   RandomPhoneme: 0
   Phonemes:
-  - PatternLetters: 
+  - PatternLetters: e
     isDefault: 1
     phoclips:
     - UseClipLength: 0
-      UseOffset: 1
-      Offset: 0.0795
-      clip: {fileID: 8300000, guid: ab93ddb67bc9b4d9ebfdd7b71bca83ba, type: 3}
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: 5428ae0259a884ad79eca2c89e7ac052, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: a313c896c7ee24590a9d250ae8f5aa74, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: c3675fe0cac5443e3b8c3d8153cbe21b, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: 47590694146f5476cb077d88a2a487c2, type: 3}
+  - PatternLetters: u
+    isDefault: 0
+    phoclips:
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: c1b69dbdd022a4074b36d86f310c2ab4, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: 9244e7f7b045440d7b259b78d289cbee, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: 2c80f40e9601a4cc28d259bbbf0bf45c, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: 26b8028891d194a0bbe7edcd817604d4, type: 3}
+  - PatternLetters: a
+    isDefault: 0
+    phoclips:
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: 08bae41dc6d4040e2939038f9d945fc9, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: ffb27f757922440cba440c1fe18c9919, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: 5403535412baa4dd3bab4043d4762287, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: f11e00630bcd743a79de198b32e5266a, type: 3}
+  - PatternLetters: o
+    isDefault: 0
+    phoclips:
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: 198c867eac9f8458ab5e0680a4b800be, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: d6f9eb6ba4d38454ea6ec734885fa5e4, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: a7b38aa0561434fb991b256d9687b1b8, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: 15237af6ea5834f67a5762249370383b, type: 3}
+  - PatternLetters: h
+    isDefault: 0
+    phoclips:
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: cd2548155a3454b9c83c1c4a06ff58ea, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: a5b5f1d59975d498daa4f793b0458020, type: 3}
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: 1df98253a43464e81a7b102c27982fa2, type: 3}

@@ -1,5 +1,4 @@
 
-
 # THANK YOU!
 "jbarrios" for creating a feedback video on TIGSource feedback forum.
 MET for his awesome music.
@@ -7,16 +6,18 @@ https://seansleblanc.itch.io/better-minimal-webgl-template for webgl template
 https://etclundberg.itch.io/ for early feedback
 
 
-
 # Other Fan Games
+["Mega Man X: Corrupted"](http://www.megamanxcorrupted.com/)
+["Megaman X: Isolation"](https://www.youtube.com/channel/UC2CSkCJMni7CuRLLmEGpKSw)
 ["Cancelled/Dead Mega Man X Fangames"](https://www.youtube.com/watch?v=PB8pMBSK8AU)
 ["Mega Man X Elf Wars (aiming)"](https://youtu.be/xGahhqoooT0?t=109)
 ["Mega Man X++"](https://www.youtube.com/watch?v=twI3res-obs)
-["Mega Man X: Corrupted"](http://www.megamanxcorrupted.com/)
 ["Apsel Haven Mega Man X fangame"](https://www.youtube.com/watch?v=CwW_cziXs4U)
 ["Mega Man X AD"](https://reploidsoft.blogspot.com/)
+
 # Similar Derived Games
 ["20XX"](https://store.steampowered.com/app/322110/20XX/)
+
 
 # where to release/announce demo
 gamejolt

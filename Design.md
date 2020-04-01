@@ -1,34 +1,39 @@
 # DESIGN
+
 ## Design Goals
+
 ### accessibly
 - Linux, MacOS, WebGL if possible
 - Must run smoothly on lower-spec machines [define min spec]
 - Single player. No internet connection required to play.
 - Control Rebinding
+
 ### is not commercialized
 - no ads. You pay with your soul. (fake ads?)
 - no microtransactions.
 - no in-game currency to compulsively accumulate. (or make it useless)
+
 ### does not use addiction mechanics
 - no achievements to leave you feeling underachieving.
 - no trophies
+
 ### not too complex. you have a life.
 - no story to ignore or lore to forget (dialogue but no narrative)
 - no complicated technology/skill tree
 
-## Design Mistakes to Avoid
-Starting too big.
-Onboarding player, ease of learning mechanics.
-Idea commitment.
-Overly rigid design.
-Story upfront.
-Polish lots.
-Avoid adding things arbitrarily.
+## Design Advice
+Avoid: Starting Too BIG.
+Avoid: Idea commitment.
+Avoid: Story up front.
+Avoid: Overly rigid design.
+Avoid: Arbitrarily adding things.
+Must: Onboard player with forced-learning mechanics.
+Must: Polish lots.
 
 ## misc thoughts
 The pivot model
 Flow: challenge vs ability
-tension and relief: area design.
+tension and relief
 exploration: secret areas. beacons. minimap.
 
 efficiency: time and energy
@@ -76,6 +81,7 @@ MegamanX can only shoot directly forward. The ability to shoot upwards in games 
 1. no instant-death spikes or bottomless pits
 1. teleportation -> airdrop from chopper
 1. arbitrary ground and wall angles
+1. Avoid button-mashing with hold-to-fire (auto)
 
 ## Additions
 lighting, normal mapped sprites, emissive
@@ -83,11 +89,44 @@ AI, navigation mesh
 level generation
 
 ## aesthetics
-1. atmosphere.
-Environment animations.
-2. sounds
-Complimentary with instruments in the music.
-3. music
-energy. melody.
-4. camera
-Screen shake. Camera smooth lerp.
+1. Sounds are complimentary with instruments in the music.
+1. Music has energy. melody. Stages take roughly 3x music loops to avoid letting the music get stale.
+1. Camera. Screen shake. Camera smooth lerp.
+1. Atmosphere. Environment animations.
+
+
+
+# Mega Man X Breakdown
+demonstrate enemy abilities first in a safe, controlled environment
+Intro level teaches the basics:
+* run and jump. basic movement. implicit goal of progression
+* take damage. vulnerability
+* shoot. a way to overcome vulnerability
+* kill enemies. defeat obstacles to progress
+* death cycle
+* rewards, minibosses
+* enemy sweet spots
+* arrange for wallslide to teach walljump out of pit
+* Vile: cannot win, saved by zero (demos charge shot and dash)
+* Theme: grow stronger / self improvement
+
+
+# Ideas for new stuff
+Main Menu is an in-game diagetic menu. player can shoot the options.
+start as spiderbot (maybe nothing pays you any attention when you are a spiderbot)
+find a host body
+
+
+boss battles. 'stage intro'; boss intro; chamber fight; death sequence; get weapon/post-death;
+explore generated city.
+abilities: graphook, shield, bullet-time
+weapons: blaster, bouncygrenade, stickybomb, flame, laser
+
+- death -> spiderbot
+- spiderbot that can gain control of other machines.
+- creature that collects parts and builds onto itself
+- pick up parts from dead enemies
+- claw: ceiling claw climbing. dash with claw slash
+- idea: generate an area by connecting random nodes that represent the player's movement- run(duration increments), jump parabola, dash-jump, wall-jump, wall-slide, graphook. AI ability to navigate/traverse environment to follow player/attack. First pathfind, then plot out movement using "movement-nodes".
+- city subway. fast travel or GTA2 style train
+- idea: z-doors/manifold-doors to other rooms that exist in the same space. keep all objects live, allow enemies to enter doors.

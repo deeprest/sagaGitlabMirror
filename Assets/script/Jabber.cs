@@ -29,6 +29,7 @@ public class Jabber : ScriptableObject
   public float PhonemeLength = 0.1f;
   public float SilenceLength = 0.1f;
 
+  public float PitchOffset = 0;
   public bool PitchSine = false;
   public float PitchRange = 0.1f;
   public float PitchSinSpeed = 20;

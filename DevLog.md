@@ -67,3 +67,9 @@ left thumbstick = move
 - fix diagetic text in front
 - respawn using cyclic index
 - work on marching square nodes
+
++ camera zones
++ removed cursor min snap
++ parallax optimization in editor
++ add spark effect to wall jump
++ replace old sprite anims with unity animators

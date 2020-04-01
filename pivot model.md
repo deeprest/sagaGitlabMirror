@@ -7,7 +7,7 @@ Story of the gameplay is important, the story in the game is not.
 example: sports, such as football.
 ---
 1. mechanics: toy
-2. add a goal: puzzle
+2. add a goal: puzzle/challenge
 3. acceptable failure.
   uncertainty
   prevents planning

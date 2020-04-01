@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using deeprest;
 
-//[SelectionBase]
+[SelectionBase]
 //[RequireComponent( typeof(Tags) )]
 public class SpawnPoint : SerializedComponent //, IAction, ITeam
 {
-
-
   //[Serialize] public string TeamName;
   //public Team MyTeam;
 
@@ -61,7 +60,7 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
     //if( team != null )
     //Global.instance.AssignTeam( gameObject, team );
   }
-
+  
   void OnEnable()
   {
     if( SpawnPrefab.Count == 0 )

@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -13,7 +14,7 @@ using UnityEngine.AI;
 using UnityEngine.Playables;
 using LitJson;
 using Ionic.Zip;
-using System.Runtime.InteropServices;
+using deeprest;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -47,25 +48,6 @@ public class GlobalEditor : Editor
   }
 }
 #endif
-
-public class WorldSelectable : MonoBehaviour
-{
-  public virtual void Highlight()
-  {
-    if( Global.instance.CurrentPlayer != null )
-    {
-      Global.instance.CurrentPlayer.InteractIndicator.SetActive( true );
-      Global.instance.CurrentPlayer.InteractIndicator.transform.position = transform.position;
-    }
-  }
-  public virtual void Unhighlight()
-  {
-    if( Global.instance.CurrentPlayer != null )
-      Global.instance.CurrentPlayer.InteractIndicator.SetActive( false );
-  }
-  public virtual void Select() { }
-  public virtual void Unselect() { }
-}
 
 
 public class Global : MonoBehaviour
@@ -1377,7 +1359,7 @@ public class Global : MonoBehaviour
   {
     audioLoop.Play( musicSource0, musicSource1 );
   }
-  /*
+  
  public void MusicTransition( AudioLoop loop )
  {
    Timer t = new Timer();
@@ -1399,7 +1381,7 @@ public class Global : MonoBehaviour
    }
    );
  }
-
+  /*
  public void CrossFadeToClip( AudioClip clip )
  {
    AudioSource next = (activeMusicSource == musicSource0) ? musicSource1 : musicSource0;
