@@ -84,11 +84,14 @@ public class Global : MonoBehaviour
     "events.json"*/
   };
 
+  public static int asdf;
+    
   // note: allowing characters to collide introduces potential for "pinch points"
   public static string[] CharacterCollideLayers = { "Default", "destructible", "triggerAndCollision" }; //, "character", "enemy" };
   public static string[] CharacterSidestepLayers = { "character", "enemy" };
   public static string[] CharacterDamageLayers = { "character" };
   public static string[] TriggerLayers = { "trigger", "triggerAndCollision" };
+  public static string[] WorldSelectableLayers = { "worldselect" };
   public static string[] ProjectileNoShootLayers = { "Default" };
   public static string[] DefaultProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade", "flameProjectile" };
   public static string[] FlameProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" };
@@ -241,6 +244,12 @@ public class Global : MonoBehaviour
     }
     instance = this;
     DontDestroyOnLoad( gameObject );
+
+    asdf = LayerMask.GetMask( new string[] { "Default", "destructible", "triggerAndCollision" } );
+
+
+
+
     CanvasScaler = UI.GetComponent<CanvasScaler>();
     InitializeSettings();
     ReadSettings();
@@ -314,8 +323,8 @@ public class Global : MonoBehaviour
         mesh.BuildNavMesh();
       Destroy( generatedMeshCollider );
       if( CurrentPlayer == null )
-          SpawnPlayer();
-      }
+        SpawnPlayer();
+    }
     else
     {
       //StartCoroutine( LoadSceneRoutine( "intro", false, false, true, false ) );

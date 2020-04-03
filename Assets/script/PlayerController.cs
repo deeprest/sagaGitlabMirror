@@ -281,9 +281,9 @@ public class PlayerController : Character, IDamage
   }
 
   [SerializeField] float selectRange = 3;
-  WorldSelectable closestISelect;
-  WorldSelectable WorldSelection;
-  List<WorldSelectable> pups = new List<WorldSelectable>();
+  IWorldSelectable closestISelect;
+  IWorldSelectable WorldSelection;
+  List<Component> pups = new List<Component>();
   //List<Pickup> highlightedPickups = new List<Pickup>();
   //List<Pickup> highlightedPickupsRemove = new List<Pickup>();
 
@@ -353,7 +353,7 @@ public class PlayerController : Character, IDamage
         if( ContactDamage != null )
         {
           Damage dmg = Instantiate<Damage>( ContactDamage );
-          dmg.instigator = transform;
+          dmg.damageSource = transform;
           dmg.point = hit.point;
           dam.TakeDamage( dmg );
         }
@@ -361,13 +361,13 @@ public class PlayerController : Character, IDamage
     }
 
     pups.Clear();
-    hits = Physics2D.CircleCastAll( transform.position, selectRange, Vector3.zero, 0, LayerMask.GetMask( new string[] { "worldselect" } ) );
+    hits = Physics2D.CircleCastAll( transform.position, selectRange, Vector3.zero, 0, LayerMask.GetMask( Global.WorldSelectableLayers ) );
     foreach( var hit in hits )
     {
-      WorldSelectable pup = hit.transform.GetComponent<WorldSelectable>();
+      IWorldSelectable pup = hit.transform.GetComponent<IWorldSelectable>();
       if( pup != null )
       {
-        pups.Add( pup );
+        pups.Add( (Component)pup );
         /*if( !highlightedPickups.Contains( pup ) )
         {
           pup.Highlight();
@@ -376,7 +376,7 @@ public class PlayerController : Character, IDamage
       }
     }
     //WorldSelectable closest = (WorldSelectable)FindClosest( transform.position, pups.ToArray() );
-    WorldSelectable closest = (WorldSelectable)FindSmallestAngle( transform.position, shoot, pups.ToArray() );
+    IWorldSelectable closest = (IWorldSelectable)FindSmallestAngle( transform.position, shoot, pups.ToArray() );
     if( closest == null )
     {
       if( closestISelect != null )
@@ -1182,7 +1182,7 @@ public class PlayerController : Character, IDamage
     audio.PlayOneShot( soundDamage );
     Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
 
-    float sign = Mathf.Sign( d.instigator.position.x - transform.position.x );
+    float sign = Mathf.Sign( d.damageSource.position.x - transform.position.x );
     facingRight = sign > 0;
     //push.y = damageLift;
     velocity.y = 0;

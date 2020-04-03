@@ -1,7 +1,7 @@
 pP
 # DONE
 
-*Establish the design before working*
+*Establish the design before resuming work*
 
 ## todo
 - minimum shoot vector, otherwise shots have no velocity (gamepad)

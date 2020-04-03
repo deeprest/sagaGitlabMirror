@@ -37,3 +37,11 @@ public interface ITrigger
 {
   void Trigger( Transform instigator );
 }
+
+public interface IWorldSelectable
+{
+  void Highlight();
+  void Unhighlight();
+  void Select();
+  void Unselect();
+}

@@ -96,7 +96,7 @@ public class Airbot : Character
       if( dam != null )
       {
         Damage dmg = Instantiate( ContactDamage );
-        dmg.instigator = transform;
+        dmg.damageSource = transform;
         dmg.point = hit.point;
         if( dam.TakeDamage( dmg ) )
         {

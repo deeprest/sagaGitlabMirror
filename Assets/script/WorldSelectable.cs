@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WorldSelectable : MonoBehaviour
+public class WorldSelectable : MonoBehaviour, IWorldSelectable
 {
   public virtual void Highlight()
   {

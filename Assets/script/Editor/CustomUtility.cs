@@ -186,9 +186,12 @@ public class CustomUtility : EditorWindow
         List<string> buildnames = new List<string>();
         for( int i = 0; i < EditorBuildSettings.scenes.Length; i++ )
         {
-          string name = Path.GetFileNameWithoutExtension( EditorBuildSettings.scenes[i].path );
-          buildInfo.scenes[i].name = name;
-          buildnames.Add( name );
+          if( EditorBuildSettings.scenes[i].enabled )
+          {
+            string sceneName = Path.GetFileNameWithoutExtension( EditorBuildSettings.scenes[i].path );
+            buildInfo.scenes[i].name = sceneName;
+            buildnames.Add( sceneName );
+          }
         }
 
         /*

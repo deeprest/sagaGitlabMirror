@@ -57,15 +57,15 @@ public class Shield : MonoBehaviour, IDamage
       light.intensity = 0;
     } );
 
-    Character chr = d.instigator.GetComponent<Character>();
+    Character chr = d.damageSource.GetComponent<Character>();
     if( chr != null )
     {
       if( damage != null )
         chr.TakeDamage( damage );
-      chr.Push( hitPushSpeed * ((Vector2)(d.instigator.transform.position - transform.position)).normalized, hitPushDuration );
+      chr.Push( hitPushSpeed * ((Vector2)(d.damageSource.transform.position - transform.position)).normalized, hitPushDuration );
     }
 
-    Projectile projectile = d.instigator.GetComponent<Projectile>();
+    Projectile projectile = d.damageSource.GetComponent<Projectile>();
     if( projectile != null )
     {
       switch( projectile.weapon.weaponType )

@@ -56,7 +56,7 @@ public class LiftbotEdtitor : Editor
 }
 #endif
 
-public class Liftbot : Character
+public class Liftbot : Character, IWorldSelectable
 {
   public float flySpeed = 2;
   public float waitDuration = 2;
@@ -64,9 +64,11 @@ public class Liftbot : Character
   public Vector2 origin;
   public Vector2[] path;
   Timer timeout = new Timer();
-  bool waiting;
+  bool waiting = true;
   public bool pingpong = false;
   int indexIncrement = 1;
+  public bool UseWaitDuration = true;
+  public bool IsTriggeredByPlayer = false;
 
   private void OnDestroy()
   {
@@ -81,15 +83,16 @@ public class Liftbot : Character
     UpdateCollision = null;
     UpdatePosition = BasicPosition;
     origin = transform.position;
-    timeout.Start( waitDuration, null, NextWaypoint );
+    if( !IsTriggeredByPlayer )
+      timeout.Start( waitDuration, null, NextWaypoint );
   }
 
-  float DistanceToWaypoint()
+  protected float DistanceToWaypoint()
   {
     return Vector3.Distance( transform.position, origin + path[pathIndex] );
   }
 
-  void NextWaypoint()
+  protected void NextWaypoint()
   {
     waiting = false;
     int next = pathIndex + indexIncrement;
@@ -101,7 +104,7 @@ public class Liftbot : Character
     //  timeout.Start( DistanceToWaypoint() / flySpeed, null, NextWaypoint );
   }
 
-  float closeEnough { get { return flySpeed * Time.maximumDeltaTime * Time.timeScale; } }
+  protected float closeEnough { get { return flySpeed * Time.maximumDeltaTime * Time.timeScale; } }
 
   void UpdateAirbot()
   {
@@ -116,7 +119,8 @@ public class Liftbot : Character
         if( !waiting )
         {
           waiting = true;
-          timeout.Start( waitDuration, null, NextWaypoint );
+          if( UseWaitDuration )
+            timeout.Start( waitDuration, null, NextWaypoint );
         }
       }
       else
@@ -141,5 +145,29 @@ public class Liftbot : Character
   {
     base.Die();
     // todo
+  }
+
+  public void Highlight()
+  {
+    if( Global.instance.CurrentPlayer != null )
+    {
+      Global.instance.CurrentPlayer.InteractIndicator.SetActive( true );
+      Global.instance.CurrentPlayer.InteractIndicator.transform.position = transform.position;
+    }
+  }
+  public void Unhighlight()
+  {
+    if( Global.instance.CurrentPlayer != null )
+      Global.instance.CurrentPlayer.InteractIndicator.SetActive( false );
+  }
+  public void Select()
+  {
+    UseWaitDuration = true;
+    if( IsTriggeredByPlayer && DistanceToWaypoint() < closeEnough )
+      NextWaypoint();
+  }
+  public void Unselect()
+  {
+    UseWaitDuration = false;
   }
 }

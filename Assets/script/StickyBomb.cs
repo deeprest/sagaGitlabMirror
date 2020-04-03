@@ -57,7 +57,7 @@ public class StickyBomb : Projectile, IDamage
         if( dam != null )
         {
           Damage dmg = Instantiate( ContactDamage );
-          dmg.instigator = transform;
+          dmg.damageSource = transform;
           dmg.point = transform.position;
           dam.TakeDamage( dmg );
         }

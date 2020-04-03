@@ -8,8 +8,8 @@ public class LerpToTarget : MonoBehaviour
   //
   public bool WorldTarget = false;
   public Vector3 targetPositionWorld;
-  public Vector3 targetRotationForward;
-  public Vector3 targetRotationUp;
+  public Vector3 targetRotationForward = Vector3.forward;
+  public Vector3 targetRotationUp = Vector3.up;
   //
   public Vector3 localOffset;
   public float duration = 1f;

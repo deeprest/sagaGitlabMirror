@@ -39,11 +39,11 @@ public class BuildMetaDataEditor : Editor
     //DrawDefaultInspector();
   }
 }
+[System.Serializable]
+public class SceneMetaArray : ReorderableArray<SceneMeta> { }
 */
 #endif
 
-[System.Serializable]
-public class SceneMetaArray : ReorderableArray<SceneMeta> { }
 
 [System.Serializable]
 public class SceneMeta
@@ -54,9 +54,6 @@ public class SceneMeta
 [CreateAssetMenu]
 public class BuildMetaData : ScriptableObject
 {
-  //[Reorderable]
-  //public SceneMetaArray scenes;
-  // SceneMetaArray
   [SerializeField]
   public List<SceneMeta> scenes;
   /*
