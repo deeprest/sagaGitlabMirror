@@ -46,6 +46,8 @@ public class CustomUtility : EditorWindow
   bool buildLinux = false;
   bool buildWebGL = false;
   bool buildWindows = false;
+  // make data about the build available at runtime
+  public BuildMetaData buildInfo;
 
   string progressMessage = "";
   float progress = 0;
@@ -159,7 +161,7 @@ public class CustomUtility : EditorWindow
     foldBuild = EditorGUILayout.Foldout( foldBuild, "Build" );
     if( foldBuild )
     {
-      GUILayout.Label( "Build", EditorStyles.boldLabel );
+      buildInfo = (BuildMetaData)EditorGUILayout.ObjectField( "BuildMetaData", buildInfo, typeof( BuildMetaData ), false );
       /*if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Run WebGL Build" ) )
       {
         string path = EditorUtility.OpenFolderPanel( "Select WebGL build folder", "", "" );
@@ -180,14 +182,35 @@ public class CustomUtility : EditorWindow
       {
         if( BuildPipeline.isBuildingPlayer )
           return;
+
         List<string> buildnames = new List<string>();
+        for( int i = 0; i < EditorBuildSettings.scenes.Length; i++ )
+        {
+          string name = Path.GetFileNameWithoutExtension( EditorBuildSettings.scenes[i].path );
+          buildInfo.scenes[i].name = name;
+          buildnames.Add( name );
+        }
+
+        /*
+        // Trying to get a scene build index from the build settings is hopeless.
         for( int i = 0; i < SceneManager.sceneCountInBuildSettings; i++ )
         {
-          string bn = SceneUtility.GetScenePathByBuildIndex( i );
-          if( bn != null )
-            buildnames.Add( bn );
+          string scenepath = SceneUtility.GetScenePathByBuildIndex( i );
+          if( scenepath != null )
+          {
+            int buildIndex = SceneManager.GetSceneByPath( scenepath ).buildIndex;
+            ///
+            // UNITY BUG: second scene in build settings has index of -1 !!
+            ///
+            if( buildIndex >= 0 )
+            {
+              buildnames.Add( scenepath );
+              buildInfo.scenes.Add( new BuildMetaData.SceneMeta { buildIndex = buildIndex, name = Path.GetFileNameWithoutExtension( scenepath ) } );
+            }
+          }
           //string sceneName = path.Substring( 0, path.Length - 6 ).Substring( path.LastIndexOf( '/' ) + 1 );
-        }
+        }*/
+
         BuildPlayerOptions bpo = new BuildPlayerOptions();
         bpo.scenes = buildnames.ToArray();
         if( developmentBuild )
@@ -619,7 +642,7 @@ public class CustomUtility : EditorWindow
         // set default font values
         string fontsettings = Path.ChangeExtension( AssetDatabase.GetAssetPath( fontImage ), "fontsettings" );
         Font font = AssetDatabase.LoadAssetAtPath<Font>( fontsettings );
-        UnityEditor.SerializedObject so = new UnityEditor.SerializedObject( font );
+        SerializedObject so = new SerializedObject( font );
         so.Update();
         so.FindProperty( "m_AsciiStartOffset" ).intValue = 32;
         so.FindProperty( "m_Tracking" ).floatValue = 0.5f;
@@ -632,7 +655,6 @@ public class CustomUtility : EditorWindow
 
   }
 
-  string ugh;
 
   void ReplaceObjectWithPrefabInstance( GameObject replaceThis, GameObject prefab )
   {

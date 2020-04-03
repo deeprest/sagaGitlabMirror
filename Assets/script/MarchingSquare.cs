@@ -61,7 +61,7 @@ public class MarchingSquare : ScriptableObject
   public void FromFolder()
   {
     List<GameObject> gos = new List<GameObject>();
-    string[] guids = AssetDatabase.FindAssets( "t:prefab", new string[] { GetCurrentAssetDirectory() } );
+    string[] guids = AssetDatabase.FindAssets( "t:prefab", new string[] { Util.GetCurrentAssetDirectory() } );
     foreach( string guid in guids )
     {
       GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>( AssetDatabase.GUIDToAssetPath( guid ) );
@@ -71,22 +71,6 @@ public class MarchingSquare : ScriptableObject
     EditorUtility.SetDirty( this );
   }
 
-  public static string GetCurrentAssetDirectory()
-  {
-    foreach( var obj in Selection.GetFiltered<Object>( SelectionMode.Assets ) )
-    {
-      var path = AssetDatabase.GetAssetPath( obj );
-      if( string.IsNullOrEmpty( path ) )
-        continue;
-
-      if( System.IO.Directory.Exists( path ) )
-        return path;
-      else if( System.IO.File.Exists( path ) )
-        return System.IO.Path.GetDirectoryName( path );
-    }
-
-    return "Assets";
-  }
 #endif
 }
 

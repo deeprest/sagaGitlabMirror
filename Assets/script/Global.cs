@@ -47,8 +47,8 @@ public class GlobalEditor : Editor
     } );
   }
 }
-#endif
 
+#endif
 
 public class Global : MonoBehaviour
 {
@@ -58,6 +58,7 @@ public class Global : MonoBehaviour
   public static bool IsQuiting = false;
 
   [Header( "Global Settings" )]
+  public BuildMetaData buildMetaData;
   public bool RandomSeedOnStart = false;
   [Tooltip( "Pretend this is a build we're running" )]
   public bool SimulatePlayer = false;
@@ -67,8 +68,6 @@ public class Global : MonoBehaviour
   // screenshot timer
   public int screenshotInterval;
   public Timer ScreenshotTimer = new Timer();
-
-
 
   [SerializeField] float slowtime = 0.2f;
   Timer fadeTimer = new Timer();
@@ -114,7 +113,6 @@ public class Global : MonoBehaviour
 
   [Header( "References" )]
   public CameraController CameraController;
-  [SerializeField] Animator animator;
   [SerializeField] AudioClip VolumeChangeNoise;
 
   [Header( "Prefabs" )]
@@ -155,6 +153,7 @@ public class Global : MonoBehaviour
   public Controls Controls;
   public bool UsingGamepad;
   public Color ControlNameColor = Color.red;
+  Dictionary<string, string> ReplaceControlNames = new Dictionary<string, string>();
 
   [Header( "Debug" )]
   [SerializeField] Text debugFPS;
@@ -178,6 +177,7 @@ public class Global : MonoBehaviour
   float progTarget = 0;
   [SerializeField] GameObject spinner;
   [SerializeField] float spinnerMoveSpeed = 1;
+  int spawnCycleIndex = 0;
 
   public GameData gameData;
   public Dictionary<string, GameObject> ResourceLookup = new Dictionary<string, GameObject>();
@@ -200,7 +200,6 @@ public class Global : MonoBehaviour
   AudioSource activeMusicSource;
   [SerializeField] AudioLoop[] MusicLoops;
 
-
   [Header( "Speech" )]
   public GameObject SpeechBubble;
   public Text SpeechText;
@@ -210,6 +209,12 @@ public class Global : MonoBehaviour
   int SpeechPriority = 0;
   public float SpeechRange = 8;
   Timer SpeechTimer = new Timer();
+
+  [Header( "Minimap" )]
+  [SerializeField] Camera MinimapCamera;
+  [SerializeField] GameObject Minimap;
+  [SerializeField] float mmScrollSpeed = 10;
+  [SerializeField] float mmOrthoSize = 1;
 
 
   [RuntimeInitializeOnLoadMethod]
@@ -311,12 +316,18 @@ public class Global : MonoBehaviour
     }
     else
     {
-      //StartCoroutine( LoadSceneRoutine( InitialSceneName, false, false, true, false ) );
       //StartCoroutine( LoadSceneRoutine( "intro", false, false, true, false ) );
-      StartCoroutine( LoadSceneRoutine( "home", true, true, true, false ) );
+      LoadScene( InitialSceneName, true, true, true, false, delegate {
+        LoadScene( "home", true, true, true, false );
+	    });
     }
 
-  }
+    int i = 0;
+    string scns = "";
+    foreach( var scene in buildMetaData.scenes )
+      scns += name + "(" + i++ + ")\n";
+    Debug.Log( scns );
+  } 
 
   void Start()
   {
@@ -327,9 +338,6 @@ public class Global : MonoBehaviour
     mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
 #endif
   }
-
-  Dictionary<string, string> ReplaceControlNames = new Dictionary<string, string>();
-
 
   public string ReplaceWithControlNames( string source, bool colorize = true )
   {
@@ -456,18 +464,12 @@ public class Global : MonoBehaviour
     };*/
   }
 
-  [Header( "Minimap" )]
-  [SerializeField] Camera MinimapCamera;
-  [SerializeField] GameObject Minimap;
-  [SerializeField] float mmScrollSpeed = 10;
-  [SerializeField] float mmOrthoSize = 1;
-
-  public void LoadScene( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true )
+  public void LoadScene( string scene, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true, System.Action onFail = null )
   {
-    StartCoroutine( LoadSceneRoutine( sceneName, waitForFadeIn, spawnPlayer, fadeOut, showLoadingScreen ) );
+    StartCoroutine( LoadSceneRoutine( scene, waitForFadeIn, spawnPlayer, fadeOut, showLoadingScreen, onFail ) );
   }
 
-  IEnumerator LoadSceneRoutine( string sceneName, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true )
+  IEnumerator LoadSceneRoutine( string scene, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true, System.Action onFail = null )
   {
     Updating = false;
     if( fadeOut )
@@ -505,7 +507,7 @@ public class Global : MonoBehaviour
     Pause();
     HUD.SetActive( false );
     if( showLoadingScreen )
-      yield return ShowLoadingScreenRoutine( "Loading... " + sceneName );
+      yield return ShowLoadingScreenRoutine( "Loading... " + scene );
     if( CurrentPlayer != null )
     {
       CurrentPlayer.PreSceneTransition();
@@ -515,56 +517,61 @@ public class Global : MonoBehaviour
     //progress.fillAmount = 0;
     //prog = 0;
     yield return new WaitForSecondsRealtime( 1 );
-    AsyncOperation ao = SceneManager.LoadSceneAsync( sceneName, LoadSceneMode.Single );
-    while( !ao.isDone )
+    AsyncOperation ao = SceneManager.LoadSceneAsync( scene, LoadSceneMode.Single );
+    if( ao != null )
     {
-      //prog = Mathf.MoveTowards( prog, ao.progress, Time.unscaledDeltaTime * progressSpeed );
-      //progress.fillAmount = prog;
-      //progTarget = ao.progress;
-      //print( ao.progress.ToString() );
-      yield return null;
-    }
-    loadingScene = false;
-
-    TimerParams musicTimerParamsFadeIn = new TimerParams
-    {
-      unscaledTime = true,
-      repeat = false,
-      duration = MusicTransitionDuration,
-      UpdateDelegate = delegate ( Timer obj )
+      while( !ao.isDone )
       {
-        musicSource0.volume = obj.ProgressNormalized;
-        musicSource1.volume = obj.ProgressNormalized;
-      },
-      CompleteDelegate = delegate
-      {
-        musicSource0.volume = 1;
-        musicSource1.volume = 1;
+        //prog = Mathf.MoveTowards( prog, ao.progress, Time.unscaledDeltaTime * progressSpeed );
+        //progress.fillAmount = prog;
+        //progTarget = ao.progress;
+        //print( ao.progress.ToString() );
+        yield return null;
       }
-    };
-    musicTimer.Start( musicTimerParamsFadeIn );
+      TimerParams musicTimerParamsFadeIn = new TimerParams
+      {
+        unscaledTime = true,
+        repeat = false,
+        duration = MusicTransitionDuration,
+        UpdateDelegate = delegate ( Timer obj )
+        {
+          musicSource0.volume = obj.ProgressNormalized;
+          musicSource1.volume = obj.ProgressNormalized;
+        },
+        CompleteDelegate = delegate
+        {
+          musicSource0.volume = 1;
+          musicSource1.volume = 1;
+        }
+      };
+      musicTimer.Start( musicTimerParamsFadeIn );
+      sceneScript = FindObjectOfType<SceneScript>();
+      if( sceneScript != null )
+        sceneScript.StartScene();
 
-    HUD.SetActive( true );
+      GameObject generatedMeshCollider = Util.GenerateNavMeshForEdgeColliders();
+      foreach( var mesh in meshSurfaces )
+        mesh.BuildNavMesh();
+      Destroy( generatedMeshCollider );
 
-    sceneScript = FindObjectOfType<SceneScript>();
-    if( sceneScript != null )
-      sceneScript.StartScene();
-
-    GameObject generatedMeshCollider = Util.GenerateNavMeshForEdgeColliders();
-    foreach( var mesh in meshSurfaces )
-      mesh.BuildNavMesh();
-    Destroy( generatedMeshCollider );
-
-    if( CurrentPlayer == null )
-    {
-      if( spawnPlayer )
-        SpawnPlayer();
+      if( CurrentPlayer == null )
+      {
+        if( spawnPlayer )
+          SpawnPlayer();
+      }
+      else
+      {
+        CurrentPlayer.PostSceneTransition();
+      }
     }
     else
     {
-      CurrentPlayer.PostSceneTransition();
+      Debug.LogError( "Scene failed to load: " + scene );
+      onFail?.Invoke();
     }
 
+    loadingScene = false;
+    HUD.SetActive( true );
     Unpause();
     if( showLoadingScreen )
       HideLoadingScreen();
@@ -575,7 +582,6 @@ public class Global : MonoBehaviour
     Updating = true;
   }
 
-  //float lastTime;
   void Update()
   {
 #if DESTRUCTION_LIST
@@ -600,7 +606,6 @@ public class Global : MonoBehaviour
 #if UNITY_EDITOR_LINUX
     if( Input.GetKeyDown(KeyCode.Escape) )
     Cursor.lockState = CursorLockMode.None;
-#else
 #endif
 
     float H = 0;
@@ -628,24 +633,13 @@ public class Global : MonoBehaviour
     }
     zoomDelta = 0;
 
-
     if( MinimapCamera.enabled )
     {
       if( Controls.MenuActions.Move.enabled )
         MinimapCamera.transform.position += (Vector3)(Controls.MenuActions.Move.ReadValue<Vector2>() * mmScrollSpeed * Time.unscaledDeltaTime);
       MinimapCamera.orthographicSize = mmOrthoSize;
-
-      /*      pixelsize = (MinimapCamera.orthographicSize * 2f) / (float)MinimapCamera.targetTexture.height;
-            Vector3 pix = MinimapCamera.transform.position * pixelsize;
-            pix = new Vector3( Mathf.Floor( pix.x ), Mathf.Floor( pix.y ), pix.z );
-            pix /= pixelsize;
-            if( halfpixel )
-              pix += new Vector3( 1, 1, 0 ) * 0.5f * pixelsize;*/
     }
   }
-
-  //public bool halfpixel;
-  //public float pixelsize;
 
   void OnApplicationFocus( bool hasFocus )
   {
@@ -681,7 +675,6 @@ public class Global : MonoBehaviour
     return Vector3.zero;
   }
 
-  int spawnCycleIndex = 0;
   public Vector3 FindRandomSpawnPosition()
   {
     // cycle through random spawn points

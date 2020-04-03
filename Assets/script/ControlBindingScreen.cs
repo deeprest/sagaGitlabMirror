@@ -41,6 +41,7 @@ public class ControlBindingScreen : MonoBehaviour
       item.txtAction.text = item.action.name;
       item.txtControl.text = Global.instance.ReplaceWithControlNames( "[" + item.action.name + "]" );
       //item.txtControl.text = InputControlPath.ToHumanReadableString( item.control.path );
+      //item.txtControl.text = item.action.GetBindingDisplayString( InputBinding.DisplayStringOptions.DontUseShortDisplayNames );
     }
   }
 

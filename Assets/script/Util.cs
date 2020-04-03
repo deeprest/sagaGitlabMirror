@@ -7,7 +7,7 @@ public static class Util
 {
   public static float DbFromNormalizedVolume( float normalizedVolume )
   {
-    return (1 - Mathf.Sqrt( normalizedVolume )) * -80f;
+    return (1 - Mathf.Sqrt( normalizedVolume )) * -60f;
   }
 
   public static float NormalizedVolumeFromDb( float db )
@@ -327,6 +327,25 @@ public static class Util
     mc.sharedMesh = mesh;
     return go;
   }
+
+#if UNITY_EDITOR
+  public static string GetCurrentAssetDirectory()
+  {
+    foreach( var obj in UnityEditor.Selection.GetFiltered<Object>( UnityEditor.SelectionMode.Assets ) )
+    {
+      var path = UnityEditor.AssetDatabase.GetAssetPath( obj );
+      if( string.IsNullOrEmpty( path ) )
+        continue;
+
+      if( System.IO.Directory.Exists( path ) )
+        return path;
+      else if( System.IO.File.Exists( path ) )
+        return System.IO.Path.GetDirectoryName( path );
+    }
+
+    return "Assets";
+  }
+#endif
 }
 
 [System.Serializable]

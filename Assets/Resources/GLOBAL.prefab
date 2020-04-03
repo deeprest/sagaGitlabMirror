@@ -446,8 +446,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RepeatDelay: 0.3
-  m_RepeatRate: 0.1
+  m_MoveRepeatDelay: 0.3
+  m_MoveRepeatRate: 0.1
   m_ActionsAsset: {fileID: -944628639613478452, guid: 655d54d9b1e624a2ca2d340778800067,
     type: 3}
   m_PointAction: {fileID: 0}
@@ -463,7 +463,8 @@ MonoBehaviour:
   m_ScrollWheelAction: {fileID: 0}
   m_TrackedDevicePositionAction: {fileID: 0}
   m_TrackedDeviceOrientationAction: {fileID: 0}
-  m_TrackedDeviceSelectAction: {fileID: 0}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
 --- !u!1 &1563210130524808
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,6 +514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01c8a48ffc903431bbba0f54487eff92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buildMetaData: {fileID: 11400000, guid: 9a282bbd1760f4f148c29ecd834b56f1, type: 2}
   RandomSeedOnStart: 0
   SimulatePlayer: 0
   InitialSceneName: home
@@ -531,7 +533,6 @@ MonoBehaviour:
   ScreenSettingsPrompt: {fileID: 2505034203747348761}
   ScreenSettingsCountdown: {fileID: 5907061491218795952}
   CameraController: {fileID: 114243473509280006}
-  animator: {fileID: 0}
   VolumeChangeNoise: {fileID: 8300000, guid: bd2a07cd84da14e09bc9a72432d73693, type: 3}
   audioOneShotPrefab: {fileID: 1480036779989360, guid: d4170fe16bae647ac97e235eb55168d5,
     type: 3}

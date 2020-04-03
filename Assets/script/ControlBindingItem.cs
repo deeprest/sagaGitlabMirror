@@ -16,7 +16,8 @@ public class ControlBindingItem : MonoBehaviour
   public void OnComplete( InputActionRebindingExtensions.RebindingOperation operation )
   {
     //control = operation.selectedControl;
-    //txtControl.text = InputControlPath.ToHumanReadableString( operation.selectedControl.path );
     txtControl.text = Global.instance.ReplaceWithControlNames( "[" + operation.action.name + "]" );
+    //txtControl.text = InputControlPath.ToHumanReadableString( operation.selectedControl.path );
+    //txtControl.text = operation.action.GetBindingDisplayString( InputBinding.DisplayStringOptions.DontUseShortDisplayNames );
   }
 }
