@@ -29,7 +29,7 @@ public class Door : MonoBehaviour, ITrigger
   Timer runTimer = new Timer();
   [SerializeField] float openDuration = 3;
   [SerializeField] bool MMXStyleDoorTransition = true;
-  [SerializeField] float doorRunDistance = 0.5f;
+  [SerializeField] float doorRunDistance = 1;
   [SerializeField] float runDuration = 0.5f;
 
   void OnDestroy()
@@ -54,8 +54,7 @@ public class Door : MonoBehaviour, ITrigger
       else
       {
         bool Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
-        SceneScript sceneScript = FindObjectOfType<SceneScript>();
-        if( sceneScript != null && ((Entering && CameraIn != null) || (!Entering && CameraOut)) )
+        if( ((Entering && CameraIn != null) || (!Entering && CameraOut)) )
           Global.instance.Controls.BipedActions.Disable();
         OpenAndClose( openDuration, delegate
         {
@@ -63,7 +62,7 @@ public class Door : MonoBehaviour, ITrigger
           {
             if( CameraIn != null )
             {
-              sceneScript.AssignCameraZone( CameraIn );
+              Global.instance.AssignCameraZone( CameraIn );
               runTimer.Start( runDuration, delegate
               {
                 if( right ) Global.instance.CurrentPlayer.inputRight = true;
@@ -73,13 +72,18 @@ public class Door : MonoBehaviour, ITrigger
                 Global.instance.Controls.BipedActions.Enable();
               } );
             }
-            else sceneScript.AssignCameraZone( sceneScript.CameraZone );
+            else
+            {
+              SceneScript sceneScript = FindObjectOfType<SceneScript>();
+              if( sceneScript != null )
+                Global.instance.AssignCameraZone( sceneScript.CameraZone );
+            }
           }
           else
           {
             if( CameraOut != null )
             {
-              sceneScript.AssignCameraZone( CameraOut );
+              Global.instance.AssignCameraZone( CameraOut );
               runTimer.Start( runDuration, delegate
               {
                 if( right ) Global.instance.CurrentPlayer.inputRight = true;
@@ -89,7 +93,12 @@ public class Door : MonoBehaviour, ITrigger
                 Global.instance.Controls.BipedActions.Enable();
               } );
             }
-            else sceneScript.AssignCameraZone( sceneScript.CameraZone );
+            else
+            {
+              SceneScript sceneScript = FindObjectOfType<SceneScript>();
+              if( sceneScript != null )
+                Global.instance.AssignCameraZone( sceneScript.CameraZone );
+            }
           }
         }, null );
       }
@@ -115,20 +124,21 @@ public class Door : MonoBehaviour, ITrigger
         bool Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
         if( Entering )
         {
-          if( CameraIn != null ) sceneScript.AssignCameraZone( CameraIn );
-          else sceneScript.AssignCameraZone( sceneScript.CameraZone );
+          if( CameraIn != null ) Global.instance.AssignCameraZone( CameraIn );
+          else Global.instance.AssignCameraZone( sceneScript.CameraZone );
           if( Music != null )
             Global.instance.MusicTransition( Music );
         }
         else
         {
-          if( CameraOut != null ) sceneScript.AssignCameraZone( CameraOut );
-          else sceneScript.AssignCameraZone( sceneScript.CameraZone );
+          if( CameraOut != null ) Global.instance.AssignCameraZone( CameraOut );
+          else Global.instance.AssignCameraZone( sceneScript.CameraZone );
           if( Music != null )
             Global.instance.MusicTransition( sceneScript.music );
         }
       }
-      Global.instance.CurrentPlayer.DoorRun( right, openDuration, doorRunDistance );
+      // todo make door less awful
+        Global.instance.CurrentPlayer.DoorRun( right, openDuration, doorRunDistance );
     },
     delegate
     {

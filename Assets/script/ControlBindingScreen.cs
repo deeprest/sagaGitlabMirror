@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 
-public class ControlBindingScreen : MonoBehaviour
+public class ControlBindingScreen : UIScreen
 {
   [SerializeField] Transform parent;
   [SerializeField] GameObject template;
@@ -23,7 +23,7 @@ public class ControlBindingScreen : MonoBehaviour
     list.Add( cbi );
   }
 
-  void Start()
+  protected override void Start()
   {
     IEnumerator<InputAction> enumerator = Global.instance.Controls.GetEnumerator();
     while( enumerator.MoveNext() )
@@ -32,6 +32,9 @@ public class ControlBindingScreen : MonoBehaviour
           !Global.instance.Controls.GlobalActions.Get().Contains( enumerator.Current ) )
         CreateItem( enumerator.Current );
     }
+    initiallySelected = list[0].gameObject;
+    SelectedObject = list[0].gameObject;
+    EventSystem.current.SetSelectedGameObject( SelectedObject );
   }
 
   private void Update()
@@ -40,8 +43,6 @@ public class ControlBindingScreen : MonoBehaviour
     {
       item.txtAction.text = item.action.name;
       item.txtControl.text = Global.instance.ReplaceWithControlNames( "[" + item.action.name + "]" );
-      //item.txtControl.text = InputControlPath.ToHumanReadableString( item.control.path );
-      //item.txtControl.text = item.action.GetBindingDisplayString( InputBinding.DisplayStringOptions.DontUseShortDisplayNames );
     }
   }
 
@@ -51,7 +52,7 @@ public class ControlBindingScreen : MonoBehaviour
     cbi.button.interactable = false;
     InputActionRebindingExtensions.PerformInteractiveRebinding( cbi.action )
       //.OnCancel( OnCancel )
-      .OnComplete( (x)=> {
+      .OnComplete( ( x ) => {
         cbi.OnComplete( x );
         cbi.button.interactable = true;
         EventSystem.current.SetSelectedGameObject( cbi.button.gameObject );

@@ -95,8 +95,21 @@ level generation
 1. Atmosphere. Environment animations.
 
 
+# Influences
+- dash, walljump, charged shot. Mega Man X (1993)
+- cursor aiming any direction while running. Abuse (1990?)
+- open map / explore. Super Metroid (1994)
+- wall cling from Ninja Gaiden?; Contra? Metal Slug? Turrican?
 
-# Mega Man X Breakdown
+run
+jump (with air control)
+aim
+duck
+dash
+walljump
+wallslide
+
+## Mega Man X Breakdown
 demonstrate enemy abilities first in a safe, controlled environment
 Intro level teaches the basics:
 * run and jump. basic movement. implicit goal of progression
@@ -107,26 +120,43 @@ Intro level teaches the basics:
 * rewards, minibosses
 * enemy sweet spots
 * arrange for wallslide to teach walljump out of pit
-* Vile: cannot win, saved by zero (demos charge shot and dash)
+* Vile: you cannot win, saved by zero (demos charge shot and dash)
 * Theme: grow stronger / self improvement
+
+## Super Metroid
+- ducking
+- diagonal aiming
+- zoom camera
+- rotating camera
+- rotating sprites
+- subpixel idle anim (breathing)
+- 3-frame turn around anim
+- emissive lights on Samus
+
 
 
 # Ideas for new stuff
-Main Menu is an in-game diagetic menu. player can shoot the options.
+Main Menu is an in-game menu. player can shoot the options.
 start as spiderbot (maybe nothing pays you any attention when you are a spiderbot)
 find a host body
 
 
 boss battles. 'stage intro'; boss intro; chamber fight; death sequence; get weapon/post-death;
 explore generated city.
-abilities: graphook, shield, bullet-time
+abilities: graphook, shield, bullet-time, "jump good"(samurai jack), fly (propeller or jetpack), pickup objects and shoot them (grav gun)
 weapons: blaster, bouncygrenade, stickybomb, flame, laser
 
 - death -> spiderbot
 - spiderbot that can gain control of other machines.
 - creature that collects parts and builds onto itself
 - pick up parts from dead enemies
-- claw: ceiling claw climbing. dash with claw slash
+- claw: wall cling; wall climb; ceiling claw climbing; dash with claw slash
 - idea: generate an area by connecting random nodes that represent the player's movement- run(duration increments), jump parabola, dash-jump, wall-jump, wall-slide, graphook. AI ability to navigate/traverse environment to follow player/attack. First pathfind, then plot out movement using "movement-nodes".
 - city subway. fast travel or GTA2 style train
 - idea: z-doors/manifold-doors to other rooms that exist in the same space. keep all objects live, allow enemies to enter doors.
+
+
+# names
+Tom John Pettycash
+Jon Bon Don Juan
+Carl Michael McCarmichael

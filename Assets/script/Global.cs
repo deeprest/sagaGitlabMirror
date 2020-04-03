@@ -4,14 +4,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.EventSystems;
+//using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.AI;
-using UnityEngine.Playables;
 using LitJson;
 using Ionic.Zip;
 using deeprest;
@@ -124,12 +123,13 @@ public class Global : MonoBehaviour
   SceneScript sceneScript;
   public PlayerController CurrentPlayer;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
+  NavMeshSurface[] meshSurfaces;
 
   [Header( "UI" )]
   public GameObject UI;
   CanvasScaler CanvasScaler;
   public UIScreen PauseMenu;
-  public GameObject PauseMenuFirstSelected;
+  public GameObject SceneListElementTemplate;
   [SerializeField] GameObject HUD;
   DiageticUI ActiveDiagetic;
   bool MenuShowing { get { return PauseMenu.gameObject.activeInHierarchy; } }
@@ -137,6 +137,7 @@ public class Global : MonoBehaviour
   [SerializeField] Image fader;
   public GameObject ready;
   [SerializeField] GameObject OnboardingControls;
+  [SerializeField] UIScreen LastSelectedSettingsScreen;
   // cursor
   public float CursorOuter = 1;
   public Vector2 CursorWorldPosition { get { if( CurrentPlayer != null ) return CurrentPlayer.CursorWorldPosition; else return Vector3.zero; } }
@@ -231,7 +232,6 @@ public class Global : MonoBehaviour
     return true;
   }
 
-  NavMeshSurface[] meshSurfaces;
   void Awake()
   {
     if( instance != null )
@@ -313,21 +313,24 @@ public class Global : MonoBehaviour
       foreach( var mesh in meshSurfaces )
         mesh.BuildNavMesh();
       Destroy( generatedMeshCollider );
-    }
+      if( CurrentPlayer == null )
+          SpawnPlayer();
+      }
     else
     {
       //StartCoroutine( LoadSceneRoutine( "intro", false, false, true, false ) );
-      LoadScene( InitialSceneName, true, true, true, false, delegate {
+      LoadScene( InitialSceneName, true, true, true, false, delegate
+      {
         LoadScene( "home", true, true, true, false );
-	    });
+      } );
     }
 
     int i = 0;
     string scns = "";
     foreach( var scene in buildMetaData.scenes )
-      scns += name + "(" + i++ + ")\n";
+      scns += scene.name + " " + i++ + "\n";
     Debug.Log( scns );
-  } 
+  }
 
   void Start()
   {
@@ -342,6 +345,8 @@ public class Global : MonoBehaviour
   public string ReplaceWithControlNames( string source, bool colorize = true )
   {
     // todo support composites
+    //action.GetBindingDisplayString( InputBinding.DisplayStringOptions.DontUseShortDisplayNames );
+
     string outstr = "";
     string[] tokens = source.Split( new char[] { '[' } );
     foreach( var tok in tokens )
@@ -409,12 +414,7 @@ public class Global : MonoBehaviour
       else
         Pause();
     };
-    Controls.GlobalActions.DevSlowmo.performed += ( obj ) => {
-      if( Slowed )
-        NoSlow();
-      else
-        Slow();
-    };
+
     Controls.GlobalActions.Screenshot.performed += ( obj ) => Util.Screenshot();
 #if !UNITY_EDITOR
     Controls.GlobalActions.CursorLockToggle.performed += (obj) => {
@@ -439,10 +439,16 @@ public class Global : MonoBehaviour
 
     Controls.MenuActions.Back.performed += ( obj ) => {
       // todo back out to previous UI screen...
-
-      // ...or if there is none, close diagetic UI
-      if( ActiveDiagetic != null && !MenuShowing && CurrentPlayer != null )
-        CurrentPlayer.UnselectWorldSelection();
+      if( MenuShowing )
+      {
+        UIScreen.Back();
+      }
+      else
+      {
+        // ...or if there is none, close diagetic UI
+        if( ActiveDiagetic != null && CurrentPlayer != null )
+          CurrentPlayer.UnselectWorldSelection();
+      }
     };
 
     // DEVELOPMENT
@@ -452,6 +458,13 @@ public class Global : MonoBehaviour
 
     Controls.BipedActions.Minimap.performed += ( obj ) => {
       ToggleMinimap();
+    };
+
+    Controls.BipedActions.DevSlowmo.performed += ( obj ) => {
+      if( Slowed )
+        NoSlow();
+      else
+        Slow();
     };
 
     /*Controls.MenuActions.Move.performed += ( obj ) => {
@@ -669,7 +682,7 @@ public class Global : MonoBehaviour
   {
     // todo find more appropriate position based on some criteria
     GameObject go = null;
-    go = GameObject.FindGameObjectWithTag( "FirstSpawn" );
+    go = GameObject.FindGameObjectWithTag( "Respawn" );
     if( go != null )
       return go.transform.position;
     return Vector3.zero;
@@ -767,6 +780,8 @@ public class Global : MonoBehaviour
     //UnityEngine.Cursor.lockState = CursorLockMode.None;
     UnityEngine.Cursor.visible = true;
     EnableRaycaster( true );
+
+    //LastSelectedSettingsScreen.Select();
   }
 
   void HidePauseMenu()
@@ -821,7 +836,7 @@ public class Global : MonoBehaviour
     ActiveDiagetic = null;
     Controls.MenuActions.Disable();
     Controls.BipedActions.Enable();
-     AssignCameraZone( cachedCameraZone );
+    AssignCameraZone( cachedCameraZone );
     //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
     //Cursor.gameObject.SetActive( true );
   }
@@ -1092,8 +1107,7 @@ public class Global : MonoBehaviour
         BoolSetting.Add( s.boolValue.name, s.boolValue );
       }
     }
-    // "Apply Screen Settings" is first button
-    previousSelectable = PauseMenuFirstSelected.GetComponent<Selectable>();
+
     // screen settings are applied explicitly when user pushes button
     CreateBoolSetting( "Fullscreen", false, null );
     CreateFloatSetting( "ResolutionSlider", 4, 0, resolutions.Length - 1, 1.0f / (resolutions.Length - 1), delegate ( float value )
@@ -1130,19 +1144,27 @@ public class Global : MonoBehaviour
     CreateFloatSetting( "Zoom", 3, 1, 5, 0.05f, delegate ( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
     CreateFloatSetting( "PlayerSpeedFactor", 0.3f, 0, 1, 0.1f, delegate ( float value ) { if( CurrentPlayer != null ) CurrentPlayer.SpeedFactorNormalized = value; } );
+
+    foreach( var scene in buildMetaData.scenes )
+    {
+      GameObject go = Instantiate( SceneListElementTemplate, SceneListElementTemplate.transform.parent );
+      go.GetComponentInChildren<Text>().text = scene.name;
+      go.GetComponentInChildren<Button>().onClick.AddListener( () => LoadScene( scene.name ) );
+    }
   }
 
-  Selectable previousSelectable;
+  [SerializeField] Selectable previousNavSelectable;
+
   // explicit UI navigation
-  void NextNav( Selectable selectable )
+  public void NextNav( Selectable selectable )
   {
-    Navigation previousNav = previousSelectable.navigation;
+    Navigation previousNav = previousNavSelectable.navigation;
     previousNav.selectOnDown = selectable;
-    previousSelectable.navigation = previousNav;
+    previousNavSelectable.navigation = previousNav;
     Navigation thisNav = selectable.navigation;
-    thisNav.selectOnUp = previousSelectable;
+    thisNav.selectOnUp = previousNavSelectable;
     selectable.navigation = thisNav;
-    previousSelectable = selectable;
+    previousNavSelectable = selectable;
   }
 
   void CreateBoolSetting( string key, bool value, System.Action<bool> onChange )
@@ -1327,21 +1349,6 @@ public class Global : MonoBehaviour
 
   #endregion
 
-  static GameObject FindFirstEnabledSelectable( GameObject gameObject )
-  {
-    GameObject go = null;
-    var selectables = gameObject.GetComponentsInChildren<Selectable>( true );
-    foreach( var selectable in selectables )
-    {
-      if( selectable.IsActive() && selectable.IsInteractable() )
-      {
-        go = selectable.gameObject;
-        break;
-      }
-    }
-    return go;
-  }
-
   public void StopMusic()
   {
     musicSource0.Stop();
@@ -1352,28 +1359,28 @@ public class Global : MonoBehaviour
   {
     audioLoop.Play( musicSource0, musicSource1 );
   }
-  
- public void MusicTransition( AudioLoop loop )
- {
-   Timer t = new Timer();
-   t.Start( MusicTransitionDuration,
-   delegate ( Timer obj )
-   {
-     musicSource0.volume = 1 - obj.ProgressNormalized;
-     musicSource1.volume = 1 - obj.ProgressNormalized;
-   },
-   delegate
-   {
-     loop.Play( musicSource0, musicSource1 );
-     t.Start( MusicTransitionDuration,
-     delegate ( Timer obj )
-     {
-       musicSource0.volume = obj.ProgressNormalized;
-       musicSource1.volume = obj.ProgressNormalized;
-     }, null );
-   }
-   );
- }
+
+  public void MusicTransition( AudioLoop loop )
+  {
+    Timer t = new Timer();
+    t.Start( MusicTransitionDuration,
+    delegate ( Timer obj )
+    {
+      musicSource0.volume = 1 - obj.ProgressNormalized;
+      musicSource1.volume = 1 - obj.ProgressNormalized;
+    },
+    delegate
+    {
+      loop.Play( musicSource0, musicSource1 );
+      t.Start( MusicTransitionDuration,
+      delegate ( Timer obj )
+      {
+        musicSource0.volume = obj.ProgressNormalized;
+        musicSource1.volume = obj.ProgressNormalized;
+      }, null );
+    }
+    );
+  }
   /*
  public void CrossFadeToClip( AudioClip clip )
  {

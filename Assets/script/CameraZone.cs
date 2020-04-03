@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class CameraZone : MonoBehaviour
 {
-  
+  public static List<CameraZone> All = new List<CameraZone>();
+
   public int priority;
   [Tooltip("The camera will increase its size to view all colliders. Useful for rooms.")]
   public bool EncompassBounds;
@@ -15,7 +16,13 @@ public class CameraZone : MonoBehaviour
 
   private void Awake()
   {
+    All.Add( this );
     UpdateBounds();
+  }
+
+  private void OnDestroy()
+  {
+    All.Remove( this );
   }
 
   void UpdateBounds()
@@ -35,5 +42,22 @@ public class CameraZone : MonoBehaviour
         CameraBounds = (cld as BoxCollider2D).bounds;
       }
     }
+  }
+
+  public static bool DoesOverlapAnyZone( Vector2 point, ref CameraZone active )
+  {
+    for( int z = 0; z < All.Count; z++ )
+    {
+      for( int i = 0; i < All[z].colliders.Length; i++ )
+      {
+        if( All[z].colliders[i].OverlapPoint( point ) )
+        {
+          active = All[z];
+          return true;
+        }
+      }
+    }
+    active = null;
+    return false;
   }
 }

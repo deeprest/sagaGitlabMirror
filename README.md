@@ -10,7 +10,6 @@ A game prototype, currently in the form of a Mega Man X fangame.
 1. Replace teleportation with airdrop from chopper
 1. Arbitrary ground and wall angles
 1. Avoid button-mashing with hold-to-fire. This is to save wear-and-tear on game controller triggers, and mouse buttons.
-1. TBD Boss battles in chambers, or something more elaborate.
 
 ### todo
 * finish this readme

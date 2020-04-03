@@ -4,6 +4,12 @@ pP
 *Establish the design before working*
 
 ## todo
+- minimum shoot vector, otherwise shots have no velocity (gamepad)
+- control binding says "bad control index" for minimap (gamepad)
+- city highway music intro is bungled
+- light reflects too much on background layer 1 with buster
+- control name text for right stick says "RS"
+- door sprite layer should be behind characters
 ---
 wheelbots are buggy
 city camera bounds
@@ -29,7 +35,7 @@ hornet particles should not rotate, and should disappear
 - align shot with surface when aiming into floor/wall
 - minimap. Needs shader/coloring. Should follow player position, not camera
 - draw an aiming line
---
+---
 - weapon ideas: +bouncygrenade, +multishot, rockets, seeking missiles, +beam/laser, +stickybomb/magnet, invisible/cloaking
 - temporary powerups: speedboost, dash duration, ~slowtime, ~reflective shield, supercharge, extra projectiles
 - permanent mods: run speed, wall slide speed, dash duration, rapid shot

@@ -4,17 +4,30 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class UIScreen : MonoBehaviour
+public class UIScreen : Selectable
 {
   public static bool HasActiveScreen { get { return stack.Count > 0; } }
   static List<UIScreen> stack = new List<UIScreen>();
-  public GameObject InitiallySelected;
-  GameObject selectedObject;
+  // the object to select when this UIScreen is selected
+  public GameObject SelectedObject;
+  public GameObject initiallySelected = null;
+
+  protected override void Awake()
+  {
+    base.Awake();
+    initiallySelected = SelectedObject;
+  }
+
+  public static void Back()
+  {
+    if( stack.Count > 1 )
+      stack[stack.Count - 1].Unselect();
+  }
 
   public virtual void Highlight() { }
   public virtual void Unhighlight() { }
 
-  public virtual void Select()
+  public override void Select()
   {
     if( stack.Count > 0 )
       stack[stack.Count - 1].InteractableOff();
@@ -47,17 +60,23 @@ public class UIScreen : MonoBehaviour
     Selectable[] selectables = GetComponentsInChildren<Selectable>();
     foreach( var sel in selectables )
       sel.interactable = true;
-    EventSystem.current.SetSelectedGameObject( selectedObject );
+    EventSystem.current.SetSelectedGameObject( SelectedObject );
   }
 
   public virtual void InteractableOff()
   {
     // warning: get the currentSelectedGameObject before setting interactable to false!
-    selectedObject = EventSystem.current.currentSelectedGameObject;
-    if( selectedObject == null || !selectedObject.transform.IsChildOf( transform ) )
-      selectedObject = InitiallySelected;
+    SelectedObject = EventSystem.current.currentSelectedGameObject;
+    if( SelectedObject == null || !SelectedObject.transform.IsChildOf( transform ) )
+      SelectedObject = initiallySelected;
     Selectable[] selectables = GetComponentsInChildren<Selectable>();
     foreach( var sel in selectables )
       sel.interactable = false;
+  }
+
+  // useful to select child screens from UnityEvents
+  public void Select( UIScreen screen )
+  {
+    screen.Select();
   }
 }

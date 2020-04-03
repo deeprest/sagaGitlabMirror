@@ -52,14 +52,6 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
-                },
-                {
-                    "name": "Dev-Slowmo",
-                    "type": "Button",
-                    "id": "19775fcb-27a4-4c68-8f07-b3b6f0683f97",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -159,28 +151,6 @@
                     "processors": "",
                     "groups": "Default",
                     "action": "Any",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "cd969cd9-f853-4810-8bef-cb03c55fea89",
-                    "path": "<Keyboard>/o",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dev-Slowmo",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4c399a50-0b30-44bc-ae19-bbba94279e62",
-                    "path": "<Gamepad>/buttonNorth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dev-Slowmo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -517,6 +487,14 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Dev-Slowmo",
+                    "type": "Button",
+                    "id": "93b5b0c9-7afe-4d18-b241-3ac90ff8d493",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -814,6 +792,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Minimap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bbaa95e6-3d95-4f57-8795-bf87c2e7bec7",
+                    "path": "<Keyboard>/o",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dev-Slowmo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4c9237d4-6bdc-4d06-ae69-2521c8b6f323",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dev-Slowmo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
