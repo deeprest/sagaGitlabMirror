@@ -60,7 +60,7 @@ public class Weapon : ScriptableObject
   {
     if( weaponType == WeaponType.Projectile )
     {
-      Collider2D col = Physics2D.OverlapCircle( pos, projectile.circle.radius, LayerMask.GetMask( Global.ProjectileNoShootLayers ) );
+      Collider2D col = Physics2D.OverlapCircle( pos, projectile.circle.radius, Global.ProjectileNoShootLayers );
       if( col == null )
       {
         GameObject go = Instantiate( projectile.gameObject, pos, Quaternion.identity );

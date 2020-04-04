@@ -211,14 +211,20 @@ public class PlayerController : Character, IDamage
   public AudioClip grapShotSound;
   public AudioClip grapHitSound;
 
+  // cached for optimization
+  int HitLayers;
+  RaycastHit2D hitRight;
+  RaycastHit2D hitLeft;
 
-  void Awake()
+  protected override void Awake()
   {
+    base.Awake();
     BindControls();
   }
 
   void Start()
   {
+    HitLayers = Global.TriggerLayers | Global.CharacterDamageLayers;
     IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
     spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
     graphookTip.SetActive( false );
@@ -296,49 +302,13 @@ public class PlayerController : Character, IDamage
     }
   }
 
-  Component FindClosest( Vector3 position, Component[] cmps )
-  {
-    float distance = Mathf.Infinity;
-    Component closest = null;
-    foreach( var cmp in cmps )
-    {
-      float dist = Vector3.Distance( cmp.transform.position, position );
-      if( dist < distance )
-      {
-        closest = cmp;
-        distance = dist;
-      }
-    }
-    return closest;
-  }
-
-  Component FindSmallestAngle( Vector3 position, Vector3 direction, Component[] cmps )
-  {
-    float angle = Mathf.Infinity;
-    Component closest = null;
-    foreach( var cmp in cmps )
-    {
-      float dist = Vector3.Angle( cmp.transform.position - position, direction );
-      if( dist < angle )
-      {
-        closest = cmp;
-        angle = dist;
-      }
-    }
-    return closest;
-  }
-
   new void UpdateHit( float dT )
   {
     pups.Clear();
-
-    List<string> layers = new List<string>();
-    layers.AddRange( Global.TriggerLayers );
-    layers.AddRange( Global.CharacterDamageLayers );
-
-    hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, Mathf.Max( raylength, velocity.magnitude * dT ), LayerMask.GetMask( layers.ToArray() ) );
-    foreach( var hit in hits )
+    hitCount = Physics2D.BoxCastNonAlloc( transform.position, box.size, 0, velocity, RaycastHits, Mathf.Max( raylength, velocity.magnitude * dT ), HitLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
+      hit = RaycastHits[i];
       if( hit.transform.IsChildOf( transform ) )
         continue;
       ITrigger tri = hit.transform.GetComponent<ITrigger>();
@@ -361,9 +331,10 @@ public class PlayerController : Character, IDamage
     }
 
     pups.Clear();
-    hits = Physics2D.CircleCastAll( transform.position, selectRange, Vector3.zero, 0, LayerMask.GetMask( Global.WorldSelectableLayers ) );
-    foreach( var hit in hits )
+    hitCount = Physics2D.CircleCastNonAlloc( transform.position, selectRange, Vector3.zero, RaycastHits, 0, Global.WorldSelectableLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
+      hit = RaycastHits[i];
       IWorldSelectable pup = hit.transform.GetComponent<IWorldSelectable>();
       if( pup != null )
       {
@@ -376,7 +347,7 @@ public class PlayerController : Character, IDamage
       }
     }
     //WorldSelectable closest = (WorldSelectable)FindClosest( transform.position, pups.ToArray() );
-    IWorldSelectable closest = (IWorldSelectable)FindSmallestAngle( transform.position, shoot, pups.ToArray() );
+    IWorldSelectable closest = (IWorldSelectable)Util.FindSmallestAngle( transform.position, shoot, pups.ToArray() );
     if( closest == null )
     {
       if( closestISelect != null )
@@ -415,10 +386,9 @@ public class PlayerController : Character, IDamage
     collideLeft = false;
     collideTop = false;
     collideBottom = false;
+    adjust = transform.position;
 
-
-
-    Vector2 adjust = transform.position;
+    #region multisampleAttempt
     /*
     // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground bug by 'sampling' the ground at multiple points
     RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
@@ -454,11 +424,13 @@ public class PlayerController : Character, IDamage
       Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.grey );
 
     */
+    #endregion
 
     float down = jumping ? raydown - downOffset : raydown;
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( down, -velocity.y * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
-    foreach( var hit in hits )
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
+      hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y > corner )
@@ -474,9 +446,10 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust + Vector2.down * headboxy, headbox, 0, Vector2.up, Mathf.Max( raylength, velocity.y * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
-    foreach( var hit in hits )
+    hitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.down * headboxy, headbox, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
+      hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y < -corner )
@@ -487,9 +460,10 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( contactSeparation, -velocity.x * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
-    foreach( var hit in hits )
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.left, RaycastHits, Mathf.Max( contactSeparation, -velocity.x * dT ), Global.CharacterCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
+      hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x > corner )
@@ -502,9 +476,10 @@ public class PlayerController : Character, IDamage
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( contactSeparation, velocity.x * dT ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
-    foreach( var hit in hits )
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.right, RaycastHits, Mathf.Max( contactSeparation, velocity.x * dT ), Global.CharacterCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
+      hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x < -corner )
@@ -529,7 +504,7 @@ public class PlayerController : Character, IDamage
     if( weapon.HasInterval )
       shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector3 pos = arm.position + shoot.normalized * armRadius;
-    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
+    if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
       weapon.FireWeapon( this, pos, shoot );
   }
 
@@ -548,7 +523,7 @@ public class PlayerController : Character, IDamage
       {
         audio.PlayOneShot( weapon.soundChargeShot );
         Vector3 pos = arm.position + shoot.normalized * armRadius;
-        if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
+        if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
           weapon.ChargeVariant.FireWeapon( this, pos, shoot );
       }
     }
@@ -562,7 +537,7 @@ public class PlayerController : Character, IDamage
     if( grapPulling )
       StopGrap();
     Vector3 pos = arm.position + shoot.normalized * armRadius;
-    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
+    if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
     {
       RaycastHit2D hit = Physics2D.Raycast( pos, shoot, grapDistance, LayerMask.GetMask( new string[] { "Default", "triggerAndCollision", "enemy" } ) );
       if( hit )

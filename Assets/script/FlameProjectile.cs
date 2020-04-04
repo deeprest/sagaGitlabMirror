@@ -46,29 +46,33 @@ public class FlameProjectile : Projectile, IDamage
     if( AlignRotationToVelocity )
       transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( velocity.normalized.y, velocity.normalized.x ) ) );
 
-    RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius, velocity, raycastDistance, LayerMask.GetMask( Global.FlameProjectileCollideLayers ) );
-    if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator.transform )) && !ignore.Contains( hit.transform ) )
+    hitCount = Physics2D.CircleCastNonAlloc( transform.position, circle.radius, velocity, RaycastHits, raycastDistance, Global.FlameProjectileCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
-      IDamage dam = hit.transform.GetComponent<IDamage>();
-      if( dam != null )
+      hit = RaycastHits[i];
+      if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator.transform )) && !ignore.Contains( hit.transform ) )
       {
-        Damage dmg = Instantiate( ContactDamage );
-        dmg.damageSource = transform;
-        dmg.point = hit.point;
-        if( dam.TakeDamage( dmg ) )
+        IDamage dam = hit.transform.GetComponent<IDamage>();
+        if( dam != null )
         {
-          HitCount++;
-          if( HitCount >= DieAfterHitCount )
+          Damage dmg = Instantiate( ContactDamage );
+          dmg.damageSource = transform;
+          dmg.point = hit.point;
+          if( dam.TakeDamage( dmg ) )
           {
-            Hit( hit.point );
-            return;
+            HitCount++;
+            if( HitCount >= DieAfterHitCount )
+            {
+              Hit( hit.point );
+              return;
+            }
           }
         }
-      }
-      else
-      {
-        Hit( hit.point );
-        return;
+        else
+        {
+          Hit( hit.point );
+          return;
+        }
       }
     }
 

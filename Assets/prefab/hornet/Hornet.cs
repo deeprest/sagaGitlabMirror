@@ -93,7 +93,7 @@ public class Hornet : Character
           velocity += (MoveDirection.normalized * flySpeed - velocity) * acc * Time.deltaTime;
         }
         // guns
-        RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, player, LayerMask.GetMask( Global.DefaultProjectileCollideLayers ) );
+        RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, player, Global.DefaultProjectileCollideLayers );
         if( hit.transform != null && hit.transform.IsChildOf( Global.instance.CurrentPlayer.transform ) )
         {
           // drop wheels
@@ -126,7 +126,7 @@ public class Hornet : Character
   {
     shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector3 pos = shotOrigin.position;
-    if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
+    if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
       weapon.FireWeapon( this, pos, shoot );
   }
 }

@@ -37,9 +37,12 @@ public class Character : MonoBehaviour, IDamage
   protected bool collideLeft = false;
   protected bool collideTop = false;
   protected bool collideBottom = false;
-  protected RaycastHit2D[] hits;
-  protected RaycastHit2D hitRight;
-  protected RaycastHit2D hitLeft;
+  // cached for optimization - to avoid allocating every frame
+  protected RaycastHit2D[] RaycastHits;
+  protected RaycastHit2D hit;
+  protected int hitCount;
+  protected Vector2 adjust;
+  Vector2 boxOffset;
 
   [Header( "Pathing" )]
   public bool HasPath = false;
@@ -60,7 +63,7 @@ public class Character : MonoBehaviour, IDamage
   public bool SidestepAvoidance = false;
   float SidestepLast;
   Vector2 Sidestep;
-  RaycastHit2D[] RaycastHits;
+
 
   [Header( "Damage" )]
   public bool CanTakeDamage = true;
@@ -92,6 +95,12 @@ public class Character : MonoBehaviour, IDamage
   public virtual void PreSceneTransition() { }
   public virtual void PostSceneTransition() { }
 
+  protected virtual void Awake()
+  {
+    nvp = new NavMeshPath();
+    RaycastHits = new RaycastHit2D[8];
+  }
+
   protected void CharacterStart()
   {
     if( transform.parent != null )
@@ -103,9 +112,7 @@ public class Character : MonoBehaviour, IDamage
     UpdatePosition = BasicPosition;
     //if( animator != null )
     //animator.Play( "idle" );
-    nvp = new NavMeshPath();
     AgentTypeID = Global.instance.AgentType[AgentTypeName];
-    RaycastHits = new RaycastHit2D[4];
   }
 
   public void CharacterOnDestroy()
@@ -170,9 +177,10 @@ public class Character : MonoBehaviour, IDamage
   {
     if( ContactDamage == null )
       return;
-    hits = Physics2D.BoxCastAll( body.position, box.size, 0, velocity, raylength, LayerMask.GetMask( Global.CharacterDamageLayers ) );
-    foreach( var hit in hits )
+    hitCount = Physics2D.BoxCastNonAlloc( body.position, box.size, 0, velocity, RaycastHits, raylength, Global.CharacterDamageLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
+      hit = RaycastHits[i];
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
@@ -228,16 +236,15 @@ public class Character : MonoBehaviour, IDamage
     collideLeft = false;
     collideTop = false;
     collideBottom = false;
-
     const float corner = 0.707f;
+    boxOffset.x = box.offset.x * Mathf.Sign( transform.localScale.x );
+    boxOffset.y = box.offset.y;
+    adjust = (Vector2)transform.position + boxOffset;
 
-    Vector2 boxOffset = box.offset;
-    boxOffset.x *= Mathf.Sign( transform.localScale.x );
-    Vector2 adjust = (Vector2)transform.position + boxOffset;
-
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
-    foreach( var hit in hits )
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
+      hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y > corner )
@@ -251,9 +258,10 @@ public class Character : MonoBehaviour, IDamage
         break;
       }
     }
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.up, Mathf.Max( raylength, velocity.y * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
-    foreach( var hit in hits )
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
+      hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y < -corner )
@@ -263,29 +271,31 @@ public class Character : MonoBehaviour, IDamage
         break;
       }
     }
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.left, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
-    foreach( var hit in hits )
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.left, RaycastHits, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), Global.CharacterCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
+      hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x > corner )
       {
         collideLeft = true;
-        hitLeft = hit;
+        //hitLeft = hit;
         adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
         break;
       }
     }
 
-    hits = Physics2D.BoxCastAll( adjust, box.size, 0, Vector2.right, Mathf.Max( raylength, velocity.x * Time.deltaTime ), LayerMask.GetMask( Global.CharacterCollideLayers ) );
-    foreach( var hit in hits )
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.right, RaycastHits, Mathf.Max( raylength, velocity.x * Time.deltaTime ), Global.CharacterCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
+      hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x < -corner )
       {
         collideRight = true;
-        hitRight = hit;
+        //hitRight = hit;
         adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
         break;
       }
@@ -416,11 +426,10 @@ public class Character : MonoBehaviour, IDamage
           if( distanceToWaypoint > Global.instance.SidestepIgnoreWithinDistanceToGoal )
           {
             float raycastDistance = Mathf.Min( distanceToWaypoint, Global.instance.SidestepRaycastDistance );
-            int count = Physics2D.CircleCastNonAlloc( transform.position, 0.5f/*box.edgeRadius*/, MoveDirection.normalized, RaycastHits, raycastDistance, LayerMask.GetMask( Global.CharacterSidestepLayers ) );
+            int count = Physics2D.CircleCastNonAlloc( transform.position, 0.5f/*box.edgeRadius*/, MoveDirection.normalized, RaycastHits, raycastDistance, Global.CharacterSidestepLayers );
             for( int i = 0; i < count; i++ )
             {
-              RaycastHit2D hit = RaycastHits[i];
-              Character other = hit.transform.root.GetComponent<Character>();
+              Character other = RaycastHits[i].transform.root.GetComponent<Character>();
               if( other != null && other != this )
               {
                 Vector3 delta = other.transform.position - transform.position;

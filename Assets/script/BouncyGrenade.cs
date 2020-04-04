@@ -8,7 +8,7 @@ public class BouncyGrenade : Projectile, IDamage
   Timer timeoutTimer = new Timer();
   Timer pulseTimer = new Timer();
   [SerializeField] float pulseInterval = 0.2f;
-  [SerializeField] new UnityEngine.Experimental.Rendering.Universal.Light2D light;
+  [SerializeField] new Light2D light;
   [SerializeField] float radiusFudge;
 
   void Start()
@@ -37,20 +37,27 @@ public class BouncyGrenade : Projectile, IDamage
     Destroy( gameObject );
   }
 
+
+
   void FixedUpdate()
   {
-    RaycastHit2D hit = Physics2D.CircleCast( transform.position, circle.radius + radiusFudge, velocity, raycastDistance, LayerMask.GetMask( Global.BouncyGrenadeCollideLayers ) );
-    if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator.transform )) && !ignore.Contains( hit.transform ) )
+    hitCount = Physics2D.CircleCastNonAlloc( transform.position, circle.radius + radiusFudge, velocity, RaycastHits, raycastDistance, Global.BouncyGrenadeCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
-      IDamage dam = hit.transform.GetComponent<IDamage>();
-      if( dam != null )
+      hit = RaycastHits[i];
+      if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator.transform )) && !ignore.Contains( hit.transform ) )
       {
-        Damage dmg = Instantiate( ContactDamage );
-        dmg.instigator = instigator;
-        dmg.damageSource = transform;
-        dmg.point = hit.point;
-        if( dam.TakeDamage( dmg ) )
-          Boom();
+        IDamage dam = hit.transform.GetComponent<IDamage>();
+        if( dam != null )
+        {
+          Damage dmg = Instantiate( ContactDamage );
+          dmg.instigator = instigator;
+          dmg.damageSource = transform;
+          dmg.point = hit.point;
+          if( dam.TakeDamage( dmg ) )
+            Boom();
+          break;
+        }
       }
     }
   }

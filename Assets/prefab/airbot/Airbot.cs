@@ -45,7 +45,7 @@ public class Airbot : Character
           Transform target = null;
           // for debug
           //target = Global.instance.CurrentPlayer.transform;
-          RaycastHit2D hit = Physics2D.Linecast( sightOrigin.position, player, LayerMask.GetMask( Global.EnemySightLayers ) );
+          hit = Physics2D.Linecast( sightOrigin.position, player, Global.EnemySightLayers );
           if( hit.transform.root == Global.instance.CurrentPlayer.transform )
             target = hit.transform;
 
@@ -89,13 +89,15 @@ public class Airbot : Character
 
   void AirbotHit()
   {
-    hits = Physics2D.BoxCastAll( transform.position, box.size, 0, velocity, raylength, LayerMask.GetMask( Global.CharacterDamageLayers ) );
-    foreach( var hit in hits )
+    hitCount = Physics2D.BoxCastNonAlloc( transform.position, box.size, 0, velocity, RaycastHits, raylength, Global.CharacterDamageLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
+      hit = RaycastHits[i];
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
         Damage dmg = Instantiate( ContactDamage );
+        dmg.instigator = this;
         dmg.damageSource = transform;
         dmg.point = hit.point;
         if( dam.TakeDamage( dmg ) )

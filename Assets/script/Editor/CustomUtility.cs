@@ -188,9 +188,8 @@ public class CustomUtility : EditorWindow
         {
           if( EditorBuildSettings.scenes[i].enabled )
           {
-            string sceneName = Path.GetFileNameWithoutExtension( EditorBuildSettings.scenes[i].path );
-            buildInfo.scenes[i].name = sceneName;
-            buildnames.Add( sceneName );
+            buildInfo.scenes[i].name = Path.GetFileNameWithoutExtension( EditorBuildSettings.scenes[i].path );
+            buildnames.Add( EditorBuildSettings.scenes[i].path );
           }
         }
 

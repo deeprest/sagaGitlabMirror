@@ -37,7 +37,7 @@ public class Turret : Character
       if( delta.sqrMagnitude < sightRange * sightRange )
       {
         Transform target = null;
-        RaycastHit2D hit = Physics2D.Linecast( (Vector2)sightOrigin.position + delta.normalized * sightStartRadius, player, LayerMask.GetMask( Global.TurretSightLayers ) );
+        RaycastHit2D hit = Physics2D.Linecast( (Vector2)sightOrigin.position + delta.normalized * sightStartRadius, player, Global.TurretSightLayers );
         if( hit.transform.root == Global.instance.CurrentPlayer.transform )
           target = hit.transform;
         if( target == null )
@@ -73,7 +73,7 @@ public class Turret : Character
   {
     shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector3 pos = shotOrigin.position;
-    //if( !Physics2D.Linecast( transform.position, pos, LayerMask.GetMask( Global.ProjectileNoShootLayers ) ) )
+    //if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
     weapon.FireWeapon( this, pos, shoot );
   }
 }

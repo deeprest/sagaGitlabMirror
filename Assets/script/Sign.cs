@@ -14,7 +14,7 @@ public class Sign : MonoBehaviour
     initialText = message.text;
   }
 
-  void Update()
+  void Start()
   {
     message.text = Global.instance.ReplaceWithControlNames( initialText, Colorize );
   }

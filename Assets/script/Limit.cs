@@ -18,7 +18,7 @@ public class Limit<T> where T : MonoBehaviour
   {
     if( EnforceUpper && All.Count >= Upper )
     {
-      GameObject.Destroy( obj.gameObject );
+      Object.Destroy( obj.gameObject );
       return false;
     }
     else

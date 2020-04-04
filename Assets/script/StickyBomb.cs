@@ -39,7 +39,6 @@ public class StickyBomb : Projectile, IDamage
       transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( body.velocity.normalized.y, body.velocity.normalized.x ) ) );
   }
 
-  
   void Boom()
   {
     if( alreadyBoom )
@@ -48,7 +47,7 @@ public class StickyBomb : Projectile, IDamage
     // disable collider before explosion to avoid unnecessary OnCollisionEnter2D() calls
     GetComponent<Collider2D>().enabled = false;
     timeoutTimer.Stop( false );
-    Collider2D[] clds = Physics2D.OverlapCircleAll( transform.position, BoomRadius, LayerMask.GetMask( Global.StickyBombCollideLayers ) );
+    Collider2D[] clds = Physics2D.OverlapCircleAll( transform.position, BoomRadius, Global.StickyBombCollideLayers );
     for( int i = 0; i < clds.Length; i++ )
     {
       if( clds[i] != null )
@@ -75,7 +74,7 @@ public class StickyBomb : Projectile, IDamage
 
   void OnCollisionEnter2D( Collision2D hit )
   {
-    if( (LayerMask.GetMask( Global.StickyBombCollideLayers ) & (1 << hit.gameObject.layer)) > 0 )
+    if( (Global.StickyBombCollideLayers & (1 << hit.gameObject.layer)) > 0 )
       if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator.transform )) && !ignore.Contains( hit.transform ) )
       {
         // ignore projectiles from this instigator

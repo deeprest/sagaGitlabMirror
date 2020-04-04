@@ -17,4 +17,10 @@ public class Projectile : MonoBehaviour
   public Vector2 velocity;
 
   public List<Transform> ignore = new List<Transform>();
+
+  // cache
+  // changing the array size from 1 will change logic
+  public RaycastHit2D[] RaycastHits = new RaycastHit2D[1];
+  public int hitCount;
+  public RaycastHit2D hit;
 }

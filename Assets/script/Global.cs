@@ -84,22 +84,18 @@ public class Global : MonoBehaviour
     "events.json"*/
   };
 
-  public static int asdf;
-    
-  // note: allowing characters to collide introduces potential for "pinch points"
-  public static string[] CharacterCollideLayers = { "Default", "destructible", "triggerAndCollision" }; //, "character", "enemy" };
-  public static string[] CharacterSidestepLayers = { "character", "enemy" };
-  public static string[] CharacterDamageLayers = { "character" };
-  public static string[] TriggerLayers = { "trigger", "triggerAndCollision" };
-  public static string[] WorldSelectableLayers = { "worldselect" };
-  public static string[] ProjectileNoShootLayers = { "Default" };
-  public static string[] DefaultProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade", "flameProjectile" };
-  public static string[] FlameProjectileCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" };
-  // check first before spawning to avoid colliding with these layers on the first frame
-  public static string[] BouncyGrenadeCollideLayers = { "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" };
-  public static string[] StickyBombCollideLayers = { "Default", "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" };
-  public static string[] TurretSightLayers = { "Default", "character", "triggerAndCollision", "destructible" };
-  public static string[] EnemySightLayers = { "Default", "character", "triggerAndCollision", "destructible" };
+  public static int CharacterCollideLayers;
+  public static int CharacterSidestepLayers;
+  public static int CharacterDamageLayers;
+  public static int TriggerLayers;
+  public static int WorldSelectableLayers;
+  public static int ProjectileNoShootLayers;
+  public static int DefaultProjectileCollideLayers;
+  public static int FlameProjectileCollideLayers;
+  public static int BouncyGrenadeCollideLayers;
+  public static int StickyBombCollideLayers;
+  public static int TurretSightLayers;
+  public static int EnemySightLayers;
 
   [Header( "Settings" )]
   public GameObject ToggleTemplate;
@@ -245,10 +241,19 @@ public class Global : MonoBehaviour
     instance = this;
     DontDestroyOnLoad( gameObject );
 
-    asdf = LayerMask.GetMask( new string[] { "Default", "destructible", "triggerAndCollision" } );
-
-
-
+    // note: allowing characters to collide introduces potential for "pinch points"
+    CharacterCollideLayers = LayerMask.GetMask( new string[] { "Default", "destructible", "triggerAndCollision" } ); //, "character", "enemy" };
+    CharacterSidestepLayers = LayerMask.GetMask( new string[] { "character", "enemy" } );
+    CharacterDamageLayers = LayerMask.GetMask( new string[] { "character" } );
+    TriggerLayers = LayerMask.GetMask( new string[] { "trigger", "triggerAndCollision" } );
+    WorldSelectableLayers = LayerMask.GetMask( new string[] { "worldselect" } );
+    ProjectileNoShootLayers = LayerMask.GetMask( new string[] { "Default" } );
+    DefaultProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade", "flameProjectile" });
+    FlameProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" });
+    BouncyGrenadeCollideLayers = LayerMask.GetMask( new string[] { "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" });
+    StickyBombCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" });
+    TurretSightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" });
+    EnemySightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" });
 
     CanvasScaler = UI.GetComponent<CanvasScaler>();
     InitializeSettings();
@@ -257,11 +262,11 @@ public class Global : MonoBehaviour
     InitializeControls();
 
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
-    {
+      {
       //Debug.Log( "scene loaded: " + arg0.name );
     };
     SceneManager.activeSceneChanged += delegate ( Scene arg0, Scene arg1 )
-    {
+        {
       //Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
     };
     InputSystem.onDeviceChange +=
@@ -353,9 +358,10 @@ public class Global : MonoBehaviour
 
   public string ReplaceWithControlNames( string source, bool colorize = true )
   {
+    // todo make this less awful
     // todo support composites
     //action.GetBindingDisplayString( InputBinding.DisplayStringOptions.DontUseShortDisplayNames );
-
+    
     string outstr = "";
     string[] tokens = source.Split( new char[] { '[' } );
     foreach( var tok in tokens )
@@ -1063,7 +1069,7 @@ public class Global : MonoBehaviour
 
   void VerifyPersistentData()
   {
-    // ensure that all persistent data files exist. IF not, unpack from zip in build.
+    // Ensure that all persistent data files exist. If not, unpack them from the archive within the build.
     bool unpack = false;
     foreach( var filename in persistentFilenames )
       if( !File.Exists( Application.persistentDataPath + "/" + filename ) )

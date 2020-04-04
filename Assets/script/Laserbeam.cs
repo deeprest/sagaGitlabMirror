@@ -38,56 +38,55 @@ public class Laserbeam : Projectile//, IDamage
   void FixedUpdate()
   {
     transform.rotation = Quaternion.LookRotation( Vector3.forward, velocity );
+    float distance = raycastDistance;
     //transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( velocity.normalized.y, velocity.normalized.x ) ) );
-    RaycastHit2D hit = Physics2D.CircleCast( transform.position, beamRadius, velocity, raycastDistance, LayerMask.GetMask( Global.DefaultProjectileCollideLayers ) );
-    float distance = Vector2.Distance( hit.point, transform.position );
-    renderer.size = new Vector2( 0.2f, distance );
-    if( hit.transform != null && !ignore.Contains( hit.transform ) && !ignore.Contains( hit.transform ) )
+    hitCount = Physics2D.CircleCastNonAlloc( transform.position, beamRadius, velocity, RaycastHits, raycastDistance, Global.DefaultProjectileCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
     {
-      /*
-      float f = 0;
-      int i = 0;
-      for(; f <= distance; f+=1.0f, i++ )
+      hit = RaycastHits[i];
+      if( hit.transform != null && !ignore.Contains( hit.transform ) && !ignore.Contains( hit.transform ) )
       {
-        Light light = null;
-        if( lights.Count <= (int)i )
+        /*
+        float f = 0;
+        int i = 0;
+        for(; f <= distance; f+=1.0f, i++ )
         {
-          GameObject go = Instantiate( lightPrefab, transform.position, Quaternion.identity, transform );
-          light = go.GetComponent<Light>();
-          lights.Add( light );
-        }
-        light.transform.position = transform.position + (Vector3)velocity * f;
-      }
-      for( int asdf = i; asdf < lights.Count; asdf++ )
-      {
-        lights.RemoveAt( lights.Count - 1 );
-      }
-      */
-      if( instigator == null || !hit.transform.IsChildOf( instigator.transform ) )
-      {
-        IDamage dam = hit.transform.GetComponent<IDamage>();
-        if( dam != null )
-        {
-          Damage dmg = Instantiate( ContactDamage );
-          dmg.damageSource = transform;
-          dmg.point = hit.point;
-          if( dam.TakeDamage( dmg ) )
+          Light light = null;
+          if( lights.Count <= (int)i )
           {
+            GameObject go = Instantiate( lightPrefab, transform.position, Quaternion.identity, transform );
+            light = go.GetComponent<Light>();
+            lights.Add( light );
+          }
+          light.transform.position = transform.position + (Vector3)velocity * f;
+        }
+        for( int asdf = i; asdf < lights.Count; asdf++ )
+        {
+          lights.RemoveAt( lights.Count - 1 );
+        }
+        */
+        if( instigator == null || !hit.transform.IsChildOf( instigator.transform ) )
+        {
+          IDamage dam = hit.transform.GetComponent<IDamage>();
+          if( dam != null )
+          {
+            Damage dmg = Instantiate( ContactDamage );
+            dmg.damageSource = transform;
+            dmg.point = hit.point;
+            if( dam.TakeDamage( dmg ) )
+            {
+              Hit( hit.point );
+            }
+          }
+          else
+          {
+            distance = Mathf.Min( distance, Vector2.Distance( hit.point, transform.position ) );
             Hit( hit.point );
-            return;
           }
         }
-        else
-        {
-          Hit( hit.point );
-          return;
-        }
       }
     }
-    else
-    {
-
-    }
+    renderer.size = new Vector2( 0.2f, distance );
   }
 
   //public bool TakeDamage( Damage damage )

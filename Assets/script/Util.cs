@@ -328,6 +328,38 @@ public static class Util
     return go;
   }
 
+  public static Component FindClosest( Vector3 position, Component[] cmps )
+  {
+    float distance = Mathf.Infinity;
+    Component closest = null;
+    foreach( var cmp in cmps )
+    {
+      float dist = Vector3.Distance( cmp.transform.position, position );
+      if( dist < distance )
+      {
+        closest = cmp;
+        distance = dist;
+      }
+    }
+    return closest;
+  }
+
+  public static Component FindSmallestAngle( Vector3 position, Vector3 direction, Component[] cmps )
+  {
+    float angle = Mathf.Infinity;
+    Component closest = null;
+    foreach( var cmp in cmps )
+    {
+      float dist = Vector3.Angle( cmp.transform.position - position, direction );
+      if( dist < angle )
+      {
+        closest = cmp;
+        angle = dist;
+      }
+    }
+    return closest;
+  }
+
 #if UNITY_EDITOR
   public static string GetCurrentAssetDirectory()
   {

@@ -13,8 +13,8 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
   public Transform SpawnPointLocal;
   public Animation Animation;
   public AudioSource AudioSource;
-  public AudioClip CannonSound;
-  public ParticleSystem CannonPuff;
+  public AudioClip SpawnSound;
+  public ParticleSystem SpawnEffect;
 
   public float CannonSpeed = 10;
   //[Serialize] 
@@ -31,8 +31,8 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
 
   float lastTime = 0;
   int index = 0;
-  //System.Random randy;
 
+#if SERIALIZED
   [HideInInspector]
   [Serialize] public List<int> SpawnedCharactersID = new List<int>();
 
@@ -55,12 +55,9 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
         SpawnedCharacters.Add( so.gameObject );
     }
     SpawnedCharactersID.Clear();
-
-    //Team team = Global.instance.gameData.FindTeam( TeamName );
-    //if( team != null )
-    //Global.instance.AssignTeam( gameObject, team );
   }
-  
+#endif
+
   void OnEnable()
   {
     if( SpawnPrefab.Count == 0 )
@@ -100,7 +97,7 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
   {
     if( SpawnPrefab.Count == 0 )
       return;
-    ClearNull();
+    SpawnedCharacters.RemoveAll( x => x == null );
     if( SpawnedCharacters.Count < TargetQuota )
       SpawnThatThing();
   }
@@ -151,30 +148,20 @@ public class SpawnPoint : SerializedComponent //, IAction, ITeam
         Animation.Stop();
         Animation.Play();
       }
-      if( CannonPuff != null )
-        CannonPuff.Play();
-      if( AudioSource != null && CannonSound != null )
-        AudioSource.PlayOneShot( CannonSound );
+      if( SpawnEffect != null )
+        SpawnEffect.Play();
+      if( AudioSource != null && SpawnSound != null )
+        AudioSource.PlayOneShot( SpawnSound );
       //Rigidbody rb = go.GetComponent<Rigidbody>();
       //if( rb != null )
       //  rb.velocity = transform.forward * CannonSpeed;
 
       SpawnedCharacters.Add( go );
 
-      if( OnSpawn != null )
-        OnSpawn( go );
+      OnSpawn?.Invoke( go );
     }
   }
 
-  void ClearNull()
-  {
-    List<GameObject> destroy = SpawnedCharacters.FindAll( x => x == null );
-    foreach( var obj in destroy )
-    {
-      SpawnedCharacters.Remove( obj );
-      Destroy( obj );
-    }
-  }
 
   /*
   public void GetActionContext( ref ActionData actionData )

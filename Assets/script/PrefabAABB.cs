@@ -12,7 +12,6 @@ public class PrefabAABB : MonoBehaviour
   /// local space Axis Aligned Bounding Box
   /// </summary>
   public Bounds bounds;
-  Transform _transform;
 
   void OnDrawGizmos()
   {
@@ -26,19 +25,14 @@ public class PrefabAABB : MonoBehaviour
 
   public Bounds WorldBounds()
   {
-    if( _transform == null )
-      _transform = transform;
-
     Bounds b = bounds;
-    b.center += _transform.position;
-
+    b.center += transform.position;
     Vector3 size = b.size;
-    Vector3 tsize = _transform.lossyScale;
+    Vector3 tsize = transform.lossyScale;
     size.x *= tsize.x;
     size.y *= tsize.y;
     size.z *= tsize.z;
     b.size = size;
-
     return b;
   }
 
@@ -78,7 +72,8 @@ public class PrefabAABB : MonoBehaviour
 #if UNITY_EDITOR
   void Update()
   {
-    if( Application.isPlaying ) return;
+    if( Application.isPlaying )
+      return;
     RecalculateBounds();
   }
 #endif

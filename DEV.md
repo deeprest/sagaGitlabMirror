@@ -4,38 +4,51 @@ pP
 *Establish the design before resuming work*
 
 ## todo
+
+### Before Next Release
+- pause menu settings navigation
+- scene list
 - minimum shoot vector, otherwise shots have no velocity (gamepad)
 - control binding says "bad control index" for minimap (gamepad)
 - city highway music intro is bungled
-- light reflects too much on background layer 1 with buster
-- control name text for right stick says "RS"
-- door sprite layer should be behind characters
----
-wheelbots are buggy
-city camera bounds
-airbot attack speed
+
+### Menu / UI
+- buttons accept mouse clicks
+
+### Straight Up Bugs
+- wheelbots are buggy
+- city camera bounds
+- airbot attack, use attack speed until at last known target position
 - fix grap when using gamepad (double)
 - fix grap going through boxes
 - fix stickybomb going through vents
----
-minimap render static once. render only characters on second render texture
----
-janky:
-landing snaps
-adjust jump anim frame
-mushy on lift
-high offset off angled floor
-- fix long slide clipping
----
+
+### Minor Comsmetic
+- light reflects too much on background layer 1 with buster
+- door sprite layer should be behind characters
+- control name text for right stick says "RS"
+
+### Janky
+- landing snaps. possible anim frame adjustment will fix
+- adjust jump anim frame. it pops at the jump arc apex
+- high offset off angled floor
+- fix long slide clipping. collision should reduce velocity, not simply change position.
+- mushy on lift. consider the velocity of the object being collided-with.
+
+### Hornet
 hornet avoid friendlies
 hornet proximity raycast
 hornet particles should not rotate, and should disappear
----
+
+### Minimap
+- minimap. Needs shader/coloring. Should follow player position, not camera
+- minimap render static once. render only characters on second render texture
+
+
+### New Stuff
 - hide arm while not shooting
 - align shot with surface when aiming into floor/wall
-- minimap. Needs shader/coloring. Should follow player position, not camera
 - draw an aiming line
----
 - weapon ideas: +bouncygrenade, +multishot, rockets, seeking missiles, +beam/laser, +stickybomb/magnet, invisible/cloaking
 - temporary powerups: speedboost, dash duration, ~slowtime, ~reflective shield, supercharge, extra projectiles
 - permanent mods: run speed, wall slide speed, dash duration, rapid shot
@@ -62,6 +75,7 @@ hornet particles should not rotate, and should disappear
 - reproducible: charge particles on after transition. reset player state on level transition
 - avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
 ---
+### Unity Bugs
 - UNITY bug: cursor movement in last direction when shoot
 - UNITY bug: webgl audio loop
 
