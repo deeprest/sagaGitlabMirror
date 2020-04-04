@@ -1125,6 +1125,7 @@ public class Global : MonoBehaviour
 
     // screen settings are applied explicitly when user pushes button
     CreateBoolSetting( "Fullscreen", false, null );
+    CreateStringSetting( "Resolution", "1280x800", null );
     CreateFloatSetting( "ResolutionSlider", 4, 0, resolutions.Length - 1, 1.0f / (resolutions.Length - 1), delegate ( float value )
     {
       string Resolution = resolutions[Mathf.FloorToInt( Mathf.Clamp( value, 0, resolutions.Length - 1 ) )];
@@ -1133,7 +1134,6 @@ public class Global : MonoBehaviour
       ResolutionHeight = int.Parse( tokens[1].Trim() );
       StringSetting["Resolution"].Value = ResolutionWidth.ToString() + "x" + ResolutionHeight.ToString();
     } );
-    CreateStringSetting( "Resolution", "1280x800", null );
     CreateFloatSetting( "UIScale", 1, 0.1f, 4, 0.05f, null );
 
     CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 0.05f, delegate ( float value ) { mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) ); } );
