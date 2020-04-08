@@ -44,7 +44,7 @@ public class DiageticUI : WorldSelectable
     animator.Play( "idle" );
     instruction.text = Global.instance.ReplaceWithControlNames( activeInstruction );
     raycaster.enabled = true;
-    Global.instance.DiageticMenuOn( this );
+    Global.instance.DiegeticMenuOn( this );
     InteractableOn();
   }
 
@@ -53,7 +53,7 @@ public class DiageticUI : WorldSelectable
     animator.Play( "idle" );
     instruction.text = Global.instance.ReplaceWithControlNames( inactiveInstruction );
     raycaster.enabled = false;
-    Global.instance.DiageticMenuOff();
+    Global.instance.DiegeticMenuOff();
     InteractableOff();
   }
 

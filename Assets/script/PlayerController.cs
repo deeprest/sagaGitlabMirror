@@ -140,7 +140,7 @@ public class PlayerController : Character, IDamage
   public bool inputGraphook;
   //public bool inputShield;
   public bool inputFire;
-  Vector3 shoot;
+  Vector2 shoot;
 
   [Header( "State" )]
   [SerializeField] bool facingRight = true;
@@ -495,6 +495,11 @@ public class PlayerController : Character, IDamage
     transform.position = adjust;
   }
 
+  Vector2 GetShotOriginPosition()
+  {
+    return (Vector2)arm.position + shoot.normalized * armRadius;
+  }
+
   void Shoot()
   {
     if( !CanShoot || weapon == null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
@@ -503,7 +508,7 @@ public class PlayerController : Character, IDamage
       inputFire = false;
     if( weapon.HasInterval )
       shootRepeatTimer.Start( weapon.shootInterval, null, null );
-    Vector3 pos = arm.position + shoot.normalized * armRadius;
+    Vector2 pos = GetShotOriginPosition();
     if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
       weapon.FireWeapon( this, pos, shoot );
   }
@@ -522,7 +527,7 @@ public class PlayerController : Character, IDamage
       if( (Time.time - chargeStart) > chargeMin )
       {
         audio.PlayOneShot( weapon.soundChargeShot );
-        Vector3 pos = arm.position + shoot.normalized * armRadius;
+        Vector3 pos = GetShotOriginPosition();
         if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
           weapon.ChargeVariant.FireWeapon( this, pos, shoot );
       }
@@ -536,7 +541,7 @@ public class PlayerController : Character, IDamage
       return;
     if( grapPulling )
       StopGrap();
-    Vector3 pos = arm.position + shoot.normalized * armRadius;
+    Vector3 pos = GetShotOriginPosition();
     if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
     {
       RaycastHit2D hit = Physics2D.Raycast( pos, shoot, grapDistance, LayerMask.GetMask( new string[] { "Default", "triggerAndCollision", "enemy" } ) );
@@ -552,7 +557,7 @@ public class PlayerController : Character, IDamage
         graphookTip.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - transform.position) ) ); ;
         grapTimer.Start( grapTimeout, delegate
         {
-          pos = arm.position + shoot.normalized * armRadius;
+          pos = GetShotOriginPosition();
           graphookTip.transform.position = Vector3.MoveTowards( graphookTip.transform.position, graphitpos, grapSpeed * Time.deltaTime );
           //grap cable
           grapCableRender.gameObject.SetActive( true );
@@ -659,7 +664,8 @@ public class PlayerController : Character, IDamage
 
     // INPUTS
     shoot = AimPosition - (Vector2)arm.position;
-    shoot.z = 0;
+    if( shoot.sqrMagnitude < 0.0001f )
+      shoot = facingRight? Vector2.right : Vector2.left;
 
     // if player controlled
     if( Global.instance.Controls.BipedActions.MoveRight.ReadValue<float>() > 0.5f )
@@ -827,7 +833,7 @@ public class PlayerController : Character, IDamage
 
     if( grapPulling )
     {
-      Vector3 armpos = arm.position + shoot.normalized * armRadius;
+      Vector3 armpos = GetShotOriginPosition();
       grapCableRender.transform.position = armpos;
       grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - armpos) ) );
       grapSize = grapCableRender.size;

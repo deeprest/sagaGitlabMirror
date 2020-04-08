@@ -4,21 +4,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class UIScreen : Selectable
+public class UIScreen : MonoBehaviour
 {
   public static bool HasActiveScreen { get { return stack.Count > 0; } }
   static List<UIScreen> stack = new List<UIScreen>();
   // the object to select when this UIScreen is selected
-  public GameObject SelectedObject;
-  public GameObject initiallySelected = null;
+  GameObject SelectedObject;
+  public GameObject InitiallySelected;
 
-  protected override void Awake()
+  void Awake()
   {
-    base.Awake();
-    initiallySelected = SelectedObject;
+    if( InitiallySelected == null )
+      InitiallySelected = GetComponentInChildren<Selectable>().gameObject;
   }
-
-  public static void Back()
+  public void Back()
   {
     if( stack.Count > 1 )
       stack[stack.Count - 1].Unselect();
@@ -27,7 +26,7 @@ public class UIScreen : Selectable
   public virtual void Highlight() { }
   public virtual void Unhighlight() { }
 
-  public override void Select()
+  public void Select()
   {
     if( stack.Count > 0 )
       stack[stack.Count - 1].InteractableOff();
@@ -41,7 +40,7 @@ public class UIScreen : Selectable
     if( stack.Count > 0 )
     {
       UIScreen top = stack[stack.Count - 1];
-      while( stack.Count> 0 )
+      while( stack.Count > 0 )
       {
         if( top == this )
           break;
@@ -57,6 +56,8 @@ public class UIScreen : Selectable
 
   public virtual void InteractableOn()
   {
+    if( SelectedObject == null )
+      SelectedObject = InitiallySelected;
     Selectable[] selectables = GetComponentsInChildren<Selectable>();
     foreach( var sel in selectables )
       sel.interactable = true;
@@ -68,15 +69,10 @@ public class UIScreen : Selectable
     // warning: get the currentSelectedGameObject before setting interactable to false!
     SelectedObject = EventSystem.current.currentSelectedGameObject;
     if( SelectedObject == null || !SelectedObject.transform.IsChildOf( transform ) )
-      SelectedObject = initiallySelected;
+      SelectedObject = InitiallySelected;
     Selectable[] selectables = GetComponentsInChildren<Selectable>();
     foreach( var sel in selectables )
       sel.interactable = false;
   }
 
-  // useful to select child screens from UnityEvents
-  public void Select( UIScreen screen )
-  {
-    screen.Select();
-  }
 }

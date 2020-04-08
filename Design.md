@@ -83,6 +83,7 @@ MegamanX can only shoot directly forward. The ability to shoot upwards in games 
 1. teleportation -> airdrop from chopper
 1. arbitrary ground and wall angles
 1. Avoid button-mashing with hold-to-fire (auto)
+1. hold dash instead of combo dash+jump to do better walljump
 
 ## Additions
 lighting, normal mapped sprites, emissive
@@ -95,13 +96,13 @@ level generation
 1. Camera. Screen shake. Camera smooth lerp.
 1. Atmosphere. Environment animations.
 
-
 # Influences
 - dash, walljump, charged shot. Mega Man X (1993)
 - cursor aiming any direction while running. Abuse (1990?)
 - open map / explore. Super Metroid (1994)
-- wall cling from Ninja Gaiden?; Contra? Metal Slug? Turrican?
-
+- wall cling from Ninja Gaiden?;
+- Contra powerups?
+- Metal Slug bosses?
 run
 jump (with air control)
 aim
@@ -111,8 +112,8 @@ walljump
 wallslide
 
 ## Mega Man X Breakdown
-demonstrate enemy abilities first in a safe, controlled environment
-Intro level teaches the basics:
+*demonstrate enemy abilities first in a safe, controlled environment*
+Intro level teaches everything you need to know:
 * run and jump. basic movement. implicit goal of progression
 * take damage. vulnerability
 * shoot. a way to overcome vulnerability
@@ -132,8 +133,6 @@ Intro level teaches the basics:
 - rotating sprites
 - subpixel idle anim (breathing)
 - 3-frame turn around anim
-- emissive lights on Samus
-
 
 
 # Ideas for new stuff
@@ -155,9 +154,3 @@ weapons: blaster, bouncygrenade, stickybomb, flame, laser
 - idea: generate an area by connecting random nodes that represent the player's movement- run(duration increments), jump parabola, dash-jump, wall-jump, wall-slide, graphook. AI ability to navigate/traverse environment to follow player/attack. First pathfind, then plot out movement using "movement-nodes".
 - city subway. fast travel or GTA2 style train
 - idea: z-doors/manifold-doors to other rooms that exist in the same space. keep all objects live, allow enemies to enter doors.
-
-
-# names
-Tom John Pettycash
-Jon Bon Don Juan
-Carl Michael McCarmichael

@@ -34,17 +34,13 @@ public class Mech : Character
   Timer shootRepeatTimer = new Timer();
   [SerializeField] Transform shotOrigin;
 
-  private void Awake()
-  {
-    Physics2D.IgnoreCollision( box, fist );
-    Physics2D.IgnoreCollision( box, torso );
-    Physics2D.IgnoreCollision( torso, fist );
-  }
-
   void Start()
   {
     CharacterStart();
     UpdateLogic = BossUpdate;
+    Physics2D.IgnoreCollision( box, fist );
+    Physics2D.IgnoreCollision( box, torso );
+    Physics2D.IgnoreCollision( torso, fist );
   }
 
   void BossUpdate()

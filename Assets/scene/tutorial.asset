@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc4cc2ec7b5054499954160435c647aa, type: 3}
-  m_Name: BuildMetaData
+  m_Script: {fileID: 11500000, guid: 535dc5672968b461dbb9143fae3b6fc5, type: 3}
+  m_Name: tutorial
   m_EditorClassIdentifier: 
-  scenes:
-  - name: home
-  - name: city-highway
-  - name: camera tests
-  - name: intro
-  - name: fall-test
+  scene:
+    sceneAsset: {fileID: 102900000, guid: 56e93a81d13cb4b16b412eddef1070e2, type: 3}
+    scenePath: Assets/scene/tutorial.unity

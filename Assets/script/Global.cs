@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.IO;
 //using System.Runtime.InteropServices;
 using UnityEngine;
-//using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.AI;
 using LitJson;
 using Ionic.Zip;
+// deeprest.SerializedObject
 using deeprest;
 
 #if UNITY_EDITOR
@@ -46,7 +47,6 @@ public class GlobalEditor : Editor
     } );
   }
 }
-
 #endif
 
 public class Global : MonoBehaviour
@@ -57,13 +57,13 @@ public class Global : MonoBehaviour
   public static bool IsQuiting = false;
 
   [Header( "Global Settings" )]
-  public BuildMetaData buildMetaData;
+  [SerializeField] SceneReference[] sceneRefs;
   public bool RandomSeedOnStart = false;
   [Tooltip( "Pretend this is a build we're running" )]
   public bool SimulatePlayer = false;
   public static float Gravity = 16;
   public const float MaxVelocity = 60;
-  [SerializeField] string InitialSceneName;
+  [SerializeField] SceneReference InitialScene;
   // screenshot timer
   public int screenshotInterval;
   public Timer ScreenshotTimer = new Timer();
@@ -100,6 +100,7 @@ public class Global : MonoBehaviour
   [Header( "Settings" )]
   public GameObject ToggleTemplate;
   public GameObject SliderTemplate;
+  public GameObject StringTemplate;
   string settingsPath { get { return Application.persistentDataPath + "/" + "settings.json"; } }
   public Dictionary<string, FloatValue> FloatSetting = new Dictionary<string, FloatValue>();
   public Dictionary<string, BoolValue> BoolSetting = new Dictionary<string, BoolValue>();
@@ -123,20 +124,21 @@ public class Global : MonoBehaviour
   public PlayerController CurrentPlayer;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
   NavMeshSurface[] meshSurfaces;
+  CameraZone cachedCameraZone;
 
   [Header( "UI" )]
   public GameObject UI;
   CanvasScaler CanvasScaler;
   public UIScreen PauseMenu;
+  [SerializeField] UIScreen SceneList;
   public GameObject SceneListElementTemplate;
   [SerializeField] GameObject HUD;
-  DiageticUI ActiveDiagetic;
+  DiageticUI ActiveDiegetic;
   bool MenuShowing { get { return PauseMenu.gameObject.activeInHierarchy; } }
   public GameObject LoadingScreen;
   [SerializeField] Image fader;
   public GameObject ready;
   [SerializeField] GameObject OnboardingControls;
-  [SerializeField] UIScreen LastSelectedSettingsScreen;
   // cursor
   public float CursorOuter = 1;
   public Vector2 CursorWorldPosition { get { if( CurrentPlayer != null ) return CurrentPlayer.CursorWorldPosition; else return Vector3.zero; } }
@@ -147,9 +149,11 @@ public class Global : MonoBehaviour
   public Image weaponIcon;
   // settings
   public GameObject SettingsParent;
+  [SerializeField] Selectable previousNavSelectable;
   public UIScreen ConfirmDialog;
 
   [Header( "Input" )]
+  [SerializeField] InputSystemUIInputModule UIInputModule;
   public Controls Controls;
   public bool UsingGamepad;
   public Color ControlNameColor = Color.red;
@@ -179,7 +183,10 @@ public class Global : MonoBehaviour
   [SerializeField] float spinnerMoveSpeed = 1;
   int spawnCycleIndex = 0;
 
-  public GameData gameData;
+  //public Layers layers;
+  //public List<System.Tuple<string, string>> objectReplacementList;
+  //public Dictionary<string, string> replacements = new Dictionary<string, string>();
+
   public Dictionary<string, GameObject> ResourceLookup = new Dictionary<string, GameObject>();
 
 #if DESTRUCTION_LIST
@@ -216,10 +223,18 @@ public class Global : MonoBehaviour
   [SerializeField] float mmScrollSpeed = 10;
   [SerializeField] float mmOrthoSize = 1;
 
-
+  // This will make sure there is always a GLOBAL object when playing a scene in the editor
   [RuntimeInitializeOnLoadMethod]
-  static void RunOnStart()
+  static void OnStart()
   {
+    for( int i = 0; i < SceneManager.sceneCount; i++ )
+    {
+      Scene scene = SceneManager.GetSceneAt( i );
+      if( scene.name == "GLOBAL" )
+        return;
+    }
+    Instantiate( Resources.Load<GameObject>( "GLOBAL" ) );
+
     Application.wantsToQuit += WantsToQuit;
   }
 
@@ -241,19 +256,24 @@ public class Global : MonoBehaviour
     instance = this;
     DontDestroyOnLoad( gameObject );
 
-    // note: allowing characters to collide introduces potential for "pinch points"
+    // serialized object replacements
+    //replacements.Clear();
+    //foreach( var r in objectReplacementList )
+    //  replacements.Add( r.Item1, r.Item2 );
+
+    // note: allowing characters to collide introduces risk of being forced into a corner
     CharacterCollideLayers = LayerMask.GetMask( new string[] { "Default", "destructible", "triggerAndCollision" } ); //, "character", "enemy" };
     CharacterSidestepLayers = LayerMask.GetMask( new string[] { "character", "enemy" } );
     CharacterDamageLayers = LayerMask.GetMask( new string[] { "character" } );
     TriggerLayers = LayerMask.GetMask( new string[] { "trigger", "triggerAndCollision" } );
     WorldSelectableLayers = LayerMask.GetMask( new string[] { "worldselect" } );
     ProjectileNoShootLayers = LayerMask.GetMask( new string[] { "Default" } );
-    DefaultProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade", "flameProjectile" });
-    FlameProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" });
-    BouncyGrenadeCollideLayers = LayerMask.GetMask( new string[] { "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" });
-    StickyBombCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" });
-    TurretSightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" });
-    EnemySightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" });
+    DefaultProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade", "flameProjectile" } );
+    FlameProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" } );
+    BouncyGrenadeCollideLayers = LayerMask.GetMask( new string[] { "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" } );
+    StickyBombCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" } );
+    TurretSightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" } );
+    EnemySightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" } );
 
     CanvasScaler = UI.GetComponent<CanvasScaler>();
     InitializeSettings();
@@ -263,12 +283,12 @@ public class Global : MonoBehaviour
 
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
       {
-      //Debug.Log( "scene loaded: " + arg0.name );
-    };
+        //Debug.Log( "scene loaded: " + arg0.name );
+      };
     SceneManager.activeSceneChanged += delegate ( Scene arg0, Scene arg1 )
         {
-      //Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
-    };
+          //Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
+        };
     InputSystem.onDeviceChange +=
     ( device, change ) => {
       switch( change )
@@ -332,18 +352,8 @@ public class Global : MonoBehaviour
     }
     else
     {
-      //StartCoroutine( LoadSceneRoutine( "intro", false, false, true, false ) );
-      LoadScene( InitialSceneName, true, true, true, false, delegate
-      {
-        LoadScene( "home", true, true, true, false );
-      } );
+      LoadScene( InitialScene, true, true, true, false, null );
     }
-
-    int i = 0;
-    string scns = "";
-    foreach( var scene in buildMetaData.scenes )
-      scns += scene.name + " " + i++ + "\n";
-    Debug.Log( scns );
   }
 
   void Start()
@@ -361,7 +371,7 @@ public class Global : MonoBehaviour
     // todo make this less awful
     // todo support composites
     //action.GetBindingDisplayString( InputBinding.DisplayStringOptions.DontUseShortDisplayNames );
-    
+
     string outstr = "";
     string[] tokens = source.Split( new char[] { '[' } );
     foreach( var tok in tokens )
@@ -378,7 +388,7 @@ public class Global : MonoBehaviour
         if( ia == null ) ia = Controls.GlobalActions.Get().FindAction( ugh[0] );
         if( ia == null ) return "ACTION NOT FOUND: " + ugh[0];
         if( ia.controls.Count <= inputTypeIndex )
-          return "BAD CONTROL INDEX";
+          return "(no binding)";
         InputControl ic = ia.controls[inputTypeIndex];
         string controlName = "BAD NAME";
         if( ic.shortDisplayName != null )
@@ -411,6 +421,7 @@ public class Global : MonoBehaviour
     ReplaceControlNames.Add( "LT", "Left Trigger" );
     ReplaceControlNames.Add( "RT", "Right Trigger" );
 
+    UIInputModule.enabled = false;
     Controls = new Controls();
     Controls.Enable();
     Controls.MenuActions.Disable();
@@ -431,14 +442,7 @@ public class Global : MonoBehaviour
     };
 
     Controls.GlobalActions.Screenshot.performed += ( obj ) => Util.Screenshot();
-#if !UNITY_EDITOR
-    Controls.GlobalActions.CursorLockToggle.performed += (obj) => {
-      if( UnityEngine.Cursor.lockState == CursorLockMode.Locked )
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
-      else
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-    };
-#endif
+
     Controls.GlobalActions.DEVRespawn.performed += ( obj ) => {
       Chopper chopper = FindObjectOfType<Chopper>();
       if( chopper != null )
@@ -453,15 +457,14 @@ public class Global : MonoBehaviour
     };
 
     Controls.MenuActions.Back.performed += ( obj ) => {
-      // todo back out to previous UI screen...
       if( MenuShowing )
       {
-        UIScreen.Back();
+        PauseMenu.Back();
       }
       else
       {
         // ...or if there is none, close diagetic UI
-        if( ActiveDiagetic != null && CurrentPlayer != null )
+        if( ActiveDiegetic != null && CurrentPlayer != null )
           CurrentPlayer.UnselectWorldSelection();
       }
     };
@@ -481,15 +484,11 @@ public class Global : MonoBehaviour
       else
         Slow();
     };
+  }
 
-    /*Controls.MenuActions.Move.performed += ( obj ) => {
-      if( Minimap.activeInHierarchy )
-      {
-        Vector2 move = obj.ReadValue<Vector2>();
-        Debug.Log( move.x + " " + move.y );
-
-      }
-    };*/
+  public void LoadScene( SceneReference scene, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true, System.Action onFail = null )
+  {
+    StartCoroutine( LoadSceneRoutine( scene.GetSceneName(), waitForFadeIn, spawnPlayer, fadeOut, showLoadingScreen, onFail ) );
   }
 
   public void LoadScene( string scene, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true, System.Action onFail = null )
@@ -671,8 +670,11 @@ public class Global : MonoBehaviour
 
   void OnApplicationFocus( bool hasFocus )
   {
-    UnityEngine.Cursor.lockState = hasFocus ? CursorLockMode.Locked : CursorLockMode.None;
-    UnityEngine.Cursor.visible = !hasFocus;
+    if( hasFocus )
+      Cursor.lockState = ActiveDiegetic || Paused ? CursorLockMode.None : CursorLockMode.Locked;
+    else
+      Cursor.lockState = CursorLockMode.None;
+    Cursor.visible = (Cursor.lockState == CursorLockMode.None);
   }
 
   void LateUpdate()
@@ -781,9 +783,9 @@ public class Global : MonoBehaviour
     Pause();
     mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value * 0.8f ) );
     mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value * 0.8f ) );
-    if( ActiveDiagetic != null )
+    if( ActiveDiegetic != null )
     {
-      ActiveDiagetic.InteractableOff();
+      ActiveDiegetic.InteractableOff();
     }
     else
     {
@@ -792,11 +794,10 @@ public class Global : MonoBehaviour
     }
     PauseMenu.Select();
     HUD.SetActive( false );
-    //UnityEngine.Cursor.lockState = CursorLockMode.None;
+    UnityEngine.Cursor.lockState = CursorLockMode.None;
     UnityEngine.Cursor.visible = true;
     EnableRaycaster( true );
-
-    //LastSelectedSettingsScreen.Select();
+    UIInputModule.enabled = true;
   }
 
   void HidePauseMenu()
@@ -808,17 +809,20 @@ public class Global : MonoBehaviour
     mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
     PauseMenu.Unselect();
     HUD.SetActive( true );
-    //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-    UnityEngine.Cursor.visible = false;
     EnableRaycaster( false );
-    if( ActiveDiagetic != null )
+    if( ActiveDiegetic != null )
     {
-      ActiveDiagetic.InteractableOn();
+      ActiveDiegetic.InteractableOn();
+      UnityEngine.Cursor.lockState = CursorLockMode.None;
+      UnityEngine.Cursor.visible = true;
     }
     else
     {
+      UIInputModule.enabled = false;
       Controls.BipedActions.Enable();
       Controls.MenuActions.Disable();
+      UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+      UnityEngine.Cursor.visible = false;
     }
 #if UNITY_WEBGL && !UNITY_EDITOR
       // cannot write settings on exit in webgl builds, so write them here
@@ -834,25 +838,28 @@ public class Global : MonoBehaviour
       ShowPauseMenu();
   }
 
-  CameraZone cachedCameraZone;
-  public void DiageticMenuOn( DiageticUI dui )
+  public void DiegeticMenuOn( DiageticUI dui )
   {
-    ActiveDiagetic = dui;
-    Controls.MenuActions.Enable();
+    ActiveDiegetic = dui;
     Controls.BipedActions.Disable();
+    Controls.MenuActions.Enable();
+    UIInputModule.enabled = true;
     cachedCameraZone = CameraController.ActiveCameraZone;
     AssignCameraZone( dui.CameraZone );
-    //UnityEngine.Cursor.lockState = CursorLockMode.None;
+    UnityEngine.Cursor.lockState = CursorLockMode.None;
+    Cursor.visible = true;
     //Cursor.gameObject.SetActive( false );
   }
 
-  public void DiageticMenuOff()
+  public void DiegeticMenuOff()
   {
-    ActiveDiagetic = null;
+    ActiveDiegetic = null;
     Controls.MenuActions.Disable();
     Controls.BipedActions.Enable();
+    UIInputModule.enabled = false;
     AssignCameraZone( cachedCameraZone );
-    //UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+    UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+    Cursor.visible = false;
     //Cursor.gameObject.SetActive( true );
   }
 
@@ -898,7 +905,6 @@ public class Global : MonoBehaviour
     LoadingScreen.SetActive( false );
   }
 
-
   IEnumerator ShowLoadingScreenRoutine( string message = "Loading.." )
   {
     // This is a coroutine simply to wait a single frame after activating the loading screen.
@@ -925,12 +931,11 @@ public class Global : MonoBehaviour
     {
       prefab = ResourceLookup[resourceName];
     }
-    else
-    if( gameData.replacements.ContainsKey( resourceName ) )
+    /*else if( replacements.ContainsKey( resourceName ) )
     {
-      if( ResourceLookup.ContainsKey( gameData.replacements[resourceName] ) )
-        prefab = ResourceLookup[gameData.replacements[resourceName]];
-    }
+      if( ResourceLookup.ContainsKey( replacements[resourceName] ) )
+        prefab = ResourceLookup[replacements[resourceName]];
+    }*/
     if( prefab != null )
       return Spawn( prefab, position, rotation, parent, limit, initialize );
     return null;
@@ -1126,7 +1131,7 @@ public class Global : MonoBehaviour
     // screen settings are applied explicitly when user pushes button
     CreateBoolSetting( "Fullscreen", false, null );
     CreateStringSetting( "Resolution", "1280x800", null );
-    CreateFloatSetting( "ResolutionSlider", 4, 0, resolutions.Length - 1, 1.0f / (resolutions.Length - 1), delegate ( float value )
+    CreateFloatSetting( "ResolutionSlider", 4, 0, resolutions.Length - 1, resolutions.Length - 1, delegate ( float value )
     {
       string Resolution = resolutions[Mathf.FloorToInt( Mathf.Clamp( value, 0, resolutions.Length - 1 ) )];
       string[] tokens = Resolution.Split( new char[] { 'x' } );
@@ -1134,11 +1139,11 @@ public class Global : MonoBehaviour
       ResolutionHeight = int.Parse( tokens[1].Trim() );
       StringSetting["Resolution"].Value = ResolutionWidth.ToString() + "x" + ResolutionHeight.ToString();
     } );
-    CreateFloatSetting( "UIScale", 1, 0.1f, 4, 0.05f, null );
+    CreateFloatSetting( "UIScale", 1, 0.1f, 4, 20, null );
 
-    CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 0.05f, delegate ( float value ) { mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) ); } );
-    CreateFloatSetting( "MusicVolume", 0.9f, 0, 1, 0.05f, delegate ( float value ) { mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) ); } );
-    CreateFloatSetting( "SFXVolume", 1, 0, 1, 0.05f, delegate ( float value )
+    CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 20, delegate ( float value ) { mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) ); } );
+    CreateFloatSetting( "MusicVolume", 0.9f, 0, 1, 20, delegate ( float value ) { mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) ); } );
+    CreateFloatSetting( "SFXVolume", 1, 0, 1, 20, delegate ( float value )
     {
       mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) );
       if( Updating )
@@ -1153,22 +1158,29 @@ public class Global : MonoBehaviour
     CreateBoolSetting( "AutoAim", false, delegate ( bool value ) { AutoAim = value; } );
 
 
-    CreateFloatSetting( "CursorOuter", 1, 0, 1, 0.05f, delegate ( float value ) { CursorOuter = value; } );
-    CreateFloatSetting( "CursorSensitivity", 0.01f, 0.01f, 0.1f, 0.1f, delegate ( float value ) { CursorSensitivity = value; } );
-    CreateFloatSetting( "CameraLerpAlpha", 10, 1, 10, 0.01f, delegate ( float value ) { CameraController.lerpAlpha = value; } );
-    CreateFloatSetting( "Zoom", 3, 1, 5, 0.05f, delegate ( float value ) { CameraController.orthoTarget = value; } );
-    //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 0.1f, delegate ( float value ) { deadZone = value; } );
-    CreateFloatSetting( "PlayerSpeedFactor", 0.3f, 0, 1, 0.1f, delegate ( float value ) { if( CurrentPlayer != null ) CurrentPlayer.SpeedFactorNormalized = value; } );
+    CreateFloatSetting( "CursorOuter", 1, 0, 1, 20, delegate ( float value ) { CursorOuter = value; } );
+    CreateFloatSetting( "CursorSensitivity", 0.01f, 0.01f, 0.1f, 10, delegate ( float value ) { CursorSensitivity = value; } );
+    CreateFloatSetting( "CameraLerpAlpha", 10, 1, 10, 100, delegate ( float value ) { CameraController.lerpAlpha = value; } );
+    CreateFloatSetting( "Zoom", 3, 1, 5, 20, delegate ( float value ) { CameraController.orthoTarget = value; } );
+    //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 10, delegate ( float value ) { deadZone = value; } );
+    CreateFloatSetting( "PlayerSpeedFactor", 0.3f, 0, 1, 10, delegate ( float value ) { if( CurrentPlayer != null ) CurrentPlayer.SpeedFactorNormalized = value; } );
 
-    foreach( var scene in buildMetaData.scenes )
+    foreach( var scene in sceneRefs )
     {
+      if( scene.GetSceneName() == "GLOBAL" )
+        continue;
       GameObject go = Instantiate( SceneListElementTemplate, SceneListElementTemplate.transform.parent );
-      go.GetComponentInChildren<Text>().text = scene.name;
-      go.GetComponentInChildren<Button>().onClick.AddListener( () => LoadScene( scene.name ) );
+      go.GetComponentInChildren<Text>().text = scene.GetSceneName();
+      go.GetComponentInChildren<Button>().onClick.AddListener( () => {
+        HidePauseMenu();
+        LoadScene( scene.GetSceneName() );
+      } );
+      if( SceneList.InitiallySelected == null )
+        SceneList.InitiallySelected = go;
     }
-  }
+    Destroy( SceneListElementTemplate );
 
-  [SerializeField] Selectable previousNavSelectable;
+  }
 
   // explicit UI navigation
   public void NextNav( Selectable selectable )
@@ -1200,7 +1212,7 @@ public class Global : MonoBehaviour
     NextNav( bv.toggle );
   }
 
-  void CreateFloatSetting( string key, float value, float min, float max, float normalizedStep, System.Action<float> onChange )
+  void CreateFloatSetting( string key, float value, float min, float max, int steps, System.Action<float> onChange )
   {
     FloatValue bv;
     if( !FloatSetting.TryGetValue( key, out bv ) )
@@ -1210,12 +1222,12 @@ public class Global : MonoBehaviour
       sss.isInteger = true;
       bv = sss.intValue;
       bv.name = key;
+      bv.minValue = min;
+      bv.maxValue = max;
+      bv.steps = steps;
       bv.Init();
       FloatSetting.Add( key, bv );
     }
-    //bv.slider.wholeNumbers = true;
-    bv.slider.minValue = min;
-    bv.slider.maxValue = max;
     bv.onValueChanged = onChange;
     bv.Value = value;
     NextNav( bv.slider );
@@ -1226,7 +1238,7 @@ public class Global : MonoBehaviour
     StringValue val;
     if( !StringSetting.TryGetValue( key, out val ) )
     {
-      GameObject go = Instantiate( SliderTemplate, SettingsParent.transform );
+      GameObject go = Instantiate( StringTemplate, SettingsParent.transform );
       SettingUI sss = go.GetComponent<SettingUI>();
       sss.isString = true;
       val = sss.stringValue;

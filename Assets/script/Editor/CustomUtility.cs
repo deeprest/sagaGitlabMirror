@@ -46,8 +46,6 @@ public class CustomUtility : EditorWindow
   bool buildLinux = false;
   bool buildWebGL = false;
   bool buildWindows = false;
-  // make data about the build available at runtime
-  public BuildMetaData buildInfo;
 
   string progressMessage = "";
   float progress = 0;
@@ -161,7 +159,6 @@ public class CustomUtility : EditorWindow
     foldBuild = EditorGUILayout.Foldout( foldBuild, "Build" );
     if( foldBuild )
     {
-      buildInfo = (BuildMetaData)EditorGUILayout.ObjectField( "BuildMetaData", buildInfo, typeof( BuildMetaData ), false );
       /*if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Run WebGL Build" ) )
       {
         string path = EditorUtility.OpenFolderPanel( "Select WebGL build folder", "", "" );
@@ -183,7 +180,9 @@ public class CustomUtility : EditorWindow
         if( BuildPipeline.isBuildingPlayer )
           return;
 
+        
         List<string> buildnames = new List<string>();
+        /*
         for( int i = 0; i < EditorBuildSettings.scenes.Length; i++ )
         {
           if( EditorBuildSettings.scenes[i].enabled )
@@ -192,6 +191,7 @@ public class CustomUtility : EditorWindow
             buildnames.Add( EditorBuildSettings.scenes[i].path );
           }
         }
+        */
 
         /*
         // Trying to get a scene build index from the build settings is hopeless.
@@ -265,6 +265,7 @@ public class CustomUtility : EditorWindow
           bpo.locationPathName = outDir += (developmentBuild ? "sagaDEV" : "Saga") + "." + Util.Timestamp() + ".extension";
           BuildPipeline.BuildPlayer( bpo );
           Debug.Log( bpo.locationPathName );
+          System.Diagnostics.Process.Start( "open", bpo.locationPathName );
         }
       }
     }

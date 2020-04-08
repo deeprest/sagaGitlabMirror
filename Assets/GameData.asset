@@ -12,26 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a1e83067229e45efa73d14859de12d4, type: 3}
   m_Name: GameData
   m_EditorClassIdentifier: 
-  objectReplacementList: []
-  CharacterPrefab: {fileID: 0}
-  LowPrioritySensorLayers:
-  - Deadbody
-  TopPrioritySensorLayers:
-  - Character
-  - Notable
-  - Interact
-  - Carry
-  - Weapon
-  InteractLayers:
-  - Interact
-  - Notable
-  - Character
-  - Carry
-  - Deadbody
-  IncludeLayers:
-  - Default
-  - CameraHide
-  - Character
-  - Carry
-  - Interact
-  - Notable
+  _CharacterCollideLayers: []
+  _CharacterSidestepLayers: []
+  _CharacterDamageLayers: []
+  _TriggerLayers: []
+  _WorldSelectableLayers: []
+  _ProjectileNoShootLayers: []
+  _DefaultProjectileCollideLayers: []
+  _FlameProjectileCollideLayers: []
+  _BouncyGrenadeCollideLayers: []
+  _StickyBombCollideLayers: []
+  _TurretSightLayers: []
+  _EnemySightLayers: []

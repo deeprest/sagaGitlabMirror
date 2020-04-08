@@ -33,7 +33,7 @@ public class Weapon : ScriptableObject
   public AudioClip soundChargeLoop;
   public AudioClip soundChargeShot;
 
-  public void FireWeapon( Character instigator, Vector3 pos, Vector3 shoot )
+  public void FireWeapon( Character instigator, Vector2 pos, Vector2 shoot )
   {
     if( projectileCount == 1 )
     {
@@ -56,7 +56,7 @@ public class Weapon : ScriptableObject
     }
   }
 
-  bool FireWeaponProjectile( Character instigator, Projectile projectile, Vector3 pos, Vector3 shoot, bool playSound = true )
+  bool FireWeaponProjectile( Character instigator, Projectile projectile, Vector2 pos, Vector2 shoot, bool playSound = true )
   {
     if( weaponType == WeaponType.Projectile )
     {

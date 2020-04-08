@@ -6,14 +6,15 @@ pP
 ## todo
 
 ### Before Next Release
-- pause menu settings navigation
-- scene list
-- minimum shoot vector, otherwise shots have no velocity (gamepad)
-- control binding says "bad control index" for minimap (gamepad)
 - city highway music intro is bungled
 
 ### Menu / UI
-- buttons accept mouse clicks
++ buttons accept mouse clicks
+- design a better menu, maybe
+
+### Input
+- better display names
+- bindings: read/write
 
 ### Straight Up Bugs
 - wheelbots are buggy
@@ -23,7 +24,8 @@ pP
 - fix grap going through boxes
 - fix stickybomb going through vents
 
-### Minor Comsmetic
+### Minor / Cosmetic
+- DrCain minimum speech threshold
 - light reflects too much on background layer 1 with buster
 - door sprite layer should be behind characters
 - control name text for right stick says "RS"
@@ -58,7 +60,6 @@ hornet particles should not rotate, and should disappear
 - AI: enemies should react to projectiles in proximity
 ---
 - 4 color buttons: change weapon, menu, interact, use item/powerup
-- bindings: read/write, layouts
 - horizontal door trigger / downward boxcast for triggers
 - use line renderer for laser. simplifies shield reflection code.
 - detect cmd-f fullscreen switch and update setting
