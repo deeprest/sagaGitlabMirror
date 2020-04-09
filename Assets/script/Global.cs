@@ -226,8 +226,10 @@ public class Global : MonoBehaviour
 
   // This will make sure there is always a GLOBAL object when playing a scene in the editor
   [RuntimeInitializeOnLoadMethod]
-  static void OnStart()
+  static void OnLoadMethod()
   {
+    Application.wantsToQuit += WantsToQuit;
+#if UNITY_EDITOR
     for( int i = 0; i < SceneManager.sceneCount; i++ )
     {
       Scene scene = SceneManager.GetSceneAt( i );
@@ -235,8 +237,7 @@ public class Global : MonoBehaviour
         return;
     }
     Instantiate( Resources.Load<GameObject>( "GLOBAL" ) );
-
-    Application.wantsToQuit += WantsToQuit;
+#endif
   }
 
   static bool WantsToQuit()

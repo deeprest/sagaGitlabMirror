@@ -41,7 +41,6 @@ public class CustomUtility : EditorWindow
     todo = File.ReadAllText( Application.dataPath + "/../todo" );
   }
 
-  bool developmentBuild;
   bool buildMacOS = true;
   bool buildLinux = false;
   bool buildWebGL = false;
@@ -168,7 +167,6 @@ public class CustomUtility : EditorWindow
           Util.Execute( new Util.Command { cmd = "exec /usr/local/bin/static", args = "", dir = path }, true );
         }
       }*/
-      developmentBuild = EditorGUILayout.ToggleLeft( "Development Build", developmentBuild );
       EditorGUILayout.BeginHorizontal();
       buildMacOS = EditorGUILayout.ToggleLeft( "MacOS", buildMacOS, GUILayout.MaxWidth( 60 ) );
       buildLinux = EditorGUILayout.ToggleLeft( "Linux", buildLinux, GUILayout.MaxWidth( 60 ) );
@@ -179,20 +177,6 @@ public class CustomUtility : EditorWindow
       {
         if( BuildPipeline.isBuildingPlayer )
           return;
-
-        
-        List<string> buildnames = new List<string>();
-        /*
-        for( int i = 0; i < EditorBuildSettings.scenes.Length; i++ )
-        {
-          if( EditorBuildSettings.scenes[i].enabled )
-          {
-            buildInfo.scenes[i].name = Path.GetFileNameWithoutExtension( EditorBuildSettings.scenes[i].path );
-            buildnames.Add( EditorBuildSettings.scenes[i].path );
-          }
-        }
-        */
-
         /*
         // Trying to get a scene build index from the build settings is hopeless.
         for( int i = 0; i < SceneManager.sceneCountInBuildSettings; i++ )
@@ -210,15 +194,15 @@ public class CustomUtility : EditorWindow
               buildInfo.scenes.Add( new BuildMetaData.SceneMeta { buildIndex = buildIndex, name = Path.GetFileNameWithoutExtension( scenepath ) } );
             }
           }
-          //string sceneName = path.Substring( 0, path.Length - 6 ).Substring( path.LastIndexOf( '/' ) + 1 );
         }*/
 
         BuildPlayerOptions bpo = new BuildPlayerOptions();
-        bpo.scenes = buildnames.ToArray();
-        if( developmentBuild )
-          bpo.options = BuildOptions.Development | BuildOptions.AutoRunPlayer;
-        else
-          bpo.options = BuildOptions.CompressWithLz4;
+        List<string> buildpaths = new List<string>();
+        for( int i = 0; i < EditorBuildSettings.scenes.Length; i++ )
+          if( EditorBuildSettings.scenes[i].enabled )
+            buildpaths.Add( EditorBuildSettings.scenes[i].path );
+        bpo.scenes = buildpaths.ToArray();
+        bpo.options = BuildOptions.CompressWithLz4;
 
         if( buildLinux )
         {
@@ -227,12 +211,12 @@ public class CustomUtility : EditorWindow
           string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/Linux";
           outDir += "/Saga." + Util.Timestamp();
           Directory.CreateDirectory( outDir );
-          bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + ".x86_64";
+          bpo.locationPathName = outDir + "/" + "Saga" + ".x86_64";
           BuildPipeline.BuildPlayer( bpo );
           Debug.Log( bpo.locationPathName );
           // copy to shared folder
           string shareDir = System.Environment.GetFolderPath( System.Environment.SpecialFolder.UserProfile ) + "/SHARE";
-          Util.DirectoryCopy( outDir, Path.Combine( shareDir, (developmentBuild ? "sagaDEV." : "Saga.") + Util.Timestamp() ) );
+          Util.DirectoryCopy( outDir, Path.Combine( shareDir, "Saga." + Util.Timestamp() ) );
         }
         if( buildWindows )
         {
@@ -241,7 +225,7 @@ public class CustomUtility : EditorWindow
           string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/Windows";
           outDir += "/Saga." + Util.Timestamp();
           Directory.CreateDirectory( outDir );
-          bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + ".exe";
+          bpo.locationPathName = outDir + "/" + "Saga" + ".exe";
           BuildReport report = BuildPipeline.BuildPlayer( bpo );
           Debug.Log( bpo.locationPathName );
         }
@@ -251,7 +235,7 @@ public class CustomUtility : EditorWindow
           bpo.target = BuildTarget.WebGL;
           string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/WebGL";
           Directory.CreateDirectory( outDir );
-          bpo.locationPathName = outDir + "/" + (developmentBuild ? "sagaDEV" : "Saga") + "." + Util.Timestamp();
+          bpo.locationPathName = outDir + "/" + "Saga" + "." + Util.Timestamp();
           BuildPipeline.BuildPlayer( bpo );
           Debug.Log( bpo.locationPathName );
         }
@@ -262,7 +246,7 @@ public class CustomUtility : EditorWindow
           string outDir = Directory.GetParent( Application.dataPath ).FullName + "/build/MacOS/";
           Directory.CreateDirectory( outDir );
           // the extension is replaced with ".app" by Unity
-          bpo.locationPathName = outDir += (developmentBuild ? "sagaDEV" : "Saga") + "." + Util.Timestamp() + ".extension";
+          bpo.locationPathName = outDir += "Saga" + "." + Util.Timestamp() + ".extension";
           BuildPipeline.BuildPlayer( bpo );
           Debug.Log( bpo.locationPathName );
           System.Diagnostics.Process.Start( "open", bpo.locationPathName );
