@@ -1,12 +1,10 @@
 pP
-# DONE
-
 *Establish the design before resuming work*
+
+### Before Next Release
 
 ## todo
 
-### Before Next Release
-- city highway music intro is bungled
 
 ### Menu / UI
 + buttons accept mouse clicks

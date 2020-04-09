@@ -71,6 +71,8 @@ public class SceneCity : SceneScript
     {
       Global.instance.Controls.BipedActions.Enable();
     } );
+
+    Global.instance.CameraController.orthoTarget = 3;
   }
 
 

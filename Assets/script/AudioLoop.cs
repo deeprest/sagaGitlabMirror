@@ -47,7 +47,7 @@ public class AudioLoop : ScriptableObject
     {
       introSource.Stop();
     }
-
+    
     if( loop != null )
     {
       loopSource.loop = true;

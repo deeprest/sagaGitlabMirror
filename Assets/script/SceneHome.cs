@@ -9,6 +9,8 @@ public class SceneHome : SceneScript
     // for return from other level
     if( Global.instance.CurrentPlayer != null )
       Global.instance.CurrentPlayer.transform.position = Global.instance.FindSpawnPosition();
+
+    Global.instance.CameraController.orthoTarget = 2;
   }
 
   #region Skins

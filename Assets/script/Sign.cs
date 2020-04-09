@@ -9,13 +9,20 @@ public class Sign : MonoBehaviour
   [SerializeField] bool Colorize = true;
   string initialText;
 
-  private void Awake()
+  private void OnDestroy()
   {
-    initialText = message.text;
+    Global.instance.OnGameControllerChanged -= UpdateText;
+  }
+
+  void UpdateText()
+  {
+     message.text = Global.instance.ReplaceWithControlNames( initialText, Colorize );
   }
 
   void Start()
   {
-    message.text = Global.instance.ReplaceWithControlNames( initialText, Colorize );
+    initialText = message.text;
+    Global.instance.OnGameControllerChanged += UpdateText;
+    UpdateText();
   }
 }

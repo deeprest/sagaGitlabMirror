@@ -156,6 +156,7 @@ public class Global : MonoBehaviour
   [SerializeField] InputSystemUIInputModule UIInputModule;
   public Controls Controls;
   public bool UsingGamepad;
+  public System.Action OnGameControllerChanged;
   public Color ControlNameColor = Color.red;
   Dictionary<string, string> ReplaceControlNames = new Dictionary<string, string>();
 
@@ -429,8 +430,10 @@ public class Global : MonoBehaviour
     Controls.GlobalActions.Any.performed += ( obj ) => {
       bool newvalue = obj.control.path.Contains( "Gamepad" );
       if( newvalue != UsingGamepad )
-        print( "UsingGamepad new value: " + newvalue.ToString() + " " + obj.control.path );
-      UsingGamepad = newvalue;
+      {
+        UsingGamepad = newvalue;
+        OnGameControllerChanged.Invoke();
+      }
     };
 
     Controls.GlobalActions.Menu.performed += ( obj ) => TogglePauseMenu();
