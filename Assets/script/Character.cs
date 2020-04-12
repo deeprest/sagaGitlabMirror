@@ -1,5 +1,4 @@
-﻿#define DEBUG_LINES
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -55,7 +54,9 @@ public class Character : MonoBehaviour, IDamage
   float PathEventTime;
   public List<Vector3>.Enumerator waypointEnu;
   public List<Vector3> waypoint = new List<Vector3>();
+#if UNITY_EDITOR
   public List<LineSegment> debugPath = new List<LineSegment>();
+#endif
   int AgentTypeID;
   public string AgentTypeName = "Small";
   public Vector2 MoveDirection;
@@ -378,7 +379,9 @@ public class Character : MonoBehaviour, IDamage
           // destination reached
           // clear the waypoints before calling the callback because it may set another path and you do not want them to accumulate
           waypoint.Clear();
+#if UNITY_EDITOR
           debugPath.Clear();
+#endif
           HasPath = false;
           DestinationPosition = transform.position;
           // do this to allow OnPathEnd to become null because the callback may set another path without a callback.
@@ -391,7 +394,7 @@ public class Character : MonoBehaviour, IDamage
         //velocity = MoveDirection.normalized * speed;
       }
 
-#if DEBUG_LINES
+#if UNITY_EDITOR
       // draw path
       if( debugPath.Count > 0 )
       {
@@ -443,7 +446,7 @@ public class Character : MonoBehaviour, IDamage
       MoveDirection += Sidestep;
     }
 
-#if DEBUG_LINES
+#if UNITY_EDITOR
     Debug.DrawLine( transform.position, (Vector2)transform.position + MoveDirection.normalized * 0.5f, Color.magenta );
     //Debug.DrawLine( transform.position, transform.position + FaceDirection.normalized, Color.red );
 #endif
@@ -453,7 +456,9 @@ public class Character : MonoBehaviour, IDamage
   {
     HasPath = false;
     waypoint.Clear();
+#if UNITY_EDITOR
     debugPath.Clear();
+#endif
     OnPathEnd = null;
     DestinationPosition = transform.position;
   }
@@ -464,14 +469,14 @@ public class Character : MonoBehaviour, IDamage
     OnPathEnd = onArrival;
 
     Vector3 EndPosition = TargetPosition;
-    NavMeshHit hit;
-    if( NavMesh.SamplePosition( TargetPosition, out hit, 1.0f, NavMesh.AllAreas ) )
-      EndPosition = hit.position;
+    NavMeshHit navhit;
+    if( NavMesh.SamplePosition( TargetPosition, out navhit, 1.0f, NavMesh.AllAreas ) )
+      EndPosition = navhit.position;
     DestinationPosition = EndPosition;
 
     Vector3 StartPosition = transform.position;
-    if( NavMesh.SamplePosition( StartPosition, out hit, 1.0f, NavMesh.AllAreas ) )
-      StartPosition = hit.position;
+    if( NavMesh.SamplePosition( StartPosition, out navhit, 1.0f, NavMesh.AllAreas ) )
+      StartPosition = navhit.position;
 
 
     NavMeshQueryFilter filter = new NavMeshQueryFilter();
@@ -485,13 +490,17 @@ public class Character : MonoBehaviour, IDamage
         if( nvp.corners.Length > 0 )
         {
           Vector3 prev = StartPosition;
+#if UNITY_EDITOR
           debugPath.Clear();
+#endif
           foreach( var p in nvp.corners )
           {
             LineSegment seg = new LineSegment();
             seg.a = prev;
             seg.b = p;
+#if UNITY_EDITOR
             debugPath.Add( seg );
+#endif
             prev = p;
           }
           waypoint = new List<Vector3>( nvp.corners );

@@ -7,6 +7,7 @@ public class SceneIntro : SceneScript
 {
   bool introFlag = false;
   [SerializeField] Animator animator;
+  [SerializeField] SceneReference nextScene;
 
   public override void StartScene()
   {
@@ -31,6 +32,6 @@ public class SceneIntro : SceneScript
     if( introFlag )
       return;
     introFlag = true;
-    Global.instance.LoadScene( "home", false, true, true );
+    Global.instance.LoadScene( nextScene, false, true, true );
   }
 }

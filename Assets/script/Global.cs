@@ -145,6 +145,7 @@ public class Global : MonoBehaviour
   public float CursorSensitivity = 1;
   public bool AimSnap;
   public bool AutoAim;
+  public bool ShowAimPath;
   // status
   public Image weaponIcon;
   // settings
@@ -1160,7 +1161,7 @@ public class Global : MonoBehaviour
     CreateBoolSetting( "CursorInfluence", false, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
     CreateBoolSetting( "AimSnap", false, delegate ( bool value ) { AimSnap = value; } );
     CreateBoolSetting( "AutoAim", false, delegate ( bool value ) { AutoAim = value; } );
-
+    CreateBoolSetting( "ShowAimPath", false, delegate ( bool value ) { ShowAimPath = value; } );
 
     CreateFloatSetting( "CursorOuter", 1, 0, 1, 20, delegate ( float value ) { CursorOuter = value; } );
     CreateFloatSetting( "CursorSensitivity", 0.01f, 0.01f, 0.1f, 10, delegate ( float value ) { CursorSensitivity = value; } );

@@ -159,6 +159,26 @@ public class PlayerController : Character, IDamage
   Timer landTimer = new Timer();
   Timer walljumpTimer = new Timer();
 
+  [Header( "Cursor" )]
+  public GameObject InteractIndicator;
+  [SerializeField] Transform Cursor;
+  public Transform CursorSnapped;
+  public Transform CursorAutoAim;
+  Vector2 AimPosition;
+  public Vector2 CursorWorldPosition;
+  public float CursorScale = 2;
+  public float SnapAngleDivide = 8;
+  public float SnapCursorDistance = 1;
+  public float AutoAimCircleRadius = 1;
+  public float AutoAimDistance = 5;
+  public float DirectionalMinimum = 0.3f;
+  public float DirectionalCursorDistance = 3;
+  bool CanShoot { get { return true; } }// CursorAboveMinimumDistance; } }
+  Vector2 cursorDelta;
+  Vector2 cursorOrigin;
+  bool CursorAboveMinimumDistance;
+  [SerializeField] LineRenderer lineRenderer;
+
   [Header( "Weapon" )]
   public Weapon weapon;
   public int CurrentWeaponIndex;
@@ -234,6 +254,7 @@ public class PlayerController : Character, IDamage
     // unpack
     InteractIndicator.SetActive( false );
     InteractIndicator.transform.SetParent( null );
+    aimLine = new Vector3[2];
   }
 
   public override void PreSceneTransition()
@@ -286,6 +307,7 @@ public class PlayerController : Character, IDamage
     AssignWeapon( weapons[CurrentWeaponIndex] );
   }
 
+  // World Selection
   [SerializeField] float selectRange = 3;
   IWorldSelectable closestISelect;
   IWorldSelectable WorldSelection;
@@ -657,6 +679,8 @@ public class PlayerController : Character, IDamage
     inputGraphook = false;
   }
 
+  Vector3[] aimLine;
+
   void Update()
   {
     if( Global.Paused )
@@ -664,8 +688,9 @@ public class PlayerController : Character, IDamage
 
     // INPUTS
     shoot = AimPosition - (Vector2)arm.position;
+    // if no inputs override, then default to facing the aim direction
     if( shoot.sqrMagnitude < 0.0001f )
-      shoot = facingRight? Vector2.right : Vector2.left;
+      shoot = facingRight ? Vector2.right : Vector2.left;
 
     // if player controlled
     if( Global.instance.Controls.BipedActions.MoveRight.ReadValue<float>() > 0.5f )
@@ -903,7 +928,11 @@ public class PlayerController : Character, IDamage
       else if( landing )
         anim = "land";
       else
+      {
         anim = "idle";
+        // HACK when idling, always face aim direction
+        facingRight = shoot.x >= 0;
+      }
     }
     else if( !jumping )
       anim = "fall";
@@ -924,25 +953,6 @@ public class PlayerController : Character, IDamage
   }
 
 
-  [Header( "Cursor" )]
-  public GameObject InteractIndicator;
-  [SerializeField] Transform Cursor;
-  public Transform CursorSnapped;
-  public Transform CursorAutoAim;
-  Vector2 AimPosition;
-  public Vector2 CursorWorldPosition;
-  public float CursorScale = 2;
-  public float SnapAngleDivide = 8;
-  public float SnapCursorDistance = 1;
-  public float AutoAimCircleRadius = 1;
-  public float AutoAimDistance = 5;
-  public float DirectionalMinimum = 0.3f;
-  public float DirectionalCursorDistance = 3;
-
-  bool CanShoot { get { return true; } }// CursorAboveMinimumDistance; } }
-  Vector2 cursorDelta;
-  Vector2 cursorOrigin;
-  bool CursorAboveMinimumDistance;
 
   void LateUpdate()
   {
@@ -1035,6 +1045,18 @@ public class PlayerController : Character, IDamage
     }
 
     Cursor.position = CursorWorldPosition;
+
+    if( Global.instance.ShowAimPath && CursorAboveMinimumDistance )
+    {
+      lineRenderer.enabled = true;
+      Vector3[] trail = weapon.GetTrajectory( GetShotOriginPosition(), shoot );
+      lineRenderer.positionCount = trail.Length;
+      lineRenderer.SetPositions( trail );
+    }
+    else
+    {
+      lineRenderer.enabled = false;
+    }
   }
 
   void StartJump()
