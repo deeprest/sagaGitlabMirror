@@ -6,7 +6,7 @@ public struct TimerParams
 {
   public bool unscaledTime;
   public float duration;
-  
+
   public bool repeat;
   public int loops;
   public float interval;
@@ -15,6 +15,9 @@ public struct TimerParams
   public System.Action CompleteDelegate;
 }
 
+// TODO add a member Object host, check if host is null when updating and remove if so.
+// This would remove the need to manually Stop() when the host is destroyed and
+// avoid leaking unused Timers into ActiveTimers.
 public class Timer
 {
   // New timers are held until the next frame, so that adding timers within the callback
@@ -22,7 +25,6 @@ public class Timer
   public static List<Timer> NewTimers = new List<Timer>();
   public static List<Timer> ActiveTimers = new List<Timer>();
   public static List<Timer> RemoveTimers = new List<Timer>();
-
 
   public static void UpdateTimers()
   {
@@ -40,7 +42,6 @@ public class Timer
         RemoveTimers.Add( timer );
     }
   }
-
 
   public Timer()
   {
@@ -160,7 +161,7 @@ public class Timer
 
   public float ProgressSeconds { get { return time - StartTime; } }
 
-  public float ProgressNormalized{ get{ return Mathf.Clamp( (time - StartTime) / Duration, 0, 1 ); }}
+  public float ProgressNormalized { get { return Mathf.Clamp( (time - StartTime) / Duration, 0, 1 ); } }
 
   float time { get { return unscaledTime ? Time.unscaledTime : Time.time; } }
   bool active = false;

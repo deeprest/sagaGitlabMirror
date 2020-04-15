@@ -19,9 +19,9 @@ public class Turret : Character
   [SerializeField] float max = 90;
   public float maxShootAngle = 5;
 
-  void Start()
+  protected override void Start()
   {
-    CharacterStart();
+    base.Start();
     UpdateLogic = UpdateTurret;
     UpdatePosition = null;
     UpdateCollision = null;

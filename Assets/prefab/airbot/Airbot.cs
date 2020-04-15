@@ -20,16 +20,19 @@ public class Airbot : Character
   const float WanderRadius = 2;
   const float WanderInterval = 0.5f;
 
-  private void OnDestroy()
+  protected override void Start()
   {
-    hitPauseTimer.Stop( false );
-  }
-
-  void Start()
-  {
-    CharacterStart();
+    base.Start();
     UpdateLogic = UpdateAirbot;
     UpdateHit = AirbotHit;
+  }
+
+  protected override void OnDestroy()
+  {
+    if( Global.IsQuiting )
+      return;
+    base.OnDestroy();
+    hitPauseTimer.Stop( false );
   }
 
   void UpdateAirbot()
@@ -57,7 +60,7 @@ public class Airbot : Character
           else
           {
             animator.Play( "alert" );
-            SetPath( target.position + Vector3.up * targetOffset );
+            pathAgent.SetPath( target.position + Vector3.up * targetOffset );
             speed = AttackSpeed;
           }
         }
@@ -73,16 +76,16 @@ public class Airbot : Character
       animator.Play( "idle" );
       Wander();
     }
-    UpdatePath();
-    velocity = MoveDirection.normalized * speed;
+    pathAgent.UpdatePath();
+    velocity = pathAgent.MoveDirection.normalized * speed;
   }
 
   void Wander()
   {
     speed = WanderSpeed;
-    if( !wanderTimer.IsActive && !HasPath )
+    if( !wanderTimer.IsActive && !pathAgent.HasPath )
     {
-      SetPath( transform.position + (Vector3)(Random.insideUnitCircle * WanderRadius) );
+      pathAgent.SetPath( transform.position + (Vector3)(Random.insideUnitCircle * WanderRadius) );
       wanderTimer.Start( WanderInterval );
     }
   }
@@ -103,7 +106,7 @@ public class Airbot : Character
         if( dam.TakeDamage( dmg ) )
         {
           hitpause = true;
-          SetPath( new Vector3( hit.point.x, hit.point.y, 0 ) + Vector3.up * hitPauseOffset );
+          pathAgent.SetPath( new Vector3( hit.point.x, hit.point.y, 0 ) + Vector3.up * hitPauseOffset );
           animator.Play( "laugh" );
           hitPauseTimer.Start( 1, null, delegate
           {
@@ -115,10 +118,4 @@ public class Airbot : Character
     }
   }
 
-  protected override void Die()
-  {
-    if( hitPauseTimer != null )
-      hitPauseTimer.Stop( false );
-    base.Die();
-  }
 }

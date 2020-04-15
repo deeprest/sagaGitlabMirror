@@ -61,15 +61,8 @@ MonoBehaviour:
   friction: 0.5
   raylength: 0.01
   contactSeparation: 0.01
-  HasPath: 0
-  WaypointRadii: 0.1
-  DestinationRadius: 0.3
-  DestinationPosition: {x: 0, y: 0, z: 0}
-  waypoint: []
-  debugPath: []
+  EnablePathing: 1
   AgentTypeName: Small
-  MoveDirection: {x: 0, y: 0}
-  SidestepAvoidance: 1
   CanTakeDamage: 1
   health: 1
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}

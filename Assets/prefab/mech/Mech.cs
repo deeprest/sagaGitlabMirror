@@ -40,14 +40,26 @@ public class Mech : Character
   // ignore damage below this value
   [SerializeField] float DamageThreshold = 2;
 
-  void Start()
+  protected override void Start()
   {
-    CharacterStart();
+    base.Start();
     UpdateLogic = BossUpdate;
     UpdateHit = MechHit;
     Physics2D.IgnoreCollision( box, fist );
     Physics2D.IgnoreCollision( box, torso );
     Physics2D.IgnoreCollision( torso, fist );
+  }
+
+  protected override void OnDestroy()
+  {
+    if( Global.IsQuiting )
+      return;
+    base.OnDestroy();
+    jumpTimer.Stop( false );
+    jumpRepeat.Stop( false );
+    dashTimer.Stop( false );
+    dashCooldownTimer.Stop( false );
+    shootRepeatTimer.Stop( false );
   }
 
   void BossUpdate()

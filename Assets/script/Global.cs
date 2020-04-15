@@ -165,6 +165,8 @@ public class Global : MonoBehaviour
   [SerializeField] Text debugFPS;
   [SerializeField] Text debugText;
   [SerializeField] Text debugText2;
+  [SerializeField] Text debugText3;
+  [SerializeField] Text debugText4;
   // loading screen
   bool loadingScene;
   float prog = 0;
@@ -625,6 +627,8 @@ public class Global : MonoBehaviour
     frames++;
     Timer.UpdateTimers();
     debugText2.text = "Active Timers: " + Timer.ActiveTimers.Count;
+    debugText3.text = "Remove Timers: " + Timer.RemoveTimers.Count;
+    debugText4.text = "New Timers: " + Timer.NewTimers.Count;
 
     if( !Updating )
       return;

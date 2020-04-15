@@ -9,9 +9,9 @@ public class Wheelbot : Character, IDamage
   public float wheelVelocity = 1;
   float wheelTime = 0;
 
-  void Start()
+  protected override void Start()
   {
-    CharacterStart();
+    base.Start();
     //UpdateHit = null;
     //UpdateCollision = null;
     UpdateLogic = UpdateWheel;

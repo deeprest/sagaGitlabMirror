@@ -70,14 +70,9 @@ public class Liftbot : Character, IWorldSelectable
   public bool UseWaitDuration = true;
   public bool IsTriggeredByPlayer = false;
 
-  private void OnDestroy()
+  protected override void Start()
   {
-    timeout.Stop( false );
-  }
-
-  void Start()
-  {
-    CharacterStart();
+    base.Start();
     UpdateLogic = UpdateAirbot;
     UpdateHit = null;
     UpdateCollision = null;
@@ -85,6 +80,14 @@ public class Liftbot : Character, IWorldSelectable
     origin = transform.position;
     if( !IsTriggeredByPlayer )
       timeout.Start( waitDuration, null, NextWaypoint );
+  }
+
+  protected override void OnDestroy()
+  {
+    if( Global.IsQuiting )
+      return;
+    base.OnDestroy();
+    timeout.Stop( false );
   }
 
   protected float DistanceToWaypoint()
@@ -125,8 +128,7 @@ public class Liftbot : Character, IWorldSelectable
       }
       else
       {
-        MoveDirection = origin + path[pathIndex] - (Vector2)transform.position;
-        velocity = MoveDirection.normalized * flySpeed;
+        velocity = (origin + path[pathIndex] - (Vector2)transform.position).normalized * flySpeed;
       }
     }
     else

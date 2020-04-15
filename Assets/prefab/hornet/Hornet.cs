@@ -31,14 +31,17 @@ public class Hornet : Character
   Timer shootRepeatTimer = new Timer();
   [SerializeField] Transform shotOrigin;
 
-  void Start()
+  protected override void Start()
   {
-    CharacterStart();
+    base.Start();
     UpdateLogic = UpdateHornet;
   }
 
-  void OnDestroy()
+  protected override void OnDestroy()
   {
+    if( Global.IsQuiting )
+      return;
+    base.OnDestroy();
     explosionTimer.Stop( false );
   }
 
@@ -81,7 +84,7 @@ public class Hornet : Character
       //Debug.DrawLine( player, tpos, Color.white );
       // hover above surface
       Vector2 delta = tpos - pos;
-      SetPath( tpos );
+      pathAgent.SetPath( tpos );
       if( (player - pos).sqrMagnitude < sightRange * sightRange )
       {
         // seek player
@@ -89,8 +92,8 @@ public class Hornet : Character
           tvel = Vector2.zero;
         else
         {
-          UpdatePath();
-          velocity += (MoveDirection.normalized * flySpeed - velocity) * acc * Time.deltaTime;
+          pathAgent.UpdatePath();
+          velocity += (pathAgent.MoveDirection.normalized * flySpeed - velocity) * acc * Time.deltaTime;
         }
         // guns
         RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, player, Global.DefaultProjectileCollideLayers );

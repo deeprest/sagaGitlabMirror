@@ -242,7 +242,7 @@ public class PlayerController : Character, IDamage
     BindControls();
   }
 
-  void Start()
+  protected override void Start()
   {
     HitLayers = Global.TriggerLayers | Global.CharacterDamageLayers;
     IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
@@ -274,8 +274,11 @@ public class PlayerController : Character, IDamage
     InteractIndicator.transform.SetParent( null );
   }
 
-  void OnDestroy()
+  protected override void OnDestroy()
   {
+    if( Global.IsQuiting )
+      return;
+    base.OnDestroy();
     damageTimer.Stop( false );
     damagePulseTimer.Stop( false );
     shootRepeatTimer.Stop( false );

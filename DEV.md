@@ -1,6 +1,8 @@
 pP
 *Establish the design before resuming work*
 
+- Pawns and Controllers
+
 ### Janky
 - landing snaps. possible anim frame adjustment will fix
 - adjust jump anim frame. it pops at the jump arc apex

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class Character : MonoBehaviour, IDamage
 {
@@ -12,9 +13,11 @@ public class Character : MonoBehaviour, IDamage
 
   public List<Collider2D> IgnoreCollideObjects;
   public List<SpriteRenderer> spriteRenderers;
+  // when Characters are composite under same transform root
   Character parentCharacter;
 
   public bool UseGravity = true;
+  public bool IsStatic = false;
   public Vector2 velocity = Vector2.zero;
   public Vector2 Velocity
   {
@@ -27,62 +30,45 @@ public class Character : MonoBehaviour, IDamage
     }
   }
   public Vector2 pushVelocity = Vector2.zero;
+  protected Timer pushTimer = new Timer();
+  // basic support for moving platforms / stacking characters
   public Character carryCharacter;
   public float friction = 0.05f;
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
-
+  // collision flags
   protected bool collideRight = false;
   protected bool collideLeft = false;
   protected bool collideTop = false;
   protected bool collideBottom = false;
   // cached for optimization - to avoid allocating every frame
   protected RaycastHit2D[] RaycastHits;
+  // cached
   protected RaycastHit2D hit;
   protected int hitCount;
   protected Vector2 adjust;
   Vector2 boxOffset;
 
   [Header( "Pathing" )]
-  public bool HasPath = false;
-  public float WaypointRadii = 0.1f;
-  public float DestinationRadius = 0.3f;
-  public Vector3 DestinationPosition;
-  System.Action OnPathEnd;
-  System.Action OnPathCancel;
-  public NavMeshPath nvp;
-  float PathEventTime;
-  public List<Vector3>.Enumerator waypointEnu;
-  public List<Vector3> waypoint = new List<Vector3>();
-#if UNITY_EDITOR
-  public List<LineSegment> debugPath = new List<LineSegment>();
-#endif
-  int AgentTypeID;
+  public bool EnablePathing = false;
   public string AgentTypeName = "Small";
-  public Vector2 MoveDirection;
-  // sidestep
-  public bool SidestepAvoidance = false;
-  float SidestepLast;
-  Vector2 Sidestep;
-
 
   [Header( "Damage" )]
   public bool CanTakeDamage = true;
   public int health = 5;
   public GameObject explosion;
   public AudioClip soundHit;
-  public int spawnChance = 1;
   public GameObject spawnWhenDead;
-
+  public int spawnChance = 1;
   // FLASH
   Timer flashTimer = new Timer();
   public float flashInterval = 0.05f;
   public int flashCount = 5;
   bool flip = false;
   readonly float flashOn = 1f;
-
+  // deal this damage on collision
   public Damage ContactDamage;
-  protected Timer pushTimer = new Timer();
+  public UnityEvent EventDestroyed;
 
   // "collision" impedes this object's movement
   protected System.Action UpdateCollision;
@@ -98,60 +84,39 @@ public class Character : MonoBehaviour, IDamage
 
   protected virtual void Awake()
   {
-    nvp = new NavMeshPath();
     RaycastHits = new RaycastHit2D[8];
   }
 
-  protected void CharacterStart()
+  protected virtual void Start()
   {
     if( transform.parent != null )
       parentCharacter = transform.parent.GetComponent<Character>();
     IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
     spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
-    UpdateHit = BoxHit;
-    UpdateCollision = BoxCollision;
-    UpdatePosition = BasicPosition;
-    //if( animator != null )
-    //animator.Play( "idle" );
-    AgentTypeID = Global.instance.AgentType[AgentTypeName];
+    if( !IsStatic )
+    {
+      UpdateHit = BoxHit;
+      UpdateCollision = BoxCollision;
+      UpdatePosition = BasicPosition;
+    }
+    if( EnablePathing )
+    {
+      pathAgent = new PathAgent();
+      pathAgent.Client = this;
+      pathAgent.transform = transform;
+      pathAgent.AgentTypeID = Global.instance.AgentType[AgentTypeName];
+    }
   }
 
-  public void CharacterOnDestroy()
+  protected virtual void OnDestroy()
   {
+    if( Global.IsQuiting )
+      return;
     flashTimer.Stop( false );
     pushTimer.Stop( false );
     if( parentCharacter != null )
       parentCharacter.RemoveChild( this );
     parentCharacter = null;
-  }
-
-  void OnDestroy()
-  {
-    CharacterOnDestroy();
-  }
-
-  public void RemoveChild( Character child )
-  {
-    Collider2D[] clds = IgnoreCollideObjects.ToArray();
-    for( int i = 0; i < clds.Length; i++ )
-    {
-      if( clds[i].transform == child.transform )
-      {
-        IgnoreCollideObjects.Remove( clds[i] );
-        break;
-      }
-    }
-
-    SpriteRenderer[] srs = spriteRenderers.ToArray();
-    for( int i = 0; i < srs.Length; i++ )
-    {
-      if( srs[i].transform == child.transform )
-      {
-        spriteRenderers.Remove( srs[i] );
-        break;
-      }
-    }
-
   }
 
   void Update()
@@ -311,6 +276,7 @@ public class Character : MonoBehaviour, IDamage
     if( spawnWhenDead != null && Random.Range( 0, spawnChance ) == 0 )
       Instantiate( spawnWhenDead, transform.position, Quaternion.identity );
     Destroy( gameObject );
+    EventDestroyed?.Invoke();
   }
 
   public virtual bool TakeDamage( Damage d )
@@ -350,178 +316,244 @@ public class Character : MonoBehaviour, IDamage
     return true;
   }
 
-  #region Pathing
-  protected void UpdatePath()
+  // Composite characters
+  public void RemoveChild( Character child )
   {
-    if( HasPath )
+    Collider2D[] clds = IgnoreCollideObjects.ToArray();
+    for( int i = 0; i < clds.Length; i++ )
     {
-      if( waypoint.Count > 0 )
+      if( clds[i].transform == child.transform )
       {
-        if( Time.time - PathEventTime > Global.instance.RepathInterval )
-        {
-          PathEventTime = Time.time;
-          SetPath( DestinationPosition, OnPathEnd );
-        }
-        // follow path if waypoints exist
-        Vector3 waypointFlat = waypointEnu.Current;
-        waypointFlat.z = 0;
-        if( Vector3.SqrMagnitude( transform.position - waypointFlat ) > WaypointRadii * WaypointRadii )
-        {
-          MoveDirection = (Vector2)waypointEnu.Current - (Vector2)transform.position;
-        }
-        else
-        if( waypointEnu.MoveNext() )
-        {
-          MoveDirection = (Vector2)waypointEnu.Current - (Vector2)transform.position;
-        }
-        else
-        {
-          // destination reached
-          // clear the waypoints before calling the callback because it may set another path and you do not want them to accumulate
-          waypoint.Clear();
-#if UNITY_EDITOR
-          debugPath.Clear();
-#endif
-          HasPath = false;
-          DestinationPosition = transform.position;
-          // do this to allow OnPathEnd to become null because the callback may set another path without a callback.
-          System.Action temp = OnPathEnd;
-          OnPathEnd = null;
-          if( temp != null )
-            temp.Invoke();
-        }
-
-        //velocity = MoveDirection.normalized * speed;
+        IgnoreCollideObjects.Remove( clds[i] );
+        break;
       }
-
-#if UNITY_EDITOR
-      // draw path
-      if( debugPath.Count > 0 )
-      {
-        Color pathColor = Color.white;
-        if( nvp.status == NavMeshPathStatus.PathInvalid )
-          pathColor = Color.red;
-        if( nvp.status == NavMeshPathStatus.PathPartial )
-          pathColor = Color.gray;
-        foreach( var ls in debugPath )
-        {
-          Debug.DrawLine( ls.a, ls.b, pathColor );
-        }
-      }
-#endif
-
-    }
-    else
-    {
-      // no path
-      MoveDirection = Vector2.zero;
     }
 
-    if( Global.instance.GlobalSidestepping && SidestepAvoidance )
+    SpriteRenderer[] srs = spriteRenderers.ToArray();
+    for( int i = 0; i < srs.Length; i++ )
     {
-      if( Time.time - SidestepLast > Global.instance.SidestepInterval )
+      if( srs[i].transform == child.transform )
       {
-        Sidestep = Vector3.zero;
-        SidestepLast = Time.time;
-        if( MoveDirection.magnitude > 0.001f )
+        spriteRenderers.Remove( srs[i] );
+        break;
+      }
+    }
+  }
+
+  #region Pathing
+
+  public PathAgent pathAgent;
+
+  public class PathAgent
+  {
+    public Transform transform;
+    RaycastHit2D[] RaycastHits;
+    public Character Client;
+
+    public bool HasPath;
+    public float WaypointRadii = 0.1f;
+    public float DestinationRadius = 0.3f;
+    [SerializeField] Vector3 DestinationPosition;
+    System.Action OnPathEnd;
+    System.Action OnPathCancel;
+    NavMeshPath nvp;
+    float PathEventTime;
+    List<Vector3>.Enumerator waypointEnu;
+    List<Vector3> waypoint = new List<Vector3>();
+#if UNITY_EDITOR
+    public List<LineSegment> debugPath = new List<LineSegment>();
+#endif
+    public int AgentTypeID;
+    public Vector2 MoveDirection { get; set; }
+    // sidestep
+    public bool SidestepAvoidance;
+    float SidestepLast;
+    Vector2 Sidestep;
+
+    public PathAgent()
+    {
+      nvp = new NavMeshPath();
+    }
+
+    public void UpdatePath()
+    {
+      if( HasPath )
+      {
+        if( waypoint.Count > 0 )
         {
-          float distanceToWaypoint = Vector3.Distance( waypointEnu.Current, transform.position );
-          if( distanceToWaypoint > Global.instance.SidestepIgnoreWithinDistanceToGoal )
+          if( Time.time - PathEventTime > Global.instance.RepathInterval )
           {
-            float raycastDistance = Mathf.Min( distanceToWaypoint, Global.instance.SidestepRaycastDistance );
-            int count = Physics2D.CircleCastNonAlloc( transform.position, 0.5f/*box.edgeRadius*/, MoveDirection.normalized, RaycastHits, raycastDistance, Global.CharacterSidestepLayers );
-            for( int i = 0; i < count; i++ )
+            PathEventTime = Time.time;
+            SetPath( DestinationPosition, OnPathEnd );
+          }
+          // follow path if waypoints exist
+          Vector3 waypointFlat = waypointEnu.Current;
+          waypointFlat.z = 0;
+          if( Vector3.SqrMagnitude( transform.position - waypointFlat ) > WaypointRadii * WaypointRadii )
+          {
+            MoveDirection = (Vector2)waypointEnu.Current - (Vector2)transform.position;
+          }
+          else
+          if( waypointEnu.MoveNext() )
+          {
+            MoveDirection = (Vector2)waypointEnu.Current - (Vector2)transform.position;
+          }
+          else
+          {
+            // destination reached
+            // clear the waypoints before calling the callback because it may set another path and you do not want them to accumulate
+            waypoint.Clear();
+#if UNITY_EDITOR
+            debugPath.Clear();
+#endif
+            HasPath = false;
+            DestinationPosition = transform.position;
+            // do this to allow OnPathEnd to become null because the callback may set another path without a callback.
+            System.Action temp = OnPathEnd;
+            OnPathEnd = null;
+            if( temp != null )
+              temp.Invoke();
+          }
+
+          //velocity = MoveDirection.normalized * speed;
+        }
+
+#if UNITY_EDITOR
+        // draw path
+        if( debugPath.Count > 0 )
+        {
+          Color pathColor = Color.white;
+          if( nvp.status == NavMeshPathStatus.PathInvalid )
+            pathColor = Color.red;
+          if( nvp.status == NavMeshPathStatus.PathPartial )
+            pathColor = Color.gray;
+          foreach( var ls in debugPath )
+          {
+            Debug.DrawLine( ls.a, ls.b, pathColor );
+          }
+        }
+#endif
+
+      }
+      else
+      {
+        // no path
+        MoveDirection = Vector2.zero;
+      }
+
+      if( Global.instance.GlobalSidestepping && SidestepAvoidance )
+      {
+        if( Time.time - SidestepLast > Global.instance.SidestepInterval )
+        {
+          Sidestep = Vector3.zero;
+          SidestepLast = Time.time;
+          if( MoveDirection.magnitude > 0.001f )
+          {
+            float distanceToWaypoint = Vector3.Distance( waypointEnu.Current, transform.position );
+            if( distanceToWaypoint > Global.instance.SidestepIgnoreWithinDistanceToGoal )
             {
-              Character other = RaycastHits[i].transform.root.GetComponent<Character>();
-              if( other != null && other != this )
+              float raycastDistance = Mathf.Min( distanceToWaypoint, Global.instance.SidestepRaycastDistance );
+              int count = Physics2D.CircleCastNonAlloc( transform.position, 0.5f/*box.edgeRadius*/, MoveDirection.normalized, RaycastHits, raycastDistance, Global.CharacterSidestepLayers );
+              for( int i = 0; i < count; i++ )
               {
-                Vector3 delta = other.transform.position - transform.position;
-                Sidestep = ((transform.position + Vector3.Project( delta, MoveDirection.normalized )) - other.transform.position).normalized * Global.instance.SidestepDistance;
-                break;
+                Character other = RaycastHits[i].transform.root.GetComponent<Character>();
+                if( other != null && other != Client )
+                {
+                  Vector3 delta = other.transform.position - transform.position;
+                  Sidestep = ((transform.position + Vector3.Project( delta, MoveDirection.normalized )) - other.transform.position).normalized * Global.instance.SidestepDistance;
+                  break;
+                }
               }
             }
           }
         }
+        MoveDirection += Sidestep;
       }
-      MoveDirection += Sidestep;
+
+#if UNITY_EDITOR
+      Debug.DrawLine( transform.position, (Vector2)transform.position + MoveDirection.normalized * 0.5f, Color.magenta );
+      //Debug.DrawLine( transform.position, transform.position + FaceDirection.normalized, Color.red );
+#endif
     }
 
-#if UNITY_EDITOR
-    Debug.DrawLine( transform.position, (Vector2)transform.position + MoveDirection.normalized * 0.5f, Color.magenta );
-    //Debug.DrawLine( transform.position, transform.position + FaceDirection.normalized, Color.red );
-#endif
-  }
-
-  public void ClearPath()
-  {
-    HasPath = false;
-    waypoint.Clear();
-#if UNITY_EDITOR
-    debugPath.Clear();
-#endif
-    OnPathEnd = null;
-    DestinationPosition = transform.position;
-  }
-
-  public bool SetPath( Vector3 TargetPosition, System.Action onArrival = null )
-  {
-    // WARNING!! DO NOT set path from within Start(). The nav meshes are not guaranteed to exist during Start()
-    OnPathEnd = onArrival;
-
-    Vector3 EndPosition = TargetPosition;
-    NavMeshHit navhit;
-    if( NavMesh.SamplePosition( TargetPosition, out navhit, 1.0f, NavMesh.AllAreas ) )
-      EndPosition = navhit.position;
-    DestinationPosition = EndPosition;
-
-    Vector3 StartPosition = transform.position;
-    if( NavMesh.SamplePosition( StartPosition, out navhit, 1.0f, NavMesh.AllAreas ) )
-      StartPosition = navhit.position;
-
-
-    NavMeshQueryFilter filter = new NavMeshQueryFilter();
-    filter.agentTypeID = AgentTypeID;
-    filter.areaMask = NavMesh.AllAreas;
-    nvp.ClearCorners();
-    if( NavMesh.CalculatePath( StartPosition, EndPosition, filter, nvp ) )
+    public void ClearPath()
     {
-      if( nvp.status == NavMeshPathStatus.PathComplete || nvp.status == NavMeshPathStatus.PathPartial )
+      HasPath = false;
+      waypoint.Clear();
+#if UNITY_EDITOR
+      debugPath.Clear();
+#endif
+      OnPathEnd = null;
+      DestinationPosition = transform.position;
+    }
+
+    public bool SetPath( Vector3 TargetPosition, System.Action onArrival = null )
+    {
+      // WARNING!! DO NOT set path from within Start(). The nav meshes are not guaranteed to exist during Start()
+      OnPathEnd = onArrival;
+
+      Vector3 EndPosition = TargetPosition;
+      NavMeshHit navhit;
+      if( NavMesh.SamplePosition( TargetPosition, out navhit, 1.0f, NavMesh.AllAreas ) )
+        EndPosition = navhit.position;
+      DestinationPosition = EndPosition;
+
+      Vector3 StartPosition = transform.position;
+      if( NavMesh.SamplePosition( StartPosition, out navhit, 1.0f, NavMesh.AllAreas ) )
+        StartPosition = navhit.position;
+
+
+      NavMeshQueryFilter filter = new NavMeshQueryFilter();
+      filter.agentTypeID = AgentTypeID;
+      filter.areaMask = NavMesh.AllAreas;
+      nvp.ClearCorners();
+      if( NavMesh.CalculatePath( StartPosition, EndPosition, filter, nvp ) )
       {
-        if( nvp.corners.Length > 0 )
+        if( nvp.status == NavMeshPathStatus.PathComplete || nvp.status == NavMeshPathStatus.PathPartial )
         {
-          Vector3 prev = StartPosition;
-#if UNITY_EDITOR
-          debugPath.Clear();
-#endif
-          foreach( var p in nvp.corners )
+          if( nvp.corners.Length > 0 )
           {
-            LineSegment seg = new LineSegment();
-            seg.a = prev;
-            seg.b = p;
+            Vector3 prev = StartPosition;
 #if UNITY_EDITOR
-            debugPath.Add( seg );
+            debugPath.Clear();
 #endif
-            prev = p;
+            foreach( var p in nvp.corners )
+            {
+              LineSegment seg = new LineSegment();
+              seg.a = prev;
+              seg.b = p;
+#if UNITY_EDITOR
+              debugPath.Add( seg );
+#endif
+              prev = p;
+            }
+            waypoint = new List<Vector3>( nvp.corners );
+            waypointEnu = waypoint.GetEnumerator();
+            waypointEnu.MoveNext();
+            PathEventTime = Time.time;
+            HasPath = true;
+            return true;
           }
-          waypoint = new List<Vector3>( nvp.corners );
-          waypointEnu = waypoint.GetEnumerator();
-          waypointEnu.MoveNext();
-          PathEventTime = Time.time;
-          HasPath = true;
-          return true;
+          else
+          {
+            Debug.Log( "corners is zero path to: " + TargetPosition );
+          }
         }
         else
         {
-          Debug.Log( "corners is zero path to: " + TargetPosition );
+          Debug.Log( "invalid path to: " + TargetPosition );
         }
       }
-      else
-      {
-        Debug.Log( "invalid path to: " + TargetPosition );
-      }
+      return false;
     }
-    return false;
+
+
   }
   #endregion
 
+  // for EventDestroyed unity events
+  public void DestroyGameObject( GameObject go )
+  {
+    Destroy( go );
+  }
 }
