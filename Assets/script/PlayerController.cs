@@ -79,7 +79,7 @@ state
 
 */
 
-public class PlayerController : Character, IDamage
+public class PlayerController : Character
 {
   new public AudioSource audio;
   public AudioSource audio2;
@@ -254,7 +254,6 @@ public class PlayerController : Character, IDamage
     // unpack
     InteractIndicator.SetActive( false );
     InteractIndicator.transform.SetParent( null );
-    aimLine = new Vector3[2];
   }
 
   public override void PreSceneTransition()
@@ -348,6 +347,7 @@ public class PlayerController : Character, IDamage
         if( ContactDamage != null )
         {
           Damage dmg = Instantiate<Damage>( ContactDamage );
+          dmg.instigator = this;
           dmg.damageSource = transform;
           dmg.point = hit.point;
           dam.TakeDamage( dmg );
@@ -681,8 +681,6 @@ public class PlayerController : Character, IDamage
     inputChargeEnd = false;
     inputGraphook = false;
   }
-
-  Vector3[] aimLine;
 
   void Update()
   {
@@ -1183,7 +1181,8 @@ public class PlayerController : Character, IDamage
   {
     if( !CanTakeDamage || damagePassThrough )
       return false;
-
+    if( d.instigator != null && !IsEnemyTeam( d.instigator.Team ) )
+      return false;
     //StopCharge();
     audio.PlayOneShot( soundDamage );
     Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;

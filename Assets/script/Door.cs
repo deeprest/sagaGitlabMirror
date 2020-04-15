@@ -32,6 +32,8 @@ public class Door : MonoBehaviour, ITrigger
   [SerializeField] float doorRunDistance = 1;
   [SerializeField] float runDuration = 0.5f;
 
+  public Team[] OpenForTeams;
+
   void OnDestroy()
   {
     timer.Stop( false );
@@ -41,6 +43,22 @@ public class Door : MonoBehaviour, ITrigger
   {
     if( transitioning )
       return;
+
+    Character check = instigator.GetComponent<Character>();
+    if( check != null )
+    {
+      bool OpenForThisCharacter = false;
+      for( int i = 0; i < OpenForTeams.Length; i++ )
+      {
+        if( OpenForTeams[i] == check.Team )
+        {
+          OpenForThisCharacter = true;
+          break;
+        }
+      }
+      if( !OpenForThisCharacter )
+        return;
+    }
     this.instigator = instigator;
 
     // is player?
@@ -138,7 +156,7 @@ public class Door : MonoBehaviour, ITrigger
         }
       }
       // todo make door less awful
-        Global.instance.CurrentPlayer.DoorRun( right, openDuration, doorRunDistance );
+      Global.instance.CurrentPlayer.DoorRun( right, openDuration, doorRunDistance );
     },
     delegate
     {

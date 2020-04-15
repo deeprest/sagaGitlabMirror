@@ -56,6 +56,7 @@ public class FlameProjectile : Projectile, IDamage
         if( dam != null )
         {
           Damage dmg = Instantiate( ContactDamage );
+          dmg.instigator = instigator;
           dmg.damageSource = transform;
           dmg.point = hit.point;
           if( dam.TakeDamage( dmg ) )
@@ -85,4 +86,5 @@ public class FlameProjectile : Projectile, IDamage
     Hit( damage.point );
     return true;
   }
+
 }

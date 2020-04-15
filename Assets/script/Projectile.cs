@@ -23,4 +23,5 @@ public class Projectile : MonoBehaviour
   public RaycastHit2D[] RaycastHits = new RaycastHit2D[1];
   public int hitCount;
   public RaycastHit2D hit;
+
 }

@@ -123,6 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1523864c09bbb430980a5732b9e33683, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Team: 2
   body: {fileID: 88018454292964798}
   box: {fileID: 61147437956396782}
   renderer: {fileID: 212949075796312028}
@@ -130,30 +131,27 @@ MonoBehaviour:
   IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 1
+  IsStatic: 0
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 0.1
   raylength: 0.01
   contactSeparation: 0.01
-  HasPath: 0
-  WaypointRadii: 0.1
-  DestinationRadius: 0.3
-  DestinationPosition: {x: 0, y: 0, z: 0}
-  waypoint: []
-  debugPath: []
+  EnablePathing: 0
   AgentTypeName: Small
-  MoveDirection: {x: 0, y: 0}
-  SidestepAvoidance: 1
   CanTakeDamage: 1
   health: 3
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  spawnChance: 1
   spawnWhenDead: {fileID: 0}
+  spawnChance: 1
   flashInterval: 0.05
   flashCount: 1
   ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  EventDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
   rotator: {fileID: 110268027408849183}
   wheelAnimRate: -3
   wheelVelocity: -2

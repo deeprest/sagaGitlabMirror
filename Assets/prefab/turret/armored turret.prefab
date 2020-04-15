@@ -144,6 +144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ff685e897f414e28bdc49f953d2ec85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Team: 0
   body: {fileID: 8567394954713313842}
   box: {fileID: 6705073092710137863}
   renderer: {fileID: 5019517849631169233}
@@ -162,8 +163,8 @@ MonoBehaviour:
   AgentTypeName: Small
   CanTakeDamage: 1
   health: 3
-  explosion: {fileID: 0}
-  soundHit: {fileID: 0}
+  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
+  soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
   spawnWhenDead: {fileID: 0}
   spawnChance: 1
   flashInterval: 0.05
@@ -316,6 +317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ff685e897f414e28bdc49f953d2ec85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Team: 0
   body: {fileID: 3651108921476531572}
   box: {fileID: 2907536393938225309}
   renderer: {fileID: 1071619511481757887}
@@ -334,8 +336,8 @@ MonoBehaviour:
   AgentTypeName: Small
   CanTakeDamage: 1
   health: 3
-  explosion: {fileID: 0}
-  soundHit: {fileID: 0}
+  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
+  soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
   spawnWhenDead: {fileID: 0}
   spawnChance: 1
   flashInterval: 0.05
@@ -351,6 +353,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1208635628828000764, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
+        type: 3}
+      propertyPath: Team
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6898653218402988711, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -419,7 +426,7 @@ PrefabInstance:
     - target: {fileID: 7674903736374466933, guid: d53fb5c3630e94a43aa0fc05a1ad949d,
         type: 3}
       propertyPath: m_Name
-      value: armored turret
+      value: Armored Turret
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d53fb5c3630e94a43aa0fc05a1ad949d, type: 3}

@@ -122,7 +122,8 @@ level generation
 
 # Cycles
 - combat cycle. aware of enemy, visual contact, observe, attack, evade => death or success
-- death cycle. transformation. r2d2 brainslug
+- death cycle. transformation.
+r2d2 brainslug
 take over enemies?
 find scrap to build onto oneself?
 find an exit tube

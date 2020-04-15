@@ -71,6 +71,7 @@ public class Laserbeam : Projectile//, IDamage
           if( dam != null )
           {
             Damage dmg = Instantiate( ContactDamage );
+            dmg.instigator = instigator;
             dmg.damageSource = transform;
             dmg.point = hit.point;
             if( dam.TakeDamage( dmg ) )

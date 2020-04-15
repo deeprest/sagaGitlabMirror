@@ -38,13 +38,14 @@ public class Weapon : ScriptableObject
 
   Vector2 GetInitialVelocity( Projectile projectile, Vector2 shoot )
   {
-    Vector2 velocity;
+    /*Vector2 velocity;
     Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
     if( rb == null )
       velocity = shoot.normalized * (projectile.speed + speedIncrease);
     else
       velocity = shoot.normalized * Mathf.Min( shoot.magnitude / AimDistanceMax, 1 ) * (projectile.speed + speedIncrease);
-    return velocity;
+    return velocity;*/
+    return shoot.normalized * (projectile.speed + speedIncrease);
   }
 
   // for viewing the arc of physics projectiles

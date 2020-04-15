@@ -4,8 +4,17 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
+public enum Team
+{
+  None,
+  GoodGuys,
+  BadDudes,
+  Hostile
+}
+
 public class Character : MonoBehaviour, IDamage
 {
+  public Team Team;
   public Rigidbody2D body;
   public BoxCollider2D box;
   public new SpriteRenderer renderer;
@@ -141,19 +150,23 @@ public class Character : MonoBehaviour, IDamage
 
   protected void BoxHit()
   {
-    if( ContactDamage == null )
-      return;
-    hitCount = Physics2D.BoxCastNonAlloc( body.position, box.size, 0, velocity, RaycastHits, raylength, Global.CharacterDamageLayers );
-    for( int i = 0; i < hitCount; i++ )
+    if( ContactDamage != null )
     {
-      hit = RaycastHits[i];
-      IDamage dam = hit.transform.GetComponent<IDamage>();
-      if( dam != null )
+      hitCount = Physics2D.BoxCastNonAlloc( body.position, box.size, 0, velocity, RaycastHits, raylength, Global.CharacterDamageLayers );
+      for( int i = 0; i < hitCount; i++ )
       {
-        Damage dmg = Instantiate( ContactDamage );
-        dmg.damageSource = transform;
-        dmg.point = hit.point;
-        dam.TakeDamage( dmg );
+        hit = RaycastHits[i];
+
+        IDamage dam = hit.transform.GetComponent<IDamage>();
+        if( dam != null )
+        {
+          Damage dmg = Instantiate( ContactDamage );
+          dmg.instigator = this;
+          dmg.damageSource = transform;
+          dmg.point = hit.point;
+          dam.TakeDamage( dmg );
+        }
+
       }
     }
   }
@@ -283,6 +296,8 @@ public class Character : MonoBehaviour, IDamage
   {
     // dead characters will not absorb projectiles
     if( !CanTakeDamage || health <= 0 )
+      return false;
+    if( d.instigator != null && d.instigator.Team == Team )
       return false;
     health -= d.amount;
     if( health <= 0 )
@@ -555,5 +570,10 @@ public class Character : MonoBehaviour, IDamage
   public void DestroyGameObject( GameObject go )
   {
     Destroy( go );
+  }
+
+  public virtual bool IsEnemyTeam( Team other )
+  {
+    return Team != Team.None && other != Team.None && other != Team;
   }
 }

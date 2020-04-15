@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67e5d864805334a2195c67774fadae3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Team: 2
   body: {fileID: 9109282300699132467}
   box: {fileID: 61733048714469916}
   renderer: {fileID: 212979940915122146}
@@ -55,6 +56,7 @@ MonoBehaviour:
   IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 0
+  IsStatic: 0
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
@@ -67,11 +69,14 @@ MonoBehaviour:
   health: 1
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  spawnChance: 2
   spawnWhenDead: {fileID: 0}
+  spawnChance: 2
   flashInterval: 0.05
   flashCount: 1
   ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  EventDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
   sightOrigin: {fileID: 4739618571392748}
   sightRange: 6
   WanderSpeed: 1

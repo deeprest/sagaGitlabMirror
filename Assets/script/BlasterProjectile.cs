@@ -87,4 +87,5 @@ public class BlasterProjectile : Projectile, IDamage
     Hit( damage.point );
     return true;
   }
+
 }

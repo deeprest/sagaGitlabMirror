@@ -40,6 +40,12 @@ public class Mech : Character
   // ignore damage below this value
   [SerializeField] float DamageThreshold = 2;
 
+  // sight, target
+  Collider2D[] results = new Collider2D[8];
+  int LayerMaskCharacter;
+  [SerializeField] Character Target;
+  Timer SightPulseTimer = new Timer();
+
   protected override void Start()
   {
     base.Start();
@@ -48,6 +54,23 @@ public class Mech : Character
     Physics2D.IgnoreCollision( box, fist );
     Physics2D.IgnoreCollision( box, torso );
     Physics2D.IgnoreCollision( torso, fist );
+    LayerMaskCharacter = LayerMask.GetMask( new string[] { "character" } );
+    SightPulseTimer.Start( int.MaxValue, 3, ( x ) => {
+      // reaffirm target
+      Target = null;
+      int count = Physics2D.OverlapCircleNonAlloc( transform.position, sightRange, results, LayerMaskCharacter );
+      for( int i = 0; i < count; i++ )
+      {
+        Collider2D cld = results[i];
+        //Character character = results[i].transform.root.GetComponentInChildren<Character>();
+        Character character = results[i].GetComponent<Character>();
+        if( character != null && IsEnemyTeam( character.Team ) )
+        {
+          Target = character;
+          break;
+        }
+      }
+    }, null );
   }
 
   protected override void OnDestroy()
@@ -60,6 +83,7 @@ public class Mech : Character
     dashTimer.Stop( false );
     dashCooldownTimer.Stop( false );
     shootRepeatTimer.Stop( false );
+    SightPulseTimer.Stop( false );
   }
 
   void BossUpdate()
@@ -70,49 +94,55 @@ public class Mech : Character
     if( Global.instance.CurrentPlayer == null )
       return;
 
-    Vector3 targetpos = Global.instance.CurrentPlayer.transform.position;
-    Vector3 delta = targetpos - transform.position;
-
-    //  do not change directions while dashing
-    if( !dashTimer.IsActive )
-      facingRight = delta.x >= 0;
-
-    if( collideBottom && delta.sqrMagnitude < sightRange * sightRange )
+    if( Target == null )
     {
-      if( !dashTimer.IsActive && !jumpTimer.IsActive )
+      velocity.x = 0;
+      // todo wander or patrol
+    }
+    else
+    {
+      Vector3 targetpos = Target.transform.position;
+      Vector3 delta = targetpos - transform.position;
+
+      //  do not change directions while dashing
+      if( !dashTimer.IsActive )
+        facingRight = delta.x >= 0;
+
+      if( collideBottom && delta.sqrMagnitude < sightRange * sightRange )
       {
-        if( delta.y > 1f && delta.y < 5 && dashCooldownTimer.ProgressNormalized > 0.5f && !jumpRepeat.IsActive && !jumpTimer.IsActive && delta.sqrMagnitude < jumpRange * jumpRange )
+        if( !dashTimer.IsActive && !jumpTimer.IsActive )
         {
-          StartJump();
-        }
-        else if( !dashCooldownTimer.IsActive && delta.y > 0f && delta.y < 2 && Mathf.Abs( delta.x ) < withinpunchRange )
-        {
-          animator.Play( "punchdash" );
-          StartDash();
-        }
-        else if( Mathf.Abs( delta.x ) < small )
-        {
-          animator.Play( "idle" );
-          velocity.x = 0;
-        }
-        else
-        {
-          animator.Play( "walk" );
-          velocity.x = Mathf.Sign( delta.x ) * moveSpeed;
-          if( weapon != null && !shootRepeatTimer.IsActive )
+          if( delta.y > 1f && delta.y < 5 && dashCooldownTimer.ProgressNormalized > 0.5f && !jumpRepeat.IsActive && !jumpTimer.IsActive && delta.sqrMagnitude < jumpRange * jumpRange )
           {
-            // todo check line of site to target
-            // todo check for team allegiance
-            // todo have a "ready to fire" animation play to warn player
-            //hit = Physics2D.LinecastAll( shotOrigin.position, player );
-            hit = Physics2D.Linecast( shotOrigin.position, targetpos, LayerMask.GetMask( new string[] { "Default", "character" } ) );
-            if( hit.transform == Global.instance.CurrentPlayer.transform )
-              Shoot( targetpos - shotOrigin.position + Vector3.up * shootUp );
+            StartJump();
+          }
+          else if( !dashCooldownTimer.IsActive && delta.y > 0f && delta.y < 2 && Mathf.Abs( delta.x ) < withinpunchRange )
+          {
+            animator.Play( "punchdash" );
+            StartDash();
+          }
+          else if( Mathf.Abs( delta.x ) < small )
+          {
+            animator.Play( "idle" );
+            velocity.x = 0;
+          }
+          else
+          {
+            animator.Play( "walk" );
+            velocity.x = Mathf.Sign( delta.x ) * moveSpeed;
+            if( weapon != null && !shootRepeatTimer.IsActive )
+            {
+              // todo check line of site to target
+              // todo have a "ready to fire" animation play to warn player
+              //hit = Physics2D.LinecastAll( shotOrigin.position, player );
+              hit = Physics2D.Linecast( shotOrigin.position, targetpos, LayerMask.GetMask( new string[] { "Default", "character" } ) );
+              if( hit.transform == Global.instance.CurrentPlayer.transform )
+                Shoot( targetpos - shotOrigin.position + Vector3.up * shootUp );
+            }
           }
         }
       }
     }
-
 
     transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
 
@@ -176,6 +206,7 @@ public class Mech : Character
       if( dam != null )
       {
         Damage dmg = Instantiate( ContactDamage );
+        dmg.instigator = this;
         dmg.damageSource = transform;
         dmg.point = hit.point;
         dam.TakeDamage( dmg );
@@ -190,6 +221,7 @@ public class Mech : Character
       if( dam != null )
       {
         Damage dmg = Instantiate( ContactDamage );
+        dmg.instigator = this;
         dmg.damageSource = transform;
         dmg.point = hit.point;
         dam.TakeDamage( dmg );
@@ -205,6 +237,7 @@ public class Mech : Character
       if( dam != null )
       {
         Damage dmg = Instantiate( ContactDamage );
+        dmg.instigator = this;
         dmg.damageSource = transform;
         dmg.point = hit.point;
         dam.TakeDamage( dmg );
@@ -215,6 +248,8 @@ public class Mech : Character
 
   public override bool TakeDamage( Damage d )
   {
+    if( d.instigator != null && !IsEnemyTeam( d.instigator.Team ) )
+      return false;
     if( d.amount < DamageThreshold )
     {
       if( soundReflect != null )

@@ -37,8 +37,6 @@ public class BouncyGrenade : Projectile, IDamage
     Destroy( gameObject );
   }
 
-
-
   void FixedUpdate()
   {
     hitCount = Physics2D.CircleCastNonAlloc( transform.position, circle.radius + radiusFudge, velocity, RaycastHits, raycastDistance, Global.BouncyGrenadeCollideLayers );
