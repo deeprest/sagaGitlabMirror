@@ -1,4 +1,4 @@
-
+--- Put link here ---
 
 # Megaman Retro Analysis
 1987 consoles (NES)
@@ -7,8 +7,8 @@ Meinami Matsune
 Akira Kitamura
 Takashi Nishiyama
 ## Story
-Dr Light and Wily based on Santa Clause and Einstein
-Rock and Roll are like children to Dr Light, but in Japanese culture hard work is a virtue.
+Dr Light and Wily are visually based on Santa Clause and Einstein.
+Rock and Roll are like children to Dr Light and and work as servants, but in Japanese culture hard work is a virtue.
 Wily is jealous of Light and modifies the Robot Masters.
 Absorb Robot Master powers via their 'cores'.
 Mega Man is based on Astro Man, based on pinocchio.

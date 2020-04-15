@@ -31,6 +31,7 @@ pP
 - control name text for right stick says "RS"
 
 ### Hornet
+- hornet friendly fire
 hornet avoid friendlies
 hornet proximity raycast
 hornet particles should not rotate, and should disappear
