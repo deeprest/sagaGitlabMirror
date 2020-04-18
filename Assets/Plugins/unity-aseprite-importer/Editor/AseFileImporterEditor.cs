@@ -46,6 +46,8 @@ namespace AsepriteImporter
                     importTypeProperty.intValue = importType;
                 }
 
+                EditorGUILayout.PropertyField( serializedObject.FindProperty( "LayersToTextures" ) );
+
                 var transparentColorMask = serializedObject.FindProperty(textureSettings + "transparentMask");
                 var transparentColor = serializedObject.FindProperty(textureSettings + "transparentColor");
 
@@ -220,6 +222,15 @@ namespace AsepriteImporter
             {
                 EditorGUILayout.PropertyField(animationSettings.FindPropertyRelative("loopTime"));
                 EditorGUILayout.HelpBox(animationSettings.FindPropertyRelative("about").stringValue, MessageType.None);
+        
+        
+        EditorGUI.BeginChangeCheck();
+                EditorGUILayout.PropertyField( animationSettings.FindPropertyRelative( "pivot" )  );
+        if( EditorGUI.EndChangeCheck() )
+        {
+          
+        }
+        
             }
 
             foldoutStyle.fontStyle = prevoiusFontStyle;

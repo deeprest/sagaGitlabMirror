@@ -18,6 +18,7 @@ namespace AsepriteImporter
         [SerializeField] public string animationName;
         [SerializeField] public bool loopTime = true;
         [SerializeField] public string about;
+        [SerializeField] public Vector2 pivot = Vector2.one * 0.5f;
 
         public override string ToString()
         {

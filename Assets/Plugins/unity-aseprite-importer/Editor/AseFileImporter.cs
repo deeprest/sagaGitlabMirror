@@ -23,14 +23,20 @@ namespace AsepriteImporter
         [SerializeField] public AseFileAnimationSettings[] animationSettings;
         [SerializeField] public Texture2D atlas;
         [SerializeField] public AseFileImportType importType;
+        [SerializeField] public bool LayersToTextures;
 
         public override void OnImportAsset(AssetImportContext ctx)
         {
             name = GetFileName(ctx.assetPath);
 
             AseFile aseFile = ReadAseFile(ctx.assetPath);
-            int frameCount = aseFile.Header.Frames;
 
+            if( LayersToTextures )
+            {
+              GenerateSeparateTexturesFromLayers( ctx, aseFile );
+              return;
+            }
+          
             SpriteAtlasBuilder atlasBuilder = new SpriteAtlasBuilder(textureSettings, aseFile.Header.Width, aseFile.Header.Height);
 
             Texture2D[] frames = null;
@@ -70,7 +76,7 @@ namespace AsepriteImporter
                     ImportSprites(ctx, aseFile, spriteImportData);
                     break;
                 case AseFileImportType.Tileset:
-                    ImportTileset(ctx, atlas);
+                    ImportTileset(ctx);
                     break;
             }
 
@@ -99,7 +105,7 @@ namespace AsepriteImporter
             GenerateAnimations(ctx, aseFile, sprites);
         }
 
-        private void ImportTileset(AssetImportContext ctx, Texture2D atlas)
+        private void ImportTileset(AssetImportContext ctx)
         {
             int cols = atlas.width / textureSettings.tileSize.x;
             int rows = atlas.height / textureSettings.tileSize.y;
@@ -295,5 +301,42 @@ namespace AsepriteImporter
 
             return sb.ToString();
         }
+
+    private void GenerateSeparateTexturesFromLayers( AssetImportContext ctx, AseFile aseFile )
+    {
+      SpriteAtlasBuilder atlasBuilder = new SpriteAtlasBuilder( textureSettings, aseFile.Header.Width, aseFile.Header.Height );
+
+      SpriteImportData[] spriteImportData = new SpriteImportData[0];
+      List<LayerChunk> layers = aseFile.GetChunks<LayerChunk>();
+      for( int i = 0; i < layers.Count; i++ )
+      {
+        List<Texture2D> layerFrames = aseFile.GetLayerTexture( i, layers[i] );
+        Texture2D layerAtlas;
+          layerAtlas = atlasBuilder.GenerateAtlas( layerFrames.ToArray(), out spriteImportData, textureSettings.transparentMask, false );
+        layerAtlas.filterMode = textureSettings.filterMode;
+        layerAtlas.alphaIsTransparency = false;
+        layerAtlas.wrapMode = TextureWrapMode.Clamp;
+        layerAtlas.name = layers[i].LayerName;
+        //AssetDatabase.CreateAsset( layerAtlas, Path.GetDirectoryName( ctx.assetPath ) + "/" + Path.GetFileNameWithoutExtension( ctx.assetPath ) + "-" + layers[i].LayerName + ".asset" );
+        ctx.AddObjectToAsset( layers[i].LayerName, layerAtlas );
+        if( i == 0 )
+        {
+          // assign member "atlas" for ImportSprites() etc below
+          atlas = layerAtlas;
+          ctx.SetMainObject( layerAtlas );
+        }
+      }
+
+      switch( importType )
+      {
+        case AseFileImportType.LayerToSprite:
+        case AseFileImportType.Sprite:
+        ImportSprites( ctx, aseFile, spriteImportData );
+        break;
+        case AseFileImportType.Tileset:
+        ImportTileset( ctx );
+        break;
+      }
     }
+  }
 }

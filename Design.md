@@ -45,7 +45,6 @@ mechanics: give you abilities to reach that goal
 provide obstacles to challenge your progress
 overcoming the challenge is the source of enjoyment; not too hard or too easy.
 
-
 # Influences
 - dash, walljump, charged shot. Mega Man X (1993)
 - open map / explore. Super Metroid (1994)
@@ -84,8 +83,6 @@ Intro level teaches everything you need to know:
 - subpixel idle anim (breathing)
 - 3-frame turn around anim
 
-
-
 ## Keep from MMX games
 no inertia (special case inertia)
 in-air velocity control
@@ -112,29 +109,31 @@ bosses
 1. Avoid button-mashing with hold-to-fire (auto)
 1. hold dash instead of combo dash+jump to do better walljump
 
-
-
 ## Additions
 lighting, normal mapped sprites, emissive
 AI, navigation mesh
 level generation
 
-
 # Cycles
 - combat cycle. aware of enemy, visual contact, observe, attack, evade => death or success
+
 - death cycle. transformation.
+start as spiderbot (maybe nothing notices you when you're a spiderbot)
+find a host body
+- death -> spiderbot
+- spiderbot that can gain control of other machines.
+- creature that collects parts and builds onto itself
 r2d2 brainslug
 take over enemies?
 find scrap to build onto oneself?
-find an exit tube
 can zap doors, enemies
 cannibalize small enemies to build needed body parts
 
 - stage cycle. HQ to generated level. boss, ability.
+
 - system upgrades: sensory (blobs on perif), targeting (projectile path, highlight enemies), weakness scan (show weak spots on large enemies)
 
-
-# Ideas for new stuff
+# Ideas
 Main Menu is an in-game menu. player can shoot the options.
 Home / HQ
 Main Menu is first room in home, with option to load game.
@@ -143,17 +142,11 @@ mini-tutorials throughout home area
 Shooting Range for demonstrating new weapons.
 Danger Room for practice.
 
-start as spiderbot (maybe nothing notices you when you're a spiderbot)
-find a host body
-- death -> spiderbot
-- spiderbot that can gain control of other machines.
-- creature that collects parts and builds onto itself
 
 boss battles. 'stage intro'; boss intro; chamber fight; death sequence; get weapon/post-death;
 explore generated city.
 abilities: graphook, shield, bullet-time, "jump good"(samurai jack), fly (propeller or jetpack), pickup objects and shoot them (grav gun)
 weapons: blaster, bouncygrenade, stickybomb, flame, laser
-
 
 ## pick up parts from dead enemies
 + buster, x3 upgraded
@@ -184,7 +177,6 @@ weapons: blaster, bouncygrenade, stickybomb, flame, laser
 - temporary powerups: speedboost, dash duration, ~slowtime, ~reflective shield, supercharge, extra projectiles
 - permanent mods: run speed, wall slide speed, dash duration, rapid shot
 - Controllers and Pawns
-- CharacterUpdate. Pause.
 - Optimize performance by deactivating sections of the scene when far away from player.
 - AI: enemies should react to projectiles in proximity
 ---

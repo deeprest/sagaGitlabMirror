@@ -10,7 +10,7 @@ ScriptedImporter:
   script: {fileID: 11500000, guid: 25a63327f814cd04cbdbd7e8ae6dfcf9, type: 3}
   textureSettings:
     textureType: 8
-    pixelsPerUnit: 64
+    pixelsPerUnit: 32
     transparentMask: 0
     transparentColor: {r: 1, g: 0, b: 1, a: 1}
     meshType: 1
@@ -26,26 +26,35 @@ ScriptedImporter:
   - animationName: damage
     loopTime: 1
     about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 2"
+    pivot: {x: 0, y: 0}
   - animationName: idle
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 7; To: 10"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 3; To: 6"
+    pivot: {x: 0, y: 0}
   - animationName: jump
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 15; To: 17"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 11; To: 13"
+    pivot: {x: 0, y: 0}
   - animationName: fall
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 18; To: 19"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 14; To: 15"
+    pivot: {x: 0, y: 0}
   - animationName: land
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 20; To: 21"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 16; To: 17"
+    pivot: {x: 0, y: 0}
   - animationName: dash
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 22; To: 23"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 18; To: 19"
+    pivot: {x: 0, y: 0}
   - animationName: run
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 25; To: 34"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 21; To: 30"
+    pivot: {x: 0, y: 0}
   - animationName: walljump
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 38; To: 39"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 34; To: 35"
+    pivot: {x: 0, y: 0}
   atlas: {instanceID: 0}
   importType: 0
+  LayersToTextures: 0
