@@ -25,40 +25,44 @@ ScriptedImporter:
   animationSettings:
   - animationName: idle
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 3"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 1; To: 1"
     pivot: {x: 0.5, y: 0.5}
   - animationName: damage
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 5; To: 7"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 2; To: 3"
     pivot: {x: 0, y: 0}
   - animationName: jump
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 10; To: 12"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 4; To: 6"
     pivot: {x: 0, y: 0}
   - animationName: fall
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 13; To: 14"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 7; To: 8"
     pivot: {x: 0, y: 0}
   - animationName: land
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 15; To: 16"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 9; To: 10"
     pivot: {x: 0, y: 0}
   - animationName: dash
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 17; To: 18"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 11; To: 12"
     pivot: {x: 0, y: 0}
   - animationName: run
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 20; To: 29"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 14; To: 23"
     pivot: {x: 0, y: 0}
   - animationName: walljump
     loopTime: 0
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 33; To: 34"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 27; To: 28"
     pivot: {x: 0, y: 0}
   - animationName: hang
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 36; To: 36"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 29; To: 29"
     pivot: {x: 0, y: 0}
+  - animationName: shoot
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 0"
+    pivot: {x: 0.5, y: 0.5}
   atlas: {instanceID: 0}
   importType: 2
   LayersToTextures: 1

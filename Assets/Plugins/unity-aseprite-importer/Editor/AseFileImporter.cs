@@ -102,7 +102,7 @@ namespace AsepriteImporter
                 sprites[i] = sprite;
             }
 
-            GenerateAnimations(ctx, aseFile, sprites);
+            GenerateAnimations(ctx, aseFile, sprites); 
         }
 
         private void ImportTileset(AssetImportContext ctx)
@@ -311,8 +311,7 @@ namespace AsepriteImporter
       for( int i = 0; i < layers.Count; i++ )
       {
         List<Texture2D> layerFrames = aseFile.GetLayerTexture( i, layers[i] );
-        Texture2D layerAtlas;
-          layerAtlas = atlasBuilder.GenerateAtlas( layerFrames.ToArray(), out spriteImportData, textureSettings.transparentMask, false );
+        Texture2D layerAtlas = atlasBuilder.GenerateAtlas( layerFrames.ToArray(), out spriteImportData, textureSettings.transparentMask, false );
         layerAtlas.filterMode = textureSettings.filterMode;
         layerAtlas.alphaIsTransparency = false;
         layerAtlas.wrapMode = TextureWrapMode.Clamp;
