@@ -113,7 +113,7 @@ public class Character : MonoBehaviour, IDamage
       pathAgent = new PathAgent();
       pathAgent.Client = this;
       pathAgent.transform = transform;
-      pathAgent.AgentTypeID = Global.instance.AgentType[AgentTypeName];
+      pathAgent.AgentTypeID = 0; //Global.instance.AgentType[AgentTypeName];
     }
   }
 

@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.AI;
 using UnityEditor.Build.Reporting;
 
-public static class ShowGUIDUtility
+public static class StaticUtility
 {
   [MenuItem( "Assets/ShowGUID", true )]
   static bool CanExecute()
@@ -26,6 +26,22 @@ public static class ShowGUIDUtility
 
 public class CustomUtility : EditorWindow
 {
+  // This will make sure there is always a GLOBAL object when playing a scene in the editor
+  [RuntimeInitializeOnLoadMethod]
+  static void OnLoadMethod()
+  {
+    if( EditorPrefs.GetBool( "CreateGlobalOnStart") )
+    {
+      for( int i = 0; i < SceneManager.sceneCount; i++ )
+      {
+        Scene scene = SceneManager.GetSceneAt( i );
+        if( scene.name == "GLOBAL" )
+          return;
+      }
+      GameObject.Instantiate( Resources.Load<GameObject>( "GLOBAL" ) );
+    }
+  }
+
   static string todo;
 
   [MenuItem( "Tool/Utility Window" )]
@@ -139,8 +155,10 @@ public class CustomUtility : EditorWindow
     }
     */
 
+
     EditorGUILayout.Space();
     EditorGUI.ProgressBar( EditorGUILayout.GetControlRect( false, 30 ), progress, progressMessage );
+    EditorPrefs.SetBool( "CreateGlobalOnStart", EditorGUILayout.Toggle( "CreatGlobalOnStart", EditorPrefs.GetBool( "CreateGlobalOnStart") ) );
 
     EditorGUILayout.Space();
     foldTodo = EditorGUILayout.Foldout( foldTodo, "Todo" );

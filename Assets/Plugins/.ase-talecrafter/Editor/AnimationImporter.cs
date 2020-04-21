@@ -149,7 +149,7 @@ namespace AnimationImporter
 		}
 
 		private void LoadPreferences()
-		{
+		{/*
 			if (PlayerPrefs.HasKey(PREFS_PREFIX + "asepritePath"))
 			{
 				_asepritePath = PlayerPrefs.GetString(PREFS_PREFIX + "asepritePath");
@@ -169,11 +169,11 @@ namespace AnimationImporter
 				{
 					_baseController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(baseControllerPath);
 				}
-			}
+			}*/
 		}
 
 		private void SaveUserConfig()
-		{
+		{/*
 			PlayerPrefs.SetString(PREFS_PREFIX + "asepritePath", _asepritePath);
 
 			if (_baseController != null)
@@ -183,7 +183,7 @@ namespace AnimationImporter
 			else
 			{
 				PlayerPrefs.SetString(PREFS_PREFIX + "baseControllerPath", "");
-			}
+			}*/ 
 		}
 
 		// ================================================================================
@@ -544,6 +544,7 @@ namespace AnimationImporter
 		// check if there is a configured importer for the specified extension
 		public static bool IsConfiguredForAssets(DefaultAsset[] assets)
 		{
+      /*
 			foreach(var asset in assets)
 			{
 				string assetPath = AssetDatabase.GetAssetPath(asset);
@@ -564,7 +565,7 @@ namespace AnimationImporter
 					}
 				}
 			}
-
+      */
 			return true;
 		}
 

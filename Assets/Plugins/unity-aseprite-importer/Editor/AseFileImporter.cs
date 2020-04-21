@@ -7,6 +7,15 @@ using UnityEditor;
 using Aseprite.Chunks;
 using System.Text;
 
+// NOTE
+// If there are any empty frames in your animation, you might get an out-of-bounds error.
+// This is because empty frames are not exported from Aseprite, any the importer
+// needs the correct Cel count for the indices to match up correctly.
+
+// Need multiple textures taken from Layers for Emissive, Normal maps
+// Keep imported animations separate from skeletal animations.
+
+
 namespace AsepriteImporter
 {
     public enum AseFileImportType
@@ -21,9 +30,12 @@ namespace AsepriteImporter
     {
         [SerializeField] public AseFileTextureSettings textureSettings = new AseFileTextureSettings();
         [SerializeField] public AseFileAnimationSettings[] animationSettings;
-        [SerializeField] public Texture2D atlas;
+        //[SerializeField] public Texture2D atlas;
         [SerializeField] public AseFileImportType importType;
+
         [SerializeField] public bool LayersToTextures;
+        [SerializeField] public string TransformPath;
+        [SerializeField] public int SampleRate = 25;
 
         public override void OnImportAsset(AssetImportContext ctx)
         {
@@ -57,7 +69,7 @@ namespace AsepriteImporter
 
             //}
 
-            atlas = atlasBuilder.GenerateAtlas(frames, out spriteImportData, textureSettings.transparentMask, false);
+            Texture2D atlas = atlasBuilder.GenerateAtlas(frames, out spriteImportData, textureSettings.transparentMask, false);
 
 
             atlas.filterMode = textureSettings.filterMode;
@@ -73,17 +85,17 @@ namespace AsepriteImporter
             {
                 case AseFileImportType.LayerToSprite:
                 case AseFileImportType.Sprite:
-                    ImportSprites(ctx, aseFile, spriteImportData);
+                    ImportSprites(ctx, aseFile, spriteImportData, atlas );
                     break;
                 case AseFileImportType.Tileset:
-                    ImportTileset(ctx);
+                    ImportTileset(ctx, atlas );
                     break;
             }
 
             ctx.SetMainObject(atlas);
         }
 
-        private void ImportSprites(AssetImportContext ctx, AseFile aseFile, SpriteImportData[] spriteImportData)
+        private void ImportSprites(AssetImportContext ctx, AseFile aseFile, SpriteImportData[] spriteImportData, Texture2D atlas )
         {
             int spriteCount = spriteImportData.Length;
             
@@ -105,7 +117,7 @@ namespace AsepriteImporter
             GenerateAnimations(ctx, aseFile, sprites); 
         }
 
-        private void ImportTileset(AssetImportContext ctx)
+        private void ImportTileset(AssetImportContext ctx, Texture2D atlas )
         {
             int cols = atlas.width / textureSettings.tileSize.x;
             int rows = atlas.height / textureSettings.tileSize.y;
@@ -170,7 +182,7 @@ namespace AsepriteImporter
             {
                 AnimationClip animationClip = new AnimationClip();
                 animationClip.name = name + "_" + animation.TagName;
-                animationClip.frameRate = 25;
+                animationClip.frameRate = SampleRate;
 
                 AseFileAnimationSettings importSettings = GetAnimationSettingFor(animSettings, animation);
                 importSettings.about = GetAnimationAbout(animation);
@@ -178,7 +190,7 @@ namespace AsepriteImporter
 
                 EditorCurveBinding spriteBinding = new EditorCurveBinding();
                 spriteBinding.type = typeof(SpriteRenderer);
-                spriteBinding.path = "";
+                spriteBinding.path = TransformPath;
                 spriteBinding.propertyName = "m_Sprite";
 
 
@@ -245,7 +257,7 @@ namespace AsepriteImporter
                 }
 
                 AnimationUtility.SetAnimationClipSettings(animationClip, settings);
-                ctx.AddObjectToAsset(animation.TagName, animationClip);
+                ctx.AddObjectToAsset(animation.TagName, animationClip );
 
                 index++;
             }
@@ -305,37 +317,79 @@ namespace AsepriteImporter
     private void GenerateSeparateTexturesFromLayers( AssetImportContext ctx, AseFile aseFile )
     {
       SpriteAtlasBuilder atlasBuilder = new SpriteAtlasBuilder( textureSettings, aseFile.Header.Width, aseFile.Header.Height );
-
-      SpriteImportData[] spriteImportData = new SpriteImportData[0];
       List<LayerChunk> layers = aseFile.GetChunks<LayerChunk>();
-      for( int i = 0; i < layers.Count; i++ )
+      SpriteImportData[] spriteImportData = new SpriteImportData[0];      
+
       {
-        List<Texture2D> layerFrames = aseFile.GetLayerTexture( i, layers[i] );
+        List<Texture2D> layerFrames = aseFile.GetLayerTexture( 0, layers[0] );
         Texture2D layerAtlas = atlasBuilder.GenerateAtlas( layerFrames.ToArray(), out spriteImportData, textureSettings.transparentMask, false );
         layerAtlas.filterMode = textureSettings.filterMode;
         layerAtlas.alphaIsTransparency = false;
         layerAtlas.wrapMode = TextureWrapMode.Clamp;
-        layerAtlas.name = layers[i].LayerName;
-        //AssetDatabase.CreateAsset( layerAtlas, Path.GetDirectoryName( ctx.assetPath ) + "/" + Path.GetFileNameWithoutExtension( ctx.assetPath ) + "-" + layers[i].LayerName + ".asset" );
-        ctx.AddObjectToAsset( layers[i].LayerName, layerAtlas );
-        if( i == 0 )
+        layerAtlas.name = layers[0].LayerName;
+        //string assetpath = Path.GetDirectoryName( ctx.assetPath ) + "/" + Path.GetFileNameWithoutExtension( ctx.assetPath ) + "-" + layers[0].LayerName + ".asset";
+        //AssetDatabase.CreateAsset( layerAtlas, assetpath );
+        ctx.AddObjectToAsset( layers[0].LayerName, layerAtlas );
+
+        switch( importType )
         {
-          // assign member "atlas" for ImportSprites() etc below
-          atlas = layerAtlas;
-          ctx.SetMainObject( layerAtlas );
+          case AseFileImportType.LayerToSprite:
+          case AseFileImportType.Sprite:
+          ImportSprites( ctx, aseFile, spriteImportData, layerAtlas );
+          break;
+          case AseFileImportType.Tileset:
+          ImportTileset( ctx, layerAtlas );
+          break;
         }
       }
 
-      switch( importType )
+      for( int i = 1; i < layers.Count; i++ )
       {
-        case AseFileImportType.LayerToSprite:
-        case AseFileImportType.Sprite:
-        ImportSprites( ctx, aseFile, spriteImportData );
-        break;
-        case AseFileImportType.Tileset:
-        ImportTileset( ctx );
-        break;
+        List<Texture2D> layerFrames = aseFile.GetLayerTexture( i, layers[i] );
+        Texture2D layerAtlas = atlasBuilder.GenerateAtlas( layerFrames.ToArray(), out _, textureSettings.transparentMask, false );
+        layerAtlas.filterMode = textureSettings.filterMode;
+        layerAtlas.alphaIsTransparency = false;
+        layerAtlas.wrapMode = TextureWrapMode.Clamp;
+        layerAtlas.name = layers[i].LayerName;
+
+        ctx.AddObjectToAsset( layers[i].LayerName, layerAtlas );
+        /*
+        string imagepath = Path.GetDirectoryName( ctx.assetPath ) + "/" + Path.GetFileNameWithoutExtension( ctx.assetPath ) + "-" + layers[i].LayerName + ".png";
+
+        Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>( imagepath );
+        if( texture == null )
+        {
+          File.WriteAllBytes( imagepath, layerAtlas.EncodeToPNG() );
+          AssetDatabase.SaveAssets();
+        }
+        else
+        {
+          
+          //texture.SetPixelData( layerAtlas.GetRawTextureData(), 0 );
+          //EditorUtility.SetDirty( texture );
+        }
+        AssetDatabase.Refresh();
+        Texture2D asdf = AssetDatabase.LoadAssetAtPath<Texture2D>( imagepath );
+         
+        //AssetDatabase.CreateAsset( layerAtlas, assetpath );
+        
+
+          TextureImporter textureImporter = GetAtPath( imagepath ) as TextureImporter;
+        if( textureImporter != null )
+        {
+          SecondarySpriteTexture[] sst = new SecondarySpriteTexture[1];
+          sst[0].name = "_NormalMap";
+          sst[0].texture = layerAtlas;
+          textureImporter.secondarySpriteTextures = sst;
+
+          EditorUtility.SetDirty( textureImporter );
+          textureImporter.SaveAndReimport();
+
+        }
+        */
       }
+
+
     }
   }
 }

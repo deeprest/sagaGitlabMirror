@@ -91,9 +91,6 @@ public class Mech : Character
     if( velocity.y < 0 )
       StopJump();
 
-    if( Global.instance.CurrentPlayer == null )
-      return;
-
     if( Target == null )
     {
       velocity.x = 0;
@@ -136,7 +133,7 @@ public class Mech : Character
               // todo have a "ready to fire" animation play to warn player
               //hit = Physics2D.LinecastAll( shotOrigin.position, player );
               hit = Physics2D.Linecast( shotOrigin.position, targetpos, LayerMask.GetMask( new string[] { "Default", "character" } ) );
-              if( hit.transform == Global.instance.CurrentPlayer.transform )
+              if( hit.transform == Target.transform )
                 Shoot( targetpos - shotOrigin.position + Vector3.up * shootUp );
             }
           }

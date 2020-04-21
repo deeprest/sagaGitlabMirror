@@ -15,7 +15,7 @@ ScriptedImporter:
     transparentColor: {r: 1, g: 0, b: 1, a: 1}
     meshType: 1
     extrudeEdges: 1
-    spritePivot: {x: 0.5, y: 0.5}
+    spritePivot: {x: 0.25, y: 0.25}
     generatePhysics: 1
     wrapMode: 1
     filterMode: 0
@@ -25,8 +25,13 @@ ScriptedImporter:
   animationSettings:
   - animationName: idle
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 0"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 3"
     pivot: {x: 0.25, y: 0.25}
-  atlas: {instanceID: 0}
+  - animationName: talk
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 4; To: 5"
+    pivot: {x: 0.5, y: 0.5}
   importType: 0
   LayersToTextures: 1
+  TransformPath: 
+  SampleRate: 25

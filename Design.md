@@ -1,5 +1,34 @@
 pP
+
+Action games are not about telling a story, they have implied goals (do not die/fail):
+Pong, Asteroids, Tetris, Pac-man, Mario, Street Fighter, Raiden, Doom
+... and adding a story does not make the game better.
+
+STORY-based games are mostly just puzzles:
+Monkey Island, Grim Fandango, (any adventure game)
+... and puzzles are used as breaks in the story, etc
+
+Blizzard games tend to have involved stories, but do they matter at all to you?
+
+
 # DESIGN
+
+1. Mantra:  "Mega Man X movement with Metroid exploration in a generated city"
+1. Design pillars, describing feel (three phrases):  Boons! Gnarly! Stupid!
+2. Summary. Destroy bad robots and use their parts to improve yourself to save the city!
+3. Features: aiming, modify oneself with exchangeable parts, generated city
+4. Target platform: MacOS, Linux, etc
+5. Target Audience: anyone who likes walljumping and games where you shoot things.
+6. Game Details..........
+7. Interface, Controls: m+k, gamepads
+8. Artstyle: cyberpunk pixelart
+9. Sound / Music: Stone McKnuckle!
+10. Development plan.....
+
+(jeans badger/bunny) a little robot that gets excited and follows you around
+A couple of idle idiots speculating on why the robots are now evil.
+
+
 
 ### accessibly
 - Must run smoothly on lower-spec machines [define min spec]
@@ -24,6 +53,16 @@ Avoid: Idea commitment.
 Avoid: Story up front.
 Avoid: Overly rigid design.
 Avoid: Arbitrarily adding things.
+### From GDU, design mistakes
+* (experiment) prototype first instead of design-up-front
+* (vision) do not follow trends
+* (escapism) avoid making decisions based on what's realistic
+* (ease of use) UI / UX, onboarding
+* inconsistent design.. (recognizable patterns)
+* not having a clear vision or mantra
+* ignoring feedback
+* not valuing feedback
+
 
 ## misc thoughts
 The pivot model

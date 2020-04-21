@@ -1,10 +1,8 @@
 //﻿#pragma warning disable 414
-//#define DESTRUCTION_LIST
 
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-//using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
@@ -187,17 +185,7 @@ public class Global : MonoBehaviour
   [SerializeField] float spinnerMoveSpeed = 1;
   int spawnCycleIndex = 0;
 
-  //public Layers layers;
-  //public List<System.Tuple<string, string>> objectReplacementList;
-  //public Dictionary<string, string> replacements = new Dictionary<string, string>();
-
   public Dictionary<string, GameObject> ResourceLookup = new Dictionary<string, GameObject>();
-
-#if DESTRUCTION_LIST
-  // This exists only because of a Unity crash bug when objects with active
-  // Contacts are destroyed from within OnCollisionEnter2D()
-  List<GameObject> DestructionList = new List<GameObject>();
-#endif
 
   [Header( "Audio" )]
   public UnityEngine.Audio.AudioMixer mixer;
@@ -226,28 +214,19 @@ public class Global : MonoBehaviour
   [SerializeField] GameObject Minimap;
   [SerializeField] float mmScrollSpeed = 10;
   [SerializeField] float mmOrthoSize = 1;
-
   // This will make sure there is always a GLOBAL object when playing a scene in the editor
   [RuntimeInitializeOnLoadMethod]
   static void OnLoadMethod()
   {
     Application.wantsToQuit += WantsToQuit;
-#if UNITY_EDITOR
-    for( int i = 0; i < SceneManager.sceneCount; i++ )
-    {
-      Scene scene = SceneManager.GetSceneAt( i );
-      if( scene.name == "GLOBAL" )
-        return;
-    }
-    Instantiate( Resources.Load<GameObject>( "GLOBAL" ) );
-#endif
   }
 
   static bool WantsToQuit()
   {
     IsQuiting = true;
     // do pre-quit stuff here
-    Global.instance.WriteSettings();
+    if( Global.instance != null )
+      Global.instance.WriteSettings();
     return true;
   }
 
@@ -260,11 +239,6 @@ public class Global : MonoBehaviour
     }
     instance = this;
     DontDestroyOnLoad( gameObject );
-
-    // serialized object replacements
-    //replacements.Clear();
-    //foreach( var r in objectReplacementList )
-    //  replacements.Add( r.Item1, r.Item2 );
 
     // note: allowing characters to collide introduces risk of being forced into a corner
     CharacterCollideLayers = LayerMask.GetMask( new string[] { "Default", "destructible", "triggerAndCollision" } ); //, "character", "enemy" };
@@ -618,12 +592,6 @@ public class Global : MonoBehaviour
 
   void Update()
   {
-#if DESTRUCTION_LIST
-    for( int i = 0; i < DestructionList.Count; i++ )
-      Destroy( DestructionList[i] );
-    DestructionList.Clear();
-#endif
-
     frames++;
     Timer.UpdateTimers();
     debugText2.text = "Active Timers: " + Timer.ActiveTimers.Count;
@@ -921,16 +889,6 @@ public class Global : MonoBehaviour
     ShowLoadingScreen( message );
     yield return null;
   }
-
-#if DESTRUCTION_LIST
-  // This exists only because of a Unity crash bug when objects with active
-  // Contacts are destroyed from within OnCollisionEnter2D()
-  public void Destroy( GameObject go )
-  {
-    go.SetActive( false );
-    DestructionList.Add( go );
-  }
-#endif
 
   public GameObject Spawn( string resourceName, Vector3 position, Quaternion rotation, Transform parent = null, bool limit = true, bool initialize = true )
   {

@@ -93,6 +93,7 @@ namespace AsepriteImporter
                 importer.textureSettings.filterMode =
                     (FilterMode) EditorGUILayout.EnumPopup("Filter Mode", importer.textureSettings.filterMode);
 
+                
                 EditorGUI.indentLevel--;
             }
 
@@ -110,6 +111,8 @@ namespace AsepriteImporter
                     EditorGUILayout.LabelField("Animation Options", EditorStyles.boldLabel);
                 }
                 
+                EditorGUILayout.PropertyField( serializedObject.FindProperty( "TransformPath" ) );
+
                 for(int i = 0; i < arraySize; i++)
                 {
                     DrawAnimationSetting(animationSettingsArray.GetArrayElementAtIndex(i));
@@ -221,16 +224,7 @@ namespace AsepriteImporter
                animationName, true, foldoutStyle))
             {
                 EditorGUILayout.PropertyField(animationSettings.FindPropertyRelative("loopTime"));
-                EditorGUILayout.HelpBox(animationSettings.FindPropertyRelative("about").stringValue, MessageType.None);
-        
-        
-        EditorGUI.BeginChangeCheck();
-                EditorGUILayout.PropertyField( animationSettings.FindPropertyRelative( "pivot" )  );
-        if( EditorGUI.EndChangeCheck() )
-        {
-          
-        }
-        
+                EditorGUILayout.HelpBox(animationSettings.FindPropertyRelative("about").stringValue, MessageType.None);        
             }
 
             foldoutStyle.fontStyle = prevoiusFontStyle;

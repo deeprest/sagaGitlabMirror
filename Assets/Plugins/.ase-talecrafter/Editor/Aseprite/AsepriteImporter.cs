@@ -18,7 +18,7 @@ namespace AnimationImporter.Aseprite
 
 		const string ASEPRITE_STANDARD_PATH_WINDOWS = @"C:\Program Files (x86)\Aseprite\Aseprite.exe";
 		const string ASEPRITE_STANDARD_PATH_MACOSX = @"/Applications/Aseprite.app/Contents/MacOS/aseprite";
-
+    /*
 		public static string standardApplicationPath
 		{
 			get
@@ -33,6 +33,7 @@ namespace AnimationImporter.Aseprite
 				}
 			}
 		}
+    */
 
 		// ================================================================================
 		//  static constructor, registering plugin
