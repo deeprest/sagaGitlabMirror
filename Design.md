@@ -1,51 +1,79 @@
 pP
 
-Action games are not about telling a story, they have implied goals (do not die/fail):
-Pong, Asteroids, Tetris, Pac-man, Mario, Street Fighter, Raiden, Doom
-... and adding a story does not make the game better.
-
-STORY-based games are mostly just puzzles:
-Monkey Island, Grim Fandango, (any adventure game)
-... and puzzles are used as breaks in the story, etc
-
-Blizzard games tend to have involved stories, but do they matter at all to you?
-
-
-# DESIGN
-
+# DESIGN pillars (from gdu.io)
 1. Mantra:  "Mega Man X movement with Metroid exploration in a generated city"
-1. Design pillars, describing feel (three phrases):  Boons! Gnarly! Stupid!
+1. Design pillars, describing feel (three phrases):  Hectic Action. Upgrade Progress. Irreverent Distractions.
 2. Summary. Destroy bad robots and use their parts to improve yourself to save the city!
 3. Features: aiming, modify oneself with exchangeable parts, generated city
 4. Target platform: MacOS, Linux, etc
-5. Target Audience: anyone who likes walljumping and games where you shoot things.
+5. Target Audience: Me, and Alex. Anyone who likes robot ninja games and shooting things.
 6. Game Details..........
 7. Interface, Controls: m+k, gamepads
-8. Artstyle: cyberpunk pixelart
-9. Sound / Music: Stone McKnuckle!
+8. Artstyle: cyberpunk pixelart hq3x. Composite sprites with lighting, normal+emissive maps.
+9. Sound / Music: rock soundtrack + instrument foley
 10. Development plan.....
 
 (jeans badger/bunny) a little robot that gets excited and follows you around
 A couple of idle idiots speculating on why the robots are now evil.
+A miniboss inspired by the *relentless* posturing that evil enemies do, which buys the good guys enough time to defeat them. A big guy that never stops taunting and cannot be damaged, but has a single weakness that is revealed at some point. Since this game has no death, maybe he's only vulnerable to the spiderbot form.
+
+## GDC Hitchhiker's Guide to Rapid prototypes
+Minimum Viable product.
+### SMART goals
+1. Specific: precise description of what is to be accomplished.
+2. Measurable: progress is visible and tracked.
+3. Attainable: what actions are needed to make it happen.
+4. Relevant: meaningful and realistic.
+5. Time-Bound: estimated time for completion.
+### Strategy
+Carefully designed plan of action. Accounts for:
+* Deliverables
+* Features
+* Functions
+* Tasks
+* Deadlines
+* Costs
+**Effectively Scoped**
+### Scope
+Recognize Barriers.
+Bad scope can come from your Ego.
+Humility can help feel out your internal barriers:
+* Attitude
+* Emotions
+* Understanding
+* Creativity
+* Skill
+Humility will spot external barriers:
+* Time
+* Resources
+* Location
+* Opportunity
+* Competition
+"Start where you are. Use what you have. Do what you can." - Arthur Ashe
+### Vision
+Two parts: Game Concept and Design. Focus more on the design iteration.
+Core Mechanic. Secondary Mechanics. progression. Narrative.
 
 
 
-### accessibly
+
+# project Goals
+## accessibly
 - Must run smoothly on lower-spec machines [define min spec]
 - Single player. No internet connection required to play.
 - Control Rebinding
-### is not commercialized
+## is not commercialized
 - no ads. You pay with your soul. (fake ads?)
 - no microtransactions.
 - no in-game currency to compulsively accumulate. (or make it useless)
-### does not use addiction mechanics
+## does not use addiction mechanics
 - no achievements to leave you feeling underachieved.
 - no trophies. your ego is big enough already.
-### not too complex. you have a life.
+## not too complex. you have a life.
 - no tedious narrative to ignore (dialogue and presentation, but no narrative)
 - no complicated technology/skill tree
 
-## Design Advice
+## Design Advice (from unknown youtube video)
 Must: Onboard player with forced-learning mechanics.
 Must: Polish lots.
 Avoid: Starting Too BIG.
@@ -98,6 +126,21 @@ duck
 dash
 walljump
 wallslide
+
+# Mechanics
+movement
+aim / look
+weapon use
+collect parts: graphook, shield, propeller,
+build weapons onto biped arm slots
+no death: transform from biped to tentacle bot (two forms: biped and tentacle bot)
+collecting parts: automatic by proximity. show parts on bot.
+biped body assembly. Get to safety to rebuild?
+navigation: minimap or beacons.
+encounter bosses
+interact with random npcs (navigation help for bosses. tells where secrets are. in-game tips.)
+find secret body upgrades: run speed, jump height, etc
+
 
 ## Mega Man X Breakdown
 *demonstrate enemy abilities first in a safe, controlled environment*
@@ -157,6 +200,7 @@ level generation
 - combat cycle. aware of enemy, visual contact, observe, attack, evade => death or success
 
 - death cycle. transformation.
+
 start as spiderbot (maybe nothing notices you when you're a spiderbot)
 find a host body
 - death -> spiderbot

@@ -32,5 +32,9 @@ public class Schmanimation : MonoBehaviour
 {
   public Animator body;
   public Animator head;
-
+  private void Start()
+  {
+    body.Play( "run" );
+    head.Play( "talk" );
+  }
 }

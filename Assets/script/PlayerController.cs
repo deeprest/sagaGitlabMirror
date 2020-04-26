@@ -3,6 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
+#if UNITY_EDITOR
+using UnityEditor;
+[CustomEditor( typeof( PlayerController ) )]
+public class PlayerControllerEditor : Editor
+{
+  public override void OnInspectorGUI()
+  {
+    base.OnInspectorGUI();
+    PlayerController ani = target as PlayerController;
+
+    EditorGUILayout.LabelField( "Head" );
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "idle" ) )
+      ani.partHead.animator.Play( "idle" );
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "talk" ) )
+      ani.partHead.animator.Play( "talk" );
+
+    EditorGUILayout.LabelField( "Body" );
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "idle" ) )
+      ani.partBody.animator.Play( "idle" );
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "run" ) )
+      ani.partBody.animator.Play( "run" );
+
+  }
+}
+#endif
+
 /*
 // todo PlayerController -> PlayerPawn
 // Separate inputs from actions.
@@ -81,6 +108,9 @@ state
 
 public class PlayerController : Character
 {
+
+
+
   new public AudioSource audio;
   public AudioSource audio2;
   public ParticleSystem dashSmoke;
@@ -240,6 +270,7 @@ public class PlayerController : Character
   {
     base.Awake();
     BindControls();
+    InitializeParts();
   }
 
   protected override void Start()
@@ -931,14 +962,14 @@ public class PlayerController : Character
       else
       {
         anim = "idle";
-        // HACK when idling, always face aim direction
+        // when idling, always face aim direction
         facingRight = shoot.x >= 0;
       }
     }
     else if( !jumping )
       anim = "fall";
 
-    animator.Play( anim );
+    Play( anim );
     transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     renderer.material.SetInt( "_FlipX", facingRight ? 0 : 1 );
     arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
@@ -959,6 +990,8 @@ public class PlayerController : Character
   {
     if( !Global.instance.Updating )
       return;
+
+    UpdateParts();
 
 #if UNITY_WEBGL && !UNITY_EDITOR
       Vector2 delta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
@@ -1168,11 +1201,9 @@ public class PlayerController : Character
       if( damagePulseOn )
         foreach( var sr in spriteRenderers )
           sr.enabled = true;
-      //animator.material.SetFloat( "_FlashAmount", 0.5f );
       else
         foreach( var sr in spriteRenderers )
           sr.enabled = false;
-      //animator.material.SetFloat( "_FlashAmount", 0 );
       DamagePulseFlip();
     } );
   }
@@ -1183,19 +1214,20 @@ public class PlayerController : Character
       return false;
     if( d.instigator != null && !IsEnemyTeam( d.instigator.Team ) )
       return false;
-    //StopCharge();
+
+    health -= d.amount;
+    partHead.transform.localScale = Vector3.one * (1 + (health / MaxHealth) * 10);
+
     audio.PlayOneShot( soundDamage );
     Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
-
+    Play( "damage" );
     float sign = Mathf.Sign( d.damageSource.position.x - transform.position.x );
     facingRight = sign > 0;
-    //push.y = damageLift;
     velocity.y = 0;
+    Push( new Vector2( -sign * damagePushAmount, damageLift ), damageDuration );
     arm.gameObject.SetActive( false );
     takingDamage = true;
     damagePassThrough = true;
-    animator.Play( "damage" );
-    Push( new Vector2( -sign * damagePushAmount, damageLift ), damageDuration );
     StopGrap();
     damageTimer.Start( damageDuration, delegate ( Timer t )
     {
@@ -1204,18 +1236,36 @@ public class PlayerController : Character
     {
       takingDamage = false;
       arm.gameObject.SetActive( true );
-      //animator.material.SetFloat( "_FlashAmount", 0 );
-      //animator.material.SetColor( "_FlashColor", damagePulseColor );
       DamagePulseFlip();
       damageTimer.Start( damageBlinkDuration, null, delegate ()
       {
-        //animator.material.SetFloat( "_FlashAmount", 0 );
         foreach( var sr in spriteRenderers )
           sr.enabled = true;
         damagePassThrough = false;
         damagePulseTimer.Stop( false );
       } );
     } );
+    /*
+    // color pulse
+    flip = false;
+    foreach( var sr in spriteRenderers )
+      sr.material.SetFloat( "_FlashAmount", flashOn );
+    flashTimer.Start( flashCount * 2, flashInterval, delegate ( Timer t )
+    {
+      flip = !flip;
+      if( flip )
+        foreach( var sr in spriteRenderers )
+          sr.material.SetFloat( "_FlashAmount", flashOn );
+      else
+        foreach( var sr in spriteRenderers )
+          sr.material.SetFloat( "_FlashAmount", 0 );
+    }, delegate
+    {
+      foreach( var sr in spriteRenderers )
+        sr.material.SetFloat( "_FlashAmount", 0 );
+    } );
+    */
+
     return true;
   }
 
@@ -1227,8 +1277,8 @@ public class PlayerController : Character
     transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     renderer.material.SetInt( "_FlipX", facingRight ? 0 : 1 );
     arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
-    animator.updateMode = AnimatorUpdateMode.UnscaledTime;
-    animator.Play( "run" );
+    SetAnimatorUpdateMode( AnimatorUpdateMode.UnscaledTime );
+    Play( "run" );
     LerpToTarget lerp = gameObject.GetComponent<LerpToTarget>();
     if( lerp == null )
       lerp = gameObject.AddComponent<LerpToTarget>();
@@ -1241,8 +1291,70 @@ public class PlayerController : Character
     lerp.OnLerpEnd = delegate
     {
       enabled = true;
-      animator.updateMode = AnimatorUpdateMode.Normal;
+      SetAnimatorUpdateMode( AnimatorUpdateMode.Normal );
     };
   }
 
+
+  [Header( "Character Parts" )]
+  [SerializeField] int CharacterLayer;
+
+  [System.Serializable]
+  public struct CharacterPart
+  {
+    public Transform transform;
+    public Animator animator;
+    public SpriteRenderer renderer;
+    public int layerAnimated;
+    //public BoxCollider2D box;
+  }
+
+  public CharacterPart partBody;
+  public CharacterPart partHead;
+  public CharacterPart partArmBack;
+  public CharacterPart partArmFront;
+
+  List<CharacterPart> CharacterParts;
+
+  // Call from Awake()  
+  void InitializeParts()
+  {
+    CharacterParts = new List<CharacterPart> { partBody, partHead, partArmBack, partArmFront };
+  }
+
+  // Call from LateUpdate()
+  void UpdateParts()
+  {
+    foreach( var part in CharacterParts )
+      part.renderer.sortingOrder = CharacterLayer + part.layerAnimated;
+  }
+
+  void Play( string anim )
+  {
+    partBody.animator.Play( anim );
+    /*
+    foreach( var part in CharacterParts )
+      if( part.animator != null && part.animator.HasState( 0, Animator.StringToHash( anim ) ) )
+        part.animator.Play( anim );
+        */
+    //#if UNITY_EDITOR
+    //      else
+    //        Debug.LogWarning( "anim " + anim + " not found on " + part.transform.name );
+    //#endif
+  }
+
+  void SetAnimatorUpdateMode( AnimatorUpdateMode mode )
+  {
+    // for changing the time scale to/from unscaled
+    foreach( var part in CharacterParts )
+      if( part.animator != null )
+        part.animator.updateMode = mode;
+  }
+
+  void SetAnimatorSpeed( float speed )
+  {
+    foreach( var part in CharacterParts )
+      if( part.animator != null )
+        part.animator.speed = speed;
+  }
 }

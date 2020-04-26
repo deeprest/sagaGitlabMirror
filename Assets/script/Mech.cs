@@ -94,6 +94,7 @@ public class Mech : Character
     if( Target == null )
     {
       velocity.x = 0;
+      animator.Play( "idle" );
       // todo wander or patrol
     }
     else

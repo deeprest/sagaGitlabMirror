@@ -65,16 +65,17 @@ public class Character : MonoBehaviour, IDamage
   [Header( "Damage" )]
   public bool CanTakeDamage = true;
   public int health = 5;
+  public int MaxHealth = 5;
   public GameObject explosion;
   public AudioClip soundHit;
   public GameObject spawnWhenDead;
   public int spawnChance = 1;
   // FLASH
-  Timer flashTimer = new Timer();
+  protected Timer flashTimer = new Timer();
   public float flashInterval = 0.05f;
   public int flashCount = 5;
-  bool flip = false;
-  readonly float flashOn = 1f;
+  protected bool flip = false;
+  protected readonly float flashOn = 1f;
   // deal this damage on collision
   public Damage ContactDamage;
   public UnityEvent EventDestroyed;
@@ -113,7 +114,7 @@ public class Character : MonoBehaviour, IDamage
       pathAgent = new PathAgent();
       pathAgent.Client = this;
       pathAgent.transform = transform;
-      pathAgent.AgentTypeID = 0; //Global.instance.AgentType[AgentTypeName];
+      pathAgent.AgentTypeID = Global.instance.AgentType[AgentTypeName];
     }
   }
 

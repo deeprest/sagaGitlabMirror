@@ -39,7 +39,8 @@ namespace AsepriteImporter
 
         public override void OnImportAsset(AssetImportContext ctx)
         {
-            name = GetFileName(ctx.assetPath);
+            name = Path.GetFileNameWithoutExtension( ctx.assetPath );
+            //name = GetFileName(ctx.assetPath);
 
             AseFile aseFile = ReadAseFile(ctx.assetPath);
 
@@ -181,7 +182,8 @@ namespace AsepriteImporter
             foreach (var animation in animations)
             {
                 AnimationClip animationClip = new AnimationClip();
-                animationClip.name = name + "_" + animation.TagName;
+                //animationClip.name = name + "_" + animation.TagName;
+                animationClip.name = animation.TagName;
                 animationClip.frameRate = SampleRate;
 
                 AseFileAnimationSettings importSettings = GetAnimationSettingFor(animSettings, animation);

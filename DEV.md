@@ -1,7 +1,17 @@
 pP
 *Establish the design before resuming work*
 
+
+- Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
 - Pawns and Controllers
+- confirm that Teams are working for all characters.
+
+### Composite Sprite Problems
++ composite sprite render layers. Create a layer for each composite, or how to keep entire composites from interlacing with one another? SOLUTION: Animate a *struct* int for each piece, and update the sortingOrder of the SpriteRenderers from LateUpdate().
+
+- pixel-perfect animations must be done in Unity for each piece. Snap to pixel density, use constant anim curves.
+- 2d skeleton rigs, avatars, and IK can not be used with composites. Skeletons use rotations, and these anims are not rotation-based.
+
 
 ### Janky
 - landing snaps. possible anim frame adjustment will fix
@@ -20,13 +30,13 @@ pP
 
 ### Straight Up Bugs
 - wheelbots are buggy
-- city camera bounds
 - airbot attack, use attack speed until at last known target position
 - fix grap when using gamepad (double)
 - fix grap going through boxes
 - fix stickybomb going through vents
 
 ### Minor / Cosmetic
+- city camera bounds
 - DrCain minimum speech threshold
 - light reflects too much on background layer 1 with buster
 - door sprite layer should be behind characters
