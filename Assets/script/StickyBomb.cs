@@ -13,9 +13,9 @@ public class StickyBomb : Projectile, IDamage
   public bool AlignRotationToVelocity = true;
   [SerializeField] float AttachDuration = 2;
   Rigidbody2D body;
-  Transform hitTransform;
   [SerializeField] float BoomRadius = 1;
-  bool alreadyBoom = false;
+  bool flagBoom = false;
+  bool flagHit = false;
 
   void Start()
   {
@@ -23,6 +23,7 @@ public class StickyBomb : Projectile, IDamage
     body.velocity = new Vector2( velocity.x, velocity.y );
     timeoutTimer.Start( timeout, null, delegate { TakeDamage( ContactDamage ); } );
     pulseTimer.Start( int.MaxValue, pulseInterval, delegate ( Timer obj ) { light.enabled = !light.enabled; }, null );
+    dmg = Instantiate( ContactDamage );
   }
 
   void OnDestroy()
@@ -39,23 +40,25 @@ public class StickyBomb : Projectile, IDamage
       transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( body.velocity.normalized.y, body.velocity.normalized.x ) ) );
   }
 
+  Collider2D[] clds = new Collider2D[4];
+  Damage dmg;
+
   void Boom()
   {
-    if( alreadyBoom )
+    if( flagBoom )
       return;
-    alreadyBoom = true;
+    flagBoom = true;
     // disable collider before explosion to avoid unnecessary OnCollisionEnter2D() calls
-    GetComponent<Collider2D>().enabled = false;
+    circle.enabled = false;
     timeoutTimer.Stop( false );
-    Collider2D[] clds = Physics2D.OverlapCircleAll( transform.position, BoomRadius, Global.StickyBombCollideLayers );
-    for( int i = 0; i < clds.Length; i++ )
+    int count = Physics2D.OverlapCircleNonAlloc( transform.position, BoomRadius, clds, Global.StickyBombCollideLayers );
+    for( int i = 0; i < count; i++ )
     {
       if( clds[i] != null )
       {
         IDamage dam = clds[i].GetComponent<IDamage>();
         if( dam != null )
         {
-          Damage dmg = Instantiate( ContactDamage );
           dmg.instigator = instigator;
           dmg.damageSource = transform;
           dmg.point = transform.position;
@@ -72,39 +75,41 @@ public class StickyBomb : Projectile, IDamage
     Boom();
     return true;
   }
-
-  void OnCollisionEnter2D( Collision2D hit )
+  
+  void OnCollisionEnter2D( Collision2D collision )
   {
-    if( (Global.StickyBombCollideLayers & (1 << hit.gameObject.layer)) > 0 )
-      if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator.transform )) && !ignore.Contains( hit.transform ) )
+    if( flagHit )
+      return;
+    if( (Global.StickyBombCollideLayers & (1 << collision.gameObject.layer)) > 0 && collision.transform != null &&
+      (instigator == null || !collision.transform.IsChildOf( instigator.transform )) && !ignore.Contains( collision.transform ) )
+    {
+      flagHit = true;
+      // ignore projectiles from this instigator
+      Projectile projectile = collision.transform.GetComponent<Projectile>();
+      if( projectile != null )
       {
-        // ignore projectiles from this instigator
-        Projectile projectile = hit.transform.GetComponent<Projectile>();
-        if( projectile != null )
+        // stickybomb will simply bounce off of other stickybomb
+        if( instigator != null && projectile.instigator != null && projectile.instigator == instigator )
         {
-          // stickybomb will simply bounce off of other stickybomb
-          if( instigator != null && projectile.instigator != null && projectile.instigator == instigator )
-            return;
-          //if( projectile.instigator != instigator )
-            Boom();
-        }
 
-        AlignRotationToVelocity = false;
-        transform.parent = hit.transform;
-        // +X = forward
-        transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( -hit.contacts[0].normal.y, -hit.contacts[0].normal.x ) ) );
-        //body.simulated = false;
-        body.bodyType = RigidbodyType2D.Static;
-        animator.Play( "flash" );
-        hitTransform = hit.transform;
-        timeoutTimer.Start( AttachDuration, null, delegate
-        {
-          Boom();
-          /*Damage selfDamage = Instantiate( ContactDamage );
-          selfDamage.instigator = transform;
-          selfDamage.point = transform.position;
-          TakeDamage( selfDamage );*/
-        } );
+        }
+        else
+        //if( projectile.instigator != instigator )
+        Boom();
       }
+
+      AlignRotationToVelocity = false;
+      transform.parent = collision.transform;
+      // +X = forward
+      transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( -collision.contacts[0].normal.y, -collision.contacts[0].normal.x ) ) );
+      //body.simulated = false;
+      body.bodyType = RigidbodyType2D.Static;
+      animator.Play( "flash" );
+      timeoutTimer.Start( AttachDuration, null, delegate
+      {
+        Boom();
+      } );
+    }
   }
+
 }

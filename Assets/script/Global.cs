@@ -258,7 +258,7 @@ public class Global : MonoBehaviour
     InitializeSettings();
     ReadSettings();
     ApplyScreenSettings();
-    InitializeControls();
+    InitializeInput();
 
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
       {
@@ -390,7 +390,7 @@ public class Global : MonoBehaviour
     return outstr;
   }
 
-  void InitializeControls()
+  void InitializeInput()
   {
     ReplaceControlNames.Add( "DELTA", "Mouse" );
     ReplaceControlNames.Add( "LMB", "Left Mouse Button" );
@@ -411,6 +411,7 @@ public class Global : MonoBehaviour
       {
         UsingGamepad = newvalue;
         OnGameControllerChanged.Invoke();
+        OnboardingControls.GetComponent<OnboardingControls>().UpdateText();
       }
     };
 

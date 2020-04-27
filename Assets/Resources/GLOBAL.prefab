@@ -100,9 +100,9 @@ GameObject:
   m_Component:
   - component: {fileID: 675798622}
   - component: {fileID: 675798625}
-  - component: {fileID: 675798623}
   - component: {fileID: 4589642973763193046}
   - component: {fileID: 4375728484344568410}
+  - component: {fileID: 3265251375986451256}
   m_Layer: 5
   m_Name: instructions
   m_TagString: Untagged
@@ -149,20 +149,6 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &675798623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 675798621}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bef7968c619964d3ba998463eb823400, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text:
-  - {fileID: 4375728484344568410}
 --- !u!222 &4589642973763193046
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -203,6 +189,20 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "[Accept] Accept \n[Back] Back"
+--- !u!114 &3265251375986451256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 675798621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f2300218392c49f3abcd9e8df6f8429, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  message: {fileID: 4375728484344568410}
+  Colorize: 1
 --- !u!1 &754862382
 GameObject:
   m_ObjectHideFlags: 0
@@ -950,7 +950,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1671587495769190}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.59, y: 13.89, z: -10}
+  m_LocalPosition: {x: -13.59, y: 13.89, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7319106273476287188}
@@ -978,7 +978,7 @@ MonoBehaviour:
   cursorAlpha: 0.5
   lerpAlpha: 10
   SmoothSpeed: 10
-  zOffset: -10.67
+  zOffset: 0
   yHalfWidth: 0.5
   orthoTarget: 2
   orthoSpeed: 10
@@ -1290,7 +1290,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215688, g: 0.18823531, b: 0.25882354, a: 0}
+  m_BackGroundColor: {r: 0.19215688, g: 0.18823531, b: 0.25882354, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1303,8 +1303,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
-  far clip plane: 200
+  near clip plane: -10
+  far clip plane: 10
   field of view: 20
   orthographic: 1
   orthographic size: 4
@@ -1343,12 +1343,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RenderShadows: 1
+  m_RenderShadows: 0
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -3162,9 +3162,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3131027897008625961}
   - component: {fileID: 2383493807093891474}
-  - component: {fileID: 8521783814924560906}
   - component: {fileID: 728367531485421289}
   - component: {fileID: 4727254543014606582}
+  - component: {fileID: 7669012134002117981}
   m_Layer: 5
   m_Name: instructions (1)
   m_TagString: Untagged
@@ -3211,20 +3211,6 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &8521783814924560906
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4351140072971961608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bef7968c619964d3ba998463eb823400, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text:
-  - {fileID: 4727254543014606582}
 --- !u!222 &728367531485421289
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3265,6 +3251,20 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '[Menu] Exit'
+--- !u!114 &7669012134002117981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4351140072971961608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f2300218392c49f3abcd9e8df6f8429, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  message: {fileID: 4727254543014606582}
+  Colorize: 1
 --- !u!1 &4395636864120701641
 GameObject:
   m_ObjectHideFlags: 0
@@ -5218,7 +5218,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2423930916489387819
 Transform:
   m_ObjectHideFlags: 0

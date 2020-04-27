@@ -43,7 +43,7 @@ public class LerpToTarget : MonoBehaviour
   Quaternion startRotation;
   float startScale;
   Quaternion targetRotation;
-  Rigidbody body = null;
+  Rigidbody2D body = null;
 
   void OnEnable()
   {
@@ -65,7 +65,7 @@ public class LerpToTarget : MonoBehaviour
       startScale = moveTransform.localScale.x;
 
     if( Rigidbody )
-      body = GetComponent<Rigidbody>();
+      body = GetComponent<Rigidbody2D>();
   }
 
   void OnDisable()
@@ -92,7 +92,7 @@ public class LerpToTarget : MonoBehaviour
     float moveAlpha = alpha;
     if( lerpType == LerpType.Curve && translateCurve != null )
       moveAlpha = translateCurve.Evaluate( alpha );
-    Vector3 delta = position - moveTransform.position;
+    Vector2 delta = position - moveTransform.position;
     if( Rigidbody && body != null )
     {
       if( UseMaxDistance && delta.magnitude > MaxDistance )
@@ -101,7 +101,7 @@ public class LerpToTarget : MonoBehaviour
       }
       else
       {
-        body.AddForce( -body.velocity + delta * force, ForceMode.VelocityChange );
+        body.AddForce( -body.velocity + delta * force, ForceMode2D.Impulse );
       }
     }
     else

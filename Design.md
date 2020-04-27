@@ -2,20 +2,21 @@ pP
 
 # DESIGN pillars (from gdu.io)
 1. Mantra:  "Mega Man X movement with Metroid exploration in a generated city"
-1. Design pillars, describing feel (three phrases):  Hectic Action. Upgrade Progress. Irreverent Distractions.
+1. Design pillars, describing *feel* (three phrases):  Nimble and Agile. Repurpose! Irreverent Distractions.
 2. Summary. Destroy bad robots and use their parts to improve yourself to save the city!
 3. Features: aiming, modify oneself with exchangeable parts, generated city
 4. Target platform: MacOS, Linux, etc
-5. Target Audience: Me, and Alex. Anyone who likes robot ninja games and shooting things.
-6. Game Details..........
+5. Target Audience: Me. Anyone who likes the movement from MMX and wants additional gameplay.
+6. Game Details (see below)
 7. Interface, Controls: m+k, gamepads
 8. Artstyle: cyberpunk pixelart hq3x. Composite sprites with lighting, normal+emissive maps.
 9. Sound / Music: rock soundtrack + instrument foley
 10. Development plan.....
 
-(jeans badger/bunny) a little robot that gets excited and follows you around
-A couple of idle idiots speculating on why the robots are now evil.
-A miniboss inspired by the *relentless* posturing that evil enemies do, which buys the good guys enough time to defeat them. A big guy that never stops taunting and cannot be damaged, but has a single weakness that is revealed at some point. Since this game has no death, maybe he's only vulnerable to the spiderbot form.
+#### Random Ideas
+* A little robot that gets excited and follows you around (jeans badger)
+* A couple of idle idiots speculating on why the robots are now evil.
+* A miniboss inspired by the **relentless** posturing that evil enemies (in movies) do, which buys the good guys enough time to defeat them. A big guy that never stops taunting and cannot be damaged, but has a single weakness that is revealed at some point. Since this game has no death, maybe he's only vulnerable to the spiderbot form.
 
 ## GDC Hitchhiker's Guide to Rapid prototypes
 Minimum Viable product.

@@ -51,7 +51,7 @@ public class Character : MonoBehaviour, IDamage
   protected bool collideTop = false;
   protected bool collideBottom = false;
   // cached for optimization - to avoid allocating every frame
-  protected RaycastHit2D[] RaycastHits;
+  protected RaycastHit2D[] RaycastHits = new RaycastHit2D[4];
   // cached
   protected RaycastHit2D hit;
   protected int hitCount;
@@ -106,7 +106,8 @@ public class Character : MonoBehaviour, IDamage
     if( !IsStatic )
     {
       UpdateHit = BoxHit;
-      UpdateCollision = BoxCollision;
+      if( UseGravity )
+        UpdateCollision = BoxCollisionOneDown;
       UpdatePosition = BasicPosition;
     }
     if( EnablePathing )
@@ -210,7 +211,7 @@ public class Character : MonoBehaviour, IDamage
     carryCharacter = null;
   }
 
-  protected void BoxCollision()
+  void BoxCollisionOneDown()
   {
     collideRight = false;
     collideLeft = false;
@@ -225,7 +226,38 @@ public class Character : MonoBehaviour, IDamage
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Contains( hit.collider ) )
+      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
+        continue;
+      if( hit.normal.y > corner )
+      {
+        collideBottom = true;
+        adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation;
+        // moving platforms
+        Character cha = hit.transform.GetComponent<Character>();
+        if( cha != null )
+          carryCharacter = cha;
+        break;
+      }
+    }
+    transform.position = adjust - boxOffset;
+  }
+
+  void BoxCollisionFour()
+  {
+    collideRight = false;
+    collideLeft = false;
+    collideTop = false;
+    collideBottom = false;
+    const float corner = 0.707f;
+    boxOffset.x = box.offset.x * Mathf.Sign( transform.localScale.x );
+    boxOffset.y = box.offset.y;
+    adjust = (Vector2)transform.position + boxOffset;
+
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
+    {
+      hit = RaycastHits[i];
+      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y > corner )
       {
@@ -242,7 +274,7 @@ public class Character : MonoBehaviour, IDamage
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Contains( hit.collider ) )
+      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.y < -corner )
       {
@@ -255,7 +287,7 @@ public class Character : MonoBehaviour, IDamage
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Contains( hit.collider ) )
+      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x > corner )
       {
@@ -270,7 +302,7 @@ public class Character : MonoBehaviour, IDamage
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Contains( hit.collider ) )
+      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
       if( hit.normal.x < -corner )
       {
