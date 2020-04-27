@@ -65,7 +65,7 @@ public class Global : MonoBehaviour
   // screenshot timer
   public int screenshotInterval;
   public Timer ScreenshotTimer = new Timer();
-
+  // timescale when in slo-mo
   [SerializeField] float slowtime = 0.2f;
   Timer fadeTimer = new Timer();
   public float RepathInterval = 1;
@@ -706,7 +706,6 @@ public class Global : MonoBehaviour
   {
     Slowed = true;
     Time.timeScale = slowtime;
-    Time.fixedDeltaTime = 0.01f * Time.timeScale;
     mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
       snapNormal,
       snapSlowmo
@@ -720,7 +719,6 @@ public class Global : MonoBehaviour
   {
     Slowed = false;
     Time.timeScale = 1;
-    Time.fixedDeltaTime = 0.01f * Time.timeScale;
     mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
       snapNormal,
       snapSlowmo
@@ -734,14 +732,12 @@ public class Global : MonoBehaviour
   {
     Paused = true;
     Time.timeScale = 0;
-    Time.fixedDeltaTime = 0;
   }
 
   public static void Unpause()
   {
     Paused = false;
     Time.timeScale = 1;
-    Time.fixedDeltaTime = 0.01f * Time.timeScale;
   }
 
   public void ShowHUD()
