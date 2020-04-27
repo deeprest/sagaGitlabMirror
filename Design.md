@@ -6,7 +6,7 @@ pP
 2. Summary. Destroy bad robots and use their parts to improve yourself to save the city!
 3. Features: aiming, modify oneself with exchangeable parts, generated city
 4. Target platform: MacOS, Linux, etc
-5. Target Audience: Me. Anyone who likes the movement from MMX and wants additional gameplay.
+5. Target Audience: Me. Any old fans of MMX.
 6. Game Details (see below)
 7. Interface, Controls: m+k, gamepads
 8. Artstyle: cyberpunk pixelart hq3x. Composite sprites with lighting, normal+emissive maps.

@@ -51,7 +51,7 @@ public class StickyBomb : Projectile, IDamage
     // disable collider before explosion to avoid unnecessary OnCollisionEnter2D() calls
     circle.enabled = false;
     timeoutTimer.Stop( false );
-    int count = Physics2D.OverlapCircleNonAlloc( transform.position, BoomRadius, clds, Global.StickyBombCollideLayers );
+    int count = Physics2D.OverlapCircleNonAlloc( transform.position, BoomRadius, clds, Global.DamageCollideLayers );
     for( int i = 0; i < count; i++ )
     {
       if( clds[i] != null )
@@ -75,7 +75,7 @@ public class StickyBomb : Projectile, IDamage
     Boom();
     return true;
   }
-  
+
   void OnCollisionEnter2D( Collision2D collision )
   {
     if( flagHit )
@@ -84,19 +84,10 @@ public class StickyBomb : Projectile, IDamage
       (instigator == null || !collision.transform.IsChildOf( instigator.transform )) && !ignore.Contains( collision.transform ) )
     {
       flagHit = true;
-      // ignore projectiles from this instigator
-      Projectile projectile = collision.transform.GetComponent<Projectile>();
-      if( projectile != null )
-      {
-        // stickybomb will simply bounce off of other stickybomb
-        if( instigator != null && projectile.instigator != null && projectile.instigator == instigator )
-        {
 
-        }
-        else
-        //if( projectile.instigator != instigator )
+      Projectile projectile = collision.transform.GetComponent<Projectile>();
+      if( projectile != null && (instigator == null || projectile.instigator == null || projectile.instigator != instigator) )
         Boom();
-      }
 
       AlignRotationToVelocity = false;
       transform.parent = collision.transform;

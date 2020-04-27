@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.Experimental.Rendering.Universal;
 
 public class BouncyGrenade : Projectile, IDamage
@@ -13,9 +12,6 @@ public class BouncyGrenade : Projectile, IDamage
 
   void Start()
   {
-    // weapon plays the sound instead
-    //if( StartSound != null )
-    //Global.instance.AudioOneShot( StartSound, transform.position );
     GetComponent<Rigidbody2D>().velocity = new Vector2( velocity.x, velocity.y );
     timeoutTimer.Start( timeout, null, Boom );
     pulseTimer.Start( int.MaxValue, pulseInterval,delegate(Timer obj){ light.enabled = !light.enabled; }, null );
@@ -33,13 +29,12 @@ public class BouncyGrenade : Projectile, IDamage
       return;
     Instantiate( explosion, transform.position, Quaternion.identity );
     timeoutTimer.Stop( false );
-    //Global.instance.Destroy( gameObject );
     Destroy( gameObject );
   }
 
   void FixedUpdate()
   {
-    hitCount = Physics2D.CircleCastNonAlloc( transform.position, circle.radius + radiusFudge, velocity, RaycastHits, raycastDistance, Global.BouncyGrenadeCollideLayers );
+    hitCount = Physics2D.CircleCastNonAlloc( transform.position, circle.radius + radiusFudge, velocity, RaycastHits, raycastDistance, Global.DamageCollideLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];

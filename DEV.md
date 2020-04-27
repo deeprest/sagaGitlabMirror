@@ -3,8 +3,9 @@ pP
 
 
 - Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
-- Pawns and Controllers
 - confirm that Teams are working for all characters.
+- Pawns and Controllers
+- spiderbot.
 
 ### Composite Sprite Problems
 + composite sprite render layers. Create a layer for each composite, or how to keep entire composites from interlacing with one another? SOLUTION: Animate a *struct* int for each piece, and update the sortingOrder of the SpriteRenderers from LateUpdate().

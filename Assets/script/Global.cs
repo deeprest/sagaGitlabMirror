@@ -90,7 +90,7 @@ public class Global : MonoBehaviour
   public static int ProjectileNoShootLayers;
   public static int DefaultProjectileCollideLayers;
   public static int FlameProjectileCollideLayers;
-  public static int BouncyGrenadeCollideLayers;
+  public static int DamageCollideLayers;
   public static int StickyBombCollideLayers;
   public static int TurretSightLayers;
   public static int EnemySightLayers;
@@ -249,7 +249,7 @@ public class Global : MonoBehaviour
     ProjectileNoShootLayers = LayerMask.GetMask( new string[] { "Default" } );
     DefaultProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade", "flameProjectile" } );
     FlameProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" } );
-    BouncyGrenadeCollideLayers = LayerMask.GetMask( new string[] { "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" } );
+    DamageCollideLayers = LayerMask.GetMask( new string[] { "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" } );
     StickyBombCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" } );
     TurretSightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" } );
     EnemySightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" } );
