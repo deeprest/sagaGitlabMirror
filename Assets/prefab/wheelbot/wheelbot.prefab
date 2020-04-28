@@ -59,7 +59,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 0.2, y: 0.2}
   m_EdgeRadius: 0
 --- !u!212 &212949075796312028
 SpriteRenderer:
@@ -132,16 +132,18 @@ MonoBehaviour:
   spriteRenderers: []
   UseGravity: 1
   IsStatic: 0
+  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
-  friction: 0.1
-  raylength: 0.01
-  contactSeparation: 0.01
+  friction: 0
+  raylength: 0.2
+  contactSeparation: 0.2
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
   health: 3
+  MaxHealth: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
   spawnWhenDead: {fileID: 0}
@@ -153,8 +155,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   rotator: {fileID: 110268027408849183}
-  wheelAnimRate: -3
-  wheelVelocity: -2
+  wheelAnimRate: 4
+  wheelVelocity: 2
 --- !u!50 &88018454292964798
 Rigidbody2D:
   serializedVersion: 4

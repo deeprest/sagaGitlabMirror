@@ -19,7 +19,7 @@ MonoBehaviour:
   m_HDREmulationScale: 1
   m_LightBlendStyles:
   - enabled: 1
-    name: Default
+    name: Multiply
     maskTextureChannel: 0
     renderTextureScale: 1
     blendMode: 1
@@ -27,9 +27,9 @@ MonoBehaviour:
       multiplicative: 0
       additive: 0
   - enabled: 0
-    name: Blend Style 1
-    maskTextureChannel: 4
-    renderTextureScale: 1
+    name: Additive
+    maskTextureChannel: 0
+    renderTextureScale: 0.25
     blendMode: 0
     customBlendFactors:
       multiplicative: 0

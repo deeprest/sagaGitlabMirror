@@ -27,6 +27,7 @@ public class Character : MonoBehaviour, IDamage
 
   public bool UseGravity = true;
   public bool IsStatic = false;
+  public bool BoxCollisionOne = false;
   public Vector2 velocity = Vector2.zero;
   public Vector2 Velocity
   {
@@ -56,7 +57,7 @@ public class Character : MonoBehaviour, IDamage
   protected RaycastHit2D hit;
   protected int hitCount;
   protected Vector2 adjust;
-  Vector2 boxOffset;
+  protected Vector2 boxOffset;
 
   [Header( "Pathing" )]
   public bool EnablePathing = false;
@@ -103,11 +104,13 @@ public class Character : MonoBehaviour, IDamage
       parentCharacter = transform.parent.GetComponent<Character>();
     IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
     spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
+    UpdateHit = BoxHit;
     if( !IsStatic )
     {
-      UpdateHit = BoxHit;
-      if( UseGravity )
+      if( BoxCollisionOne )
         UpdateCollision = BoxCollisionOneDown;
+      else
+        UpdateCollision = BoxCollisionFour;
       UpdatePosition = BasicPosition;
     }
     if( EnablePathing )
@@ -211,7 +214,7 @@ public class Character : MonoBehaviour, IDamage
     carryCharacter = null;
   }
 
-  void BoxCollisionOneDown()
+  protected void BoxCollisionOneDown()
   {
     collideRight = false;
     collideLeft = false;
@@ -226,10 +229,10 @@ public class Character : MonoBehaviour, IDamage
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
       if( hit.normal.y > corner )
       {
+        if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
+          continue;
         collideBottom = true;
         adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation;
         // moving platforms
@@ -242,7 +245,7 @@ public class Character : MonoBehaviour, IDamage
     transform.position = adjust - boxOffset;
   }
 
-  void BoxCollisionFour()
+  protected void BoxCollisionFour()
   {
     collideRight = false;
     collideLeft = false;
@@ -257,10 +260,10 @@ public class Character : MonoBehaviour, IDamage
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
       if( hit.normal.y > corner )
       {
+        if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
+          continue;
         collideBottom = true;
         adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation;
         // moving platforms
@@ -274,10 +277,10 @@ public class Character : MonoBehaviour, IDamage
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
       if( hit.normal.y < -corner )
       {
+        if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
+          continue;
         collideTop = true;
         adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
         break;
@@ -287,10 +290,10 @@ public class Character : MonoBehaviour, IDamage
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
       if( hit.normal.x > corner )
       {
+        if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
+          continue;
         collideLeft = true;
         //hitLeft = hit;
         adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
@@ -302,10 +305,10 @@ public class Character : MonoBehaviour, IDamage
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
       if( hit.normal.x < -corner )
       {
+        if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
+          continue;
         collideRight = true;
         //hitRight = hit;
         adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
