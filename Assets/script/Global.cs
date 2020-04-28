@@ -347,6 +347,7 @@ public class Global : MonoBehaviour
 
   public string ReplaceWithControlNames( string source, bool colorize = true )
   {
+    // This is slow. DO NOT call this every frame.
     // todo make this less awful
     // todo support composites
     //action.GetBindingDisplayString( InputBinding.DisplayStringOptions.DontUseShortDisplayNames );
@@ -426,10 +427,10 @@ public class Global : MonoBehaviour
     Controls.GlobalActions.Screenshot.performed += ( obj ) => Util.Screenshot();
 
     Controls.GlobalActions.DEVRespawn.performed += ( obj ) => {
-      Chopper chopper = FindObjectOfType<Chopper>();
+      /*Chopper chopper = FindObjectOfType<Chopper>();
       if( chopper != null )
         chopper.StartDrop( CurrentPlayer );
-      else
+      else*/
       {
         CurrentPlayer.transform.position = FindRandomSpawnPosition();
         CurrentPlayer.velocity = Vector2.zero;

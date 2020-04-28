@@ -16,6 +16,7 @@ public class StickyBomb : Projectile, IDamage
   [SerializeField] float BoomRadius = 1;
   bool flagBoom = false;
   bool flagHit = false;
+  Collider2D[] clds = new Collider2D[4];
 
   void Start()
   {
@@ -23,7 +24,6 @@ public class StickyBomb : Projectile, IDamage
     body.velocity = new Vector2( velocity.x, velocity.y );
     timeoutTimer.Start( timeout, null, delegate { TakeDamage( ContactDamage ); } );
     pulseTimer.Start( int.MaxValue, pulseInterval, delegate ( Timer obj ) { light.enabled = !light.enabled; }, null );
-    dmg = Instantiate( ContactDamage );
   }
 
   void OnDestroy()
@@ -40,8 +40,6 @@ public class StickyBomb : Projectile, IDamage
       transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( body.velocity.normalized.y, body.velocity.normalized.x ) ) );
   }
 
-  Collider2D[] clds = new Collider2D[4];
-  Damage dmg;
 
   void Boom()
   {
@@ -59,6 +57,7 @@ public class StickyBomb : Projectile, IDamage
         IDamage dam = clds[i].GetComponent<IDamage>();
         if( dam != null )
         {
+          Damage dmg = Instantiate( ContactDamage );
           dmg.instigator = instigator;
           dmg.damageSource = transform;
           dmg.point = transform.position;

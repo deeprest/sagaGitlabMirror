@@ -202,6 +202,7 @@ level generation
 
 - death cycle. transformation.
 
+# Spiderbot
 start as spiderbot (maybe nothing notices you when you're a spiderbot)
 find a host body
 - death -> spiderbot
@@ -213,9 +214,12 @@ find scrap to build onto oneself?
 can zap doors, enemies
 cannibalize small enemies to build needed body parts
 
-- stage cycle. HQ to generated level. boss, ability.
+- stage cycle. HQ to generated level. boss, weapon.
 
 - system upgrades: sensory (blobs on perif), targeting (projectile path, highlight enemies), weakness scan (show weak spots on large enemies)
+
+-
+
 
 # Ideas
 Main Menu is an in-game menu. player can shoot the options.
@@ -290,8 +294,22 @@ weapons: blaster, bouncygrenade, stickybomb, flame, laser
 
 
 # first anim sequence
-Fade in to a dark room with lab equipment in the center.  There is a man leaning over a large capsule, and a device on a table nearby. The capsule is emitting light, but we cannot see inside.  The device on the table looks like a ball with tendrils, and is plugged in to the capsule.  The building shakes; chunks of the ceiling fall nearby.  The man looks up. "We have to get out of here". He takes the device under his arm and heads for the door, but before he can reach the door, the wall collapses on him. The device slides a short distance away and lies still for a moment.
+Fade in to a dark room with lab equipment in the center.  There is a man leaning over a large capsule, and a device on a table nearby. The capsule is emitting light, but we cannot see inside.  The device on the table looks like a ball with tendrils, and is plugged in to the capsule.  The building shakes; chunks of the ceiling fall nearby.  The man looks up. "We have to get out of here". He unplugs the device and takes it under his arm and heads for the door.  Before he can reach the door the wall collapses on him. The device bounces on the floor and slides a short distance away.  It lies still for a moment before a light on the side emits a glow.
 
+# the big picture (Apparently I'm using every science fiction trope here...)
+[The man] is a scientist that worked on the team that developed the first biotic, autonomous AI systems. Originally designed for head trauma patients, neurological-interfaces were coupled with machine learning to assist in recovery. Eventually the systems moved beyond analysis and treatment and showed  neural pathway augmentation.
+
+Before lawmakers could address ethical and legal concerns, the systems were being licensed commercially to militaries, research labs, and the wealthy.
+
+Soldiers gained enhanced sensory perception and battlefield domination through unparalleled execution of drones. [accelerated healing, pain blockers, impulse control,
+
+Researchers with improved cognition and eidetic memory raced to invent the singularity. The tradeoff of having supreme focus is a moral blindspot.
+"I prefer to work with people that have a proclivity to be efficient and reliable."
+"We're creating a better world. One that will fight us tooth and nail all the way to enlightenment."
+"They meant well, but they lost their way. We have a plan to help them focus."
+
+The wealthy proceeds to consolidate power throughout the governments of the world forming a global syndicate.  With a monopoly on fresh water and natural resources, the syndicate maintains control while preserving deniability. The leading research labs are now funded by the syndicate.
+"The masses cannot govern themselves. It is our prerogative to give them every opportunity to succeed. "
 
 ## aesthetics
 1. Sounds are complimentary with instruments in the music.

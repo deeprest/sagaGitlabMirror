@@ -3,7 +3,8 @@ using System.Collections;
 
 public enum DamageType
 {
-  Generic
+  Generic,
+  Fire
 }
 
 [CreateAssetMenu]
@@ -12,25 +13,12 @@ public class Damage : ScriptableObject
   public DamageType type = DamageType.Generic;
   public int amount = 1;
   // optional instigator
+  [HideInInspector]
   public Character instigator;
   // the projectile, etc
+  [HideInInspector]
   public Transform damageSource;
+  [HideInInspector]
   public Vector2 point;
-
  
 }
-
-
-// todo convert SOs to structs
-/*
-public struct Damage
-{
-  public DamageType type;
-  public int amount;
-  // optional instigator
-  public Character instigator;
-  // the projectile, etc
-  public Transform damageSource;
-  public Vector2 point;
-}
-*/

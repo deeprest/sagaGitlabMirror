@@ -713,12 +713,96 @@ public class PlayerController : Character
     inputGraphook = false;
   }
 
-  void Update()
-  {
-    if( Global.Paused )
-      return;
 
-    // INPUTS
+  void UpdateInput()
+  {
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+      Vector2 delta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
+      delta.y = -delta.y;
+      if( Global.instance.UsingGamepad )
+        cursorDelta = delta * DirectionalCursorDistance;
+      else
+        cursorDelta += delta;
+#else
+    if( Global.instance.UsingGamepad )
+    {
+      cursorDelta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
+    }
+    else
+    {
+      cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
+      cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
+    }
+#endif
+    cursorOrigin = arm.position;
+    CursorAboveMinimumDistance = cursorDelta.magnitude > DirectionalMinimum;
+    Cursor.gameObject.SetActive( CursorAboveMinimumDistance );
+
+    if( Global.instance.AimSnap )
+    {
+      if( CursorAboveMinimumDistance )
+      {
+        // set cursor
+        CursorSnapped.gameObject.SetActive( true );
+        float angle = Mathf.Atan2( cursorDelta.x, cursorDelta.y ) / Mathf.PI;
+        float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
+        Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
+        AimPosition = cursorOrigin + snapped * SnapCursorDistance;
+        CursorSnapped.position = AimPosition;
+        CursorSnapped.rotation = Quaternion.LookRotation( Vector3.forward, snapped );
+        CursorWorldPosition = cursorOrigin + cursorDelta;
+      }
+      else
+      {
+        CursorSnapped.gameObject.SetActive( false );
+      }
+    }
+    else
+    {
+      CursorSnapped.gameObject.SetActive( false );
+      /*if( CursorAboveMinimumDistance )*/
+      AimPosition = cursorOrigin + cursorDelta;
+      /*else
+          AimPosition = cursorOrigin + (facingRight ^ wallsliding ? Vector2.right : Vector2.left);*/
+      CursorWorldPosition = AimPosition;
+    }
+
+    if( Global.instance.AutoAim )
+    {
+      CursorWorldPosition = cursorOrigin + cursorDelta;
+      RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
+      float distance = Mathf.Infinity;
+      Transform closest = null;
+      foreach( var hit in hits )
+      {
+        float dist = Vector2.Distance( CursorWorldPosition, hit.transform.position );
+        if( dist < distance )
+        {
+          closest = hit.transform;
+          distance = dist;
+        }
+      }
+
+      if( closest == null )
+      {
+        CursorAutoAim.gameObject.SetActive( false );
+      }
+      else
+      {
+        CursorAutoAim.gameObject.SetActive( true );
+        // todo adjust for flight path
+        //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
+        AimPosition = closest.position;
+        CursorAutoAim.position = AimPosition;
+      }
+    }
+    else
+    {
+      CursorAutoAim.gameObject.SetActive( false );
+    }
+
+
     shoot = AimPosition - (Vector2)arm.position;
     // if no inputs override, then default to facing the aim direction
     if( shoot.sqrMagnitude < 0.0001f )
@@ -729,6 +813,15 @@ public class PlayerController : Character
       inputRight = true;
     if( Global.instance.Controls.BipedActions.MoveLeft.ReadValue<float>() > 0.5f )
       inputLeft = true;
+  }
+
+  void Update()
+  {
+    if( Global.Paused )
+      return;
+
+    UpdateInput();
+
 
 
     string anim = "idle";
@@ -745,10 +838,6 @@ public class PlayerController : Character
       velocity = Vector3.zero;
     else if( !(inputRight || inputLeft) )
       velocity.x = 0;
-
-    //if( carryCharacter != null )
-    //  velocity = carryCharacter.velocity;
-    //carryCharacter = null;
 
     // WEAPONS / ABILITIES
     if( inputFire )
@@ -993,90 +1082,6 @@ public class PlayerController : Character
 
     UpdateParts();
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-      Vector2 delta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
-      delta.y = -delta.y;
-      if( Global.instance.UsingGamepad )
-        cursorDelta = delta * DirectionalCursorDistance;
-      else
-        cursorDelta += delta;
-#else
-    if( Global.instance.UsingGamepad )
-    {
-      cursorDelta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
-    }
-    else
-    {
-      cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
-      cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
-    }
-#endif
-    cursorOrigin = arm.position;
-    CursorAboveMinimumDistance = cursorDelta.magnitude > DirectionalMinimum;
-    Cursor.gameObject.SetActive( CursorAboveMinimumDistance );
-
-    if( Global.instance.AimSnap )
-    {
-      if( CursorAboveMinimumDistance )
-      {
-        // set cursor
-        CursorSnapped.gameObject.SetActive( true );
-        float angle = Mathf.Atan2( cursorDelta.x, cursorDelta.y ) / Mathf.PI;
-        float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
-        Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
-        AimPosition = cursorOrigin + snapped * SnapCursorDistance;
-        CursorSnapped.position = AimPosition;
-        CursorSnapped.rotation = Quaternion.LookRotation( Vector3.forward, snapped );
-        CursorWorldPosition = cursorOrigin + cursorDelta;
-      }
-      else
-      {
-        CursorSnapped.gameObject.SetActive( false );
-      }
-    }
-    else
-    {
-      CursorSnapped.gameObject.SetActive( false );
-      /*if( CursorAboveMinimumDistance )*/
-      AimPosition = cursorOrigin + cursorDelta;
-      /*else
-          AimPosition = cursorOrigin + (facingRight ^ wallsliding ? Vector2.right : Vector2.left);*/
-      CursorWorldPosition = AimPosition;
-    }
-
-    if( Global.instance.AutoAim )
-    {
-      CursorWorldPosition = cursorOrigin + cursorDelta;
-      RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
-      float distance = Mathf.Infinity;
-      Transform closest = null;
-      foreach( var hit in hits )
-      {
-        float dist = Vector2.Distance( CursorWorldPosition, hit.transform.position );
-        if( dist < distance )
-        {
-          closest = hit.transform;
-          distance = dist;
-        }
-      }
-
-      if( closest == null )
-      {
-        CursorAutoAim.gameObject.SetActive( false );
-      }
-      else
-      {
-        CursorAutoAim.gameObject.SetActive( true );
-        // todo adjust for flight path
-        //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
-        AimPosition = closest.position;
-        CursorAutoAim.position = AimPosition;
-      }
-    }
-    else
-    {
-      CursorAutoAim.gameObject.SetActive( false );
-    }
 
     Cursor.position = CursorWorldPosition;
 

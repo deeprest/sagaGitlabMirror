@@ -3,7 +3,6 @@ pP
 
 
 - Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
-
 - confirm that Teams are working for all characters.
 - Pawns and Controllers
 - spiderbot.

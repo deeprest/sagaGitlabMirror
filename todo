@@ -1,11 +1,7 @@
 - Design doc
-+ ase import, secondary textures
-- git post clone script (hooks?)
 
-- Damage should not be SOs
-- ControlText.cs VS Sign.cs
+- spiderbot
 
-- light not shown on bg pillar
 - stickybomb exploding interaction with shield:
   1) do raycast to each IDamage within range
   2) if raycast hits something else, do a projection of the collider onto a perpendicular vector of the normal
