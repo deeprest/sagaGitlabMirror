@@ -2,8 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.IO;
+#if UNITY_EDITOR
+using UnityEditor;
+[CustomEditor( typeof( PlayerController ) )]
+public class PlayerControllerEditor : Editor
+{
+  public override void OnInspectorGUI()
+  {
+    base.OnInspectorGUI();
+    PlayerController pc = target as PlayerController;
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "record" ) )
+      pc.RecordBegin();
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "end" ) )
+      pc.RecordEnd();
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "play recording" ) )
+      pc.RecordPlayback();
 
-[CreateAssetMenu]
+  }
+}
+#endif
+
 public class PlayerController : Controller
 {
   public float DirectionalCursorDistance = 3;
@@ -13,6 +32,10 @@ public class PlayerController : Controller
   {
     base.Awake();
     BindControls();
+
+#if UNITY_EDITOR
+    recordpath = Application.persistentDataPath + "/input.dat";
+#endif
   }
 
   void BindControls()
@@ -44,6 +67,20 @@ public class PlayerController : Controller
   // apply input to pawn
   public override void Update()
   {
+
+    if( playback )
+    {
+      if( pawn == null || playbackIndex >= evt.Count )
+        playback = false;
+      else
+      {
+        pawn.transform.position = evt[playbackIndex].position;
+        pawn.ApplyInput( evt[playbackIndex].input );
+        playbackIndex++;
+      }
+    }
+    else
+    {
 #if UNITY_WEBGL && !UNITY_EDITOR
       Vector2 delta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
       delta.y = -delta.y;
@@ -53,29 +90,207 @@ public class PlayerController : Controller
         cursorDelta += delta;
 #else
 
-    if( Global.instance.UsingGamepad )
-    {
-      cursorDelta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
-    }
-    else
-    {
-      cursorDelta += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity;// * Time.deltaTime;
-      //cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
-      aimDeltaSinceLastFrame = Vector2.zero;
-      cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
-    }
+      if( Global.instance.UsingGamepad )
+      {
+        cursorDelta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
+      }
+      else
+      {
+        cursorDelta += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity;// * Time.deltaTime;
+                                                                                  //cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
+        aimDeltaSinceLastFrame = Vector2.zero;
+        cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
+      }
 #endif
-    input.Aim = cursorDelta;
+      input.Aim = cursorDelta;
 
-    if( Global.instance.Controls.BipedActions.MoveRight.ReadValue<float>() > 0.5f )
-      input.MoveRight = true;
-    if( Global.instance.Controls.BipedActions.MoveLeft.ReadValue<float>() > 0.5f )
-      input.MoveLeft = true;
+      if( Global.instance.Controls.BipedActions.MoveRight.ReadValue<float>() > 0.5f )
+        input.MoveRight = true;
+      if( Global.instance.Controls.BipedActions.MoveLeft.ReadValue<float>() > 0.5f )
+        input.MoveLeft = true;
 
+      if( pawn != null )
+        pawn.ApplyInput( input );
 
-    if( pawn != null )
-      pawn.ApplyInput( input );
+      if( recording )
+        evt.Add( new RecordState { input = input, position = pawn.transform.position } );
+    }
+
     input = default;
   }
+
+#if UNITY_EDITOR
+
+  struct RecordState
+  {
+    public InputState input;
+    public Vector2 position;
+  }
+  // input state = 2 + 8 (position)
+  const int stateSize = (2 + 8) + 8;
+
+  struct RecordHeader
+  {
+    public Vector2 initialposition;
+  }
+  const int headerSize = 8;
+
+  bool recording;
+  bool playback;
+  int playbackIndex = 0;
+  RecordHeader header;
+  List<RecordState> evt;
+  string recordpath;
+
+  public void RecordToggle()
+  {
+    if( recording )
+      RecordEnd();
+    else
+      RecordBegin();
+  }
+
+  public bool IsRecording()
+  {
+    return recording;
+  }
+
+  public void RecordBegin()
+  {
+    recording = true;
+    evt = new List<RecordState>();
+    header = new RecordHeader
+    {
+      initialposition = pawn.transform.position
+    };
+  }
+
+  public void RecordEnd()
+  {
+    recording = false;
+
+    byte[] x;
+    int p = 0;
+    byte[] buffer = new byte[headerSize + evt.Count * stateSize];
+
+    FileStream fs = File.Open( recordpath, FileMode.Create );
+    x = System.BitConverter.GetBytes( header.initialposition.x );
+    buffer[p] = x[0];
+    buffer[p + 1] = x[1];
+    buffer[p + 2] = x[2];
+    buffer[p + 3] = x[3];
+    p += 4;
+
+    x = System.BitConverter.GetBytes( header.initialposition.y );
+    buffer[p] = x[0];
+    buffer[p + 1] = x[1];
+    buffer[p + 2] = x[2];
+    buffer[p + 3] = x[3];
+    p += 4;
+
+    for( int i = 0; i < evt.Count; i++ )
+    {
+      RecordState state = evt[i];
+      InputState input = state.input;
+      // 2 byte
+      int value =
+        (input.MoveRight ? 0x1 : 0x0) << 0 |
+        (input.MoveLeft ? 0x1 : 0x0) << 1 |
+        (input.JumpStart ? 0x1 : 0x0) << 2 |
+        (input.JumpEnd ? 0x1 : 0x0) << 3 |
+        (input.DashStart ? 0x1 : 0x0) << 4 |
+        (input.DashEnd ? 0x1 : 0x0) << 5 |
+        (input.ChargeStart ? 0x1 : 0x0) << 6 |
+        (input.Charge ? 0x1 : 0x0) << 7 |
+
+        (input.ChargeEnd ? 0x1 : 0x0) << 8 |
+        (input.Graphook ? 0x1 : 0x0) << 9 |
+        (input.Shield ? 0x1 : 0x0) << 10 |
+        (input.Fire ? 0x1 : 0x0) << 11 |
+        (input.Interact ? 0x1 : 0x0) << 12 |
+        (input.NextWeapon ? 0x1 : 0x0) << 13 |
+        (input.Down ? 0x1 : 0x0) << 14;
+
+      buffer[p] = (byte)value;
+      buffer[p + 1] = (byte)(value >> 8);
+      p += 2;
+
+      x = System.BitConverter.GetBytes( input.Aim.x );
+      buffer[p] = x[0];
+      buffer[p + 1] = x[1];
+      buffer[p + 2] = x[2];
+      buffer[p + 3] = x[3];
+      p += 4;
+
+      x = System.BitConverter.GetBytes( input.Aim.y );
+      buffer[p] = x[0];
+      buffer[p + 1] = x[1];
+      buffer[p + 2] = x[2];
+      buffer[p + 3] = x[3];
+      p += 4;
+
+      // position
+      x = System.BitConverter.GetBytes( state.position.x );
+      buffer[p] = x[0];
+      buffer[p + 1] = x[1];
+      buffer[p + 2] = x[2];
+      buffer[p + 3] = x[3];
+      p += 4;
+
+      x = System.BitConverter.GetBytes( state.position.y );
+      buffer[p] = x[0];
+      buffer[p + 1] = x[1];
+      buffer[p + 2] = x[2];
+      buffer[p + 3] = x[3];
+      p += 4;
+    }
+
+    fs.Write( buffer, 0, buffer.Length );
+    fs.Flush();
+    fs.Close();
+  }
+
+  public void RecordPlayback()
+  {
+    evt = new List<RecordState>();
+    playbackIndex = 0;
+
+    byte[] buffer = File.ReadAllBytes( recordpath );
+    // header
+    pawn.transform.position = new Vector3( System.BitConverter.ToSingle( buffer, 0 ), System.BitConverter.ToSingle( buffer, 4 ), 0 );
+    // frames
+    for( int i = headerSize; i < buffer.Length; i += stateSize )
+    {
+      InputState state = new InputState
+      {
+        MoveRight = ((buffer[i] >> 0) & 0x1) > 0,
+        MoveLeft = ((buffer[i] >> 1) & 0x1) > 0,
+        JumpStart = ((buffer[i] >> 2) & 0x1) > 0,
+        JumpEnd = ((buffer[i] >> 3) & 0x1) > 0,
+        DashStart = ((buffer[i] >> 4) & 0x1) > 0,
+        DashEnd = ((buffer[i] >> 5) & 0x1) > 0,
+        ChargeStart = ((buffer[i] >> 6) & 0x1) > 0,
+        Charge = ((buffer[i] >> 7) & 0x1) > 0,
+
+        ChargeEnd = ((buffer[i + 1] >> 0) & 0x1) > 0,
+        Graphook = ((buffer[i + 1] >> 1) & 0x1) > 0,
+        Shield = ((buffer[i + 1] >> 2) & 0x1) > 0,
+        Fire = ((buffer[i + 1] >> 3) & 0x1) > 0,
+        Interact = ((buffer[i + 1] >> 4) & 0x1) > 0,
+        NextWeapon = ((buffer[i + 1] >> 5) & 0x1) > 0,
+        Down = ((buffer[i + 1] >> 6) & 0x1) > 0,
+
+        Aim = new Vector2( System.BitConverter.ToSingle( buffer, i + 2 ), System.BitConverter.ToSingle( buffer, i + 6 ) )
+      };
+
+      Vector2 pos = new Vector2( System.BitConverter.ToSingle( buffer, i + 10 ), System.BitConverter.ToSingle( buffer, i + 14 ) );
+      evt.Add( new RecordState { input = state, position = pos } );
+    }
+
+    playback = true;
+
+  }
+
+#endif
 }
 

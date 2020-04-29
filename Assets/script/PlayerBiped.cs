@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
+/*
 #if UNITY_EDITOR
 using UnityEditor;
 [CustomEditor( typeof( PlayerBiped ) )]
-public class PlayerControllerEditor : Editor
+public class PlayerBipedEditor : Editor
 {
   public override void OnInspectorGUI()
   {
@@ -29,6 +29,7 @@ public class PlayerControllerEditor : Editor
   }
 }
 #endif
+*/
 
 /*
 + Separate inputs from actions.
@@ -107,13 +108,6 @@ public class PlayerBiped : Pawn
   public float dashDuration = 1;
   public float landDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
-
-
-
-
-
-
-
 
   Vector2 shoot;
 

@@ -138,6 +138,7 @@ public class Global : MonoBehaviour
   [SerializeField] Image fader;
   public GameObject ready;
   [SerializeField] GameObject OnboardingControls;
+  [SerializeField] Image RecordingIndicator;
   // cursor
   public float CursorOuter = 1;
   public Vector2 CursorWorldPosition { get { if( CurrentPlayer != null ) return CurrentPlayer.CursorWorldPosition; else return Vector3.zero; } }
@@ -294,6 +295,8 @@ public class Global : MonoBehaviour
     else
       Camera.main.fieldOfView = 20;
 
+    RecordingIndicator.gameObject.SetActive( false );
+
     HideHUD();
     HideMinimap();
     HidePauseMenu();
@@ -439,6 +442,17 @@ public class Global : MonoBehaviour
           sceneScript.AssignCameraZone( sceneScript.CameraZone );
       }
     };
+
+    Controls.GlobalActions.RecordToggle.performed += ( obj ) => {
+      PlayerController.RecordToggle();
+      RecordingIndicator.gameObject.SetActive( PlayerController.IsRecording() );
+    };
+
+    Controls.GlobalActions.RecordPlayback.performed += ( obj ) => {
+      PlayerController.RecordPlayback();
+      RecordingIndicator.gameObject.SetActive( PlayerController.IsRecording() );
+    };
+
 
     Controls.MenuActions.Back.performed += ( obj ) => {
       if( MenuShowing )
@@ -682,7 +696,7 @@ public class Global : MonoBehaviour
     CurrentPlayer.SpeedFactorNormalized = FloatSetting["PlayerSpeedFactor"].Value;
 
     PlayerController = ScriptableObject.CreateInstance<PlayerController>();
-    PlayerController.pawn = CurrentPlayer;
+    PlayerController.AssignPawn( CurrentPlayer );
   }
 
   public Vector3 FindSpawnPosition()
@@ -1135,7 +1149,7 @@ public class Global : MonoBehaviour
     CreateBoolSetting( "ShowAimPath", false, delegate ( bool value ) { ShowAimPath = value; } );
 
     CreateFloatSetting( "CursorOuter", 1, 0, 1, 20, delegate ( float value ) { CursorOuter = value; } );
-    CreateFloatSetting( "CursorSensitivity", 1, 0.1f, 10, 100, delegate ( float value ) { CursorSensitivity = value; } );
+    CreateFloatSetting( "CursorSensitivity", 1, 0.01f, 2, 100, delegate ( float value ) { CursorSensitivity = value; } );
     CreateFloatSetting( "CameraLerpAlpha", 10, 1, 10, 100, delegate ( float value ) { CameraController.lerpAlpha = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 20, delegate ( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 10, delegate ( float value ) { deadZone = value; } );

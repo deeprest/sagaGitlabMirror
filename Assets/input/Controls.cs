@@ -57,6 +57,22 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""RecordToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""354e88f1-933e-4ba7-8642-7ad82e28fb66"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""RecordPlayback"",
+                    ""type"": ""Button"",
+                    ""id"": ""7edecc6a-dba8-4135-b668-4f76a8f9b73a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -233,6 +249,28 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Mouse+Keyboard;Gamepad"",
                     ""action"": ""Any"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c8fff7fd-3999-4672-a4b4-313f556bc93e"",
+                    ""path"": ""<Keyboard>/f6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard"",
+                    ""action"": ""RecordToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ea916033-f984-4091-84b2-89185b83aa0b"",
+                    ""path"": ""<Keyboard>/f7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard"",
+                    ""action"": ""RecordPlayback"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -944,6 +982,8 @@ public class @Controls : IInputActionCollection, IDisposable
         m_GlobalActions_Pause = m_GlobalActions.FindAction("Pause", throwIfNotFound: true);
         m_GlobalActions_Screenshot = m_GlobalActions.FindAction("Screenshot", throwIfNotFound: true);
         m_GlobalActions_DEVRespawn = m_GlobalActions.FindAction("DEV-Respawn", throwIfNotFound: true);
+        m_GlobalActions_RecordToggle = m_GlobalActions.FindAction("RecordToggle", throwIfNotFound: true);
+        m_GlobalActions_RecordPlayback = m_GlobalActions.FindAction("RecordPlayback", throwIfNotFound: true);
         // MenuActions
         m_MenuActions = asset.FindActionMap("MenuActions", throwIfNotFound: true);
         m_MenuActions_Move = m_MenuActions.FindAction("Move", throwIfNotFound: true);
@@ -1021,6 +1061,8 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_GlobalActions_Pause;
     private readonly InputAction m_GlobalActions_Screenshot;
     private readonly InputAction m_GlobalActions_DEVRespawn;
+    private readonly InputAction m_GlobalActions_RecordToggle;
+    private readonly InputAction m_GlobalActions_RecordPlayback;
     public struct GlobalActionsActions
     {
         private @Controls m_Wrapper;
@@ -1030,6 +1072,8 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Pause => m_Wrapper.m_GlobalActions_Pause;
         public InputAction @Screenshot => m_Wrapper.m_GlobalActions_Screenshot;
         public InputAction @DEVRespawn => m_Wrapper.m_GlobalActions_DEVRespawn;
+        public InputAction @RecordToggle => m_Wrapper.m_GlobalActions_RecordToggle;
+        public InputAction @RecordPlayback => m_Wrapper.m_GlobalActions_RecordPlayback;
         public InputActionMap Get() { return m_Wrapper.m_GlobalActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1054,6 +1098,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @DEVRespawn.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
                 @DEVRespawn.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
                 @DEVRespawn.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
+                @RecordToggle.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordToggle;
+                @RecordToggle.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordToggle;
+                @RecordToggle.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordToggle;
+                @RecordPlayback.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordPlayback;
+                @RecordPlayback.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordPlayback;
+                @RecordPlayback.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordPlayback;
             }
             m_Wrapper.m_GlobalActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -1073,6 +1123,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @DEVRespawn.started += instance.OnDEVRespawn;
                 @DEVRespawn.performed += instance.OnDEVRespawn;
                 @DEVRespawn.canceled += instance.OnDEVRespawn;
+                @RecordToggle.started += instance.OnRecordToggle;
+                @RecordToggle.performed += instance.OnRecordToggle;
+                @RecordToggle.canceled += instance.OnRecordToggle;
+                @RecordPlayback.started += instance.OnRecordPlayback;
+                @RecordPlayback.performed += instance.OnRecordPlayback;
+                @RecordPlayback.canceled += instance.OnRecordPlayback;
             }
         }
     }
@@ -1304,6 +1360,8 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnPause(InputAction.CallbackContext context);
         void OnScreenshot(InputAction.CallbackContext context);
         void OnDEVRespawn(InputAction.CallbackContext context);
+        void OnRecordToggle(InputAction.CallbackContext context);
+        void OnRecordPlayback(InputAction.CallbackContext context);
     }
     public interface IMenuActionsActions
     {

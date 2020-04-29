@@ -44,6 +44,22 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "RecordToggle",
+                    "type": "Button",
+                    "id": "354e88f1-933e-4ba7-8642-7ad82e28fb66",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "RecordPlayback",
+                    "type": "Button",
+                    "id": "7edecc6a-dba8-4135-b668-4f76a8f9b73a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -220,6 +236,28 @@
                     "processors": "",
                     "groups": "Mouse+Keyboard;Gamepad",
                     "action": "Any",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c8fff7fd-3999-4672-a4b4-313f556bc93e",
+                    "path": "<Keyboard>/f6",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse+Keyboard",
+                    "action": "RecordToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ea916033-f984-4091-84b2-89185b83aa0b",
+                    "path": "<Keyboard>/f7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse+Keyboard",
+                    "action": "RecordPlayback",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
