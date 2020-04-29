@@ -4,7 +4,7 @@ using UnityEngine.Experimental.Rendering.Universal;
 
 public class FlameProjectile : Projectile, IDamage
 {
-  public new Light2D light;
+  public Light2D light;
   public Vector2 constantAcceleration;
   Timer timeoutTimer;
   int HitCount;

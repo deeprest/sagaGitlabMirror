@@ -6,12 +6,12 @@ using UnityEngine.Experimental.Rendering.Universal;
 public class Shield : MonoBehaviour, IDamage
 {
   [SerializeField] Entity character;
-  [SerializeField] new Collider2D collider;
+  [SerializeField] Collider2D collider;
   public AudioSource source;
   public AudioClip soundHit;
   public Damage damage;
   public float lightIntensity;
-  public new Light2D light;
+  public Light2D light;
   public SpriteRenderer sr;
   public float pulseDuration = 1;
   Timer pulseTimer = new Timer();

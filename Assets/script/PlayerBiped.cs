@@ -63,7 +63,7 @@ state
 
 public class PlayerBiped : Pawn
 {
-  new public AudioSource audio;
+  public AudioSource audio;
   public AudioSource audio2;
   public ParticleSystem dashSmoke;
   public GameObject dashflashPrefab;

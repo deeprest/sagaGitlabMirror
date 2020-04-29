@@ -19,7 +19,7 @@ public class Entity : MonoBehaviour, IDamage
   public Team Team;
   public Rigidbody2D body;
   public BoxCollider2D box;
-  public new SpriteRenderer renderer;
+  public SpriteRenderer renderer;
   public Animator animator;
 
   public List<Collider2D> IgnoreCollideObjects;

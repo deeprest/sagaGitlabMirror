@@ -8,7 +8,7 @@ public class StickyBomb : Projectile, IDamage
   Timer timeoutTimer = new Timer();
   Timer pulseTimer = new Timer();
   [SerializeField] float pulseInterval = 0.2f;
-  [SerializeField] new Light2D light;
+  [SerializeField] Light2D light;
   [SerializeField] float radiusFudge;
   public bool AlignRotationToVelocity = true;
   [SerializeField] float AttachDuration = 2;

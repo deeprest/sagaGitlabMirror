@@ -5,7 +5,7 @@ using UnityEngine;
 // TODO dash smoke, dash sound
 public class Mech : Entity
 {
-  new public AudioSource audio;
+  public AudioSource audio;
 
   public bool facingRight;
   public BoxCollider2D fist;

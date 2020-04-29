@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Laserbeam : Projectile//, IDamage
 {
-  [SerializeField] new SpriteRenderer renderer;
+  [SerializeField] SpriteRenderer renderer;
   public GameObject lightPrefab;
   public float lightInterval;
   [SerializeField] GameObject hitPrefab;

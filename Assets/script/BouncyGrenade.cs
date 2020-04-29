@@ -7,7 +7,7 @@ public class BouncyGrenade : Projectile, IDamage
   Timer timeoutTimer = new Timer();
   Timer pulseTimer = new Timer();
   [SerializeField] float pulseInterval = 0.2f;
-  [SerializeField] new Light2D light;
+  [SerializeField] Light2D light;
   [SerializeField] float radiusFudge;
 
   void Start()

@@ -33,9 +33,7 @@ public class PlayerController : Controller
     base.Awake();
     BindControls();
 
-#if UNITY_EDITOR
     recordpath = Application.persistentDataPath + "/input.dat";
-#endif
   }
 
   void BindControls()
@@ -119,7 +117,7 @@ public class PlayerController : Controller
     input = default;
   }
 
-#if UNITY_EDITOR
+  #region Record
 
   struct RecordState
   {
@@ -132,8 +130,23 @@ public class PlayerController : Controller
   struct RecordHeader
   {
     public Vector2 initialposition;
+    // todo need all relevent pawn state
+    // current weapon index
   }
   const int headerSize = 8;
+
+
+  // todo record the initial state of all objects in the scene
+  // store random seed / generation seed
+  // store the scene index or sname
+
+  // replace using frame index with timestamps. during playback, look ahead to the
+  // state in the next keyframe and interpolate to it.
+
+  // add chop drop event
+  // store slo-motion begin/end events
+  // store pause, menu active events (or ignore them during capture)
+
 
   bool recording;
   bool playback;
@@ -291,6 +304,6 @@ public class PlayerController : Controller
 
   }
 
-#endif
+  #endregion
 }
 

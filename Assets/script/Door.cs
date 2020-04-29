@@ -7,7 +7,7 @@ public class Door : MonoBehaviour, ITrigger
 {
   [SerializeField] Animator animator;
   [SerializeField] Collider2D cd;
-  [SerializeField] new AudioSource audio;
+  [SerializeField] AudioSource audio;
   [SerializeField] NavMeshObstacle obstacle;
   public bool isOpen = false;
   bool transitioning = false;

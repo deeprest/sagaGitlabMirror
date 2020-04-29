@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-#if UNITY_EDITOR
-using System.Runtime.InteropServices;
-#endif
+﻿using UnityEngine;
+
 
 [System.Serializable]
 public struct InputState
@@ -25,7 +21,7 @@ public struct InputState
   public bool Interact;
   public bool NextWeapon;
   public bool Down;
-  public bool padding;
+  public bool _padding;
   // 8 byte 
   public Vector2 Aim;
 }
