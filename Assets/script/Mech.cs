@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // TODO dash smoke, dash sound
-public class Mech : Character
+public class Mech : Entity
 {
   new public AudioSource audio;
 
@@ -43,7 +43,7 @@ public class Mech : Character
   // sight, target
   Collider2D[] results = new Collider2D[8];
   int LayerMaskCharacter;
-  [SerializeField] Character Target;
+  [SerializeField] Entity Target;
   Timer SightPulseTimer = new Timer();
 
   protected override void Start()
@@ -63,7 +63,7 @@ public class Mech : Character
       {
         Collider2D cld = results[i];
         //Character character = results[i].transform.root.GetComponentInChildren<Character>();
-        Character character = results[i].GetComponent<Character>();
+        Entity character = results[i].GetComponent<Entity>();
         if( character != null && IsEnemyTeam( character.Team ) )
         {
           Target = character;

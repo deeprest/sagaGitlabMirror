@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -2265,6 +2265,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7353567398456646803, guid: 783b12a0b733b44e0b7380d21445bf79,
+        type: 3}
+      propertyPath: MMXStyleDoorTransition
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8166364659249080162, guid: 783b12a0b733b44e0b7380d21445bf79,
         type: 3}
       propertyPath: m_Name

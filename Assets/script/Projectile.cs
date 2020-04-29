@@ -8,7 +8,7 @@ public class Projectile : MonoBehaviour
   public CircleCollider2D circle;
 
   public Weapon weapon;
-  public Character instigator;
+  public Entity instigator;
 
   public Damage ContactDamage;
   public float speed = 1;

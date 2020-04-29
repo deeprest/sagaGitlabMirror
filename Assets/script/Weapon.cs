@@ -66,7 +66,7 @@ public class Weapon : ScriptableObject
     return points.ToArray();
   }
 
-  public void FireWeapon( Character instigator, Vector2 pos, Vector2 shoot )
+  public void FireWeapon( Entity instigator, Vector2 pos, Vector2 shoot )
   {
     if( projectileCount == 1 )
     {
@@ -89,7 +89,7 @@ public class Weapon : ScriptableObject
     }
   }
 
-  bool FireWeaponProjectile( Character instigator, Projectile projectilePrefab, Vector2 pos, Vector2 shoot, bool playSound = true )
+  bool FireWeaponProjectile( Entity instigator, Projectile projectilePrefab, Vector2 pos, Vector2 shoot, bool playSound = true )
   {
     if( weaponType == WeaponType.Projectile )
     {

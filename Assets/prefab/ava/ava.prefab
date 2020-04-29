@@ -5007,6 +5007,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b7dea512de4f446d8c2325d6a19e493, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controller: {fileID: 0}
   Team: 1
   body: {fileID: 2111217764532811413}
   box: {fileID: 61999569739760366}
@@ -5016,6 +5017,7 @@ MonoBehaviour:
   spriteRenderers: []
   UseGravity: 1
   IsStatic: 0
+  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
@@ -5061,17 +5063,20 @@ MonoBehaviour:
   dashDuration: 0.5
   landDuration: 0.1
   wallSlideFactor: 8
-  inputRight: 0
-  inputLeft: 0
-  inputJumpStart: 0
-  inputJumpEnd: 0
-  inputDashStart: 0
-  inputDashEnd: 0
-  inputChargeStart: 0
-  inputCharge: 0
-  inputChargeEnd: 0
-  inputGraphook: 0
-  inputFire: 0
+  input:
+    Right: 0
+    Left: 0
+    JumpStart: 0
+    JumpEnd: 0
+    DashStart: 0
+    DashEnd: 0
+    ChargeStart: 0
+    Charge: 0
+    ChargeEnd: 0
+    Graphook: 0
+    Shield: 0
+    Fire: 0
+    Interact: 0
   facingRight: 0
   onGround: 0
   jumping: 0

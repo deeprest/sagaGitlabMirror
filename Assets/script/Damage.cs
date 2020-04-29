@@ -14,7 +14,7 @@ public class Damage : ScriptableObject
   public int amount = 1;
   // optional instigator
   [HideInInspector]
-  public Character instigator;
+  public Entity instigator;
   // the projectile, etc
   [HideInInspector]
   public Transform damageSource;

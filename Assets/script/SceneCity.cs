@@ -64,9 +64,10 @@ public class SceneCity : SceneScript
     Global.instance.Controls.BipedActions.Disable();
     Global.instance.Controls.BipedActions.Aim.Enable();
     Global.instance.Controls.BipedActions.Fire.Enable();
+
     new Timer( runRightDuration, delegate
     {
-      Global.instance.CurrentPlayer.inputRight = true;
+      Global.instance.CurrentPlayer.ApplyInput( new InputState { MoveRight = true } );
     }, delegate
     {
       Global.instance.Controls.BipedActions.Enable();

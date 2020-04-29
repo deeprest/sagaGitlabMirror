@@ -2,7 +2,7 @@
 using System.Collections;
 
 
-public class Wheelbot : Character, IDamage
+public class Wheelbot : Entity, IDamage
 {
   public Transform rotator;
   [SerializeField] float wheelAnimRate = 3;

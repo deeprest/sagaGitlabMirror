@@ -11,7 +11,7 @@ public class Chopper : MonoBehaviour {
   public float timeUntilDrop = 1;
   float timeStart;
 
-  public void StartDrop( PlayerController character )
+  public void StartDrop( PlayerBiped character )
   {
     transform.position = chopperStartPoint.position;
     character.hanging = true;

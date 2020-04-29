@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : Character
+public class Turret : Entity
 {
   [Header( "Turret" )]
   [SerializeField] Transform cannon;

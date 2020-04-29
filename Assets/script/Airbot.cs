@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.AI;
 
-public class Airbot : Character
+public class Airbot : Entity
 {
   [SerializeField] Transform sightOrigin;
   public float sightRange = 6;

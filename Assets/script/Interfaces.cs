@@ -5,14 +5,14 @@ using UnityEngine;
 
 public struct ActionData
 {
-  public Character instigator;
+  public Entity instigator;
   public List<string> actions;
   public Transform indicator;
 }
 
 public interface IAction
 {
-  void OnAction( Character instigator, string action = "default" );
+  void OnAction( Entity instigator, string action = "default" );
   void GetActionContext( ref ActionData actionData );
 }
 
@@ -30,7 +30,7 @@ public interface IOwnable
 {
   bool IsOwned();
   void ClearOwner();
-  void AssignOwner( Character owner );
+  void AssignOwner( Entity owner );
 }
 
 public interface ITrigger

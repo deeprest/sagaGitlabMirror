@@ -56,7 +56,7 @@ public class LiftbotEdtitor : Editor
 }
 #endif
 
-public class Liftbot : Character, IWorldSelectable
+public class Liftbot : Entity, IWorldSelectable
 {
   public float flySpeed = 2;
   public float waitDuration = 2;

@@ -1,11 +1,17 @@
 pP
 *Establish the design before resuming work*
 
-
-- Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
-- confirm that Teams are working for all characters.
 - Pawns and Controllers
+- turrent projectiles do not hit player
+
 - spiderbot.
+
+
+- confirm that Teams are working for all characters.
+- Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
+- remove global references to CurrentPlayer where possible
+
+- cursorOuter is different based on control device
 
 ### Composite Sprite Problems
 + composite sprite render layers. Create a layer for each composite, or how to keep entire composites from interlacing with one another? SOLUTION: Animate a *struct* int for each piece, and update the sortingOrder of the SpriteRenderers from LateUpdate().

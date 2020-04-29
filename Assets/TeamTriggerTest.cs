@@ -7,6 +7,6 @@ public class TeamTriggerTest : MonoBehaviour, ITrigger
   public Team SetToTeam;
   public void Trigger( Transform instigator )
   {
-    instigator.GetComponent<Character>().Team = SetToTeam;
+    instigator.GetComponent<Entity>().Team = SetToTeam;
   }
 }

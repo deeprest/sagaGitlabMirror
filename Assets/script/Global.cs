@@ -119,7 +119,8 @@ public class Global : MonoBehaviour
   [Header( "Transient (Assigned at runtime)" )]
   public bool Updating = false;
   SceneScript sceneScript;
-  public PlayerController CurrentPlayer;
+  public PlayerBiped CurrentPlayer;
+  public PlayerController PlayerController;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
   NavMeshSurface[] meshSurfaces;
   CameraZone cachedCameraZone;
@@ -261,27 +262,12 @@ public class Global : MonoBehaviour
     InitializeInput();
 
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
-      {
-        //Debug.Log( "scene loaded: " + arg0.name );
-      };
+    {
+      //Debug.Log( "scene loaded: " + arg0.name );
+    };
     SceneManager.activeSceneChanged += delegate ( Scene arg0, Scene arg1 )
-        {
-          //Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
-        };
-    InputSystem.onDeviceChange +=
-    ( device, change ) => {
-      switch( change )
-      {
-        case InputDeviceChange.Added:
-        Debug.Log( "Device added: " + device );
-        break;
-        case InputDeviceChange.Removed:
-        Debug.Log( "Device removed: " + device );
-        break;
-        case InputDeviceChange.ConfigurationChanged:
-        Debug.Log( "Device configuration changed: " + device );
-        break;
-      }
+    {
+      //Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
     };
 
     GameObject[] res = Resources.LoadAll<GameObject>( "" );
@@ -393,6 +379,21 @@ public class Global : MonoBehaviour
 
   void InitializeInput()
   {
+    InputSystem.onDeviceChange += ( device, change ) => {
+      switch( change )
+      {
+        case InputDeviceChange.Added:
+        Debug.Log( "Device added: " + device );
+        break;
+        case InputDeviceChange.Removed:
+        Debug.Log( "Device removed: " + device );
+        break;
+        case InputDeviceChange.ConfigurationChanged:
+        Debug.Log( "Device configuration changed: " + device );
+        break;
+      }
+    };
+
     ReplaceControlNames.Add( "DELTA", "Mouse" );
     ReplaceControlNames.Add( "LMB", "Left Mouse Button" );
     ReplaceControlNames.Add( "RMB", "Right Mouse Button" );
@@ -407,7 +408,7 @@ public class Global : MonoBehaviour
     Controls.MenuActions.Disable();
 
     Controls.GlobalActions.Any.performed += ( obj ) => {
-      bool newvalue = obj.control.path.Contains( "Gamepad" );
+      bool newvalue = obj.control.device.name.Contains( "Gamepad" );
       if( newvalue != UsingGamepad )
       {
         UsingGamepad = newvalue;
@@ -603,6 +604,12 @@ public class Global : MonoBehaviour
     if( !Updating )
       return;
 
+
+    for( int i = 0; i < Controller.All.Count; i++ )
+    {
+      Controller.All[i].Update();
+    }
+
     if( loadingScene )
     {
       //prog = Mathf.MoveTowards( prog, progTarget, Time.unscaledDeltaTime * progressSpeed );
@@ -666,12 +673,16 @@ public class Global : MonoBehaviour
   public void SpawnPlayer()
   {
     GameObject go = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
-    CurrentPlayer = go.GetComponent<PlayerController>();
+    CurrentPlayer = go.GetComponent<PlayerBiped>();
+
     CameraController.LookTarget = CurrentPlayer.gameObject;
     CameraController.transform.position = CurrentPlayer.transform.position;
 
     // settings are read before player is created, so set player settings here.
     CurrentPlayer.SpeedFactorNormalized = FloatSetting["PlayerSpeedFactor"].Value;
+
+    PlayerController = ScriptableObject.CreateInstance<PlayerController>();
+    PlayerController.pawn = CurrentPlayer;
   }
 
   public Vector3 FindSpawnPosition()
@@ -1124,7 +1135,7 @@ public class Global : MonoBehaviour
     CreateBoolSetting( "ShowAimPath", false, delegate ( bool value ) { ShowAimPath = value; } );
 
     CreateFloatSetting( "CursorOuter", 1, 0, 1, 20, delegate ( float value ) { CursorOuter = value; } );
-    CreateFloatSetting( "CursorSensitivity", 0.01f, 0.01f, 0.1f, 10, delegate ( float value ) { CursorSensitivity = value; } );
+    CreateFloatSetting( "CursorSensitivity", 1, 0.1f, 10, 100, delegate ( float value ) { CursorSensitivity = value; } );
     CreateFloatSetting( "CameraLerpAlpha", 10, 1, 10, 100, delegate ( float value ) { CameraController.lerpAlpha = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 20, delegate ( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 10, delegate ( float value ) { deadZone = value; } );

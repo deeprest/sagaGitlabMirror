@@ -5,7 +5,7 @@ using UnityEngine.Experimental.Rendering.Universal;
 
 public class Shield : MonoBehaviour, IDamage
 {
-  [SerializeField] Character character;
+  [SerializeField] Entity character;
   [SerializeField] new Collider2D collider;
   public AudioSource source;
   public AudioClip soundHit;
@@ -28,7 +28,7 @@ public class Shield : MonoBehaviour, IDamage
   {
     sr.material.SetFloat( "_FlashAmount", 0 );
     light.intensity = 0;
-    character = GetComponentInParent<Character>();
+    character = GetComponentInParent<Entity>();
   }
 
   void Update()
@@ -57,7 +57,7 @@ public class Shield : MonoBehaviour, IDamage
       light.intensity = 0;
     } );
 
-    Character chr = d.damageSource.GetComponent<Character>();
+    Entity chr = d.damageSource.GetComponent<Entity>();
     if( chr != null )
     {
       if( damage != null )

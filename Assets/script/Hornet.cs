@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Hornet : Character
+public class Hornet : Entity
 {
   [SerializeField] float sightRange = 6;
   [SerializeField] float flySpeed = 2;
@@ -32,7 +32,7 @@ public class Hornet : Character
   // sight, target
   Collider2D[] results = new Collider2D[8];
   int LayerMaskCharacter;
-  [SerializeField] Character Target;
+  [SerializeField] Entity Target;
   Timer SightPulseTimer = new Timer();
 
   protected override void Start()
@@ -49,7 +49,7 @@ public class Hornet : Character
       {
         Collider2D cld = results[i];
         //Character character = results[i].transform.root.GetComponentInChildren<Character>();
-        Character character = results[i].GetComponent<Character>();
+        Entity character = results[i].GetComponent<Entity>();
         if( character != null && IsEnemyTeam( character.Team ) )
         {
           Target = character;

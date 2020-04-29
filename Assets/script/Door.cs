@@ -44,7 +44,7 @@ public class Door : MonoBehaviour, ITrigger
     if( transitioning )
       return;
 
-    Character check = instigator.GetComponent<Character>();
+    Entity check = instigator.GetComponent<Entity>();
     if( check != null )
     {
       bool OpenForThisCharacter = false;
@@ -83,8 +83,10 @@ public class Door : MonoBehaviour, ITrigger
               Global.instance.AssignCameraZone( CameraIn );
               runTimer.Start( runDuration, delegate
               {
-                if( right ) Global.instance.CurrentPlayer.inputRight = true;
-                else Global.instance.CurrentPlayer.inputLeft = true;
+                if( right )
+                  Global.instance.CurrentPlayer.ApplyInput( new InputState { MoveRight = true } );
+                else
+                  Global.instance.CurrentPlayer.ApplyInput( new InputState { MoveLeft = true } );
               }, delegate
               {
                 Global.instance.Controls.BipedActions.Enable();
@@ -104,8 +106,10 @@ public class Door : MonoBehaviour, ITrigger
               Global.instance.AssignCameraZone( CameraOut );
               runTimer.Start( runDuration, delegate
               {
-                if( right ) Global.instance.CurrentPlayer.inputRight = true;
-                else Global.instance.CurrentPlayer.inputLeft = true;
+                if( right )
+                  Global.instance.CurrentPlayer.ApplyInput( new InputState { MoveRight = true } );
+                else
+                  Global.instance.CurrentPlayer.ApplyInput( new InputState { MoveLeft = true } );
               }, delegate
               {
                 Global.instance.Controls.BipedActions.Enable();
