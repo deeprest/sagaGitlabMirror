@@ -43,7 +43,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Screenshot"",
+                    ""name"": ""DEV-Respawn"",
                     ""type"": ""Button"",
                     ""id"": ""cab80c60-97b6-4d13-a3a1-b86bc5188194"",
                     ""expectedControlType"": """",
@@ -51,9 +51,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""DEV-Respawn"",
+                    ""name"": ""DEV-Clone"",
                     ""type"": ""Button"",
                     ""id"": ""e7af10e7-d798-4de6-a720-df64e8970763"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Screenshot"",
+                    ""type"": ""Button"",
+                    ""id"": ""b44b7429-04b5-48ab-9faa-297e2529bd3f"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -106,17 +114,6 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Pause"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""f34c0a8a-1901-4f83-bce5-ff601f4d7645"",
-                    ""path"": ""<Keyboard>/f5"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Screenshot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -271,6 +268,28 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Mouse+Keyboard"",
                     ""action"": ""RecordPlayback"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f158069e-88d2-4b22-9550-89da2c3b06a1"",
+                    ""path"": ""<Keyboard>/f2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DEV-Clone"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f34c0a8a-1901-4f83-bce5-ff601f4d7645"",
+                    ""path"": ""<Keyboard>/f5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Screenshot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -980,8 +999,9 @@ public class @Controls : IInputActionCollection, IDisposable
         m_GlobalActions_Any = m_GlobalActions.FindAction("Any", throwIfNotFound: true);
         m_GlobalActions_Menu = m_GlobalActions.FindAction("Menu", throwIfNotFound: true);
         m_GlobalActions_Pause = m_GlobalActions.FindAction("Pause", throwIfNotFound: true);
-        m_GlobalActions_Screenshot = m_GlobalActions.FindAction("Screenshot", throwIfNotFound: true);
         m_GlobalActions_DEVRespawn = m_GlobalActions.FindAction("DEV-Respawn", throwIfNotFound: true);
+        m_GlobalActions_DEVClone = m_GlobalActions.FindAction("DEV-Clone", throwIfNotFound: true);
+        m_GlobalActions_Screenshot = m_GlobalActions.FindAction("Screenshot", throwIfNotFound: true);
         m_GlobalActions_RecordToggle = m_GlobalActions.FindAction("RecordToggle", throwIfNotFound: true);
         m_GlobalActions_RecordPlayback = m_GlobalActions.FindAction("RecordPlayback", throwIfNotFound: true);
         // MenuActions
@@ -1059,8 +1079,9 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_GlobalActions_Any;
     private readonly InputAction m_GlobalActions_Menu;
     private readonly InputAction m_GlobalActions_Pause;
-    private readonly InputAction m_GlobalActions_Screenshot;
     private readonly InputAction m_GlobalActions_DEVRespawn;
+    private readonly InputAction m_GlobalActions_DEVClone;
+    private readonly InputAction m_GlobalActions_Screenshot;
     private readonly InputAction m_GlobalActions_RecordToggle;
     private readonly InputAction m_GlobalActions_RecordPlayback;
     public struct GlobalActionsActions
@@ -1070,8 +1091,9 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Any => m_Wrapper.m_GlobalActions_Any;
         public InputAction @Menu => m_Wrapper.m_GlobalActions_Menu;
         public InputAction @Pause => m_Wrapper.m_GlobalActions_Pause;
-        public InputAction @Screenshot => m_Wrapper.m_GlobalActions_Screenshot;
         public InputAction @DEVRespawn => m_Wrapper.m_GlobalActions_DEVRespawn;
+        public InputAction @DEVClone => m_Wrapper.m_GlobalActions_DEVClone;
+        public InputAction @Screenshot => m_Wrapper.m_GlobalActions_Screenshot;
         public InputAction @RecordToggle => m_Wrapper.m_GlobalActions_RecordToggle;
         public InputAction @RecordPlayback => m_Wrapper.m_GlobalActions_RecordPlayback;
         public InputActionMap Get() { return m_Wrapper.m_GlobalActions; }
@@ -1092,12 +1114,15 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Pause.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnPause;
                 @Pause.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnPause;
-                @Screenshot.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
-                @Screenshot.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
-                @Screenshot.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
                 @DEVRespawn.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
                 @DEVRespawn.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
                 @DEVRespawn.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
+                @DEVClone.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVClone;
+                @DEVClone.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVClone;
+                @DEVClone.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVClone;
+                @Screenshot.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
+                @Screenshot.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
+                @Screenshot.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
                 @RecordToggle.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordToggle;
                 @RecordToggle.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordToggle;
                 @RecordToggle.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordToggle;
@@ -1117,12 +1142,15 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
-                @Screenshot.started += instance.OnScreenshot;
-                @Screenshot.performed += instance.OnScreenshot;
-                @Screenshot.canceled += instance.OnScreenshot;
                 @DEVRespawn.started += instance.OnDEVRespawn;
                 @DEVRespawn.performed += instance.OnDEVRespawn;
                 @DEVRespawn.canceled += instance.OnDEVRespawn;
+                @DEVClone.started += instance.OnDEVClone;
+                @DEVClone.performed += instance.OnDEVClone;
+                @DEVClone.canceled += instance.OnDEVClone;
+                @Screenshot.started += instance.OnScreenshot;
+                @Screenshot.performed += instance.OnScreenshot;
+                @Screenshot.canceled += instance.OnScreenshot;
                 @RecordToggle.started += instance.OnRecordToggle;
                 @RecordToggle.performed += instance.OnRecordToggle;
                 @RecordToggle.canceled += instance.OnRecordToggle;
@@ -1358,8 +1386,9 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnAny(InputAction.CallbackContext context);
         void OnMenu(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
-        void OnScreenshot(InputAction.CallbackContext context);
         void OnDEVRespawn(InputAction.CallbackContext context);
+        void OnDEVClone(InputAction.CallbackContext context);
+        void OnScreenshot(InputAction.CallbackContext context);
         void OnRecordToggle(InputAction.CallbackContext context);
         void OnRecordPlayback(InputAction.CallbackContext context);
     }

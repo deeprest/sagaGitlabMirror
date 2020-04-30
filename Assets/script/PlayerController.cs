@@ -65,7 +65,6 @@ public class PlayerController : Controller
   // apply input to pawn
   public override void Update()
   {
-
     if( playback )
     {
       if( pawn == null || playbackIndex >= evt.Count )
@@ -79,27 +78,18 @@ public class PlayerController : Controller
     }
     else
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-      Vector2 delta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
-      delta.y = -delta.y;
-      if( Global.instance.UsingGamepad )
-        cursorDelta = delta * DirectionalCursorDistance;
-      else
-        cursorDelta += delta;
-#else
-
       if( Global.instance.UsingGamepad )
       {
         cursorDelta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
       }
       else
       {
-        cursorDelta += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity;// * Time.deltaTime;
-                                                                                  //cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
+        cursorDelta += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity;
+        /*cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;*/
         aimDeltaSinceLastFrame = Vector2.zero;
         cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
       }
-#endif
+
       input.Aim = cursorDelta;
 
       if( Global.instance.Controls.BipedActions.MoveRight.ReadValue<float>() > 0.5f )
@@ -110,6 +100,10 @@ public class PlayerController : Controller
       if( pawn != null )
         pawn.ApplyInput( input );
 
+      /* // HACK
+      foreach( var paw in minions )
+        paw.ApplyInput( input );*/
+
       if( recording )
         evt.Add( new RecordState { input = input, position = pawn.transform.position } );
     }
@@ -117,7 +111,37 @@ public class PlayerController : Controller
     input = default;
   }
 
+  // For temporary things like running a short distance.
+  // Otherwise, write a different controller for the pawn and assign that instead.
+  public ref InputState GetInput()
+  {
+    return ref input;
+  }
+
+  public void FireOnlyInputMode()
+  {
+    Global.instance.Controls.BipedActions.Disable();
+    Global.instance.Controls.BipedActions.Aim.Enable();
+    Global.instance.Controls.BipedActions.Fire.Enable();
+  }
+
+  public void NormalInputMode()
+  {
+    Global.instance.Controls.BipedActions.Enable();
+  }
+
   #region Record
+
+  // todo record the initial state of all objects in the scene
+  // store random seed / generation seed
+  // store the scene index or sname
+
+  // replace using frame index with timestamps. during playback, look ahead to the
+  // state in the next keyframe and interpolate to it.
+
+  // add chop drop event
+  // store slo-motion begin/end events
+  // store pause, menu active events (or ignore them during capture)
 
   struct RecordState
   {
@@ -134,19 +158,6 @@ public class PlayerController : Controller
     // current weapon index
   }
   const int headerSize = 8;
-
-
-  // todo record the initial state of all objects in the scene
-  // store random seed / generation seed
-  // store the scene index or sname
-
-  // replace using frame index with timestamps. during playback, look ahead to the
-  // state in the next keyframe and interpolate to it.
-
-  // add chop drop event
-  // store slo-motion begin/end events
-  // store pause, menu active events (or ignore them during capture)
-
 
   bool recording;
   bool playback;

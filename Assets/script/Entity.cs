@@ -43,7 +43,8 @@ public class Entity : MonoBehaviour, IDamage
   }
   public Vector2 pushVelocity = Vector2.zero;
   protected Timer pushTimer = new Timer();
-  // basic support for moving platforms / stacking characters
+  public bool hanging { get; set; }
+  // moving platforms / stacking characters
   public Entity carryCharacter;
   public float friction = 0.05f;
   public float raylength = 0.01f;

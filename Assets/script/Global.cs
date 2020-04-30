@@ -303,6 +303,8 @@ public class Global : MonoBehaviour
     HideLoadingScreen();
     SpeechBubble.SetActive( false );
 
+    PlayerController = ScriptableObject.CreateInstance<PlayerController>();
+
     if( Application.isEditor && !SimulatePlayer )
     {
       LoadingScreen.SetActive( false );
@@ -429,6 +431,13 @@ public class Global : MonoBehaviour
     };
 
     Controls.GlobalActions.Screenshot.performed += ( obj ) => Util.Screenshot();
+
+    /*Controls.GlobalActions.DEVClone.performed += ( obj ) => {
+      GameObject go = Spawn( AvatarPrefab, (Vector2)PlayerController.GetPawn().transform.position + Vector2.right, Quaternion.identity, null, false );
+      PlayerBiped pawn = go.GetComponent<PlayerBiped>();
+      pawn.SpeedFactorNormalized = ((PlayerBiped)PlayerController.GetPawn()).SpeedFactorNormalized;
+      PlayerController.AddMinion( pawn );
+    };*/
 
     Controls.GlobalActions.DEVRespawn.performed += ( obj ) => {
       /*Chopper chopper = FindObjectOfType<Chopper>();
@@ -666,6 +675,7 @@ public class Global : MonoBehaviour
         MinimapCamera.transform.position += (Vector3)(Controls.MenuActions.Move.ReadValue<Vector2>() * mmScrollSpeed * Time.unscaledDeltaTime);
       MinimapCamera.orthographicSize = mmOrthoSize;
     }
+
   }
 
   void OnApplicationFocus( bool hasFocus )
@@ -687,16 +697,17 @@ public class Global : MonoBehaviour
   public void SpawnPlayer()
   {
     GameObject go = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
-    CurrentPlayer = go.GetComponent<PlayerBiped>();
+    PlayerBiped pawn = go.GetComponent<PlayerBiped>();
 
-    CameraController.LookTarget = CurrentPlayer.gameObject;
-    CameraController.transform.position = CurrentPlayer.transform.position;
+    CameraController.LookTarget = pawn.gameObject;
+    CameraController.transform.position = pawn.transform.position;
 
     // settings are read before player is created, so set player settings here.
-    CurrentPlayer.SpeedFactorNormalized = FloatSetting["PlayerSpeedFactor"].Value;
+    pawn.SpeedFactorNormalized = FloatSetting["PlayerSpeedFactor"].Value;
 
-    PlayerController = ScriptableObject.CreateInstance<PlayerController>();
-    PlayerController.AssignPawn( CurrentPlayer );
+    PlayerController.AssignPawn( pawn );
+
+    CurrentPlayer = pawn;
   }
 
   public Vector3 FindSpawnPosition()

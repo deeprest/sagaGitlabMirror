@@ -11,23 +11,23 @@ public class Chopper : MonoBehaviour {
   public float timeUntilDrop = 1;
   float timeStart;
 
-  public void StartDrop( PlayerBiped character )
+  public void StartDrop( Entity ent )
   {
     transform.position = chopperStartPoint.position;
-    character.hanging = true;
-    character.velocity = Vector3.zero;
-    character.transform.parent = hangPoint;
-    character.transform.localPosition = Vector3.zero;
+    ent.hanging = true;
+    ent.velocity = Vector3.zero;
+    ent.transform.parent = hangPoint;
+    ent.transform.localPosition = Vector3.zero;
 
 
     timer.Start( timeUntilDrop, null, delegate
     {
-      if( character != null )
+      if( ent != null )
       {
-        character.transform.parent = null;
-        character.hanging = false;
-        character.Push( Vector2.right * speed, 1 );
-        character = null;
+        ent.transform.parent = null;
+        ent.hanging = false;
+        ent.Push( Vector2.right * speed, 3 );
+        ent = null;
       }
     } );
   }

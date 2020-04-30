@@ -17,6 +17,7 @@ pP
 * A little robot that gets excited and follows you around (jeans badger)
 * A couple of idle idiots speculating on why the robots are now evil.
 * A miniboss inspired by the **relentless** posturing that evil enemies (in movies) do, which buys the good guys enough time to defeat them. A big guy that never stops taunting and cannot be damaged, but has a single weakness that is revealed at some point. Since this game has no death, maybe he's only vulnerable to the spiderbot form.
+* full screen texture flash to supplement explosions. use with small screen shake.
 
 ## GDC Hitchhiker's Guide to Rapid prototypes
 Minimum Viable product.

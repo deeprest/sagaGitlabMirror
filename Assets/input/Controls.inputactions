@@ -30,7 +30,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Screenshot",
+                    "name": "DEV-Respawn",
                     "type": "Button",
                     "id": "cab80c60-97b6-4d13-a3a1-b86bc5188194",
                     "expectedControlType": "",
@@ -38,9 +38,17 @@
                     "interactions": ""
                 },
                 {
-                    "name": "DEV-Respawn",
+                    "name": "DEV-Clone",
                     "type": "Button",
                     "id": "e7af10e7-d798-4de6-a720-df64e8970763",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Screenshot",
+                    "type": "Button",
+                    "id": "b44b7429-04b5-48ab-9faa-297e2529bd3f",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
@@ -93,17 +101,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f34c0a8a-1901-4f83-bce5-ff601f4d7645",
-                    "path": "<Keyboard>/f5",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Screenshot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -258,6 +255,28 @@
                     "processors": "",
                     "groups": "Mouse+Keyboard",
                     "action": "RecordPlayback",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f158069e-88d2-4b22-9550-89da2c3b06a1",
+                    "path": "<Keyboard>/f2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DEV-Clone",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f34c0a8a-1901-4f83-bce5-ff601f4d7645",
+                    "path": "<Keyboard>/f5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Screenshot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

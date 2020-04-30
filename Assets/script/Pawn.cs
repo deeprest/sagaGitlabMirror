@@ -28,8 +28,6 @@ public struct InputState
 
 public class Pawn : Entity
 {
-  public Controller controller;
-
   public InputState input = new InputState();
 
   public void ApplyInput( InputState state )

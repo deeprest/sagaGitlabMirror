@@ -119,7 +119,7 @@ public class PlayerBiped : Pawn
   [SerializeField] bool wallsliding;
   [SerializeField] bool landing;
   [SerializeField] bool dashing;
-  public bool hanging { get; set; }
+  
   Vector3 hitBottomNormal;
   Vector2 wallSlideNormal;
   Timer dashTimer = new Timer();

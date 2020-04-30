@@ -1,9 +1,9 @@
 pP
 *Establish the design before resuming work*
++ Pawns and Controllers
++ turret projectiles do not hit player
 
-- Pawns and Controllers
-- turret projectiles do not hit player
-
+- fix chop drop input
 - spiderbot.
 
 - confirm that Teams are working for all characters.
@@ -11,6 +11,7 @@ pP
 - cursorOuter is different based on control device
 - Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
 - trigger release shoots graphook
+- mech punch should break boxes
 
 ### Composite Sprite Problems
 + composite sprite render layers. Create a layer for each composite, or how to keep entire composites from interlacing with one another? SOLUTION: Animate a *struct* int for each piece, and update the sortingOrder of the SpriteRenderers from LateUpdate().
@@ -23,19 +24,19 @@ pP
 - landing snaps. possible anim frame adjustment will fix
 - adjust jump anim frame. it pops at the jump arc apex
 - high offset off angled floor
-- fix long slide clipping. collision should reduce velocity, not simply change position.
-- mushy on lift. consider the velocity of the object being collided-with.
+- fix long slide clipping. collision should reduce velocity, not only position.
++ mushy on lift. consider the velocity of the object being collided-with. [CarryObject]
 
 ### Menu / UI
 + buttons accept mouse clicks
-- design a better menu, maybe
+- design a better menu
 
 ### Input
 - better display names
 - bindings: read/write
 
 ### Straight Up Bugs
-- wheelbots are buggy
++ wheelbots are buggy
 - airbot attack, use attack speed until at last known target position
 - fix grap when using gamepad (double)
 - fix grap going through boxes
@@ -61,7 +62,7 @@ hornet particles should not rotate, and should disappear
 ### New Stuff
 - hide arm while not shooting
 - align shot with surface when aiming into floor/wall
-- draw an aiming line
++ draw an aiming line
 
 ### Unity Bugs
 - UNITY bug: cursor movement in last direction when shoot

@@ -6,8 +6,11 @@ public class Controller : ScriptableObject
 {
   public static List<Controller> All = new List<Controller>();
 
+  // input state is modified and passed to pawn
   protected InputState input = new InputState();
+
   protected Pawn pawn;
+  //public List<Pawn> minions = new List<Pawn>();
 
   public virtual void Awake()
   {
@@ -26,5 +29,15 @@ public class Controller : ScriptableObject
   {
     this.pawn = pawn;
   }
+
+  public Pawn GetPawn()
+  {
+    return pawn;
+  }
+
+  //public void AddMinion( Pawn pawn )
+  //{
+  //  minions.Add( pawn );
+  //}
 }
 
