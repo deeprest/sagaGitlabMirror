@@ -9,4 +9,8 @@ public class TeamTriggerTest : MonoBehaviour, ITrigger
   {
     instigator.GetComponent<Entity>().Team = SetToTeam;
   }
+  void OnTriggerEnter2D( Collider2D collider )
+  {
+    Trigger( collider.transform );
+  }
 }

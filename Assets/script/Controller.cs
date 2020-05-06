@@ -8,9 +8,9 @@ public class Controller : ScriptableObject
 
   // input state is modified and passed to pawn
   protected InputState input = new InputState();
-
-  protected Pawn pawn;
+  public Pawn pawn;
   //public List<Pawn> minions = new List<Pawn>();
+  public bool CursorInfluence;
 
   public virtual void Awake()
   {
@@ -25,9 +25,19 @@ public class Controller : ScriptableObject
 
   public virtual void Update() { }
 
-  public virtual void AssignPawn( Pawn pawn )
+  public virtual void AssignPawn( Pawn pwn )
   {
-    this.pawn = pawn;
+    if( pawn!= null )
+    {
+      pawn.OnControllerUnassigned();
+      pawn.controller = null;
+    }
+    pawn = pwn;
+    if( pawn != null )
+    {
+      pawn.controller = this;
+      pawn.OnControllerAssigned();
+    }
   }
 
   public Pawn GetPawn()
@@ -39,5 +49,11 @@ public class Controller : ScriptableObject
   //{
   //  minions.Add( pawn );
   //}
-}
 
+  // For temporary things like running a short distance.
+  // Otherwise, write a different controller for the pawn and assign that instead.
+  public ref InputState GetInput()
+  {
+    return ref input;
+  }
+}

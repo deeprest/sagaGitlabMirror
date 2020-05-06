@@ -2,11 +2,18 @@ pP
 *Establish the design before resuming work*
 + Pawns and Controllers
 + turret projectiles do not hit player
++ fix chop drop input
 
-- fix chop drop input
 - spiderbot.
+spiderpawn has dynamic body
+liftbot kinematic
+remove trigger layer, add OnTriggerEnter, collider->trigger = true
+removed layers: flameprojectile, enemy
+- reclaim body
 
-- confirm that Teams are working for all characters.
+- Playback system
+
+- confirm that Teams are set for all characters.
 - remove global references to CurrentPlayer where possible
 - cursorOuter is different based on control device
 - Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
@@ -42,12 +49,13 @@ pP
 - fix grap going through boxes
 - fix stickybomb going through vents
 
-### Minor / Cosmetic
+### Easy / Cosmetic
 - city camera bounds
 - DrCain minimum speech threshold
 - light reflects too much on background layer 1 with buster
 - door sprite layer should be behind characters
 - control name text for right stick says "RS"
+- door should indicate when it refuses to open because of team affiliation.
 
 ### Hornet
 - hornet friendly fire
@@ -65,13 +73,13 @@ hornet particles should not rotate, and should disappear
 + draw an aiming line
 
 ### Unity Bugs
-- UNITY bug: cursor movement in last direction when shoot
-- UNITY bug: webgl audio loop
+- UNITY bug: [MACOS] cursor movement in last direction when shoot
+- UNITY bug: [WEBGL] webgl audio loop
 
 ### Linux Issues
+- mouse sensitivity is too high even on lowest setting (0.05)
+- scroll wheel sensitivity is too low
 - support Ctrl-Q to quit
 - no per-pixel lights (check OpenGL/Vulcan support)
 - control names are not converted in diagetics (but okay in menu)
-- scroll wheel sensitivity is too low
-- mouse sensitivity is too high even on lowest setting (0.05)
-- glitchy/wrong sprite shader for mech on linux
++ glitchy/wrong sprite shader for mech on linux. [SOLVED. This is because of texture compression settings on each individual texture.]

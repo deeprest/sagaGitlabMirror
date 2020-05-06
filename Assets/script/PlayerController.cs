@@ -18,49 +18,78 @@ public class PlayerControllerEditor : Editor
       pc.RecordEnd();
     if( GUI.Button( EditorGUILayout.GetControlRect(), "play recording" ) )
       pc.RecordPlayback();
-
   }
 }
 #endif
 
 public class PlayerController : Controller
 {
+  Controls.BipedActionsActions BA;
+  Controls.SpiderActionsActions SA;
+
   public float DirectionalCursorDistance = 3;
+  // any persistent input variables
+  Vector2 cursorDelta = Vector2.zero;
+  bool fire;
+  public Vector2 aimDeltaSinceLastFrame;
 
   // init bindings to modify input struct
   public override void Awake()
   {
     base.Awake();
     BindControls();
-
     recordpath = Application.persistentDataPath + "/input.dat";
   }
 
-  void BindControls()
+  public void HACKSetSpeed( float speed )
   {
-    Global.instance.Controls.BipedActions.Fire.started += ( obj ) => input.Fire = true;
-    Global.instance.Controls.BipedActions.Fire.canceled += ( obj ) => input.Fire = false;
-    Global.instance.Controls.BipedActions.Jump.started += ( obj ) => input.JumpStart = true;
-    Global.instance.Controls.BipedActions.Jump.canceled += ( obj ) => input.JumpEnd = true;
-    Global.instance.Controls.BipedActions.Dash.started += ( obj ) => input.DashStart = true;
-    Global.instance.Controls.BipedActions.Dash.canceled += ( obj ) => input.DashEnd = true;
-    //Global.instance.Controls.BipedActions.Shield.started += ( obj ) => input.Shield = true;
-    //Global.instance.Controls.BipedActions.Shield.canceled += ( obj ) => input.Shield = false;
-    Global.instance.Controls.BipedActions.Graphook.performed += ( obj ) => input.Graphook = true;
-    Global.instance.Controls.BipedActions.NextWeapon.performed += ( obj ) => input.NextWeapon = true;
-    Global.instance.Controls.BipedActions.Charge.started += ( obj ) => input.ChargeStart = true;
-    Global.instance.Controls.BipedActions.Charge.canceled += ( obj ) => input.ChargeEnd = true;
-    Global.instance.Controls.BipedActions.Down.performed += ( obj ) => input.Down = true;
-    Global.instance.Controls.BipedActions.Interact.performed += ( obj ) => { input.Interact = true; };
-
-    Global.instance.Controls.BipedActions.Aim.performed += ( obj ) => { aimDeltaSinceLastFrame += obj.ReadValue<Vector2>(); };
+    if(pawn!=null)
+      pawn.OnControllerAssigned();
   }
 
+  public override void AssignPawn( Pawn pwn )
+  {
+    base.AssignPawn( pwn );
+    // I'm the player, look at me!
+    Global.instance.CameraController.LookTarget = this;
+    Global.instance.CameraController.transform.position = pawn.transform.position;
 
-  // any persistent input variables
-  Vector2 cursorDelta = Vector2.zero;
-  bool fire;
-  public Vector2 aimDeltaSinceLastFrame;
+    if( pawn is PlayerBiped )
+    {
+      Global.instance.Controls.BipedActions.Enable();
+      Global.instance.Controls.SpiderActions.Disable();
+    }
+    else if( pawn is SpiderPawn )
+    {
+      Global.instance.Controls.BipedActions.Disable();
+      Global.instance.Controls.SpiderActions.Enable();
+    }
+
+  }
+
+  private void BindControls()
+  {
+    BA = Global.instance.Controls.BipedActions;
+    SA = Global.instance.Controls.SpiderActions;
+
+    BA.Fire.started += ( obj ) => input.Fire = true;
+    BA.Fire.canceled += ( obj ) => input.Fire = false;
+    BA.Jump.started += ( obj ) => input.JumpStart = true;
+    BA.Jump.canceled += ( obj ) => input.JumpEnd = true;
+    BA.Dash.started += ( obj ) => input.DashStart = true;
+    BA.Dash.canceled += ( obj ) => input.DashEnd = true;
+    //BA.Shield.started += ( obj ) => input.Shield = true;
+    //BA.Shield.canceled += ( obj ) => input.Shield = false;
+    BA.Graphook.performed += ( obj ) => input.Graphook = true;
+    BA.NextWeapon.performed += ( obj ) => input.NextWeapon = true;
+    BA.Charge.started += ( obj ) => input.ChargeStart = true;
+    BA.Charge.canceled += ( obj ) => input.ChargeEnd = true;
+    BA.Down.performed += ( obj ) => input.MoveDown = true;
+    BA.Interact.performed += ( obj ) => { input.Interact = true; };
+    
+    BA.Aim.performed += ( obj ) => { aimDeltaSinceLastFrame += obj.ReadValue<Vector2>(); };
+
+  }
 
   // apply input to pawn
   public override void Update()
@@ -80,7 +109,7 @@ public class PlayerController : Controller
     {
       if( Global.instance.UsingGamepad )
       {
-        cursorDelta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
+        cursorDelta = BA.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
       }
       else
       {
@@ -92,10 +121,14 @@ public class PlayerController : Controller
 
       input.Aim = cursorDelta;
 
-      if( Global.instance.Controls.BipedActions.MoveRight.ReadValue<float>() > 0.5f )
-        input.MoveRight = true;
-      if( Global.instance.Controls.BipedActions.MoveLeft.ReadValue<float>() > 0.5f )
-        input.MoveLeft = true;
+      if( BA.MoveRight.ReadValue<float>() > 0.5f ) input.MoveRight = true;
+      if( BA.MoveLeft.ReadValue<float>() > 0.5f ) input.MoveLeft = true;
+
+      Vector2 move = SA.Move.ReadValue<Vector2>();
+      if( move.x > 0.5f ) input.MoveRight = true;
+      if( move.x < -0.5f ) input.MoveLeft = true;
+      if( move.y > 0.5f ) input.MoveUp = true;
+      if( move.y < -0.5f ) input.MoveDown = true;
 
       if( pawn != null )
         pawn.ApplyInput( input );
@@ -109,13 +142,6 @@ public class PlayerController : Controller
     }
 
     input = default;
-  }
-
-  // For temporary things like running a short distance.
-  // Otherwise, write a different controller for the pawn and assign that instead.
-  public ref InputState GetInput()
-  {
-    return ref input;
   }
 
   public void FireOnlyInputMode()
@@ -218,22 +244,24 @@ public class PlayerController : Controller
       InputState input = state.input;
       // 2 byte
       int value =
-        (input.MoveRight ? 0x1 : 0x0) << 0 |
-        (input.MoveLeft ? 0x1 : 0x0) << 1 |
-        (input.JumpStart ? 0x1 : 0x0) << 2 |
-        (input.JumpEnd ? 0x1 : 0x0) << 3 |
-        (input.DashStart ? 0x1 : 0x0) << 4 |
-        (input.DashEnd ? 0x1 : 0x0) << 5 |
-        (input.ChargeStart ? 0x1 : 0x0) << 6 |
-        (input.Charge ? 0x1 : 0x0) << 7 |
+        (input.MoveLeft ? 0x1 : 0x0) << 0 |
+        (input.MoveRight ? 0x1 : 0x0) << 1 |
+        (input.MoveUp ? 0x1 : 0x0) << 2 |
+        (input.MoveDown ? 0x1 : 0x0) << 3 |
+        (input.JumpStart ? 0x1 : 0x0) << 4 |
+        (input.JumpEnd ? 0x1 : 0x0) << 5 |
+        (input.DashStart ? 0x1 : 0x0) << 6 |
+        (input.DashEnd ? 0x1 : 0x0) << 7 |
 
+        (input.ChargeStart ? 0x1 : 0x0) << 6 |
         (input.ChargeEnd ? 0x1 : 0x0) << 8 |
         (input.Graphook ? 0x1 : 0x0) << 9 |
         (input.Shield ? 0x1 : 0x0) << 10 |
         (input.Fire ? 0x1 : 0x0) << 11 |
         (input.Interact ? 0x1 : 0x0) << 12 |
-        (input.NextWeapon ? 0x1 : 0x0) << 13 |
-        (input.Down ? 0x1 : 0x0) << 14;
+        (input.NextWeapon ? 0x1 : 0x0) << 13;
+        //(input.Down ? 0x1 : 0x0) << 14;
+      ///
 
       buffer[p] = (byte)value;
       buffer[p + 1] = (byte)(value >> 8);
@@ -287,22 +315,23 @@ public class PlayerController : Controller
     {
       InputState state = new InputState
       {
-        MoveRight = ((buffer[i] >> 0) & 0x1) > 0,
-        MoveLeft = ((buffer[i] >> 1) & 0x1) > 0,
-        JumpStart = ((buffer[i] >> 2) & 0x1) > 0,
-        JumpEnd = ((buffer[i] >> 3) & 0x1) > 0,
-        DashStart = ((buffer[i] >> 4) & 0x1) > 0,
-        DashEnd = ((buffer[i] >> 5) & 0x1) > 0,
-        ChargeStart = ((buffer[i] >> 6) & 0x1) > 0,
-        Charge = ((buffer[i] >> 7) & 0x1) > 0,
+        MoveLeft = ((buffer[i] >> 0) & 0x1) > 0,
+        MoveRight = ((buffer[i] >> 1) & 0x1) > 0,
+        MoveUp = ((buffer[i] >> 2) & 0x1) > 0,
+        MoveDown = ((buffer[i] >> 3) & 0x1) > 0,
+        JumpStart = ((buffer[i] >> 4) & 0x1) > 0,
+        JumpEnd = ((buffer[i] >> 5) & 0x1) > 0,
+        DashStart = ((buffer[i] >> 6) & 0x1) > 0,
+        DashEnd = ((buffer[i] >> 7) & 0x1) > 0,
 
-        ChargeEnd = ((buffer[i + 1] >> 0) & 0x1) > 0,
-        Graphook = ((buffer[i + 1] >> 1) & 0x1) > 0,
-        Shield = ((buffer[i + 1] >> 2) & 0x1) > 0,
-        Fire = ((buffer[i + 1] >> 3) & 0x1) > 0,
-        Interact = ((buffer[i + 1] >> 4) & 0x1) > 0,
-        NextWeapon = ((buffer[i + 1] >> 5) & 0x1) > 0,
-        Down = ((buffer[i + 1] >> 6) & 0x1) > 0,
+        ChargeStart = ((buffer[i] >> 0) & 0x1) > 0,
+        ChargeEnd = ((buffer[i + 1] >> 1) & 0x1) > 0,
+        Graphook = ((buffer[i + 1] >> 2) & 0x1) > 0,
+        Shield = ((buffer[i + 1] >> 3) & 0x1) > 0,
+        Fire = ((buffer[i + 1] >> 4) & 0x1) > 0,
+        Interact = ((buffer[i + 1] >> 5) & 0x1) > 0,
+        NextWeapon = ((buffer[i + 1] >> 6) & 0x1) > 0,
+        //
 
         Aim = new Vector2( System.BitConverter.ToSingle( buffer, i + 2 ), System.BitConverter.ToSingle( buffer, i + 6 ) )
       };
@@ -317,4 +346,3 @@ public class PlayerController : Controller
 
   #endregion
 }
-

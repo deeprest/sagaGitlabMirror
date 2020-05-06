@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO turret, airbot, wheelbot, hornet, mech
 
 public class AIController : Controller
 {

@@ -302,7 +302,7 @@ GameObject:
   - component: {fileID: 5328968024240917299}
   - component: {fileID: 7701764033589986434}
   - component: {fileID: 5922217900770544651}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: hornet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -411,12 +411,14 @@ MonoBehaviour:
   Team: 2
   body: {fileID: 5922217900770544651}
   box: {fileID: 5328968024240917299}
+  circle: {fileID: 0}
   renderer: {fileID: 7469246720352550077}
   animator: {fileID: 6213555569455210955}
   IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 0
   IsStatic: 0
+  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
@@ -427,6 +429,7 @@ MonoBehaviour:
   AgentTypeName: Large
   CanTakeDamage: 1
   health: 30
+  MaxHealth: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
   spawnWhenDead: {fileID: 0}
@@ -439,9 +442,6 @@ MonoBehaviour:
       m_Calls: []
   sightRange: 15
   flySpeed: 5
-  hoverDistance: 0.5
-  hoverLayers:
-  - Default
   up: 2.5
   over: 3
   small: 0.4

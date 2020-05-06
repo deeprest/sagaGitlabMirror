@@ -39,6 +39,11 @@ public class Door : MonoBehaviour, ITrigger
     timer.Stop( false );
   }
 
+  void OnTriggerEnter2D( Collider2D collider )
+  {
+    Trigger( collider.transform );
+  }
+
   public void Trigger( Transform instigator )
   {
     if( transitioning )
@@ -61,13 +66,50 @@ public class Door : MonoBehaviour, ITrigger
     }
     this.instigator = instigator;
 
-    // is player?
-    if( Global.instance.CurrentPlayer != null && instigator.IsChildOf( Global.instance.CurrentPlayer.transform ) )
+    PlayerBiped player = instigator.GetComponentInParent<PlayerBiped>();
+    if( player == null )
+    {
+      OpenAndClose( openDuration, null, null );
+    }
+    else
     {
       bool right = Vector3.Dot( (transform.position - instigator.position).normalized, inside.right ) > 0;
       if( MMXStyleDoorTransition )
       {
-        DoMMXStyleDoorTransition();
+        animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        Global.Pause();
+        Global.instance.Controls.BipedActions.Disable();
+        OpenAndClose( openDuration, delegate
+        {
+          // open
+          SceneScript sceneScript = FindObjectOfType<SceneScript>();
+          if( sceneScript != null )
+          {
+            bool Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
+            if( Entering )
+            {
+              if( CameraIn != null ) Global.instance.AssignCameraZone( CameraIn );
+              else Global.instance.AssignCameraZone( sceneScript.CameraZone );
+              if( Music != null )
+                Global.instance.MusicTransition( Music );
+            }
+            else
+            {
+              if( CameraOut != null ) Global.instance.AssignCameraZone( CameraOut );
+              else Global.instance.AssignCameraZone( sceneScript.CameraZone );
+              if( Music != null )
+                Global.instance.MusicTransition( sceneScript.music );
+            }
+          }
+          // todo make door less awful
+          player.DoorTransition( right, openDuration, doorRunDistance );
+        },
+        delegate
+        {
+          // close
+          Global.instance.Controls.BipedActions.Enable();
+          Global.Unpause();
+        } );
       }
       else
       {
@@ -84,9 +126,9 @@ public class Door : MonoBehaviour, ITrigger
               runTimer.Start( runDuration, delegate
               {
                 if( right )
-                  Global.instance.CurrentPlayer.ApplyInput( new InputState { MoveRight = true } );
+                  player.ApplyInput( new InputState { MoveRight = true } );
                 else
-                  Global.instance.CurrentPlayer.ApplyInput( new InputState { MoveLeft = true } );
+                  player.ApplyInput( new InputState { MoveLeft = true } );
               }, delegate
               {
                 Global.instance.Controls.BipedActions.Enable();
@@ -107,9 +149,9 @@ public class Door : MonoBehaviour, ITrigger
               runTimer.Start( runDuration, delegate
               {
                 if( right )
-                  Global.instance.CurrentPlayer.ApplyInput( new InputState { MoveRight = true } );
+                  player.ApplyInput( new InputState { MoveRight = true } );
                 else
-                  Global.instance.CurrentPlayer.ApplyInput( new InputState { MoveLeft = true } );
+                  player.ApplyInput( new InputState { MoveLeft = true } );
               }, delegate
               {
                 Global.instance.Controls.BipedActions.Enable();
@@ -125,73 +167,28 @@ public class Door : MonoBehaviour, ITrigger
         }, null );
       }
     }
-    else
-    {
-      OpenAndClose( openDuration, null, null );
-    }
-  }
-
-  void DoMMXStyleDoorTransition()
-  {
-    bool right = Vector3.Dot( (transform.position - instigator.position).normalized, inside.right ) > 0;
-    animator.updateMode = AnimatorUpdateMode.UnscaledTime;
-    Global.Pause();
-    Global.instance.Controls.BipedActions.Disable();
-    OpenAndClose( openDuration, delegate
-    {
-      // open
-      SceneScript sceneScript = FindObjectOfType<SceneScript>();
-      if( sceneScript != null )
-      {
-        bool Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
-        if( Entering )
-        {
-          if( CameraIn != null ) Global.instance.AssignCameraZone( CameraIn );
-          else Global.instance.AssignCameraZone( sceneScript.CameraZone );
-          if( Music != null )
-            Global.instance.MusicTransition( Music );
-        }
-        else
-        {
-          if( CameraOut != null ) Global.instance.AssignCameraZone( CameraOut );
-          else Global.instance.AssignCameraZone( sceneScript.CameraZone );
-          if( Music != null )
-            Global.instance.MusicTransition( sceneScript.music );
-        }
-      }
-      // todo make door less awful
-      Global.instance.CurrentPlayer.DoorRun( right, openDuration, doorRunDistance );
-    },
-    delegate
-    {
-      // close
-      Global.instance.Controls.BipedActions.Enable();
-      Global.Unpause();
-    } );
   }
 
   public void OpenAndClose( float duration, System.Action onOpen, System.Action onClose )
   {
     Open( delegate
     {
-      if( Global.instance.CurrentPlayer != null && instigator.IsChildOf( Global.instance.CurrentPlayer.transform ) )
+      if( onOpen != null )
+        onOpen();
+      TimerParams tp = new TimerParams
       {
-        if( onOpen != null )
-          onOpen();
-        TimerParams tp = new TimerParams
+        unscaledTime = Global.Paused,
+        repeat = false,
+        duration = duration,
+        CompleteDelegate = delegate
         {
-          unscaledTime = Global.Paused,
-          repeat = false,
-          duration = duration,
-          CompleteDelegate = delegate
-          {
-            Close( null );
-            if( onClose != null )
-              onClose();
-          }
-        };
-        doorTimer.Start( tp );
-      }
+          Close( null );
+          if( onClose != null )
+            onClose();
+        }
+      };
+      doorTimer.Start( tp );
+
     } );
   }
 
@@ -209,7 +206,7 @@ public class Door : MonoBehaviour, ITrigger
       CompleteDelegate = delegate
       {
         // if the door is toggled open/close, then set transitioning to false here
-        // if it auto-closes on a timer, then transitioning should only end after closed. 
+        // if it auto-closes on a timer, then transitioning should only end after closed.
         //transitioning = false;
         isOpen = true;
         cd.enabled = false;

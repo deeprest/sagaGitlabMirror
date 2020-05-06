@@ -19,6 +19,7 @@ public class Entity : MonoBehaviour, IDamage
   public Team Team;
   public Rigidbody2D body;
   public BoxCollider2D box;
+  public CircleCollider2D circle;
   public SpriteRenderer renderer;
   public Animator animator;
 
@@ -31,16 +32,6 @@ public class Entity : MonoBehaviour, IDamage
   public bool IsStatic = false;
   public bool BoxCollisionOne = false;
   public Vector2 velocity = Vector2.zero;
-  public Vector2 Velocity
-  {
-    get
-    {
-      if( carryCharacter == null )
-        return velocity;
-      else
-        return velocity + carryCharacter.Velocity;
-    }
-  }
   public Vector2 pushVelocity = Vector2.zero;
   protected Timer pushTimer = new Timer();
   public bool hanging { get; set; }
@@ -136,8 +127,6 @@ public class Entity : MonoBehaviour, IDamage
     }
   }
 
-
-
   void Update()
   {
     if( Global.Paused )
@@ -181,6 +170,29 @@ public class Entity : MonoBehaviour, IDamage
     }
   }
 
+  /*protected void CircleHit()
+  {
+    if( ContactDamage != null )
+    {
+      hitCount = Physics2D.CircleCastNonAlloc( body.position, circle.radius, body.velocity, RaycastHits, raylength, Global.CharacterDamageLayers );
+      for( int i = 0; i < hitCount; i++ )
+      {
+        hit = RaycastHits[i];
+
+        IDamage dam = hit.transform.GetComponent<IDamage>();
+        if( dam != null )
+        {
+          Damage dmg = Instantiate( ContactDamage );
+          dmg.instigator = this;
+          dmg.damageSource = transform;
+          dmg.point = hit.point;
+          dam.TakeDamage( dmg );
+        }
+
+      }
+    }
+  }*/
+
   public void Push( Vector2 pVelocity, float duration )
   {
     pushVelocity = pVelocity;
@@ -189,6 +201,9 @@ public class Entity : MonoBehaviour, IDamage
 
   protected void BasicPosition()
   {
+    if( carryCharacter != null )
+      velocity = carryCharacter.velocity;
+
     if( pushTimer.IsActive )
       velocity = pushVelocity;
 
@@ -215,7 +230,7 @@ public class Entity : MonoBehaviour, IDamage
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
 
     //velocity -= (velocity * airFriction) * Time.deltaTime;
-    transform.position += (Vector3)Velocity * Time.deltaTime;
+    transform.position += (Vector3)velocity * Time.deltaTime;
     carryCharacter = null;
   }
 
@@ -243,7 +258,16 @@ public class Entity : MonoBehaviour, IDamage
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
+        {
+#if UNITY_EDITOR
+        if( cha.GetInstanceID() == GetInstanceID() )
+        {
+          Debug.LogError( "character set itself as carry character", gameObject );
+          Debug.Break();
+        }
+#endif
           carryCharacter = cha;
+        }
         break;
       }
     }
@@ -274,7 +298,16 @@ public class Entity : MonoBehaviour, IDamage
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
+        {
+#if UNITY_EDITOR
+          if( cha.GetInstanceID() == GetInstanceID() )
+          {
+            Debug.LogError( "character set itself as carry character", gameObject );
+            Debug.Break();
+          }
+#endif
           carryCharacter = cha;
+        }
         break;
       }
     }
@@ -396,7 +429,7 @@ public class Entity : MonoBehaviour, IDamage
     }
   }
 
-  
+
 
 
   // for EventDestroyed unity events

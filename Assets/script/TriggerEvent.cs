@@ -18,6 +18,11 @@ public class TriggerEvent : MonoBehaviour, ITrigger
     }
   }
 
+  void OnTriggerEnter2D( Collider2D collider )
+  {
+    Trigger( collider.transform );
+  }
+
   public void LoadScene( string arg )
   {
     Global.instance.LoadScene( arg );
@@ -27,4 +32,5 @@ public class TriggerEvent : MonoBehaviour, ITrigger
   {
     Global.instance.LoadScene( arg.scene.GetSceneName() );
   }
+
 }

@@ -20,11 +20,34 @@ public class Airbot : Entity
   const float WanderRadius = 2;
   const float WanderInterval = 0.5f;
 
+  // sight, target
+  Collider2D[] results = new Collider2D[8];
+  int LayerMaskCharacter;
+  [SerializeField] Entity Target;
+  Timer SightPulseTimer = new Timer();
+
   protected override void Start()
   {
     base.Start();
-    UpdateLogic = UpdateAirbot;
+    UpdateLogic = AirbotLogic;
     UpdateHit = AirbotHit;
+
+    SightPulseTimer.Start( int.MaxValue, 3, ( x ) => {
+      // reaffirm target
+      Target = null;
+      int count = Physics2D.OverlapCircleNonAlloc( transform.position, sightRange, results, LayerMaskCharacter );
+      for( int i = 0; i < count; i++ )
+      {
+        Collider2D cld = results[i];
+        //Character character = results[i].transform.root.GetComponentInChildren<Character>();
+        Entity potentialTarget = results[i].GetComponent<Entity>();
+        if( potentialTarget != null && IsEnemyTeam( potentialTarget.Team ) )
+        {
+          Target = potentialTarget;
+          break;
+        }
+      }
+    }, null );
   }
 
   protected override void OnDestroy()
@@ -35,46 +58,43 @@ public class Airbot : Entity
     hitPauseTimer.Stop( false );
   }
 
-  void UpdateAirbot()
+  void AirbotLogic()
   {
-    if( Global.instance.CurrentPlayer != null )
+    if( Target == null )
     {
-      Vector2 player = Global.instance.CurrentPlayer.transform.position;
+      animator.Play( "idle" );
+      Wander();
+    }
+    else
+    {
+      Vector2 player = Target.transform.position;
       Vector2 delta = player - (Vector2)transform.position;
-      if( delta.sqrMagnitude < sightRange * sightRange )
-      {
-        if( !hitpause )
-        {
-          Transform target = null;
-          // for debug
-          //target = Global.instance.CurrentPlayer.transform;
-          hit = Physics2D.Linecast( sightOrigin.position, player, Global.EnemySightLayers );
-          if( hit.transform.root == Global.instance.CurrentPlayer.transform )
-            target = hit.transform;
-
-          if( target == null )
-          {
-            animator.Play( "idle" );
-            Wander();
-          }
-          else
-          {
-            animator.Play( "alert" );
-            pathAgent.SetPath( target.position + Vector3.up * targetOffset );
-            speed = AttackSpeed;
-          }
-        }
-      }
-      else
+      if( delta.sqrMagnitude > sightRange * sightRange )
       {
         animator.Play( "idle" );
         Wander();
       }
-    }
-    else
-    {
-      animator.Play( "idle" );
-      Wander();
+      else if( !hitpause )
+      {
+        Transform target = null;
+        // check line of sight to potential target
+        hit = Physics2D.Linecast( sightOrigin.position, player, Global.EnemySightLayers );
+        if( hit.transform.root == Target.transform )
+          target = hit.transform;
+
+        if( target == null )
+        {
+          animator.Play( "idle" );
+          Wander();
+        }
+        else
+        {
+          animator.Play( "alert" );
+          pathAgent.SetPath( target.position + Vector3.up * targetOffset );
+          speed = AttackSpeed;
+        }
+      }
+
     }
     pathAgent.UpdatePath();
     velocity = pathAgent.MoveDirection.normalized * speed;

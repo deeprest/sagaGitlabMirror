@@ -1,7 +1,16 @@
 - Design doc
 
 - spiderbot
+spiderpawn has dynamic body
+liftbot kinematic
+remove trigger layer, add OnTriggerEnter, collider->trigger = true
+removed layers: flameprojectile, enemy
+- reclaim body
 
+
+
+
+playercontroller record/input, moveup/movedown, add spider action map
 - stickybomb exploding interaction with shield:
   1) do raycast to each IDamage within range
   2) if raycast hits something else, do a projection of the collider onto a perpendicular vector of the normal

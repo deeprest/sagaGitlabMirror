@@ -156,7 +156,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Gamepad>/dpad"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Mouse+Keyboard;Gamepad"",
+                    ""groups"": ""Gamepad;Mouse+Keyboard"",
                     ""action"": ""Any"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -957,6 +957,77 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""SpiderActions"",
+            ""id"": ""b499d103-2910-43e9-9c10-b7e3ccc4daa7"",
+            ""actions"": [
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""4f508557-81bc-484f-9132-6084da1f8b2f"",
+                    ""expectedControlType"": ""Dpad"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""FourKeys"",
+                    ""id"": ""92719251-6d16-43f7-b5e7-1ef28e87e607"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""5b369d7a-7d89-4e4b-be69-8664428a80a7"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""112e089b-c821-4b21-9b2d-bac97e2acb2b"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""95f25c56-1c97-49b8-b4e2-736ac6ea22ab"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""6dcc2a9e-7cb0-4cf2-a03a-899c75e387c2"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1027,6 +1098,9 @@ public class @Controls : IInputActionCollection, IDisposable
         m_BipedActions_DEVZoom = m_BipedActions.FindAction("DEV-Zoom", throwIfNotFound: true);
         m_BipedActions_Minimap = m_BipedActions.FindAction("Minimap", throwIfNotFound: true);
         m_BipedActions_DevSlowmo = m_BipedActions.FindAction("Dev-Slowmo", throwIfNotFound: true);
+        // SpiderActions
+        m_SpiderActions = asset.FindActionMap("SpiderActions", throwIfNotFound: true);
+        m_SpiderActions_Move = m_SpiderActions.FindAction("Move", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1363,6 +1437,39 @@ public class @Controls : IInputActionCollection, IDisposable
         }
     }
     public BipedActionsActions @BipedActions => new BipedActionsActions(this);
+
+    // SpiderActions
+    private readonly InputActionMap m_SpiderActions;
+    private ISpiderActionsActions m_SpiderActionsActionsCallbackInterface;
+    private readonly InputAction m_SpiderActions_Move;
+    public struct SpiderActionsActions
+    {
+        private @Controls m_Wrapper;
+        public SpiderActionsActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_SpiderActions_Move;
+        public InputActionMap Get() { return m_Wrapper.m_SpiderActions; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(SpiderActionsActions set) { return set.Get(); }
+        public void SetCallbacks(ISpiderActionsActions instance)
+        {
+            if (m_Wrapper.m_SpiderActionsActionsCallbackInterface != null)
+            {
+                @Move.started -= m_Wrapper.m_SpiderActionsActionsCallbackInterface.OnMove;
+                @Move.performed -= m_Wrapper.m_SpiderActionsActionsCallbackInterface.OnMove;
+                @Move.canceled -= m_Wrapper.m_SpiderActionsActionsCallbackInterface.OnMove;
+            }
+            m_Wrapper.m_SpiderActionsActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Move.started += instance.OnMove;
+                @Move.performed += instance.OnMove;
+                @Move.canceled += instance.OnMove;
+            }
+        }
+    }
+    public SpiderActionsActions @SpiderActions => new SpiderActionsActions(this);
     private int m_MouseKeyboardSchemeIndex = -1;
     public InputControlScheme MouseKeyboardScheme
     {
@@ -1416,5 +1523,9 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnDEVZoom(InputAction.CallbackContext context);
         void OnMinimap(InputAction.CallbackContext context);
         void OnDevSlowmo(InputAction.CallbackContext context);
+    }
+    public interface ISpiderActionsActions
+    {
+        void OnMove(InputAction.CallbackContext context);
     }
 }

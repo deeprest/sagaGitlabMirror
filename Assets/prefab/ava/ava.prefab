@@ -5007,7 +5007,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b7dea512de4f446d8c2325d6a19e493, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 0}
   Team: 1
   body: {fileID: 2111217764532811413}
   box: {fileID: 61999569739760366}
@@ -5027,7 +5026,7 @@ MonoBehaviour:
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  health: 20
+  health: 1
   MaxHealth: 20
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
@@ -5039,6 +5038,23 @@ MonoBehaviour:
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []
+  controller: {fileID: 0}
+  input:
+    MoveRight: 0
+    MoveLeft: 0
+    JumpStart: 0
+    JumpEnd: 0
+    DashStart: 0
+    DashEnd: 0
+    ChargeStart: 0
+    ChargeEnd: 0
+    Graphook: 0
+    Shield: 0
+    Fire: 0
+    Interact: 0
+    NextWeapon: 0
+    Down: 0
+    Aim: {x: 0, y: 0}
   audio: {fileID: 82117261715149456}
   audio2: {fileID: 82627251547920718}
   dashSmoke: {fileID: 198502029244883790}
@@ -5054,29 +5070,15 @@ MonoBehaviour:
   moveVelMax: 3
   jumpVelMin: 5
   jumpVelMax: 10
-  dashVelMin: 3
-  dashVelMax: 10
-  wallJumpPushVelocity: 1.5
-  wallJumpPushDuration: 0.1
   jumpDuration: 0.4
   jumpRepeatInterval: 0.1
+  dashVelMin: 3
+  dashVelMax: 10
   dashDuration: 0.5
-  landDuration: 0.1
+  wallJumpPushVelocity: 1.5
+  wallJumpPushDuration: 0.1
   wallSlideFactor: 8
-  input:
-    Right: 0
-    Left: 0
-    JumpStart: 0
-    JumpEnd: 0
-    DashStart: 0
-    DashEnd: 0
-    ChargeStart: 0
-    Charge: 0
-    ChargeEnd: 0
-    Graphook: 0
-    Shield: 0
-    Fire: 0
-    Interact: 0
+  landDuration: 0.1
   facingRight: 0
   onGround: 0
   jumping: 0
@@ -5095,7 +5097,6 @@ MonoBehaviour:
   AutoAimCircleRadius: 1
   AutoAimDistance: 5
   DirectionalMinimum: 0.3
-  DirectionalCursorDistance: 3
   lineRenderer: {fileID: 2130140940285502981}
   weapon: {fileID: 0}
   CurrentWeaponIndex: 0
@@ -5130,6 +5131,9 @@ MonoBehaviour:
   grapShotSound: {fileID: 8300000, guid: 714bd8ea9667041e99bb9a12a950f4f3, type: 3}
   grapHitSound: {fileID: 8300000, guid: 55037177bb692440ebfcf4e001cef0aa, type: 3}
   selectRange: 0.5
+  SpiderbotPrefab: {fileID: 1789244597324514, guid: bc604b646e0954c2db323b783ef578cf,
+    type: 3}
+  spider: {fileID: 0}
   CharacterLayer: 0
   partBody:
     transform: {fileID: 4857518412556878}

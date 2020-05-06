@@ -73,10 +73,10 @@ public class Liftbot : Entity, IWorldSelectable
   protected override void Start()
   {
     base.Start();
-    UpdateLogic = UpdateAirbot;
+    UpdateLogic = UpdateLiftbot;
     UpdateHit = null;
     UpdateCollision = null;
-    UpdatePosition = BasicPosition;
+    UpdatePosition = null; // BasicPosition;
     origin = transform.position;
     if( !IsTriggeredByPlayer )
       timeout.Start( waitDuration, null, NextWaypoint );
@@ -109,7 +109,7 @@ public class Liftbot : Entity, IWorldSelectable
 
   protected float closeEnough { get { return flySpeed * Time.maximumDeltaTime * Time.timeScale; } }
 
-  void UpdateAirbot()
+  void UpdateLiftbot()
   {
     if( !waiting && path.Length > 0 )
     {
@@ -134,6 +134,14 @@ public class Liftbot : Entity, IWorldSelectable
     else
     {
       velocity = Vector2.zero;
+    }
+  }
+
+  private void FixedUpdate()
+  {
+    if( body.bodyType == RigidbodyType2D.Kinematic )
+    {
+      body.MovePosition( body.position + (velocity * Time.fixedDeltaTime) );
     }
   }
 

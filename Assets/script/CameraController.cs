@@ -4,10 +4,10 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
   [SerializeField] Camera cam;
-  public GameObject LookTarget;
+  public Controller LookTarget;
   public LerpToTarget lerp;
   public bool UseVerticalRange = true;
-  public bool CursorInfluence = false;
+  //public bool CursorInfluence = false;
   public float cursorAlpha = 0.5f;
   public float lerpAlpha = 50;
   public float SmoothSpeed = 1;
@@ -69,11 +69,12 @@ public class CameraController : MonoBehaviour
 
     if( !lerp.enabled && LookTarget != null )
     {
-      Vector3 lookTarget = LookTarget.transform.position;
+      Vector3 lookTarget = LookTarget.pawn.transform.position;
 
-      if( CursorInfluence )
+      PlayerController pc = LookTarget as PlayerController;
+      if( pc != null &&  pc.CursorInfluence )
       {
-        lookTarget = Vector3.Lerp( LookTarget.transform.position, Global.instance.CursorWorldPosition, cursorAlpha );
+        lookTarget = Vector3.Lerp( LookTarget.pawn.transform.position, LookTarget.pawn.CursorWorldPosition, cursorAlpha );
         lookTarget.z = zOffset;
       }
       pos.x = lookTarget.x;
@@ -108,7 +109,7 @@ public class CameraController : MonoBehaviour
         }
 
         Vector2 debug = pos;
-        Vector2 origin = LookTarget.transform.position;
+        Vector2 origin = LookTarget.pawn.transform.position;
 
 #if CLIP_POINT_ATTEMPT
         /*
@@ -191,28 +192,28 @@ public class CameraController : MonoBehaviour
           if( !cld.OverlapPoint( origin ) )
             continue;
           Vector2 UL = (Vector2)pos + Vector2.left * hw + Vector2.up * hh;
-          if( ClipToInsideCollider2D( cld, ref UL, LookTarget.transform.position ) )
+          if( ClipToInsideCollider2D( cld, ref UL, LookTarget.pawn.transform.position ) )
           {
             if( pos.y > UL.y - hh ) pos.y = UL.y - hh;
             if( pos.x < UL.x + hw ) pos.x = UL.x + hw;
           }
 
           Vector2 UR = (Vector2)pos + Vector2.right * hw + Vector2.up * hh;
-          if( ClipToInsideCollider2D( cld, ref UR, LookTarget.transform.position ) )
+          if( ClipToInsideCollider2D( cld, ref UR, LookTarget.pawn.transform.position ) )
           {
             if( pos.y > UR.y - hh ) pos.y = UR.y - hh;
             if( pos.x > UR.x - hw ) pos.x = UR.x - hw;
           }
 
           Vector2 LL = (Vector2)pos + Vector2.left * hw + Vector2.down * hh;
-          if( ClipToInsideCollider2D( cld, ref LL, LookTarget.transform.position ) )
+          if( ClipToInsideCollider2D( cld, ref LL, LookTarget.pawn.transform.position ) )
           {
             if( pos.y < LL.y + hh ) pos.y = LL.y + hh;
             if( pos.x < LL.x + hw ) pos.x = LL.x + hw;
           }
 
           Vector2 LR = (Vector2)pos + Vector2.right * hw + Vector2.down * hh;
-          if( ClipToInsideCollider2D( cld, ref LR, LookTarget.transform.position ) )
+          if( ClipToInsideCollider2D( cld, ref LR, LookTarget.pawn.transform.position ) )
           {
             if( pos.y < LR.y + hh ) pos.y = LR.y + hh;
             if( pos.x > LR.x - hw ) pos.x = LR.x - hw;

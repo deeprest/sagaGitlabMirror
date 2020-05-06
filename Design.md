@@ -14,10 +14,17 @@ pP
 10. Development plan.....
 
 #### Random Ideas
+* full screen texture flash to supplement explosions. use with small screen shake.
 * A little robot that gets excited and follows you around (jeans badger)
 * A couple of idle idiots speculating on why the robots are now evil.
 * A miniboss inspired by the **relentless** posturing that evil enemies (in movies) do, which buys the good guys enough time to defeat them. A big guy that never stops taunting and cannot be damaged, but has a single weakness that is revealed at some point. Since this game has no death, maybe he's only vulnerable to the spiderbot form.
-* full screen texture flash to supplement explosions. use with small screen shake.
+* "we're running critically low on stickers!"
+* "My only regret..."
+  * is not eating more [snausages]
+  * is upgrading my wireless data plan
+  * is not buying that timeshare in Florida
+  * is not robbing that waffle house
+
 
 ## GDC Hitchhiker's Guide to Rapid prototypes
 Minimum Viable product.
@@ -112,7 +119,7 @@ mechanics: establish a structure / limits
 give you a goal
 mechanics: give you abilities to reach that goal
 provide obstacles to challenge your progress
-overcoming the challenge is the source of enjoyment; not too hard or too easy.
+overcoming the challenge is one source of enjoyment; not too hard or too easy.
 
 # Influences
 - dash, walljump, charged shot. Mega Man X (1993)
@@ -133,15 +140,16 @@ wallslide
 movement
 aim / look
 weapon use
-collect parts: graphook, shield, propeller,
-build weapons onto biped arm slots
 no death: transform from biped to tentacle bot (two forms: biped and tentacle bot)
+---
 collecting parts: automatic by proximity. show parts on bot.
 biped body assembly. Get to safety to rebuild?
+collect parts: graphook, shield, propeller.
+build weapons onto biped arm slots
+find secret body upgrades: run speed, jump height, etc
 navigation: minimap or beacons.
 encounter bosses
 interact with random npcs (navigation help for bosses. tells where secrets are. in-game tips.)
-find secret body upgrades: run speed, jump height, etc
 
 
 ## Mega Man X Breakdown

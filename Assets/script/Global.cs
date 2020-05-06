@@ -119,7 +119,7 @@ public class Global : MonoBehaviour
   [Header( "Transient (Assigned at runtime)" )]
   public bool Updating = false;
   SceneScript sceneScript;
-  public PlayerBiped CurrentPlayer;
+  public Pawn CurrentPlayer;
   public PlayerController PlayerController;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
   NavMeshSurface[] meshSurfaces;
@@ -141,7 +141,6 @@ public class Global : MonoBehaviour
   [SerializeField] Image RecordingIndicator;
   // cursor
   public float CursorOuter = 1;
-  public Vector2 CursorWorldPosition { get { if( CurrentPlayer != null ) return CurrentPlayer.CursorWorldPosition; else return Vector3.zero; } }
   public float CursorSensitivity = 1;
   public bool AimSnap;
   public bool AutoAim;
@@ -242,6 +241,9 @@ public class Global : MonoBehaviour
     instance = this;
     DontDestroyOnLoad( gameObject );
 
+    // todo see if this does anything useful
+    //Application.targetFrameRate = 60;
+
     // note: allowing characters to collide introduces risk of being forced into a corner
     CharacterCollideLayers = LayerMask.GetMask( new string[] { "Default", "destructible", "triggerAndCollision" } ); //, "character", "enemy" };
     CharacterSidestepLayers = LayerMask.GetMask( new string[] { "character", "enemy" } );
@@ -249,10 +251,10 @@ public class Global : MonoBehaviour
     TriggerLayers = LayerMask.GetMask( new string[] { "trigger", "triggerAndCollision" } );
     WorldSelectableLayers = LayerMask.GetMask( new string[] { "worldselect" } );
     ProjectileNoShootLayers = LayerMask.GetMask( new string[] { "Default" } );
-    DefaultProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade", "flameProjectile" } );
+    DefaultProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" } );
     FlameProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" } );
-    DamageCollideLayers = LayerMask.GetMask( new string[] { "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" } );
-    StickyBombCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "projectile", "destructible", "flameProjectile" } );
+    DamageCollideLayers = LayerMask.GetMask( new string[] { "character", "triggerAndCollision", "enemy", "projectile", "destructible" } );
+    StickyBombCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "projectile", "destructible" } );
     TurretSightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" } );
     EnemySightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" } );
 
@@ -261,6 +263,8 @@ public class Global : MonoBehaviour
     ReadSettings();
     ApplyScreenSettings();
     InitializeInput();
+
+    PlayerController = ScriptableObject.CreateInstance<PlayerController>();
 
     SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
     {
@@ -303,7 +307,7 @@ public class Global : MonoBehaviour
     HideLoadingScreen();
     SpeechBubble.SetActive( false );
 
-    PlayerController = ScriptableObject.CreateInstance<PlayerController>();
+
 
     if( Application.isEditor && !SimulatePlayer )
     {
@@ -445,8 +449,8 @@ public class Global : MonoBehaviour
         chopper.StartDrop( CurrentPlayer );
       else*/
       {
-        CurrentPlayer.transform.position = FindRandomSpawnPosition();
-        CurrentPlayer.velocity = Vector2.zero;
+        PlayerController.pawn.transform.position = FindRandomSpawnPosition();
+        PlayerController.pawn.velocity = Vector2.zero;
         if( sceneScript != null )
           sceneScript.AssignCameraZone( sceneScript.CameraZone );
       }
@@ -698,16 +702,8 @@ public class Global : MonoBehaviour
   {
     GameObject go = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
     PlayerBiped pawn = go.GetComponent<PlayerBiped>();
-
-    CameraController.LookTarget = pawn.gameObject;
-    CameraController.transform.position = pawn.transform.position;
-
-    // settings are read before player is created, so set player settings here.
-    pawn.SpeedFactorNormalized = FloatSetting["PlayerSpeedFactor"].Value;
-
-    PlayerController.AssignPawn( pawn );
-
     CurrentPlayer = pawn;
+    PlayerController.AssignPawn( pawn );
   }
 
   public Vector3 FindSpawnPosition()
@@ -743,6 +739,7 @@ public class Global : MonoBehaviour
   {
     Slowed = true;
     Time.timeScale = slowtime;
+    Time.fixedDeltaTime = 0.02f * Time.timeScale;
     mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
       snapNormal,
       snapSlowmo
@@ -756,6 +753,7 @@ public class Global : MonoBehaviour
   {
     Slowed = false;
     Time.timeScale = 1;
+    Time.fixedDeltaTime = 0.02f * Time.timeScale;
     mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
       snapNormal,
       snapSlowmo
@@ -1154,17 +1152,17 @@ public class Global : MonoBehaviour
 
     CreateBoolSetting( "ShowOnboardingControls", true, OnboardingControls.SetActive );
     CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
-    CreateBoolSetting( "CursorInfluence", false, delegate ( bool value ) { CameraController.CursorInfluence = value; } );
+    CreateBoolSetting( "CursorInfluence", false, delegate ( bool value ) { if( PlayerController != null ) PlayerController.CursorInfluence = value; } );
     CreateBoolSetting( "AimSnap", false, delegate ( bool value ) { AimSnap = value; } );
     CreateBoolSetting( "AutoAim", false, delegate ( bool value ) { AutoAim = value; } );
     CreateBoolSetting( "ShowAimPath", false, delegate ( bool value ) { ShowAimPath = value; } );
 
     CreateFloatSetting( "CursorOuter", 1, 0, 1, 20, delegate ( float value ) { CursorOuter = value; } );
-    CreateFloatSetting( "CursorSensitivity", 1, 0.01f, 2, 100, delegate ( float value ) { CursorSensitivity = value; } );
+    CreateFloatSetting( "CursorSensitivity", 1, 0.001f, 1, 1000, delegate ( float value ) { CursorSensitivity = value; } );
     CreateFloatSetting( "CameraLerpAlpha", 10, 1, 10, 100, delegate ( float value ) { CameraController.lerpAlpha = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 20, delegate ( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 10, delegate ( float value ) { deadZone = value; } );
-    CreateFloatSetting( "PlayerSpeedFactor", 0.3f, 0, 1, 10, delegate ( float value ) { if( CurrentPlayer != null ) CurrentPlayer.SpeedFactorNormalized = value; } );
+    CreateFloatSetting( "PlayerSpeedFactor", 0.3f, 0, 1, 10, delegate ( float value ) { if(PlayerController!= null ) PlayerController.HACKSetSpeed(value); } );
 
     foreach( var scene in sceneRefs )
     {

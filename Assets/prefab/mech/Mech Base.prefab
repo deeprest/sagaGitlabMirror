@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 810516725}
   - component: {fileID: 810516726}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: fistbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,7 +67,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4328120609755577917}
   - component: {fileID: 6001814801279530894}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: leg back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -148,7 +148,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8199315221969577107}
   - component: {fileID: 267855414092507994}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: arm front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ GameObject:
   m_Component:
   - component: {fileID: 400696416266879941}
   - component: {fileID: 5270611540057175337}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: leg front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -315,7 +315,7 @@ GameObject:
   - component: {fileID: 1654668584601712558}
   - component: {fileID: 8324022198147396173}
   - component: {fileID: 2269174923454845371}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: Mech Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -370,42 +370,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86e636d8da82f4704abbd4ea1453cefb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Team: 0
   body: {fileID: 2269174923454845371}
   box: {fileID: 1654668584601712558}
+  circle: {fileID: 0}
   renderer: {fileID: 4090060214824906407}
   animator: {fileID: 5397825192010816886}
   IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 1
+  IsStatic: 0
+  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
-  HasPath: 0
-  WaypointRadii: 0.1
-  DestinationRadius: 0.3
-  DestinationPosition: {x: 0, y: 0, z: 0}
-  waypoint: []
-  debugPath: []
+  EnablePathing: 0
   AgentTypeName: Small
-  MoveDirection: {x: 0, y: 0}
-  SidestepAvoidance: 1
   CanTakeDamage: 1
   health: 20
+  MaxHealth: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
-  spawnChance: 1
   spawnWhenDead: {fileID: 0}
+  spawnChance: 1
   flashInterval: 0.05
   flashCount: 5
   ContactDamage: {fileID: 0}
+  EventDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
   audio: {fileID: 8324022198147396173}
   facingRight: 1
   fist: {fileID: 810516726}
   torso: {fileID: 2144159810273346529}
   sightRange: 6
+  withinpunchRange: 3
   jumpRange: 2
   small: 0.5
   moveSpeed: 1
@@ -416,12 +418,12 @@ MonoBehaviour:
   jumpDuration: 2
   dashDuration: 1
   landDuration: 0.1
-  jumping: 0
-  onGround: 0
-  landing: 0
   soundJump: {fileID: 8300000, guid: 868a350aac882450bac6f95cab0736d9, type: 3}
+  soundReflect: {fileID: 0}
   weapon: {fileID: 0}
   shotOrigin: {fileID: 810516725}
+  DamageThreshold: 2
+  Target: {fileID: 0}
 --- !u!61 &1654668584601712558
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -576,7 +578,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8628652788884801234}
   - component: {fileID: 6097095160928651433}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -648,7 +650,7 @@ GameObject:
   m_Component:
   - component: {fileID: 409193905366348563}
   - component: {fileID: 2728132835290613611}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: taint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -730,7 +732,7 @@ GameObject:
   m_Component:
   - component: {fileID: 646242960563807505}
   - component: {fileID: 5950344626650477137}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: arm back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -812,7 +814,7 @@ GameObject:
   - component: {fileID: 7588081617019825000}
   - component: {fileID: 4090060214824906407}
   - component: {fileID: 2144159810273346529}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: torso
   m_TagString: Untagged
   m_Icon: {fileID: 0}

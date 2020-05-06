@@ -142,14 +142,14 @@ Rigidbody2D:
   m_GameObject: {fileID: 1268720782321642}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
@@ -165,6 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0152ea8135784e69bf581078873611b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Team: 0
   body: {fileID: 9109282300699132467}
   box: {fileID: 61733048714469916}
   renderer: {fileID: 212979940915122146}
@@ -172,30 +173,29 @@ MonoBehaviour:
   IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 0
+  IsStatic: 0
+  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
-  HasPath: 0
-  WaypointRadii: 0.1
-  DestinationRadius: 0.3
-  DestinationPosition: {x: 0, y: 0, z: 0}
-  waypoint: []
-  debugPath: []
+  EnablePathing: 0
   AgentTypeName: Small
-  MoveDirection: {x: 0, y: 0}
-  SidestepAvoidance: 0
   CanTakeDamage: 0
   health: 1
+  MaxHealth: 5
   explosion: {fileID: 0}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
-  spawnChance: 1
   spawnWhenDead: {fileID: 0}
+  spawnChance: 1
   flashInterval: 0.05
   flashCount: 5
   ContactDamage: {fileID: 0}
+  EventDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
   flySpeed: 3
   waitDuration: 2
   origin: {x: 0, y: 0}
@@ -203,6 +203,8 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 3}
   pingpong: 0
+  UseWaitDuration: 1
+  IsTriggeredByPlayer: 0
 --- !u!208 &1928618165654571599
 NavMeshObstacle:
   m_ObjectHideFlags: 0

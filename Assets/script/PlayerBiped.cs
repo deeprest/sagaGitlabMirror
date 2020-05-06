@@ -1,65 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-
-/*
-#if UNITY_EDITOR
-using UnityEditor;
-[CustomEditor( typeof( PlayerBiped ) )]
-public class PlayerBipedEditor : Editor
-{
-  public override void OnInspectorGUI()
-  {
-    base.OnInspectorGUI();
-    PlayerBiped ani = target as PlayerBiped;
-
-    EditorGUILayout.LabelField( "Head" );
-    if( GUI.Button( EditorGUILayout.GetControlRect(), "idle" ) )
-      ani.partHead.animator.Play( "idle" );
-    if( GUI.Button( EditorGUILayout.GetControlRect(), "talk" ) )
-      ani.partHead.animator.Play( "talk" );
-
-    EditorGUILayout.LabelField( "Body" );
-    if( GUI.Button( EditorGUILayout.GetControlRect(), "idle" ) )
-      ani.partBody.animator.Play( "idle" );
-    if( GUI.Button( EditorGUILayout.GetControlRect(), "run" ) )
-      ani.partBody.animator.Play( "run" );
-
-  }
-}
-#endif
-*/
-
-/*
-+ Separate inputs from actions.
-- Bind the same action functions to input delegates driven by an AI brain.
-
-+ call Update on controllers directly from global
-// todo refactor logic: inputs, collision, velocity, state vars, timers -> state vars, anims
-
-inputs
-collision flags
-logic for changing state
-
-result of current state ->
-animation state
-velocity
-position
-collision update
-
-state
-  onground
-  facingRight
-  takingdamage
-  aim / shoot
-  jumping
-  wallslide
-  dash
-  graphook
-  shield
-
-*/
 
 public class PlayerBiped : Pawn
 {
@@ -81,33 +21,24 @@ public class PlayerBiped : Pawn
 
   [Header( "Setting" )]
   public float speedFactorNormalized = 1;
-  public float SpeedFactorNormalized
-  {
-    get { return speedFactorNormalized; }
-    set
-    {
-      speedFactorNormalized = value;
-      //animator.speed = value;
-    }
-  }
-  // velocities
+
+  // movement
   public float moveVelMin = 1.5f;
   public float moveVelMax = 3;
   public float moveSpeed { get { return moveVelMin + (moveVelMax - moveVelMin) * speedFactorNormalized; } }
   public float jumpVelMin = 5;
   public float jumpVelMax = 10;
   public float jumpSpeed { get { return jumpVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized; } }
+  public float jumpDuration = 0.4f;
+  public float jumpRepeatInterval = 0.1f;
   public float dashVelMin = 3;
   public float dashVelMax = 10;
   public float dashSpeed { get { return dashVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized; } }
+  public float dashDuration = 1;
   public float wallJumpPushVelocity = 1.5f;
   public float wallJumpPushDuration = 0.1f;
-  // durations
-  public float jumpDuration = 0.4f;
-  public float jumpRepeatInterval = 0.1f;
-  public float dashDuration = 1;
-  public float landDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
+  public float landDuration = 0.1f;
 
   Vector2 shoot;
 
@@ -119,7 +50,7 @@ public class PlayerBiped : Pawn
   [SerializeField] bool wallsliding;
   [SerializeField] bool landing;
   [SerializeField] bool dashing;
-  
+
   Vector3 hitBottomNormal;
   Vector2 wallSlideNormal;
   Timer dashTimer = new Timer();
@@ -129,19 +60,17 @@ public class PlayerBiped : Pawn
   Timer walljumpTimer = new Timer();
 
   [Header( "Cursor" )]
-  public GameObject InteractIndicator;
+  // public GameObject InteractIndicator;
   [SerializeField] Transform Cursor;
   public Transform CursorSnapped;
   public Transform CursorAutoAim;
-  public Vector2 CursorWorldPosition;
+  // public Vector2 CursorWorldPosition;
   public float CursorScale = 2;
   public float SnapAngleDivide = 8;
   public float SnapCursorDistance = 1;
   public float AutoAimCircleRadius = 1;
   public float AutoAimDistance = 5;
   public float DirectionalMinimum = 0.3f;
-  
-  bool CanShoot { get { return true; } }// CursorAboveMinimumDistance; } }
   bool CursorAboveMinimumDistance;
   [SerializeField] LineRenderer lineRenderer;
 
@@ -161,6 +90,8 @@ public class PlayerBiped : Pawn
   public Color chargeColor = Color.white;
   public Transform armMount;
   [SerializeField] Ability secondary;
+  float chargeStart;
+  GameObject chargeEffectGO;
 
   [Header( "Sound" )]
   public AudioClip soundJump;
@@ -189,7 +120,6 @@ public class PlayerBiped : Pawn
   public float grapPullSpeed = 10;
   public float grapStopDistance = 0.1f;
   Timer grapTimer = new Timer();
-  Timer grapPullTimer = new Timer();
   Vector2 grapSize;
   Vector3 graphitpos;
   public bool grapShooting;
@@ -201,6 +131,15 @@ public class PlayerBiped : Pawn
   int HitLayers;
   RaycastHit2D hitRight;
   RaycastHit2D hitLeft;
+
+  // World Selection
+  [SerializeField] float selectRange = 3;
+  IWorldSelectable closestISelect;
+  IWorldSelectable WorldSelection;
+  List<Component> pups = new List<Component>();
+
+  [SerializeField] GameObject SpiderbotPrefab;
+  public SpiderPawn spider;
 
   protected override void Awake()
   {
@@ -220,6 +159,13 @@ public class PlayerBiped : Pawn
     // unpack
     InteractIndicator.SetActive( false );
     InteractIndicator.transform.SetParent( null );
+  }
+
+  public override void OnControllerAssigned()
+  {
+    // settings are read before player is created, so set player settings here.
+    speedFactorNormalized = Global.instance.FloatSetting["PlayerSpeedFactor"].Value;
+    controller.CursorInfluence = Global.instance.BoolSetting["CursorInfluence"].Value;
   }
 
   public override void PreSceneTransition()
@@ -275,15 +221,7 @@ public class PlayerBiped : Pawn
     AssignWeapon( weapons[CurrentWeaponIndex] );
   }
 
-  // World Selection
-  [SerializeField] float selectRange = 3;
-  IWorldSelectable closestISelect;
-  IWorldSelectable WorldSelection;
-  List<Component> pups = new List<Component>();
-  //List<Pickup> highlightedPickups = new List<Pickup>();
-  //List<Pickup> highlightedPickupsRemove = new List<Pickup>();
-
-  public void UnselectWorldSelection()
+  public override void UnselectWorldSelection()
   {
     if( WorldSelection != null )
     {
@@ -291,7 +229,7 @@ public class PlayerBiped : Pawn
       WorldSelection = null;
     }
   }
-
+  
   new void UpdateHit( float dT )
   {
     pups.Clear();
@@ -312,7 +250,7 @@ public class PlayerBiped : Pawn
         // maybe only damage other if charging weapon or has active powerup?
         if( ContactDamage != null )
         {
-          Damage dmg = Instantiate<Damage>( ContactDamage );
+          Damage dmg = Instantiate( ContactDamage );
           dmg.instigator = this;
           dmg.damageSource = transform;
           dmg.point = hit.point;
@@ -432,7 +370,17 @@ public class PlayerBiped : Pawn
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
+        {
+
+#if UNITY_EDITOR
+        if( cha.GetInstanceID() == GetInstanceID() )
+        {
+          Debug.LogError( "character set itself as carry character", gameObject );
+          Debug.Break();
+        }
+#endif  
           carryCharacter = cha;
+        }
         break;
       }
     }
@@ -493,7 +441,7 @@ public class PlayerBiped : Pawn
 
   void Shoot()
   {
-    if( !CanShoot || weapon == null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
+    if( weapon == null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
       return;
     if( !weapon.fullAuto )
       input.Fire = false;
@@ -506,7 +454,7 @@ public class PlayerBiped : Pawn
 
   void ShootCharged()
   {
-    if( !CanShoot || weapon == null || weapon.ChargeVariant == null )
+    if( weapon == null || weapon.ChargeVariant == null )
     {
       StopCharge();
       return;
@@ -588,8 +536,6 @@ public class PlayerBiped : Pawn
     grapTimer.Stop( false );
   }
 
-  
-
   void UpdateCursor()
   {
     Vector2 AimPosition = Vector2.zero;
@@ -669,7 +615,6 @@ public class PlayerBiped : Pawn
     if( Global.Paused )
       return;
 
-
     UpdateCursor();
 
     string anim = "idle";
@@ -686,6 +631,9 @@ public class PlayerBiped : Pawn
       velocity = Vector3.zero;
     else if( !(input.MoveRight || input.MoveLeft) )
       velocity.x = 0;
+
+    if( carryCharacter != null )
+      velocity = carryCharacter.velocity;
 
     // WEAPONS / ABILITIES
     if( input.Fire )
@@ -704,7 +652,7 @@ public class PlayerBiped : Pawn
       NextWeapon();
     //Shield.SetActive( input.Shield );
 
-    if( input.Down )
+    if( input.MoveDown )
       hanging = false;
 
     if( input.Interact )
@@ -846,7 +794,6 @@ public class PlayerBiped : Pawn
             dashSmoke.Play();
         }
       }
-
     }
 
     if( velocity.y < 0 )
@@ -907,14 +854,16 @@ public class PlayerBiped : Pawn
     }
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
 
-    transform.position += (Vector3)Velocity * Time.deltaTime;
+    transform.position += (Vector3)velocity * Time.deltaTime;
     carryCharacter = null;
 
     UpdateHit( Time.deltaTime );
     // update collision flags, and adjust position before render
     UpdateCollision( Time.deltaTime );
 
-    if( takingDamage )
+    if( health <= 0 )
+      anim = "death";
+    else if( takingDamage )
       anim = "damage";
     else if( walljumping )
       anim = "walljump";
@@ -955,15 +904,12 @@ public class PlayerBiped : Pawn
     ResetInput();
   }
 
-
-
   void LateUpdate()
   {
     if( !Global.instance.Updating )
       return;
 
     UpdateParts();
-
 
     Cursor.position = CursorWorldPosition;
 
@@ -1021,9 +967,6 @@ public class PlayerBiped : Pawn
     dashSmoke.Stop();
     dashTimer.Stop( false );
   }
-
-  float chargeStart;
-  GameObject chargeEffectGO;
 
   void StartCharge()
   {
@@ -1095,16 +1038,32 @@ public class PlayerBiped : Pawn
     } );
   }
 
+  protected override void Die()
+  {
+    if( spider == null )
+    {
+      GameObject go = Instantiate( SpiderbotPrefab, transform.position, Quaternion.identity );
+      spider = go.GetComponent<SpiderPawn>();
+    }
+    controller.AssignPawn( spider );
+  }
+
   public override bool TakeDamage( Damage d )
   {
-    if( !CanTakeDamage || damagePassThrough )
+    if( !CanTakeDamage || damagePassThrough || health <= 0 )
       return false;
     if( d.instigator != null && !IsEnemyTeam( d.instigator.Team ) )
       return false;
 
     health -= d.amount;
-    partHead.transform.localScale = Vector3.one * (1 + (health / MaxHealth) * 10);
+    if( health <= 0 )
+    {
+      flashTimer.Stop( false );
+      Die();
+      return true;
+    }
 
+    partHead.transform.localScale = Vector3.one * (1 + (health / MaxHealth) * 10);
     audio.PlayOneShot( soundDamage );
     Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
     Play( "damage" );
@@ -1156,7 +1115,7 @@ public class PlayerBiped : Pawn
     return true;
   }
 
-  public void DoorRun( bool right, float duration, float distance )
+  public void DoorTransition( bool right, float duration, float distance )
   {
     enabled = false;
     damageTimer.Stop( true );
@@ -1203,7 +1162,7 @@ public class PlayerBiped : Pawn
 
   List<CharacterPart> CharacterParts;
 
-  // Call from Awake()  
+  // Call from Awake()
   void InitializeParts()
   {
     CharacterParts = new List<CharacterPart> { partBody, partHead, partArmBack, partArmFront };
