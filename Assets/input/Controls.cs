@@ -81,6 +81,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Quit"",
+                    ""type"": ""Button"",
+                    ""id"": ""1b15357c-9f56-49a8-bf34-21dde1ddaf2d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -292,6 +300,39 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Screenshot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""cf930ba7-e45d-4419-8153-5da6d520c19a"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quit"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""2beb289b-ba2d-4e43-a548-1bbcbc9a2471"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""05c9ff5e-aac4-414d-bc75-871251774f75"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -1075,6 +1116,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_GlobalActions_Screenshot = m_GlobalActions.FindAction("Screenshot", throwIfNotFound: true);
         m_GlobalActions_RecordToggle = m_GlobalActions.FindAction("RecordToggle", throwIfNotFound: true);
         m_GlobalActions_RecordPlayback = m_GlobalActions.FindAction("RecordPlayback", throwIfNotFound: true);
+        m_GlobalActions_Quit = m_GlobalActions.FindAction("Quit", throwIfNotFound: true);
         // MenuActions
         m_MenuActions = asset.FindActionMap("MenuActions", throwIfNotFound: true);
         m_MenuActions_Move = m_MenuActions.FindAction("Move", throwIfNotFound: true);
@@ -1158,6 +1200,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_GlobalActions_Screenshot;
     private readonly InputAction m_GlobalActions_RecordToggle;
     private readonly InputAction m_GlobalActions_RecordPlayback;
+    private readonly InputAction m_GlobalActions_Quit;
     public struct GlobalActionsActions
     {
         private @Controls m_Wrapper;
@@ -1170,6 +1213,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Screenshot => m_Wrapper.m_GlobalActions_Screenshot;
         public InputAction @RecordToggle => m_Wrapper.m_GlobalActions_RecordToggle;
         public InputAction @RecordPlayback => m_Wrapper.m_GlobalActions_RecordPlayback;
+        public InputAction @Quit => m_Wrapper.m_GlobalActions_Quit;
         public InputActionMap Get() { return m_Wrapper.m_GlobalActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1203,6 +1247,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @RecordPlayback.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordPlayback;
                 @RecordPlayback.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordPlayback;
                 @RecordPlayback.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordPlayback;
+                @Quit.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnQuit;
+                @Quit.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnQuit;
+                @Quit.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnQuit;
             }
             m_Wrapper.m_GlobalActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -1231,6 +1278,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @RecordPlayback.started += instance.OnRecordPlayback;
                 @RecordPlayback.performed += instance.OnRecordPlayback;
                 @RecordPlayback.canceled += instance.OnRecordPlayback;
+                @Quit.started += instance.OnQuit;
+                @Quit.performed += instance.OnQuit;
+                @Quit.canceled += instance.OnQuit;
             }
         }
     }
@@ -1498,6 +1548,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnScreenshot(InputAction.CallbackContext context);
         void OnRecordToggle(InputAction.CallbackContext context);
         void OnRecordPlayback(InputAction.CallbackContext context);
+        void OnQuit(InputAction.CallbackContext context);
     }
     public interface IMenuActionsActions
     {

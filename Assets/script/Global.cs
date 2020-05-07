@@ -416,6 +416,9 @@ public class Global : MonoBehaviour
     Controls.Enable();
     Controls.MenuActions.Disable();
 
+Controls.GlobalActions.Quit.performed += (obj)=>{
+	Application.Quit();
+};
     Controls.GlobalActions.Any.performed += ( obj ) => {
       bool newvalue = obj.control.device.name.Contains( "Gamepad" );
       if( newvalue != UsingGamepad )
@@ -1153,7 +1156,7 @@ public class Global : MonoBehaviour
     CreateBoolSetting( "ShowAimPath", false, delegate ( bool value ) { ShowAimPath = value; } );
 
     CreateFloatSetting( "CursorOuter", 1, 0, 1, 20, delegate ( float value ) { CursorOuter = value; } );
-    CreateFloatSetting( "CursorSensitivity", 1, 0.001f, 1, 1000, delegate ( float value ) { CursorSensitivity = value; } );
+    CreateFloatSetting( "CursorSensitivity", 0.1f, 0.001f, 1, 1000, delegate ( float value ) { CursorSensitivity = value; } );
     CreateFloatSetting( "CameraLerpAlpha", 10, 1, 10, 100, delegate ( float value ) { CameraController.lerpAlpha = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 20, delegate ( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 10, delegate ( float value ) { deadZone = value; } );

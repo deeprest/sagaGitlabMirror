@@ -77,9 +77,8 @@ hornet particles should not rotate, and should disappear
 - UNITY bug: [WEBGL] webgl audio loop
 
 ### Linux Issues
++ support Ctrl-Q to quit
 - mouse sensitivity is too high even on lowest setting (0.05)
 - scroll wheel sensitivity is too low
-- support Ctrl-Q to quit
-- no per-pixel lights (check OpenGL/Vulcan support)
-- control names are not converted in diagetics (but okay in menu)
++ no per-pixel lights (check OpenGL/Vulcan support) [texture compression]
 + glitchy/wrong sprite shader for mech on linux. [SOLVED. This is because of texture compression settings on each individual texture.]
