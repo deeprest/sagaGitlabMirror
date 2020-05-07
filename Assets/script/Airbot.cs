@@ -56,6 +56,7 @@ public class Airbot : Entity
       return;
     base.OnDestroy();
     hitPauseTimer.Stop( false );
+    SightPulseTimer.Stop( false );
   }
 
   void AirbotLogic()

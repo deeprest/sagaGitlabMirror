@@ -643,11 +643,6 @@ public class Global : MonoBehaviour
       //progress.fillAmount = prog;
     }
 
-#if UNITY_EDITOR_LINUX
-    if( Input.GetKeyDown(KeyCode.Escape) )
-    Cursor.lockState = CursorLockMode.None;
-#endif
-
     float H = 0;
     float S = 1;
     float V = 1;
