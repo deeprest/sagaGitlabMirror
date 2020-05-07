@@ -1,0 +1,69 @@
+fileFormatVersion: 2
+guid: ff9f49bb09be1464fb55a909a794a386
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 25a63327f814cd04cbdbd7e8ae6dfcf9, type: 3}
+  textureSettings:
+    textureType: 8
+    pixelsPerUnit: 64
+    transparentMask: 0
+    transparentColor: {r: 1, g: 0, b: 1, a: 1}
+    meshType: 1
+    extrudeEdges: 1
+    spritePivot: {x: 0.5, y: 0.5}
+    generatePhysics: 0
+    wrapMode: 1
+    filterMode: 0
+    tileSize: {x: 32, y: 32}
+    tilePadding: {x: 0, y: 0}
+    tileOffset: {x: 0, y: 0}
+  animationSettings:
+  - animationName: idle
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 0"
+    pivot: {x: 0.5, y: 0.5}
+  - animationName: damage
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 1; To: 3"
+    pivot: {x: 0.5, y: 0.5}
+  - animationName: jump
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 4; To: 6"
+    pivot: {x: 0.5, y: 0.5}
+  - animationName: fall
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 7; To: 8"
+    pivot: {x: 0.5, y: 0.5}
+  - animationName: land
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 9; To: 10"
+    pivot: {x: 0.5, y: 0.5}
+  - animationName: dash
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 11; To: 12"
+    pivot: {x: 0.5, y: 0.5}
+  - animationName: run
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 13; To: 23"
+    pivot: {x: 0.5, y: 0.5}
+  - animationName: wallslide
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 24; To: 26"
+    pivot: {x: 0.5, y: 0.5}
+  - animationName: walljump
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 27; To: 28"
+    pivot: {x: 0.5, y: 0.5}
+  - animationName: hang
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 29; To: 29"
+    pivot: {x: 0.5, y: 0.5}
+  importType: 2
+  LayersToTextures: 1
+  TransformPath: 
+  SampleRate: 25

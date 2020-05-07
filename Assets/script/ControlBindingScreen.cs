@@ -9,7 +9,6 @@ public class ControlBindingScreen : UIScreen
 {
   [SerializeField] Transform parent;
   [SerializeField] GameObject template;
-  Controls c;
   List<ControlBindingItem> list = new List<ControlBindingItem>();
   ControlBindingItem rebinding;
 
@@ -23,7 +22,7 @@ public class ControlBindingScreen : UIScreen
     list.Add( cbi );
   }
 
-  protected override void Start()
+  void Start()
   {
     IEnumerator<InputAction> enumerator = Global.instance.Controls.GetEnumerator();
     while( enumerator.MoveNext() )
@@ -32,9 +31,7 @@ public class ControlBindingScreen : UIScreen
           !Global.instance.Controls.GlobalActions.Get().Contains( enumerator.Current ) )
         CreateItem( enumerator.Current );
     }
-    initiallySelected = list[0].gameObject;
-    SelectedObject = list[0].gameObject;
-    EventSystem.current.SetSelectedGameObject( SelectedObject );
+    InitiallySelected = list[0].gameObject;
   }
 
   private void Update()
@@ -48,6 +45,7 @@ public class ControlBindingScreen : UIScreen
 
   public void StartRebind( ControlBindingItem cbi )
   {
+    //if( cbi.action.controls.Count == 0 )
     Global.instance.Controls.Disable();
     cbi.button.interactable = false;
     InputActionRebindingExtensions.PerformInteractiveRebinding( cbi.action )

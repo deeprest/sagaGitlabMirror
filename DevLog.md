@@ -73,3 +73,17 @@ left thumbstick = move
 + parallax optimization in editor
 + add spark effect to wall jump
 + replace old sprite anims with unity animators
+
+
+### Before Next Release
++ cursor locking. on pause menu, diegetic, app focus change
++ pause menu settings navigation
++ scene list
++ scene trigger fails / scene load fails
++ settings UI
++ back button
++ fix diegetic selects when focus menu
++ minimum shoot vector, otherwise shots have no velocity (gamepad)
++ control binding says "bad control index" for minimap (gamepad)
+- city highway music intro is bungled
++ screen settings mechanism seems broken

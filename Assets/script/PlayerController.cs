@@ -2,1217 +2,347 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
-/*
-// todo PlayerController -> PlayerPawn
-// Separate inputs from actions.
-// Bind the same action functions to input delegates driven by an AI brain.
-
-public class PawnController
+using System.IO;
+#if UNITY_EDITOR
+using UnityEditor;
+[CustomEditor( typeof( PlayerController ) )]
+public class PlayerControllerEditor : Editor
 {
-  public Pawn pawn;
-  public virtual void Initialize() { }
-  public virtual void Update() { }
-}
-
-public class NewPlayerController : PawnController
-{
-  public override void Initialize()
+  public override void OnInspectorGUI()
   {
-    // without callback context
-    Global.instance.Controls.BipedActions.Fire.performed += ( obj ) => pawn.Fire_Performed();
+    base.OnInspectorGUI();
+    PlayerController pc = target as PlayerController;
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "record" ) )
+      pc.RecordBegin();
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "end" ) )
+      pc.RecordEnd();
+    if( GUI.Button( EditorGUILayout.GetControlRect(), "play recording" ) )
+      pc.RecordPlayback();
   }
 }
+#endif
 
-public class AIController : PawnController
+public class PlayerController : Controller
 {
-  public override void Update()
-  {
-    // logic drives inputs
+  Controls.BipedActionsActions BA;
+  Controls.SpiderActionsActions SA;
 
-    //InputAction.CallbackContext ctx = new InputAction.CallbackContext();
-    pawn.Fire_Performed( );
-  }
-}
+  public float DirectionalCursorDistance = 3;
+  // any persistent input variables
+  Vector2 cursorDelta = Vector2.zero;
+  bool fire;
+  public Vector2 aimDeltaSinceLastFrame;
 
-// todo make Character a subclass of Pawn
-public class Pawn : Character, IDamage
-{
-  public PawnController controller;
-
-  new public bool TakeDamage( Damage d )
-  {
-    return true;
-  }
-
-  //public void Fire_Performed( InputAction.CallbackContext obj )
-  public void Fire_Performed()
-  {
-    // shoot
-  }
-}
-
-/*
-// todo call Update directly from global
-// todo refactor logic: inputs, collision, velocity, state vars, timers -> state vars, anims, velocity
-
-inputs
-collision flags
-logic for changing state
-
-result of current state ->
-animation state
-velocity
-position
-collision update
-
-state
-  onground
-  facingRight
-  takingdamage
-  aim / shoot
-  jumping
-  wallslide
-  dash
-  graphook
-  shield
-
-*/
-
-public class PlayerController : Character, IDamage
-{
-  new public AudioSource audio;
-  public AudioSource audio2;
-  public ParticleSystem dashSmoke;
-  public GameObject dashflashPrefab;
-  public GameObject walljumpEffect;
-  [SerializeField] Transform WallkickPosition;
-  public Transform arm;
-
-  const float raydown = 0.2f;
-  const float downOffset = 0.12f;
-  // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
-  public Vector2 headbox = new Vector2( .1f, .1f );
-  const float headboxy = -0.1f;
-  const float downslopefudge = 0.2f;
-  const float corner = 0.707f;
-
-  [Header( "Setting" )]
-  public float speedFactorNormalized = 1;
-  public float SpeedFactorNormalized
-  {
-    get { return speedFactorNormalized; }
-    set
-    {
-      speedFactorNormalized = value;
-      //animator.speed = value;
-    }
-  }
-  // velocities
-  public float moveVelMin = 1.5f;
-  public float moveVelMax = 3;
-  public float moveSpeed { get { return moveVelMin + (moveVelMax - moveVelMin) * speedFactorNormalized; } }
-  public float jumpVelMin = 5;
-  public float jumpVelMax = 10;
-  public float jumpSpeed { get { return jumpVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized; } }
-  public float dashVelMin = 3;
-  public float dashVelMax = 10;
-  public float dashSpeed { get { return dashVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized; } }
-  public float wallJumpPushVelocity = 1.5f;
-  public float wallJumpPushDuration = 0.1f;
-  // durations
-  public float jumpDuration = 0.4f;
-  public float jumpRepeatInterval = 0.1f;
-  public float dashDuration = 1;
-  public float landDuration = 0.1f;
-  public float wallSlideFactor = 0.5f;
-
-  [Header( "Input" )]
-  public bool inputRight;
-  public bool inputLeft;
-  public bool inputJumpStart;
-  public bool inputJumpEnd;
-  public bool inputDashStart;
-  public bool inputDashEnd;
-  public bool inputChargeStart;
-  public bool inputCharge;
-  public bool inputChargeEnd;
-  public bool inputGraphook;
-  //public bool inputShield;
-  public bool inputFire;
-  Vector3 shoot;
-
-  [Header( "State" )]
-  [SerializeField] bool facingRight = true;
-  [SerializeField] bool onGround;
-  [SerializeField] bool jumping;
-  [SerializeField] bool walljumping;
-  [SerializeField] bool wallsliding;
-  [SerializeField] bool landing;
-  [SerializeField] bool dashing;
-  public bool hanging { get; set; }
-  Vector3 hitBottomNormal;
-  Vector2 wallSlideNormal;
-  Timer dashTimer = new Timer();
-  Timer jumpTimer = new Timer();
-  Timer jumpRepeatTimer = new Timer();
-  Timer landTimer = new Timer();
-  Timer walljumpTimer = new Timer();
-
-  [Header( "Weapon" )]
-  public Weapon weapon;
-  public int CurrentWeaponIndex;
-  [SerializeField] List<Weapon> weapons;
-  Timer shootRepeatTimer = new Timer();
-  ParticleSystem chargeEffect = null;
-  public float chargeMin = 0.3f;
-  public float armRadius = 0.3f;
-  Timer chargePulse = new Timer();
-  Timer chargeStartDelay = new Timer();
-  public float chargeDelay = 0.2f;
-  public bool chargePulseOn = true;
-  public float chargePulseInterval = 0.1f;
-  public Color chargeColor = Color.white;
-  public Transform armMount;
-  [SerializeField] Ability secondary;
-
-  [Header( "Sound" )]
-  public AudioClip soundJump;
-  public AudioClip soundDash;
-  public AudioClip soundDamage;
-
-  [Header( "Damage" )]
-  [SerializeField] float damageDuration = 0.5f;
-  bool takingDamage;
-  bool damagePassThrough;
-  Timer damageTimer = new Timer();
-  public Color damagePulseColor = Color.white;
-  bool damagePulseOn;
-  Timer damagePulseTimer = new Timer();
-  public float damagePulseInterval = .1f;
-  public float damageBlinkDuration = 1f;
-  public float damageLift = 1f;
-  public float damagePushAmount = 1f;
-
-  [Header( "Graphook" )]
-  [SerializeField] GameObject graphookTip;
-  [SerializeField] SpriteRenderer grapCableRender;
-  public float grapDistance = 10;
-  public float grapSpeed = 5;
-  public float grapTimeout = 5;
-  public float grapPullSpeed = 10;
-  public float grapStopDistance = 0.1f;
-  Timer grapTimer = new Timer();
-  Timer grapPullTimer = new Timer();
-  Vector2 grapSize;
-  Vector3 graphitpos;
-  public bool grapShooting;
-  public bool grapPulling;
-  public AudioClip grapShotSound;
-  public AudioClip grapHitSound;
-
-  // cached for optimization
-  int HitLayers;
-  RaycastHit2D hitRight;
-  RaycastHit2D hitLeft;
-
-  protected override void Awake()
+  // init bindings to modify input struct
+  public override void Awake()
   {
     base.Awake();
     BindControls();
+    recordpath = Application.persistentDataPath + "/input.dat";
   }
 
-  void Start()
+  public void HACKSetSpeed( float speed )
   {
-    HitLayers = Global.TriggerLayers | Global.CharacterDamageLayers;
-    IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
-    spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
-    graphookTip.SetActive( false );
-    grapCableRender.gameObject.SetActive( false );
-    if( weapons.Count > 0 )
-      weapon = weapons[CurrentWeaponIndex % weapons.Count];
-    // unpack
-    InteractIndicator.SetActive( false );
-    InteractIndicator.transform.SetParent( null );
+    if(pawn!=null)
+      pawn.OnControllerAssigned();
   }
 
-  public override void PreSceneTransition()
+  public override void AssignPawn( Pawn pwn )
   {
-    StopCharge();
-    StopGrap();
-    // "pack" the graphook with this gameobject
-    // graphook is unpacked when used
-    graphookTip.transform.parent = gameObject.transform;
-    grapCableRender.transform.parent = gameObject.transform;
-    InteractIndicator.transform.parent = gameObject.transform;
+    base.AssignPawn( pwn );
+    // I'm the player, look at me!
+    Global.instance.CameraController.LookTarget = this;
+    Global.instance.CameraController.transform.position = pawn.transform.position;
+
+    if( pawn is PlayerBiped )
+    {
+      Global.instance.Controls.BipedActions.Enable();
+      Global.instance.Controls.SpiderActions.Disable();
+    }
+    else if( pawn is SpiderPawn )
+    {
+      Global.instance.Controls.BipedActions.Disable();
+      Global.instance.Controls.SpiderActions.Enable();
+    }
+
   }
 
-  public override void PostSceneTransition()
+  private void BindControls()
   {
-    InteractIndicator.SetActive( false );
-    InteractIndicator.transform.SetParent( null );
+    BA = Global.instance.Controls.BipedActions;
+    SA = Global.instance.Controls.SpiderActions;
+
+    BA.Fire.started += ( obj ) => input.Fire = true;
+    BA.Fire.canceled += ( obj ) => input.Fire = false;
+    BA.Jump.started += ( obj ) => input.JumpStart = true;
+    BA.Jump.canceled += ( obj ) => input.JumpEnd = true;
+    BA.Dash.started += ( obj ) => input.DashStart = true;
+    BA.Dash.canceled += ( obj ) => input.DashEnd = true;
+    //BA.Shield.started += ( obj ) => input.Shield = true;
+    //BA.Shield.canceled += ( obj ) => input.Shield = false;
+    BA.Graphook.performed += ( obj ) => input.Graphook = true;
+    BA.NextWeapon.performed += ( obj ) => input.NextWeapon = true;
+    BA.Charge.started += ( obj ) => input.ChargeStart = true;
+    BA.Charge.canceled += ( obj ) => input.ChargeEnd = true;
+    BA.Down.performed += ( obj ) => input.MoveDown = true;
+    BA.Interact.performed += ( obj ) => { input.Interact = true; };
+    
+    BA.Aim.performed += ( obj ) => { aimDeltaSinceLastFrame += obj.ReadValue<Vector2>(); };
+
   }
 
-  void OnDestroy()
+  // apply input to pawn
+  public override void Update()
   {
-    damageTimer.Stop( false );
-    damagePulseTimer.Stop( false );
-    shootRepeatTimer.Stop( false );
-    if( chargeEffect != null )
+    if( playback )
     {
-      audio2.Stop();
-      Destroy( chargeEffectGO );
-    }
-    chargeStartDelay.Stop( false );
-    chargePulse.Stop( false );
-  }
-
-  void AssignWeapon( Weapon wpn )
-  {
-    weapon = wpn;
-    Global.instance.weaponIcon.sprite = weapon.icon;
-    Cursor.GetComponent<SpriteRenderer>().sprite = weapon.cursor;
-    StopCharge();
-    foreach( var sr in spriteRenderers )
-    {
-      sr.material.SetColor( "_IndexColor", weapon.Color0 );
-      sr.material.SetColor( "_IndexColor2", weapon.Color1 );
-    }
-  }
-
-  void NextWeapon()
-  {
-    CurrentWeaponIndex = (CurrentWeaponIndex + 1) % weapons.Count;
-    AssignWeapon( weapons[CurrentWeaponIndex] );
-  }
-
-  [SerializeField] float selectRange = 3;
-  IWorldSelectable closestISelect;
-  IWorldSelectable WorldSelection;
-  List<Component> pups = new List<Component>();
-  //List<Pickup> highlightedPickups = new List<Pickup>();
-  //List<Pickup> highlightedPickupsRemove = new List<Pickup>();
-
-  public void UnselectWorldSelection()
-  {
-    if( WorldSelection != null )
-    {
-      WorldSelection.Unselect();
-      WorldSelection = null;
-    }
-  }
-
-  new void UpdateHit( float dT )
-  {
-    pups.Clear();
-    hitCount = Physics2D.BoxCastNonAlloc( transform.position, box.size, 0, velocity, RaycastHits, Mathf.Max( raylength, velocity.magnitude * dT ), HitLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( hit.transform.IsChildOf( transform ) )
-        continue;
-      ITrigger tri = hit.transform.GetComponent<ITrigger>();
-      if( tri != null )
-      {
-        tri.Trigger( transform );
-      }
-      IDamage dam = hit.transform.GetComponent<IDamage>();
-      if( dam != null )
-      {
-        // maybe only damage other if charging weapon or has active powerup?
-        if( ContactDamage != null )
-        {
-          Damage dmg = Instantiate<Damage>( ContactDamage );
-          dmg.damageSource = transform;
-          dmg.point = hit.point;
-          dam.TakeDamage( dmg );
-        }
-      }
-    }
-
-    pups.Clear();
-    hitCount = Physics2D.CircleCastNonAlloc( transform.position, selectRange, Vector3.zero, RaycastHits, 0, Global.WorldSelectableLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      IWorldSelectable pup = hit.transform.GetComponent<IWorldSelectable>();
-      if( pup != null )
-      {
-        pups.Add( (Component)pup );
-        /*if( !highlightedPickups.Contains( pup ) )
-        {
-          pup.Highlight();
-          highlightedPickups.Add( pup );
-        }*/
-      }
-    }
-    //WorldSelectable closest = (WorldSelectable)FindClosest( transform.position, pups.ToArray() );
-    IWorldSelectable closest = (IWorldSelectable)Util.FindSmallestAngle( transform.position, shoot, pups.ToArray() );
-    if( closest == null )
-    {
-      if( closestISelect != null )
-      {
-        closestISelect.Unhighlight();
-        closestISelect = null;
-      }
-      if( WorldSelection != null )
-      {
-        WorldSelection.Unselect();
-        WorldSelection = null;
-      }
-    }
-    else if( closest != closestISelect )
-    {
-      if( closestISelect != null )
-        closestISelect.Unhighlight();
-      closestISelect = closest;
-      closestISelect.Highlight();
-    }
-    /*highlightedPickupsRemove.Clear();
-    foreach( var pup in highlightedPickups )
-      if( !pups.Contains( pup ) )
-      {
-        pup.Unhighlight();
-        highlightedPickupsRemove.Add( pup );
-      }
-    foreach( var pup in highlightedPickupsRemove )
-      highlightedPickups.Remove( pup );
-    */
-  }
-
-  new void UpdateCollision( float dT )
-  {
-    collideRight = false;
-    collideLeft = false;
-    collideTop = false;
-    collideBottom = false;
-    adjust = transform.position;
-
-    #region multisampleAttempt
-    /*
-    // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground bug by 'sampling' the ground at multiple points
-    RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
-    RaycastHit2D left = Physics2D.Raycast( adjust + Vector2.left * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
-    if( right.transform != null )
-      rightFoot = right.point;
-    else
-      rightFoot = adjust + ( Vector2.right * box.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * Time.deltaTime ) );
-    if( left.transform != null )
-      leftFoot = left.point;
-    else
-      leftFoot = adjust + ( Vector2.left * box.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * Time.deltaTime ) );
-
-    if( right.transform != null || left.transform != null )
-    {
-      Vector2 across = rightFoot - leftFoot;
-      Vector3 sloped = Vector3.Cross( across.normalized, Vector3.back );
-      if( sloped.y > corner )
-      {
-        collideFeet = true;
-        adjust.y = ( leftFoot + across * 0.5f ).y + contactSeparation + verticalOffset;
-        hitBottomNormal = sloped;
-      }
-    }
-
-    if( left.transform != null )
-      Debug.DrawLine( adjust + Vector2.left * box.x, leftFoot, Color.green );
-    else
-      Debug.DrawLine( adjust + Vector2.left * box.x, leftFoot, Color.grey );
-    if( right.transform != null )
-      Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.green );
-    else
-      Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.grey );
-
-    */
-    #endregion
-
-    float down = jumping ? raydown - downOffset : raydown;
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
-      if( hit.normal.y > corner )
-      {
-        collideBottom = true;
-        adjust.y = hit.point.y + box.size.y * 0.5f + downOffset;
-        hitBottomNormal = hit.normal;
-        // moving platforms
-        Character cha = hit.transform.GetComponent<Character>();
-        if( cha != null )
-          carryCharacter = cha;
-        break;
-      }
-    }
-
-    hitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.down * headboxy, headbox, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
-      if( hit.normal.y < -corner )
-      {
-        collideTop = true;
-        adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
-        break;
-      }
-    }
-
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.left, RaycastHits, Mathf.Max( contactSeparation, -velocity.x * dT ), Global.CharacterCollideLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
-      if( hit.normal.x > corner )
-      {
-        collideLeft = true;
-        hitLeft = hit;
-        adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
-        wallSlideNormal = hit.normal;
-        break;
-      }
-    }
-
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.right, RaycastHits, Mathf.Max( contactSeparation, velocity.x * dT ), Global.CharacterCollideLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
-      if( hit.normal.x < -corner )
-      {
-        collideRight = true;
-        hitRight = hit;
-        adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
-        wallSlideNormal = hit.normal;
-        break;
-      }
-    }
-
-    transform.position = adjust;
-  }
-
-  void Shoot()
-  {
-    if( !CanShoot || weapon == null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
-      return;
-    if( !weapon.fullAuto )
-      inputFire = false;
-    if( weapon.HasInterval )
-      shootRepeatTimer.Start( weapon.shootInterval, null, null );
-    Vector3 pos = arm.position + shoot.normalized * armRadius;
-    if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
-      weapon.FireWeapon( this, pos, shoot );
-  }
-
-  void ShootCharged()
-  {
-    if( !CanShoot || weapon == null || weapon.ChargeVariant == null )
-    {
-      StopCharge();
-      return;
-    }
-    // hack: chargeEffect is used to indicate charged state
-    if( chargeEffect != null )
-    {
-      audio.Stop();
-      if( (Time.time - chargeStart) > chargeMin )
-      {
-        audio.PlayOneShot( weapon.soundChargeShot );
-        Vector3 pos = arm.position + shoot.normalized * armRadius;
-        if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
-          weapon.ChargeVariant.FireWeapon( this, pos, shoot );
-      }
-    }
-    StopCharge();
-  }
-
-  void ShootGraphook()
-  {
-    if( grapShooting )
-      return;
-    if( grapPulling )
-      StopGrap();
-    Vector3 pos = arm.position + shoot.normalized * armRadius;
-    if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
-    {
-      RaycastHit2D hit = Physics2D.Raycast( pos, shoot, grapDistance, LayerMask.GetMask( new string[] { "Default", "triggerAndCollision", "enemy" } ) );
-      if( hit )
-      {
-        //Debug.DrawLine( pos, hit.point, Color.red );
-        grapShooting = true;
-        graphitpos = hit.point;
-        graphookTip.SetActive( true );
-        graphookTip.transform.parent = null;
-        graphookTip.transform.localScale = Vector3.one;
-        graphookTip.transform.position = pos;
-        graphookTip.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - transform.position) ) ); ;
-        grapTimer.Start( grapTimeout, delegate
-        {
-          pos = arm.position + shoot.normalized * armRadius;
-          graphookTip.transform.position = Vector3.MoveTowards( graphookTip.transform.position, graphitpos, grapSpeed * Time.deltaTime );
-          //grap cable
-          grapCableRender.gameObject.SetActive( true );
-          grapCableRender.transform.parent = null;
-          grapCableRender.transform.localScale = Vector3.one;
-          grapCableRender.transform.position = pos;
-          grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - pos) ) );
-          grapSize = grapCableRender.size;
-          grapSize.x = Vector3.Distance( graphookTip.transform.position, pos );
-          grapCableRender.size = grapSize;
-
-          if( Vector3.Distance( graphookTip.transform.position, graphitpos ) < 0.01f )
-          {
-            grapShooting = false;
-            grapPulling = true;
-            grapTimer.Stop( false );
-            grapTimer.Start( grapTimeout, null, StopGrap );
-            audio.PlayOneShot( grapHitSound );
-          }
-        },
-        StopGrap );
-        audio.PlayOneShot( grapShotSound );
-      }
-    }
-  }
-
-  void StopGrap()
-  {
-    grapShooting = false;
-    grapPulling = false;
-    graphookTip.SetActive( false );
-    grapCableRender.gameObject.SetActive( false );
-    // avoid grapsize.y == 0 if StopGrap is called before grapSize is assigned
-    grapSize.y = grapCableRender.size.y;
-    grapSize.x = 0;
-    grapCableRender.size = grapSize;
-    grapTimer.Stop( false );
-  }
-
-  void BindControls()
-  {
-    Global.instance.Controls.BipedActions.Fire.started += ( obj ) => inputFire = true;
-    Global.instance.Controls.BipedActions.Fire.canceled += ( obj ) => inputFire = false;
-    Global.instance.Controls.BipedActions.Jump.started += ( obj ) => inputJumpStart = true;
-    Global.instance.Controls.BipedActions.Jump.canceled += ( obj ) => inputJumpEnd = true;
-    Global.instance.Controls.BipedActions.Dash.started += ( obj ) => inputDashStart = true;
-    Global.instance.Controls.BipedActions.Dash.canceled += ( obj ) => inputDashEnd = true;
-    //Global.instance.Controls.BipedActions.Shield.started += ( obj ) => inputShield = true;
-    //Global.instance.Controls.BipedActions.Shield.canceled += ( obj ) => inputShield = false;
-    Global.instance.Controls.BipedActions.Graphook.performed += ( obj ) => inputGraphook = true; ;
-    Global.instance.Controls.BipedActions.NextWeapon.performed += ( obj ) => NextWeapon();
-    Global.instance.Controls.BipedActions.Charge.started += ( obj ) => inputChargeStart = true;
-    Global.instance.Controls.BipedActions.Charge.canceled += ( obj ) => inputChargeEnd = true;
-    Global.instance.Controls.BipedActions.Down.performed += ( obj ) => hanging = false;
-
-    Global.instance.Controls.BipedActions.Interact.performed += ( obj ) => {
-      if( WorldSelection != null && WorldSelection != closestISelect )
-        WorldSelection.Unselect();
-      WorldSelection = closestISelect;
-      if( WorldSelection != null )
-      {
-        WorldSelection.Select();
-        if( WorldSelection is Pickup )
-        {
-          Pickup pickup = (Pickup)closestISelect;
-          if( pickup.weapon != null )
-          {
-            if( !weapons.Contains( pickup.weapon ) )
-            {
-              weapons.Add( pickup.weapon );
-              AssignWeapon( pickup.weapon );
-            }
-          }
-          else if( pickup.ability != null )
-          {
-            secondary = pickup.ability;
-            secondary.Activate( this );
-            Destroy( pickup.gameObject );
-          }
-        }
-      }
-    };
-  }
-
-  void ResetInput()
-  {
-    //inputFire = false;
-    inputRight = false;
-    inputLeft = false;
-    inputJumpStart = false;
-    inputJumpEnd = false;
-    inputDashStart = false;
-    inputDashEnd = false;
-    inputChargeStart = false;
-    inputCharge = false;
-    inputChargeEnd = false;
-    inputGraphook = false;
-  }
-
-  void Update()
-  {
-    if( Global.Paused )
-      return;
-
-    // INPUTS
-    shoot = AimPosition - (Vector2)arm.position;
-    shoot.z = 0;
-
-    // if player controlled
-    if( Global.instance.Controls.BipedActions.MoveRight.ReadValue<float>() > 0.5f )
-      inputRight = true;
-    if( Global.instance.Controls.BipedActions.MoveLeft.ReadValue<float>() > 0.5f )
-      inputLeft = true;
-
-
-    string anim = "idle";
-    bool previousGround = onGround;
-    onGround = collideBottom || (collideLeft && collideRight);
-    if( onGround && !previousGround )
-    {
-      landing = true;
-      landTimer.Start( landDuration, null, delegate { landing = false; } );
-    }
-    wallsliding = false;
-    // must have input (or push) to move horizontally, so allow no persistent horizontal velocity (without push)
-    if( grapPulling )
-      velocity = Vector3.zero;
-    else if( !(inputRight || inputLeft) )
-      velocity.x = 0;
-
-    //if( carryCharacter != null )
-    //  velocity = carryCharacter.velocity;
-    //carryCharacter = null;
-
-    // WEAPONS / ABILITIES
-    if( inputFire )
-      Shoot();
-
-    if( inputGraphook )
-      ShootGraphook();
-
-    //Shield.SetActive( inputShield );
-
-    if( inputChargeStart )
-      StartCharge();
-
-    if( inputChargeEnd )
-      ShootCharged();
-
-    if( takingDamage )
-    {
-      velocity.y = 0;
-    }
-    else
-    {
-      if( inputRight )
-      {
-        facingRight = true;
-        // move along floor if angled downwards
-        Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.forward );
-        if( onGround && hitnormalCross.y < 0 )
-          // add a small downward vector for curved surfaces
-          velocity = hitnormalCross * moveSpeed + Vector3.down * downslopefudge;
-        else
-          velocity.x = moveSpeed;
-        if( !facingRight && onGround )
-          StopDash();
-      }
-
-      if( inputLeft )
-      {
-        facingRight = false;
-        // move along floor if angled downwards
-        Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.back );
-        if( onGround && hitnormalCross.y < 0 )
-          // add a small downward vector for curved surfaces
-          velocity = hitnormalCross * moveSpeed + Vector3.down * downslopefudge;
-        else
-          velocity.x = -moveSpeed;
-        if( facingRight && onGround )
-          StopDash();
-      }
-
-      if( inputDashStart && (onGround || collideLeft || collideRight) )
-        StartDash();
-
-      if( inputDashEnd && !jumping )
-        StopDash();
-
-      if( dashing )
-      {
-        if( onGround && !previousGround )
-        {
-          StopDash();
-        }
-        else if( facingRight )
-        {
-          if( onGround || inputRight )
-            velocity.x = dashSpeed;
-          if( (onGround || collideRight) && !dashTimer.IsActive )
-            StopDash();
-        }
-        else
-        {
-          if( onGround || inputLeft )
-            velocity.x = -dashSpeed;
-          if( (onGround || collideLeft) && !dashTimer.IsActive )
-            StopDash();
-        }
-      }
-
-      if( onGround && inputJumpStart )
-        StartJump();
+      if( pawn == null || playbackIndex >= evt.Count )
+        playback = false;
       else
-      if( inputJumpEnd )
-        StopJump();
-      else
-      if( collideRight && inputRight && hitRight.normal.y >= 0 )
       {
-        if( inputJumpStart )
-        {
-          walljumping = true;
-          velocity.y = jumpSpeed;
-          Push( Vector2.left * (inputDashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
-          jumpRepeatTimer.Start( jumpRepeatInterval );
-          walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
-          audio.PlayOneShot( soundJump );
-          Instantiate( walljumpEffect, WallkickPosition.position, Quaternion.identity );
-        }
-        else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
-        {
-          wallsliding = true;
-          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
-          dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
-          if( !dashSmoke.isPlaying )
-            dashSmoke.Play();
-        }
+        pawn.transform.position = evt[playbackIndex].position;
+        pawn.ApplyInput( evt[playbackIndex].input );
+        playbackIndex++;
       }
-      else if( collideLeft && inputLeft && hitLeft.normal.y >= 0 )
-      {
-        if( inputJumpStart )
-        {
-          walljumping = true;
-          velocity.y = jumpSpeed;
-          Push( Vector2.right * (inputDashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
-          jumpRepeatTimer.Start( jumpRepeatInterval );
-          walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
-          audio.PlayOneShot( soundJump );
-          Instantiate( walljumpEffect, WallkickPosition.position, Quaternion.identity );
-        }
-        else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
-        {
-          wallsliding = true;
-          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
-          dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
-          if( !dashSmoke.isPlaying )
-            dashSmoke.Play();
-        }
-      }
-
     }
-
-    if( velocity.y < 0 )
-    {
-      jumping = false;
-      walljumping = false;
-      walljumpTimer.Stop( false );
-    }
-
-    if( !((onGround && dashing) || wallsliding) )
-      dashSmoke.Stop();
-
-    if( grapPulling )
-    {
-      Vector3 armpos = arm.position + shoot.normalized * armRadius;
-      grapCableRender.transform.position = armpos;
-      grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - armpos) ) );
-      grapSize = grapCableRender.size;
-      grapSize.x = Vector3.Distance( graphookTip.transform.position, armpos );
-      grapCableRender.size = grapSize;
-
-      Vector3 grapDelta = graphitpos - transform.position;
-      if( grapDelta.magnitude < grapStopDistance )
-        StopGrap();
-      else if( grapDelta.magnitude > 0.01f )
-        velocity = grapDelta.normalized * grapPullSpeed;
-    }
-
-    // add gravity before velocity limits
-    velocity.y -= Global.Gravity * Time.deltaTime;
-    // grap force
-    if( !grapPulling && pushTimer.IsActive )
-      velocity.x = pushVelocity.x;
-
-    if( hanging )
-      velocity = Vector3.zero;
-
-    // limit velocity before adding to position
-    if( collideRight )
-    {
-      velocity.x = Mathf.Min( velocity.x, 0 );
-      pushVelocity.x = Mathf.Min( pushVelocity.x, 0 );
-    }
-    if( collideLeft )
-    {
-      velocity.x = Mathf.Max( velocity.x, 0 );
-      pushVelocity.x = Mathf.Max( pushVelocity.x, 0 );
-    }
-    // "onGround" is not the same as "collideFeet"
-    if( onGround )
-    {
-      velocity.y = Mathf.Max( velocity.y, 0 );
-      pushVelocity.x -= (pushVelocity.x * friction) * Time.deltaTime;
-    }
-    if( collideTop )
-    {
-      velocity.y = Mathf.Min( velocity.y, 0 );
-    }
-    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-
-    transform.position += (Vector3)Velocity * Time.deltaTime;
-    carryCharacter = null;
-
-    UpdateHit( Time.deltaTime );
-    // update collision flags, and adjust position before render
-    UpdateCollision( Time.deltaTime );
-
-    if( takingDamage )
-      anim = "damage";
-    else if( walljumping )
-      anim = "walljump";
-    else if( jumping )
-      anim = "jump";
-    else if( wallsliding )
-      anim = "wallslide";
-    else if( onGround )
-    {
-      if( dashing )
-        anim = "dash";
-      else if( inputRight || inputLeft )
-        anim = "run";
-      else if( landing )
-        anim = "land";
-      else
-        anim = "idle";
-    }
-    else if( !jumping )
-      anim = "fall";
-
-    animator.Play( anim );
-    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
-    renderer.material.SetInt( "_FlipX", facingRight ? 0 : 1 );
-    arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
-    arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, shoot ) );
-    if( wallsliding && collideRight )
-      transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( wallSlideNormal.y, -wallSlideNormal.x ) );
-    else if( wallsliding && collideLeft )
-      transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( -wallSlideNormal.y, wallSlideNormal.x ) );
     else
-      transform.rotation = Quaternion.Euler( 0, 0, 0 );
-
-    ResetInput();
-  }
-
-
-  [Header( "Cursor" )]
-  public GameObject InteractIndicator;
-  [SerializeField] Transform Cursor;
-  public Transform CursorSnapped;
-  public Transform CursorAutoAim;
-  Vector2 AimPosition;
-  public Vector2 CursorWorldPosition;
-  public float CursorScale = 2;
-  public float SnapAngleDivide = 8;
-  public float SnapCursorDistance = 1;
-  public float AutoAimCircleRadius = 1;
-  public float AutoAimDistance = 5;
-  public float DirectionalMinimum = 0.3f;
-  public float DirectionalCursorDistance = 3;
-
-  bool CanShoot { get { return true; } }// CursorAboveMinimumDistance; } }
-  Vector2 cursorDelta;
-  Vector2 cursorOrigin;
-  bool CursorAboveMinimumDistance;
-
-  void LateUpdate()
-  {
-    if( !Global.instance.Updating )
-      return;
-
-#if UNITY_WEBGL && !UNITY_EDITOR
-      Vector2 delta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
-      delta.y = -delta.y;
+    {
       if( Global.instance.UsingGamepad )
-        cursorDelta = delta * DirectionalCursorDistance;
+      {
+        cursorDelta = BA.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
+      }
       else
-        cursorDelta += delta;
-#else
-    if( Global.instance.UsingGamepad )
-    {
-      cursorDelta = Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
+      {
+        cursorDelta += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity;
+        /*cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;*/
+        aimDeltaSinceLastFrame = Vector2.zero;
+        cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
+      }
+
+      input.Aim = cursorDelta;
+
+      if( BA.MoveRight.ReadValue<float>() > 0.5f ) input.MoveRight = true;
+      if( BA.MoveLeft.ReadValue<float>() > 0.5f ) input.MoveLeft = true;
+
+      Vector2 move = SA.Move.ReadValue<Vector2>();
+      if( move.x > 0.5f ) input.MoveRight = true;
+      if( move.x < -0.5f ) input.MoveLeft = true;
+      if( move.y > 0.5f ) input.MoveUp = true;
+      if( move.y < -0.5f ) input.MoveDown = true;
+
+      if( pawn != null )
+        pawn.ApplyInput( input );
+
+      /* // HACK
+      foreach( var paw in minions )
+        paw.ApplyInput( input );*/
+
+      if( recording )
+        evt.Add( new RecordState { input = input, position = pawn.transform.position } );
     }
+
+    input = default;
+  }
+
+  public void FireOnlyInputMode()
+  {
+    Global.instance.Controls.BipedActions.Disable();
+    Global.instance.Controls.BipedActions.Aim.Enable();
+    Global.instance.Controls.BipedActions.Fire.Enable();
+  }
+
+  public void NormalInputMode()
+  {
+    Global.instance.Controls.BipedActions.Enable();
+  }
+
+  #region Record
+
+  // todo record the initial state of all objects in the scene
+  // store random seed / generation seed
+  // store the scene index or sname
+
+  // replace using frame index with timestamps. during playback, look ahead to the
+  // state in the next keyframe and interpolate to it.
+
+  // add chop drop event
+  // store slo-motion begin/end events
+  // store pause, menu active events (or ignore them during capture)
+
+  struct RecordState
+  {
+    public InputState input;
+    public Vector2 position;
+  }
+  // input state = 2 + 8 (position)
+  const int stateSize = (2 + 8) + 8;
+
+  struct RecordHeader
+  {
+    public Vector2 initialposition;
+    // todo need all relevent pawn state
+    // current weapon index
+  }
+  const int headerSize = 8;
+
+  bool recording;
+  bool playback;
+  int playbackIndex = 0;
+  RecordHeader header;
+  List<RecordState> evt;
+  string recordpath;
+
+  public void RecordToggle()
+  {
+    if( recording )
+      RecordEnd();
     else
-    {
-      cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;
-      cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
-    }
-#endif
-    cursorOrigin = arm.position;
-    CursorAboveMinimumDistance = cursorDelta.magnitude > DirectionalMinimum;
-    Cursor.gameObject.SetActive( CursorAboveMinimumDistance );
-
-    if( Global.instance.AimSnap )
-    {
-      if( CursorAboveMinimumDistance )
-      {
-        // set cursor
-        CursorSnapped.gameObject.SetActive( true );
-        float angle = Mathf.Atan2( cursorDelta.x, cursorDelta.y ) / Mathf.PI;
-        float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
-        Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
-        AimPosition = cursorOrigin + snapped * SnapCursorDistance;
-        CursorSnapped.position = AimPosition;
-        CursorSnapped.rotation = Quaternion.LookRotation( Vector3.forward, snapped );
-        CursorWorldPosition = cursorOrigin + cursorDelta;
-      }
-      else
-      {
-        CursorSnapped.gameObject.SetActive( false );
-      }
-    }
-    else
-    {
-      CursorSnapped.gameObject.SetActive( false );
-      /*if( CursorAboveMinimumDistance )*/
-      AimPosition = cursorOrigin + cursorDelta;
-      /*else
-          AimPosition = cursorOrigin + (facingRight ^ wallsliding ? Vector2.right : Vector2.left);*/
-      CursorWorldPosition = AimPosition;
-    }
-
-    if( Global.instance.AutoAim )
-    {
-      CursorWorldPosition = cursorOrigin + cursorDelta;
-      RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
-      float distance = Mathf.Infinity;
-      Transform closest = null;
-      foreach( var hit in hits )
-      {
-        float dist = Vector2.Distance( CursorWorldPosition, hit.transform.position );
-        if( dist < distance )
-        {
-          closest = hit.transform;
-          distance = dist;
-        }
-      }
-
-      if( closest == null )
-      {
-        CursorAutoAim.gameObject.SetActive( false );
-      }
-      else
-      {
-        CursorAutoAim.gameObject.SetActive( true );
-        // todo adjust for flight path
-        //Rigidbody2D body = CurrentPlayer.weapon.ProjectilePrefab.GetComponent<Rigidbody2D>();
-        AimPosition = closest.position;
-        CursorAutoAim.position = AimPosition;
-      }
-    }
-    else
-    {
-      CursorAutoAim.gameObject.SetActive( false );
-    }
-
-    Cursor.position = CursorWorldPosition;
+      RecordBegin();
   }
 
-  void StartJump()
+  public bool IsRecording()
   {
-    jumping = true;
-    jumpTimer.Start( jumpDuration, null, StopJump );
-    jumpRepeatTimer.Start( jumpRepeatInterval );
-    velocity.y = jumpSpeed;
-    audio.PlayOneShot( soundJump );
-    dashSmoke.Stop();
+    return recording;
   }
 
-  void StopJump()
+  public void RecordBegin()
   {
-    jumping = false;
-    velocity.y = Mathf.Min( velocity.y, 0 );
-    jumpTimer.Stop( false );
-  }
-
-  void StartDash()
-  {
-    if( !dashing )
+    recording = true;
+    evt = new List<RecordState>();
+    header = new RecordHeader
     {
-      dashing = true;
-      dashTimer.Start( dashDuration );
-      if( onGround )
-        audio.PlayOneShot( soundDash, 0.5f );
-      dashSmoke.transform.localPosition = new Vector3( -0.38f, -0.22f, 0 );
-      dashSmoke.Play();
-      if( onGround )
-      {
-        GameObject go = Instantiate( dashflashPrefab, transform.position + new Vector3( facingRight ? -0.25f : 0.25f, -0.25f, 0 ), Quaternion.identity );
-        go.transform.localScale = facingRight ? Vector3.one : new Vector3( -1, 1, 1 );
-      }
-    }
-  }
-
-  void StopDash()
-  {
-    dashing = false;
-    dashSmoke.Stop();
-    dashTimer.Stop( false );
-  }
-
-  float chargeStart;
-  GameObject chargeEffectGO;
-
-  void StartCharge()
-  {
-    if( weapon == null )
-      return;
-    if( weapon.ChargeVariant != null )
-    {
-      chargeStartDelay.Start( chargeDelay, null, delegate
-      {
-        audio.PlayOneShot( weapon.soundCharge );
-        audio2.clip = weapon.soundChargeLoop;
-        audio2.loop = true;
-        audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
-        foreach( var sr in spriteRenderers )
-          //sr.color = chargeColor;
-          sr.material.SetColor( "_FlashColor", chargeColor );
-        ChargePulseFlip();
-        if( chargeEffectGO != null )
-          Destroy( chargeEffectGO );
-        chargeEffectGO = Instantiate( weapon.ChargeEffect, transform );
-        chargeEffect = chargeEffectGO.GetComponent<ParticleSystem>();
-        chargeStart = Time.time;
-      } );
-    }
-  }
-
-  void StopCharge()
-  {
-    if( chargeEffect != null )
-    {
-      audio2.Stop();
-      Destroy( chargeEffectGO );
-    }
-    chargeStartDelay.Stop( false );
-    chargePulse.Stop( false );
-    foreach( var sr in spriteRenderers )
-      sr.material.SetFloat( "_FlashAmount", 0 );
-    chargeEffect = null;
-  }
-
-  void ChargePulseFlip()
-  {
-    chargePulse.Start( chargePulseInterval, null, delegate
-    {
-      chargePulseOn = !chargePulseOn;
-      if( chargePulseOn )
-        foreach( var sr in spriteRenderers )
-          sr.material.SetFloat( "_FlashAmount", 1 );
-      else
-        foreach( var sr in spriteRenderers )
-          sr.material.SetFloat( "_FlashAmount", 0 );
-      ChargePulseFlip();
-    } );
-  }
-
-
-  void DamagePulseFlip()
-  {
-    damagePulseTimer.Start( damagePulseInterval, null, delegate
-    {
-      damagePulseOn = !damagePulseOn;
-      if( damagePulseOn )
-        foreach( var sr in spriteRenderers )
-          sr.enabled = true;
-      //animator.material.SetFloat( "_FlashAmount", 0.5f );
-      else
-        foreach( var sr in spriteRenderers )
-          sr.enabled = false;
-      //animator.material.SetFloat( "_FlashAmount", 0 );
-      DamagePulseFlip();
-    } );
-  }
-
-  public override bool TakeDamage( Damage d )
-  {
-    if( !CanTakeDamage || damagePassThrough )
-      return false;
-
-    //StopCharge();
-    audio.PlayOneShot( soundDamage );
-    Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
-
-    float sign = Mathf.Sign( d.damageSource.position.x - transform.position.x );
-    facingRight = sign > 0;
-    //push.y = damageLift;
-    velocity.y = 0;
-    arm.gameObject.SetActive( false );
-    takingDamage = true;
-    damagePassThrough = true;
-    animator.Play( "damage" );
-    Push( new Vector2( -sign * damagePushAmount, damageLift ), damageDuration );
-    StopGrap();
-    damageTimer.Start( damageDuration, delegate ( Timer t )
-    {
-      //push.x = -sign * damagePushAmount;
-    }, delegate ()
-    {
-      takingDamage = false;
-      arm.gameObject.SetActive( true );
-      //animator.material.SetFloat( "_FlashAmount", 0 );
-      //animator.material.SetColor( "_FlashColor", damagePulseColor );
-      DamagePulseFlip();
-      damageTimer.Start( damageBlinkDuration, null, delegate ()
-      {
-        //animator.material.SetFloat( "_FlashAmount", 0 );
-        foreach( var sr in spriteRenderers )
-          sr.enabled = true;
-        damagePassThrough = false;
-        damagePulseTimer.Stop( false );
-      } );
-    } );
-    return true;
-  }
-
-  public void DoorRun( bool right, float duration, float distance )
-  {
-    enabled = false;
-    damageTimer.Stop( true );
-    facingRight = right;
-    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
-    renderer.material.SetInt( "_FlipX", facingRight ? 0 : 1 );
-    arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
-    animator.updateMode = AnimatorUpdateMode.UnscaledTime;
-    animator.Play( "run" );
-    LerpToTarget lerp = gameObject.GetComponent<LerpToTarget>();
-    if( lerp == null )
-      lerp = gameObject.AddComponent<LerpToTarget>();
-    lerp.moveTransform = transform;
-    lerp.WorldTarget = true;
-    lerp.targetPositionWorld = transform.position + ((right ? Vector3.right : Vector3.left) * distance);
-    lerp.duration = duration;
-    lerp.unscaledTime = true;
-    lerp.enabled = true;
-    lerp.OnLerpEnd = delegate
-    {
-      enabled = true;
-      animator.updateMode = AnimatorUpdateMode.Normal;
+      initialposition = pawn.transform.position
     };
   }
 
+  public void RecordEnd()
+  {
+    recording = false;
+
+    byte[] x;
+    int p = 0;
+    byte[] buffer = new byte[headerSize + evt.Count * stateSize];
+
+    FileStream fs = File.Open( recordpath, FileMode.Create );
+    x = System.BitConverter.GetBytes( header.initialposition.x );
+    buffer[p] = x[0];
+    buffer[p + 1] = x[1];
+    buffer[p + 2] = x[2];
+    buffer[p + 3] = x[3];
+    p += 4;
+
+    x = System.BitConverter.GetBytes( header.initialposition.y );
+    buffer[p] = x[0];
+    buffer[p + 1] = x[1];
+    buffer[p + 2] = x[2];
+    buffer[p + 3] = x[3];
+    p += 4;
+
+    for( int i = 0; i < evt.Count; i++ )
+    {
+      RecordState state = evt[i];
+      InputState input = state.input;
+      // 2 byte
+      int value =
+        (input.MoveLeft ? 0x1 : 0x0) << 0 |
+        (input.MoveRight ? 0x1 : 0x0) << 1 |
+        (input.MoveUp ? 0x1 : 0x0) << 2 |
+        (input.MoveDown ? 0x1 : 0x0) << 3 |
+        (input.JumpStart ? 0x1 : 0x0) << 4 |
+        (input.JumpEnd ? 0x1 : 0x0) << 5 |
+        (input.DashStart ? 0x1 : 0x0) << 6 |
+        (input.DashEnd ? 0x1 : 0x0) << 7 |
+
+        (input.ChargeStart ? 0x1 : 0x0) << 6 |
+        (input.ChargeEnd ? 0x1 : 0x0) << 8 |
+        (input.Graphook ? 0x1 : 0x0) << 9 |
+        (input.Shield ? 0x1 : 0x0) << 10 |
+        (input.Fire ? 0x1 : 0x0) << 11 |
+        (input.Interact ? 0x1 : 0x0) << 12 |
+        (input.NextWeapon ? 0x1 : 0x0) << 13;
+        //(input.Down ? 0x1 : 0x0) << 14;
+      ///
+
+      buffer[p] = (byte)value;
+      buffer[p + 1] = (byte)(value >> 8);
+      p += 2;
+
+      x = System.BitConverter.GetBytes( input.Aim.x );
+      buffer[p] = x[0];
+      buffer[p + 1] = x[1];
+      buffer[p + 2] = x[2];
+      buffer[p + 3] = x[3];
+      p += 4;
+
+      x = System.BitConverter.GetBytes( input.Aim.y );
+      buffer[p] = x[0];
+      buffer[p + 1] = x[1];
+      buffer[p + 2] = x[2];
+      buffer[p + 3] = x[3];
+      p += 4;
+
+      // position
+      x = System.BitConverter.GetBytes( state.position.x );
+      buffer[p] = x[0];
+      buffer[p + 1] = x[1];
+      buffer[p + 2] = x[2];
+      buffer[p + 3] = x[3];
+      p += 4;
+
+      x = System.BitConverter.GetBytes( state.position.y );
+      buffer[p] = x[0];
+      buffer[p + 1] = x[1];
+      buffer[p + 2] = x[2];
+      buffer[p + 3] = x[3];
+      p += 4;
+    }
+
+    fs.Write( buffer, 0, buffer.Length );
+    fs.Flush();
+    fs.Close();
+  }
+
+  public void RecordPlayback()
+  {
+    evt = new List<RecordState>();
+    playbackIndex = 0;
+
+    byte[] buffer = File.ReadAllBytes( recordpath );
+    // header
+    pawn.transform.position = new Vector3( System.BitConverter.ToSingle( buffer, 0 ), System.BitConverter.ToSingle( buffer, 4 ), 0 );
+    // frames
+    for( int i = headerSize; i < buffer.Length; i += stateSize )
+    {
+      InputState state = new InputState
+      {
+        MoveLeft = ((buffer[i] >> 0) & 0x1) > 0,
+        MoveRight = ((buffer[i] >> 1) & 0x1) > 0,
+        MoveUp = ((buffer[i] >> 2) & 0x1) > 0,
+        MoveDown = ((buffer[i] >> 3) & 0x1) > 0,
+        JumpStart = ((buffer[i] >> 4) & 0x1) > 0,
+        JumpEnd = ((buffer[i] >> 5) & 0x1) > 0,
+        DashStart = ((buffer[i] >> 6) & 0x1) > 0,
+        DashEnd = ((buffer[i] >> 7) & 0x1) > 0,
+
+        ChargeStart = ((buffer[i] >> 0) & 0x1) > 0,
+        ChargeEnd = ((buffer[i + 1] >> 1) & 0x1) > 0,
+        Graphook = ((buffer[i + 1] >> 2) & 0x1) > 0,
+        Shield = ((buffer[i + 1] >> 3) & 0x1) > 0,
+        Fire = ((buffer[i + 1] >> 4) & 0x1) > 0,
+        Interact = ((buffer[i + 1] >> 5) & 0x1) > 0,
+        NextWeapon = ((buffer[i + 1] >> 6) & 0x1) > 0,
+        //
+
+        Aim = new Vector2( System.BitConverter.ToSingle( buffer, i + 2 ), System.BitConverter.ToSingle( buffer, i + 6 ) )
+      };
+
+      Vector2 pos = new Vector2( System.BitConverter.ToSingle( buffer, i + 10 ), System.BitConverter.ToSingle( buffer, i + 14 ) );
+      evt.Add( new RecordState { input = state, position = pos } );
+    }
+
+    playback = true;
+
+  }
+
+  #endregion
 }

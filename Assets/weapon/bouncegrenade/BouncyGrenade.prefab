@@ -125,6 +125,7 @@ MonoBehaviour:
   timeout: 3
   velocity: {x: 0, y: 0}
   ignore: []
+  hitCount: 0
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   pulseInterval: 0.1
   light: {fileID: 5004118265401767241}
@@ -143,7 +144,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 0.1
   m_LinearDrag: 0
-  m_AngularDrag: 0.1
+  m_AngularDrag: 0.5
   m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: 3244c00f1bd4b4f5bbd799a080ea2dcf, type: 2}
   m_Interpolate: 0

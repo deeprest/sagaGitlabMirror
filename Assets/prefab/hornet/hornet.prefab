@@ -302,7 +302,7 @@ GameObject:
   - component: {fileID: 5328968024240917299}
   - component: {fileID: 7701764033589986434}
   - component: {fileID: 5922217900770544651}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: hornet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -408,42 +408,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d338913fe7604d658dbdc31041e9c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Team: 2
   body: {fileID: 5922217900770544651}
   box: {fileID: 5328968024240917299}
+  circle: {fileID: 0}
   renderer: {fileID: 7469246720352550077}
   animator: {fileID: 6213555569455210955}
   IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 0
+  IsStatic: 0
+  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 0.5
   raylength: 0.01
   contactSeparation: 0.01
-  HasPath: 0
-  WaypointRadii: 0.1
-  DestinationRadius: 0.3
-  DestinationPosition: {x: 0, y: 0, z: 0}
-  waypoint: []
-  debugPath: []
+  EnablePathing: 1
   AgentTypeName: Large
-  MoveDirection: {x: 0, y: 0}
-  SidestepAvoidance: 1
   CanTakeDamage: 1
   health: 30
+  MaxHealth: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
-  spawnChance: 1
   spawnWhenDead: {fileID: 0}
+  spawnChance: 1
   flashInterval: 0.05
   flashCount: 1
   ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  EventDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
   sightRange: 15
   flySpeed: 5
-  hoverDistance: 0.5
-  hoverLayers:
-  - Default
   up: 2.5
   over: 3
   small: 0.4
@@ -461,6 +459,7 @@ MonoBehaviour:
   dropPrefab: {fileID: 1094346900350558, guid: d602960e06ef345db9212ecac4516ddb, type: 3}
   weapon: {fileID: 11400000, guid: 67bfd1773b4494e27874dbed922b0f43, type: 2}
   shotOrigin: {fileID: 1670348743556002034}
+  Target: {fileID: 0}
 --- !u!60 &8388642051660687798
 PolygonCollider2D:
   m_ObjectHideFlags: 0

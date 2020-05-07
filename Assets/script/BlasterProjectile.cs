@@ -4,7 +4,7 @@ using UnityEngine.Experimental.Rendering.Universal;
 
 public class BlasterProjectile : Projectile, IDamage
 {
-  public new Light2D light;
+  public Light2D light;
   Timer timeoutTimer;
   int HitCount;
   public int DieAfterHitCount;
@@ -87,4 +87,5 @@ public class BlasterProjectile : Projectile, IDamage
     Hit( damage.point );
     return true;
   }
+
 }

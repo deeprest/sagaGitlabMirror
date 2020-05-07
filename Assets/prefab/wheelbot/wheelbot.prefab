@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4032389116732274}
-  - component: {fileID: 61147437956396782}
   - component: {fileID: 212949075796312028}
   - component: {fileID: 8402770076920746544}
   - component: {fileID: 88018454292964798}
-  m_Layer: 14
+  - component: {fileID: 4426325592450729683}
+  m_Layer: 10
   m_Name: wheelbot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35,32 +35,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &61147437956396782
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1094346900350558}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.328125, y: 0.328125}
-    newSize: {x: 0.25, y: 0.375}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.4}
-  m_EdgeRadius: 0
 --- !u!212 &212949075796312028
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -123,40 +97,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1523864c09bbb430980a5732b9e33683, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Team: 2
   body: {fileID: 88018454292964798}
-  box: {fileID: 61147437956396782}
+  box: {fileID: 4426325592450729683}
+  circle: {fileID: 0}
   renderer: {fileID: 212949075796312028}
   animator: {fileID: 0}
   IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 1
+  IsStatic: 0
+  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
-  friction: 0.1
-  raylength: 0.01
-  contactSeparation: 0.01
-  HasPath: 0
-  WaypointRadii: 0.1
-  DestinationRadius: 0.3
-  DestinationPosition: {x: 0, y: 0, z: 0}
-  waypoint: []
-  debugPath: []
+  friction: 0
+  raylength: 0.2
+  contactSeparation: 0.08
+  EnablePathing: 0
   AgentTypeName: Small
-  MoveDirection: {x: 0, y: 0}
-  SidestepAvoidance: 1
   CanTakeDamage: 1
   health: 3
+  MaxHealth: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  spawnChance: 1
   spawnWhenDead: {fileID: 0}
+  spawnChance: 1
   flashInterval: 0.05
   flashCount: 1
   ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  EventDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
   rotator: {fileID: 110268027408849183}
-  wheelAnimRate: -3
-  wheelVelocity: -2
+  wheelAnimRate: 4
+  wheelVelocity: 2
 --- !u!50 &88018454292964798
 Rigidbody2D:
   serializedVersion: 4
@@ -178,6 +153,32 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!61 &4426325592450729683
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1094346900350558}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.328125, y: 0.328125}
+    newSize: {x: 0.25, y: 0.375}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.328125, y: 0.328125}
+  m_EdgeRadius: 0
 --- !u!1 &5490519860742726923
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,7 +189,7 @@ GameObject:
   m_Component:
   - component: {fileID: 110268027408849183}
   - component: {fileID: 2542075721750481571}
-  m_Layer: 14
+  m_Layer: 10
   m_Name: rotator
   m_TagString: Untagged
   m_Icon: {fileID: 0}

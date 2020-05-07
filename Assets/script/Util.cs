@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public static class Util
 {
   public static float DbFromNormalizedVolume( float normalizedVolume )
@@ -376,6 +380,15 @@ public static class Util
     }
 
     return "Assets";
+  }
+
+  public static Object[] GetAssetsFromSelectedFolder( string search = "t:prefab" )
+  {
+    List<Object> objects = new List<Object>();
+    string[] guids = AssetDatabase.FindAssets( search, new string[] { Util.GetCurrentAssetDirectory() } );
+    foreach( string guid in guids )
+      objects.Add( AssetDatabase.LoadAssetAtPath<Object>( AssetDatabase.GUIDToAssetPath( guid ) ) );
+    return objects.ToArray();
   }
 #endif
 }

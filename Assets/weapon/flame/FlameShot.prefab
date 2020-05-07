@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4025981189729564986}
   - component: {fileID: 2774323745444708940}
   - component: {fileID: 2868992083509743803}
-  m_Layer: 18
+  m_Layer: 11
   m_Name: FlameShot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143,6 +143,7 @@ MonoBehaviour:
   timeout: 1
   velocity: {x: 0, y: 0}
   ignore: []
+  hitCount: 0
   light: {fileID: 2868992083509743803}
   constantAcceleration: {x: 0, y: 5}
   DieAfterHitCount: 0

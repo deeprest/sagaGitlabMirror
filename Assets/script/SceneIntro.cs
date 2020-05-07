@@ -7,13 +7,13 @@ public class SceneIntro : SceneScript
 {
   bool introFlag = false;
   [SerializeField] Animator animator;
+  [SerializeField] SceneReference nextScene;
 
   public override void StartScene()
   {
     Global.instance.Controls.GlobalActions.Any.performed += StopIntro;
     animator.Play( "intro" );
     Global.instance.PlayMusic( music );
-
     Global.instance.HideHUD();
   }
 
@@ -32,6 +32,6 @@ public class SceneIntro : SceneScript
     if( introFlag )
       return;
     introFlag = true;
-    Global.instance.LoadScene( "home", false, true, true );
+    Global.instance.LoadScene( nextScene, false, true, true );
   }
 }

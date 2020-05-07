@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -159,8 +160,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 323118587}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 1
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -307,10 +309,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   music: {fileID: 11400000, guid: d8deeca115c894dba9d8b663dba46d05, type: 2}
-  level: {fileID: 0}
-  sb: {fileID: 0}
+  CameraZone: {fileID: 0}
+  NavmeshBox: {fileID: 0}
   animator: {fileID: 670903102}
-  musicIntro: {fileID: 0}
+  nextScene:
+    sceneAsset: {fileID: 102900000, guid: 56e93a81d13cb4b16b412eddef1070e2, type: 3}
+    scenePath: Assets/scene/tutorial.unity
 --- !u!61 &670903106
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -370,6 +374,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5160,17 +5165,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -14.648001
       objectReference: {fileID: 0}
+    - target: {fileID: 114844931330827930, guid: 6cf2753ada0e449deae9680e3cda5dae,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 212343005596785154, guid: 6cf2753ada0e449deae9680e3cda5dae,
         type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300006, guid: eefa2060554ab451fb52f8390b7c3072,
         type: 3}
-    - target: {fileID: 114844931330827930, guid: 6cf2753ada0e449deae9680e3cda5dae,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114844931330827930, guid: 6cf2753ada0e449deae9680e3cda5dae, type: 3}
     - {fileID: 61107250239624328, guid: 6cf2753ada0e449deae9680e3cda5dae, type: 3}

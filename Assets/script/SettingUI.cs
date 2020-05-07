@@ -79,6 +79,10 @@ public class FloatValue
   public Text valueText;
   public Slider slider;
 
+  public float minValue;
+  public float maxValue;
+  public float steps;
+
   public void Init()
   {
     if( labelText != null && labelText.text == "<name>" )
@@ -87,19 +91,32 @@ public class FloatValue
     updateView = new System.Action<float>( delegate ( float value )
     {
       if( slider != null )
-        slider.value = value;
+        slider.value = valueToSlider( value );
       if( valueText != null )
         valueText.text = value.ToString( "0.##" );
     } );
 
     if( slider != null )
     {
+      slider.wholeNumbers = true;
+      slider.minValue = 0;
+      slider.maxValue = steps;
       slider.onValueChanged.AddListener( new UnityEngine.Events.UnityAction<float>( delegate ( float value )
       {
-        Value = value;
+        Value = sliderToValue( value );
       } ) );
     }
   }
+
+  float sliderToValue( float sliderVal )
+  {
+    return minValue + (sliderVal / steps) * (maxValue - minValue);
+  }
+  float valueToSlider( float val )
+  {
+    return ((val - minValue) / (maxValue - minValue)) * steps;
+  }
+
 }
 
 [System.Serializable]

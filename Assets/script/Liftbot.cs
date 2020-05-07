@@ -56,7 +56,7 @@ public class LiftbotEdtitor : Editor
 }
 #endif
 
-public class Liftbot : Character, IWorldSelectable
+public class Liftbot : Entity, IWorldSelectable
 {
   public float flySpeed = 2;
   public float waitDuration = 2;
@@ -70,21 +70,24 @@ public class Liftbot : Character, IWorldSelectable
   public bool UseWaitDuration = true;
   public bool IsTriggeredByPlayer = false;
 
-  private void OnDestroy()
+  protected override void Start()
   {
-    timeout.Stop( false );
-  }
-
-  void Start()
-  {
-    CharacterStart();
-    UpdateLogic = UpdateAirbot;
+    base.Start();
+    UpdateLogic = UpdateLiftbot;
     UpdateHit = null;
     UpdateCollision = null;
-    UpdatePosition = BasicPosition;
+    UpdatePosition = null; // BasicPosition;
     origin = transform.position;
     if( !IsTriggeredByPlayer )
       timeout.Start( waitDuration, null, NextWaypoint );
+  }
+
+  protected override void OnDestroy()
+  {
+    if( Global.IsQuiting )
+      return;
+    base.OnDestroy();
+    timeout.Stop( false );
   }
 
   protected float DistanceToWaypoint()
@@ -106,7 +109,7 @@ public class Liftbot : Character, IWorldSelectable
 
   protected float closeEnough { get { return flySpeed * Time.maximumDeltaTime * Time.timeScale; } }
 
-  void UpdateAirbot()
+  void UpdateLiftbot()
   {
     if( !waiting && path.Length > 0 )
     {
@@ -125,13 +128,20 @@ public class Liftbot : Character, IWorldSelectable
       }
       else
       {
-        MoveDirection = origin + path[pathIndex] - (Vector2)transform.position;
-        velocity = MoveDirection.normalized * flySpeed;
+        velocity = (origin + path[pathIndex] - (Vector2)transform.position).normalized * flySpeed;
       }
     }
     else
     {
       velocity = Vector2.zero;
+    }
+  }
+
+  private void FixedUpdate()
+  {
+    if( body.bodyType == RigidbodyType2D.Kinematic )
+    {
+      body.MovePosition( body.position + (velocity * Time.fixedDeltaTime) );
     }
   }
 

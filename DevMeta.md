@@ -2,9 +2,10 @@
 # THANK YOU!
 "jbarrios" for creating a feedback video on TIGSource feedback forum.
 MET for his awesome music.
-https://seansleblanc.itch.io/better-minimal-webgl-template for webgl template
 https://etclundberg.itch.io/ for early feedback
-
+https://gist.github.com/JohannesMP for SceneReference and others!
+https://www.youtube.com/channel/UCGVJF2RcWjORfbZtlWvh93w Thank you Lotte!
+https://seansleblanc.itch.io/better-minimal-webgl-template for webgl template
 
 # Other Fan Games
 ["Mega Man X: Corrupted"](http://www.megamanxcorrupted.com/)
@@ -17,6 +18,7 @@ https://etclundberg.itch.io/ for early feedback
 
 # Similar Derived Games
 ["20XX"](https://store.steampowered.com/app/322110/20XX/)
+gunvolt
 
 
 # where to release/announce demo

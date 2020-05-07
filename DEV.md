@@ -1,41 +1,64 @@
 pP
-# DONE
-
 *Establish the design before resuming work*
++ Pawns and Controllers
++ turret projectiles do not hit player
++ fix chop drop input
 
-## todo
+- spiderbot.
+spiderpawn has dynamic body
+liftbot kinematic
+remove trigger layer, add OnTriggerEnter, collider->trigger = true
+removed layers: flameprojectile, enemy
+- reclaim body
 
-### Before Next Release
-- pause menu settings navigation
-- scene list
-- minimum shoot vector, otherwise shots have no velocity (gamepad)
-- control binding says "bad control index" for minimap (gamepad)
-- city highway music intro is bungled
+- Playback system
 
-### Menu / UI
-- buttons accept mouse clicks
+- confirm that Teams are set for all characters.
+- remove global references to CurrentPlayer where possible
+- cursorOuter is different based on control device
+- Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
+- trigger release shoots graphook
+- mech punch should break boxes
 
-### Straight Up Bugs
-- wheelbots are buggy
-- city camera bounds
-- airbot attack, use attack speed until at last known target position
-- fix grap when using gamepad (double)
-- fix grap going through boxes
-- fix stickybomb going through vents
+### Composite Sprite Problems
++ composite sprite render layers. Create a layer for each composite, or how to keep entire composites from interlacing with one another? SOLUTION: Animate a *struct* int for each piece, and update the sortingOrder of the SpriteRenderers from LateUpdate().
 
-### Minor Comsmetic
-- light reflects too much on background layer 1 with buster
-- door sprite layer should be behind characters
-- control name text for right stick says "RS"
+- pixel-perfect animations must be done in Unity for each piece. Snap to pixel density, use constant anim curves.
+- 2d skeleton rigs, avatars, and IK can not be used with composites. Skeletons use rotations, and these anims are not rotation-based.
+
 
 ### Janky
 - landing snaps. possible anim frame adjustment will fix
 - adjust jump anim frame. it pops at the jump arc apex
 - high offset off angled floor
-- fix long slide clipping. collision should reduce velocity, not simply change position.
-- mushy on lift. consider the velocity of the object being collided-with.
+- fix long slide clipping. collision should reduce velocity, not only position.
++ mushy on lift. consider the velocity of the object being collided-with. [CarryObject]
+
+### Menu / UI
++ buttons accept mouse clicks
+- design a better menu
+
+### Input
+- better display names
+- bindings: read/write
+
+### Straight Up Bugs
++ wheelbots are buggy
+- airbot attack, use attack speed until at last known target position
+- fix grap when using gamepad (double)
+- fix grap going through boxes
+- fix stickybomb going through vents
+
+### Easy / Cosmetic
+- city camera bounds
+- DrCain minimum speech threshold
+- light reflects too much on background layer 1 with buster
+- door sprite layer should be behind characters
+- control name text for right stick says "RS"
+- door should indicate when it refuses to open because of team affiliation.
 
 ### Hornet
+- hornet friendly fire
 hornet avoid friendlies
 hornet proximity raycast
 hornet particles should not rotate, and should disappear
@@ -44,45 +67,19 @@ hornet particles should not rotate, and should disappear
 - minimap. Needs shader/coloring. Should follow player position, not camera
 - minimap render static once. render only characters on second render texture
 
-
 ### New Stuff
 - hide arm while not shooting
 - align shot with surface when aiming into floor/wall
-- draw an aiming line
-- weapon ideas: +bouncygrenade, +multishot, rockets, seeking missiles, +beam/laser, +stickybomb/magnet, invisible/cloaking
-- temporary powerups: speedboost, dash duration, ~slowtime, ~reflective shield, supercharge, extra projectiles
-- permanent mods: run speed, wall slide speed, dash duration, rapid shot
-- Controllers and Pawns
-- CharacterUpdate. Pause.
-- Optimize performance by deactivating sections of the scene when far away from player.
-- AI: enemies should react to projectiles in proximity
----
-- 4 color buttons: change weapon, menu, interact, use item/powerup
-- bindings: read/write, layouts
-- horizontal door trigger / downward boxcast for triggers
-- use line renderer for laser. simplifies shield reflection code.
-- detect cmd-f fullscreen switch and update setting
-- menu navigation needs redesign.
-- cursor influence: walljump needs exception
-- consolidate all sprites into bigsheet: boss mech
----
-- sprite body turn when aiming behind. Requires sprite work.
----
-- hornet friendly fire
-- gamepad double select diagetic menu
-- release build screen fade in on level transition gets stuck
-- reduce audiooneshot calls to avoid dropout
-- reproducible: charge particles on after transition. reset player state on level transition
-- avoid becoming stuck in vertical pinch points: new bools for low-side contacts OR lower the upper corner on side collisions. The former preserves sliding up slanted ceilings when jumping, the latter immediately stops the jump.
----
++ draw an aiming line
+
 ### Unity Bugs
-- UNITY bug: cursor movement in last direction when shoot
-- UNITY bug: webgl audio loop
+- UNITY bug: [MACOS] cursor movement in last direction when shoot
+- UNITY bug: [WEBGL] webgl audio loop
 
 ### Linux Issues
+- mouse sensitivity is too high even on lowest setting (0.05)
+- scroll wheel sensitivity is too low
 - support Ctrl-Q to quit
 - no per-pixel lights (check OpenGL/Vulcan support)
 - control names are not converted in diagetics (but okay in menu)
-- scroll wheel sensitivity is too low
-- mouse sensitivity is too high even on lowest setting (0.05)
-- glitchy/wrong sprite shader for mech on linux
++ glitchy/wrong sprite shader for mech on linux. [SOLVED. This is because of texture compression settings on each individual texture.]

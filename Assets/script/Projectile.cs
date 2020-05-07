@@ -8,7 +8,7 @@ public class Projectile : MonoBehaviour
   public CircleCollider2D circle;
 
   public Weapon weapon;
-  public Character instigator;
+  public Entity instigator;
 
   public Damage ContactDamage;
   public float speed = 1;
@@ -23,4 +23,5 @@ public class Projectile : MonoBehaviour
   public RaycastHit2D[] RaycastHits = new RaycastHit2D[1];
   public int hitCount;
   public RaycastHit2D hit;
+
 }

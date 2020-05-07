@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : Character
+public class Turret : Entity
 {
   [Header( "Turret" )]
   [SerializeField] Transform cannon;
@@ -19,9 +19,9 @@ public class Turret : Character
   [SerializeField] float max = 90;
   public float maxShootAngle = 5;
 
-  void Start()
+  protected override void Start()
   {
-    CharacterStart();
+    base.Start();
     UpdateLogic = UpdateTurret;
     UpdatePosition = null;
     UpdateCollision = null;

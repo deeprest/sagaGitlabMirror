@@ -20,8 +20,8 @@ public class @Controls : IInputActionCollection, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Any"",
-                    ""type"": ""Button"",
-                    ""id"": ""0db8ffb9-5a14-4281-adce-bfaec801389f"",
+                    ""type"": ""Value"",
+                    ""id"": ""66a096f1-81ee-4428-9710-33581b3aa5d1"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -29,7 +29,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": ""Menu"",
                     ""type"": ""Button"",
-                    ""id"": ""66a096f1-81ee-4428-9710-33581b3aa5d1"",
+                    ""id"": ""b258d7cd-2c65-48b0-8b9b-cb2857978f71"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -37,23 +37,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": ""Pause"",
                     ""type"": ""Button"",
-                    ""id"": ""b258d7cd-2c65-48b0-8b9b-cb2857978f71"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Screenshot"",
-                    ""type"": ""Button"",
                     ""id"": ""4746dc49-83e3-4a85-92d5-190128af6873"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""CursorLockToggle"",
-                    ""type"": ""Button"",
-                    ""id"": ""06412df7-f38c-45d8-bfc5-13fb38f20fb9"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -62,6 +46,38 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""name"": ""DEV-Respawn"",
                     ""type"": ""Button"",
                     ""id"": ""cab80c60-97b6-4d13-a3a1-b86bc5188194"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""DEV-Clone"",
+                    ""type"": ""Button"",
+                    ""id"": ""e7af10e7-d798-4de6-a720-df64e8970763"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Screenshot"",
+                    ""type"": ""Button"",
+                    ""id"": ""b44b7429-04b5-48ab-9faa-297e2529bd3f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""RecordToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""354e88f1-933e-4ba7-8642-7ad82e28fb66"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""RecordPlayback"",
+                    ""type"": ""Button"",
+                    ""id"": ""7edecc6a-dba8-4135-b668-4f76a8f9b73a"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -74,7 +90,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse+Keyboard"",
                     ""action"": ""Menu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -103,28 +119,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""f34c0a8a-1901-4f83-bce5-ff601f4d7645"",
-                    ""path"": ""<Keyboard>/f5"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Screenshot"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""eee96763-7ea4-4530-9f3e-84464d7219d7"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""CursorLockToggle"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""7e4a58d9-b12b-4af1-9579-5299f91b0375"",
                     ""path"": ""<Keyboard>/f1"",
                     ""interactions"": """",
@@ -147,23 +141,155 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""06f2a596-acf7-4f39-8f9d-c47f8109c794"",
-                    ""path"": ""<Gamepad>/*"",
+                    ""id"": ""8b387d4b-f92d-4ad8-949c-b8a3f9c59ec1"",
+                    ""path"": ""<Keyboard>/anyKey"",
                     ""interactions"": """",
-                    ""processors"": ""AxisDeadzone(min=0.5,max=1)"",
-                    ""groups"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard;Gamepad"",
                     ""action"": ""Any"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""7e0e33ce-4408-4d79-9de1-a1a189c0b079"",
-                    ""path"": ""<Keyboard>/*"",
+                    ""id"": ""c4fa5526-fcbe-4fba-b7ee-0df572b68995"",
+                    ""path"": ""<Gamepad>/dpad"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Default"",
+                    ""groups"": ""Gamepad;Mouse+Keyboard"",
                     ""action"": ""Any"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""86b6b44e-93c3-40df-9f08-7137f2dac6a4"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard;Gamepad"",
+                    ""action"": ""Any"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""49acccf9-b90f-4d33-88f1-0cb7fb82629f"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard;Gamepad"",
+                    ""action"": ""Any"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7b5de7bb-05d3-4992-a4ff-0887472392e8"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard;Gamepad"",
+                    ""action"": ""Any"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bdccc75f-7e28-4cce-ac38-4b2deb34e8be"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard;Gamepad"",
+                    ""action"": ""Any"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7fcec531-92b2-4871-b3dc-10d0b719d535"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard;Gamepad"",
+                    ""action"": ""Any"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""87158277-8853-4327-b395-f83b048dc15d"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard;Gamepad"",
+                    ""action"": ""Any"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""963a790a-c4a6-4c84-910c-33721318b3af"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard;Gamepad"",
+                    ""action"": ""Any"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e1a9c887-189e-4361-8186-220907292107"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard;Gamepad"",
+                    ""action"": ""Any"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c8fff7fd-3999-4672-a4b4-313f556bc93e"",
+                    ""path"": ""<Keyboard>/f6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard"",
+                    ""action"": ""RecordToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ea916033-f984-4091-84b2-89185b83aa0b"",
+                    ""path"": ""<Keyboard>/f7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard"",
+                    ""action"": ""RecordPlayback"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f158069e-88d2-4b22-9550-89da2c3b06a1"",
+                    ""path"": ""<Keyboard>/f2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DEV-Clone"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f34c0a8a-1901-4f83-bce5-ff601f4d7645"",
+                    ""path"": ""<Keyboard>/f5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Screenshot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -185,7 +311,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""name"": ""Accept"",
                     ""type"": ""Button"",
                     ""id"": ""d80d6c91-51c4-400a-8444-d7405d8110e8"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -328,7 +454,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a1d6d9f8-7b18-4330-84dc-ec5e68e99148"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -350,7 +476,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""bb12337a-934d-40af-a6e4-d277553a44ab"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -455,9 +581,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""Interact"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""24499f08-18e1-495f-80fa-640349852f96"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -517,7 +643,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Default"",
+                    ""groups"": ""Mouse+Keyboard"",
                     ""action"": ""Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -539,7 +665,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Default"",
+                    ""groups"": ""Mouse+Keyboard"",
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -649,7 +775,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Default"",
+                    ""groups"": ""Mouse+Keyboard"",
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -714,7 +840,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""id"": ""2e9d39cc-c374-4c3f-8e72-1ae36b32c000"",
                     ""path"": ""<Gamepad>/leftStick/right"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""AxisDeadzone"",
                     ""groups"": """",
                     ""action"": ""MoveRight"",
                     ""isComposite"": false,
@@ -747,7 +873,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""id"": ""bd4d1fdb-69d1-4ba1-9e2c-e2123d1ecae2"",
                     ""path"": ""<Gamepad>/leftStick/left"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""AxisDeadzone"",
                     ""groups"": """",
                     ""action"": ""MoveLeft"",
                     ""isComposite"": false,
@@ -831,12 +957,83 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""SpiderActions"",
+            ""id"": ""b499d103-2910-43e9-9c10-b7e3ccc4daa7"",
+            ""actions"": [
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""4f508557-81bc-484f-9132-6084da1f8b2f"",
+                    ""expectedControlType"": ""Dpad"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""FourKeys"",
+                    ""id"": ""92719251-6d16-43f7-b5e7-1ef28e87e607"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""5b369d7a-7d89-4e4b-be69-8664428a80a7"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""112e089b-c821-4b21-9b2d-bac97e2acb2b"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""95f25c56-1c97-49b8-b4e2-736ac6ea22ab"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""6dcc2a9e-7cb0-4cf2-a03a-899c75e387c2"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
         {
-            ""name"": ""Default"",
-            ""bindingGroup"": ""Default"",
+            ""name"": ""Mouse+Keyboard"",
+            ""bindingGroup"": ""Mouse+Keyboard"",
             ""devices"": [
                 {
                     ""devicePath"": ""<Keyboard>"",
@@ -854,6 +1051,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""isOR"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Gamepad"",
+            ""bindingGroup"": ""Gamepad"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Gamepad>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
         }
     ]
 }");
@@ -862,9 +1070,11 @@ public class @Controls : IInputActionCollection, IDisposable
         m_GlobalActions_Any = m_GlobalActions.FindAction("Any", throwIfNotFound: true);
         m_GlobalActions_Menu = m_GlobalActions.FindAction("Menu", throwIfNotFound: true);
         m_GlobalActions_Pause = m_GlobalActions.FindAction("Pause", throwIfNotFound: true);
-        m_GlobalActions_Screenshot = m_GlobalActions.FindAction("Screenshot", throwIfNotFound: true);
-        m_GlobalActions_CursorLockToggle = m_GlobalActions.FindAction("CursorLockToggle", throwIfNotFound: true);
         m_GlobalActions_DEVRespawn = m_GlobalActions.FindAction("DEV-Respawn", throwIfNotFound: true);
+        m_GlobalActions_DEVClone = m_GlobalActions.FindAction("DEV-Clone", throwIfNotFound: true);
+        m_GlobalActions_Screenshot = m_GlobalActions.FindAction("Screenshot", throwIfNotFound: true);
+        m_GlobalActions_RecordToggle = m_GlobalActions.FindAction("RecordToggle", throwIfNotFound: true);
+        m_GlobalActions_RecordPlayback = m_GlobalActions.FindAction("RecordPlayback", throwIfNotFound: true);
         // MenuActions
         m_MenuActions = asset.FindActionMap("MenuActions", throwIfNotFound: true);
         m_MenuActions_Move = m_MenuActions.FindAction("Move", throwIfNotFound: true);
@@ -888,6 +1098,9 @@ public class @Controls : IInputActionCollection, IDisposable
         m_BipedActions_DEVZoom = m_BipedActions.FindAction("DEV-Zoom", throwIfNotFound: true);
         m_BipedActions_Minimap = m_BipedActions.FindAction("Minimap", throwIfNotFound: true);
         m_BipedActions_DevSlowmo = m_BipedActions.FindAction("Dev-Slowmo", throwIfNotFound: true);
+        // SpiderActions
+        m_SpiderActions = asset.FindActionMap("SpiderActions", throwIfNotFound: true);
+        m_SpiderActions_Move = m_SpiderActions.FindAction("Move", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -940,9 +1153,11 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_GlobalActions_Any;
     private readonly InputAction m_GlobalActions_Menu;
     private readonly InputAction m_GlobalActions_Pause;
-    private readonly InputAction m_GlobalActions_Screenshot;
-    private readonly InputAction m_GlobalActions_CursorLockToggle;
     private readonly InputAction m_GlobalActions_DEVRespawn;
+    private readonly InputAction m_GlobalActions_DEVClone;
+    private readonly InputAction m_GlobalActions_Screenshot;
+    private readonly InputAction m_GlobalActions_RecordToggle;
+    private readonly InputAction m_GlobalActions_RecordPlayback;
     public struct GlobalActionsActions
     {
         private @Controls m_Wrapper;
@@ -950,9 +1165,11 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Any => m_Wrapper.m_GlobalActions_Any;
         public InputAction @Menu => m_Wrapper.m_GlobalActions_Menu;
         public InputAction @Pause => m_Wrapper.m_GlobalActions_Pause;
-        public InputAction @Screenshot => m_Wrapper.m_GlobalActions_Screenshot;
-        public InputAction @CursorLockToggle => m_Wrapper.m_GlobalActions_CursorLockToggle;
         public InputAction @DEVRespawn => m_Wrapper.m_GlobalActions_DEVRespawn;
+        public InputAction @DEVClone => m_Wrapper.m_GlobalActions_DEVClone;
+        public InputAction @Screenshot => m_Wrapper.m_GlobalActions_Screenshot;
+        public InputAction @RecordToggle => m_Wrapper.m_GlobalActions_RecordToggle;
+        public InputAction @RecordPlayback => m_Wrapper.m_GlobalActions_RecordPlayback;
         public InputActionMap Get() { return m_Wrapper.m_GlobalActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -971,15 +1188,21 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Pause.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnPause;
                 @Pause.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnPause;
-                @Screenshot.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
-                @Screenshot.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
-                @Screenshot.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
-                @CursorLockToggle.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnCursorLockToggle;
-                @CursorLockToggle.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnCursorLockToggle;
-                @CursorLockToggle.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnCursorLockToggle;
                 @DEVRespawn.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
                 @DEVRespawn.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
                 @DEVRespawn.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVRespawn;
+                @DEVClone.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVClone;
+                @DEVClone.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVClone;
+                @DEVClone.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVClone;
+                @Screenshot.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
+                @Screenshot.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
+                @Screenshot.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnScreenshot;
+                @RecordToggle.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordToggle;
+                @RecordToggle.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordToggle;
+                @RecordToggle.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordToggle;
+                @RecordPlayback.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordPlayback;
+                @RecordPlayback.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordPlayback;
+                @RecordPlayback.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnRecordPlayback;
             }
             m_Wrapper.m_GlobalActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -993,15 +1216,21 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
-                @Screenshot.started += instance.OnScreenshot;
-                @Screenshot.performed += instance.OnScreenshot;
-                @Screenshot.canceled += instance.OnScreenshot;
-                @CursorLockToggle.started += instance.OnCursorLockToggle;
-                @CursorLockToggle.performed += instance.OnCursorLockToggle;
-                @CursorLockToggle.canceled += instance.OnCursorLockToggle;
                 @DEVRespawn.started += instance.OnDEVRespawn;
                 @DEVRespawn.performed += instance.OnDEVRespawn;
                 @DEVRespawn.canceled += instance.OnDEVRespawn;
+                @DEVClone.started += instance.OnDEVClone;
+                @DEVClone.performed += instance.OnDEVClone;
+                @DEVClone.canceled += instance.OnDEVClone;
+                @Screenshot.started += instance.OnScreenshot;
+                @Screenshot.performed += instance.OnScreenshot;
+                @Screenshot.canceled += instance.OnScreenshot;
+                @RecordToggle.started += instance.OnRecordToggle;
+                @RecordToggle.performed += instance.OnRecordToggle;
+                @RecordToggle.canceled += instance.OnRecordToggle;
+                @RecordPlayback.started += instance.OnRecordPlayback;
+                @RecordPlayback.performed += instance.OnRecordPlayback;
+                @RecordPlayback.canceled += instance.OnRecordPlayback;
             }
         }
     }
@@ -1208,13 +1437,55 @@ public class @Controls : IInputActionCollection, IDisposable
         }
     }
     public BipedActionsActions @BipedActions => new BipedActionsActions(this);
-    private int m_DefaultSchemeIndex = -1;
-    public InputControlScheme DefaultScheme
+
+    // SpiderActions
+    private readonly InputActionMap m_SpiderActions;
+    private ISpiderActionsActions m_SpiderActionsActionsCallbackInterface;
+    private readonly InputAction m_SpiderActions_Move;
+    public struct SpiderActionsActions
+    {
+        private @Controls m_Wrapper;
+        public SpiderActionsActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_SpiderActions_Move;
+        public InputActionMap Get() { return m_Wrapper.m_SpiderActions; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(SpiderActionsActions set) { return set.Get(); }
+        public void SetCallbacks(ISpiderActionsActions instance)
+        {
+            if (m_Wrapper.m_SpiderActionsActionsCallbackInterface != null)
+            {
+                @Move.started -= m_Wrapper.m_SpiderActionsActionsCallbackInterface.OnMove;
+                @Move.performed -= m_Wrapper.m_SpiderActionsActionsCallbackInterface.OnMove;
+                @Move.canceled -= m_Wrapper.m_SpiderActionsActionsCallbackInterface.OnMove;
+            }
+            m_Wrapper.m_SpiderActionsActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Move.started += instance.OnMove;
+                @Move.performed += instance.OnMove;
+                @Move.canceled += instance.OnMove;
+            }
+        }
+    }
+    public SpiderActionsActions @SpiderActions => new SpiderActionsActions(this);
+    private int m_MouseKeyboardSchemeIndex = -1;
+    public InputControlScheme MouseKeyboardScheme
     {
         get
         {
-            if (m_DefaultSchemeIndex == -1) m_DefaultSchemeIndex = asset.FindControlSchemeIndex("Default");
-            return asset.controlSchemes[m_DefaultSchemeIndex];
+            if (m_MouseKeyboardSchemeIndex == -1) m_MouseKeyboardSchemeIndex = asset.FindControlSchemeIndex("Mouse+Keyboard");
+            return asset.controlSchemes[m_MouseKeyboardSchemeIndex];
+        }
+    }
+    private int m_GamepadSchemeIndex = -1;
+    public InputControlScheme GamepadScheme
+    {
+        get
+        {
+            if (m_GamepadSchemeIndex == -1) m_GamepadSchemeIndex = asset.FindControlSchemeIndex("Gamepad");
+            return asset.controlSchemes[m_GamepadSchemeIndex];
         }
     }
     public interface IGlobalActionsActions
@@ -1222,9 +1493,11 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnAny(InputAction.CallbackContext context);
         void OnMenu(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
-        void OnScreenshot(InputAction.CallbackContext context);
-        void OnCursorLockToggle(InputAction.CallbackContext context);
         void OnDEVRespawn(InputAction.CallbackContext context);
+        void OnDEVClone(InputAction.CallbackContext context);
+        void OnScreenshot(InputAction.CallbackContext context);
+        void OnRecordToggle(InputAction.CallbackContext context);
+        void OnRecordPlayback(InputAction.CallbackContext context);
     }
     public interface IMenuActionsActions
     {
@@ -1250,5 +1523,9 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnDEVZoom(InputAction.CallbackContext context);
         void OnMinimap(InputAction.CallbackContext context);
         void OnDevSlowmo(InputAction.CallbackContext context);
+    }
+    public interface ISpiderActionsActions
+    {
+        void OnMove(InputAction.CallbackContext context);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.Experimental.Rendering.Universal;
 
 public class FlameProjectile : Projectile, IDamage
 {
-  public new Light2D light;
+  public Light2D light;
   public Vector2 constantAcceleration;
   Timer timeoutTimer;
   int HitCount;
@@ -56,6 +56,7 @@ public class FlameProjectile : Projectile, IDamage
         if( dam != null )
         {
           Damage dmg = Instantiate( ContactDamage );
+          dmg.instigator = instigator;
           dmg.damageSource = transform;
           dmg.point = hit.point;
           if( dam.TakeDamage( dmg ) )
@@ -85,4 +86,5 @@ public class FlameProjectile : Projectile, IDamage
     Hit( damage.point );
     return true;
   }
+
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Laserbeam : Projectile//, IDamage
 {
-  [SerializeField] new SpriteRenderer renderer;
+  [SerializeField] SpriteRenderer renderer;
   public GameObject lightPrefab;
   public float lightInterval;
   [SerializeField] GameObject hitPrefab;
@@ -71,6 +71,7 @@ public class Laserbeam : Projectile//, IDamage
           if( dam != null )
           {
             Damage dmg = Instantiate( ContactDamage );
+            dmg.instigator = instigator;
             dmg.damageSource = transform;
             dmg.point = hit.point;
             if( dam.TakeDamage( dmg ) )

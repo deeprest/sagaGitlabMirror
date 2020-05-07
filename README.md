@@ -19,3 +19,8 @@ A game prototype, currently in the form of a Mega Man X fangame.
 * copyright acknowledgements
 * add image
 * add some idea of when this will be done
+
+
+[Install Git LFS](https://help.github.com/en/github/managing-large-files/installing-git-large-file-storage)
+Unity packages:
+Input System

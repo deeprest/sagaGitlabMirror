@@ -16,35 +16,45 @@ public class OnboardingControls : MonoBehaviour
 
   class ControlCounter
   {
-    public ControlCounter( string txt, InputAction atn )
+    public ControlCounter( InputAction atn )
     {
-      text = txt;
       count = 3;
       action = atn;
-      //action.performed += iacc;
     }
-    public string text;
     public int count;
     public InputAction action;
     public System.Action<InputAction.CallbackContext> iacc;
+    public GameObject go;
+    public Text txt;
   }
 
-  void UpdateText()
+  void Start()
+  {
+    AddInputAction( Global.instance.Controls.GlobalActions.Menu );
+    AddInputAction( Global.instance.Controls.GlobalActions.DEVRespawn );
+    IEnumerator<InputAction> enumerator = Global.instance.Controls.BipedActions.Get().GetEnumerator();
+    while( enumerator.MoveNext() )
+      AddInputAction( enumerator.Current );
+
+
+    //updateTextTimer.Start( int.MaxValue, 1, delegate ( Timer obj ) { UpdateText(); }, null );
+  }
+
+  private void LateUpdate()
+  {
+    parent.GetComponent<RectTransform>().sizeDelta = new Vector2( 200, parent.childCount * 20 + 20 );
+  }
+
+  public void UpdateText()
   {
     for( int i = 0; i < parent.childCount; i++ )
-      Destroy( parent.GetChild( i ).gameObject );
+      parent.GetChild( i ).gameObject.SetActive( false );
     foreach( var pair in map )
     {
-      if( pair.Value.count <= 0 )
+      if( pair.Value.count > 0 )
       {
-        Removal.Add( pair.Value.action );
-      }
-      else
-      {
-        GameObject go = Instantiate( template, parent );
-        Text txt = go.GetComponent<Text>();
-        txt.text = Global.instance.ReplaceWithControlNames( pair.Value.text );
-        txt.color = Color.Lerp( Color.white, Color.grey, 1.0f / pair.Value.count );
+        pair.Value.go.SetActive( true );
+        pair.Value.txt.color = Color.Lerp( Color.white, Color.grey, 1.0f / pair.Value.count );
       }
     }
     foreach( var obj in Removal )
@@ -61,29 +71,20 @@ public class OnboardingControls : MonoBehaviour
     }
   }
 
-  private void LateUpdate()
-  {
-    parent.GetComponent<RectTransform>().sizeDelta = new Vector2( 200, parent.childCount * 20 + 20 );
-  }
-
   void AddInputAction( InputAction inputAction )
   {
-    ControlCounter cc = new ControlCounter( inputAction.name + " [" + inputAction.name + "]", inputAction );
-    cc.iacc = ( x ) => { map[cc.action].count--; UpdateText(); };
+    ControlCounter cc = new ControlCounter( inputAction );
+    cc.iacc = ( x ) => {
+      map[cc.action].count--;
+      UpdateText();
+    };
     map.Add( inputAction, cc );
     inputAction.performed += cc.iacc;
+    cc.go = Instantiate( template, parent );
+    cc.txt = cc.go.GetComponent<Text>();
+    cc.txt.text = Global.instance.ReplaceWithControlNames( inputAction.name + " [" + inputAction.name + "]" );
   }
 
-  void Start()
-  {
-    AddInputAction( Global.instance.Controls.GlobalActions.Menu );
-    AddInputAction( Global.instance.Controls.GlobalActions.DEVRespawn );
-    IEnumerator<InputAction> enumerator = Global.instance.Controls.BipedActions.Get().GetEnumerator();
-    while( enumerator.MoveNext() )
-      AddInputAction( enumerator.Current );
 
-
-    updateTextTimer.Start( int.MaxValue, 1, delegate ( Timer obj ) { UpdateText(); }, null );
-  }
 
 }

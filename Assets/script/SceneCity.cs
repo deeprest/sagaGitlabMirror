@@ -61,18 +61,19 @@ public class SceneCity : SceneScript
 
     chopper.StartDrop( Global.instance.CurrentPlayer );
     //Global.instance.ready.SetActive( true );
-    Global.instance.Controls.BipedActions.Disable();
-    Global.instance.Controls.BipedActions.Aim.Enable();
-    Global.instance.Controls.BipedActions.Fire.Enable();
+    Global.instance.PlayerController.FireOnlyInputMode();
     new Timer( runRightDuration, delegate
     {
-      Global.instance.CurrentPlayer.inputRight = true;
+      // get the input state to *modify* instead of overwrite/assign
+      ref InputState inputStateRef = ref Global.instance.PlayerController.GetInput();
+      inputStateRef.MoveRight = true;
     }, delegate
     {
-      Global.instance.Controls.BipedActions.Enable();
+      Global.instance.PlayerController.NormalInputMode();
     } );
-  }
 
+    Global.instance.CameraController.orthoTarget = 3;
+  }
 
   [Header( "Level Generation" )]
   public bool GenerateLevelOnStart = true;

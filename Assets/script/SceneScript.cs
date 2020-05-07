@@ -13,12 +13,10 @@ public class SceneScript : MonoBehaviour
     if( Application.isEditor && !Global.instance.SimulatePlayer && Global.instance.CurrentPlayer == null )
     {
       Global.instance.SpawnPlayer();
-      //return;
     }
 
     Global.instance.AssignCameraZone( CameraZone );
 
-    // music fade in
     if( music != null )
       Global.instance.PlayMusic( music );
 

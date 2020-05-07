@@ -135,7 +135,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4596207536373528126}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2b6fed0a4cf84b74b3da9395e7ac57d, type: 3}
+  m_Script: {fileID: 11500000, guid: 0ff685e897f414e28bdc49f953d2ec85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 0}
@@ -145,30 +145,24 @@ MonoBehaviour:
   IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 0
+  IsStatic: 1
   velocity: {x: 0, y: 0}
   pushVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
-  HasPath: 0
-  WaypointRadii: 0.1
-  DestinationRadius: 0.3
-  DestinationPosition: {x: 0, y: 0, z: 0}
-  waypoint: []
-  debugPath: []
+  EnablePathing: 0
   AgentTypeName: Small
-  MoveDirection: {x: 0, y: 0}
-  SidestepAvoidance: 1
   CanTakeDamage: 1
-  health: 1
+  health: 2
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  spawnChance: 1
   spawnWhenDead: {fileID: 0}
+  spawnChance: 1
   flashInterval: 0.05
   flashCount: 5
   ContactDamage: {fileID: 0}
-  onDestruct:
+  EventDestroyed:
     m_PersistentCalls:
       m_Calls: []

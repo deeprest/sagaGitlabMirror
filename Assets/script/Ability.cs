@@ -7,7 +7,7 @@ public class Ability : ScriptableObject
 {
   public GameObject activatePrefab;
   GameObject go;
-  public void Activate( PlayerController pc )
+  public void Activate( PlayerBiped pc )
   {
     //Ability
     go = Instantiate( activatePrefab, pc.armMount.position, Quaternion.identity, pc.armMount );

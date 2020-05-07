@@ -25,6 +25,7 @@ public class Weapon : ScriptableObject
   public float speedIncrease;
   public int projectileCount = 1;
   public float spread = 0.5f;
+  public float AimDistanceMax = 2;
 
   [Header( "Charge Variant" )]
   public Weapon ChargeVariant;
@@ -33,7 +34,39 @@ public class Weapon : ScriptableObject
   public AudioClip soundChargeLoop;
   public AudioClip soundChargeShot;
 
-  public void FireWeapon( Character instigator, Vector3 pos, Vector3 shoot )
+  const int Maxpoints = 1000;
+
+  Vector2 GetInitialVelocity( Projectile projectile, Vector2 shoot )
+  {
+    /*Vector2 velocity;
+    Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+    if( rb == null )
+      velocity = shoot.normalized * (projectile.speed + speedIncrease);
+    else
+      velocity = shoot.normalized * Mathf.Min( shoot.magnitude / AimDistanceMax, 1 ) * (projectile.speed + speedIncrease);
+    return velocity;*/
+    return shoot.normalized * (projectile.speed + speedIncrease);
+  }
+
+  // for viewing the arc of physics projectiles
+  public Vector3[] GetTrajectory( Vector2 origin, Vector2 shoot )
+  {
+    Projectile projectile = ProjectilePrefab;
+    Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+    Vector2 vel = GetInitialVelocity( projectile, shoot );
+    List<Vector3> points = new List<Vector3>();
+    Vector2 pos = origin;
+    points.Add( pos );
+    for( int i = 0; i < Maxpoints; i++ )
+    {
+      pos += vel * Time.fixedDeltaTime;
+      vel += (rb != null ? Vector2.up * Physics2D.gravity * Time.fixedDeltaTime : Vector2.zero);
+      points.Add( pos );
+    }
+    return points.ToArray();
+  }
+
+  public void FireWeapon( Entity instigator, Vector2 pos, Vector2 shoot )
   {
     if( projectileCount == 1 )
     {
@@ -56,20 +89,21 @@ public class Weapon : ScriptableObject
     }
   }
 
-  bool FireWeaponProjectile( Character instigator, Projectile projectile, Vector3 pos, Vector3 shoot, bool playSound = true )
+  bool FireWeaponProjectile( Entity instigator, Projectile projectilePrefab, Vector2 pos, Vector2 shoot, bool playSound = true )
   {
     if( weaponType == WeaponType.Projectile )
     {
-      Collider2D col = Physics2D.OverlapCircle( pos, projectile.circle.radius, Global.ProjectileNoShootLayers );
+      Collider2D col = Physics2D.OverlapCircle( pos, projectilePrefab.circle.radius, Global.ProjectileNoShootLayers );
       if( col == null )
       {
-        GameObject go = Instantiate( projectile.gameObject, pos, Quaternion.identity );
-        Projectile p = go.GetComponent<Projectile>();
-        p.weapon = this;
-        p.instigator = instigator;
-        p.velocity = shoot.normalized * (p.speed + speedIncrease);
+        GameObject go = Instantiate( projectilePrefab.gameObject, pos, Quaternion.identity );
+        Projectile projectile = go.GetComponent<Projectile>();
+        projectile.weapon = this;
+        projectile.instigator = instigator;
+        projectile.velocity = GetInitialVelocity( projectile, shoot );
+
         foreach( var c in instigator.IgnoreCollideObjects )
-          Physics2D.IgnoreCollision( p.circle, c, true );
+          Physics2D.IgnoreCollision( projectile.circle, c, true );
         if( playSound && StartSound != null )
           Global.instance.AudioOneShot( StartSound, pos );
         // color shifting
@@ -86,7 +120,7 @@ public class Weapon : ScriptableObject
     {
       if( projectileInstance == null )
       {
-        GameObject go = Instantiate( projectile.gameObject, pos, Quaternion.identity );
+        GameObject go = Instantiate( projectilePrefab.gameObject, pos, Quaternion.identity );
         projectileInstance = go.GetComponent<Projectile>();
         projectileInstance.weapon = this;
         projectileInstance.instigator = instigator;

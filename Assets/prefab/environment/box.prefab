@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4076200707986567607}
   - component: {fileID: 4630663335477681187}
   - component: {fileID: 4981129489408865915}
-  - component: {fileID: 1938869368410345386}
+  - component: {fileID: 7918758139510543549}
   m_Layer: 17
   m_Name: box
   m_TagString: Untagged
@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6675930426900349286}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -8, y: 11.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -127,7 +127,7 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
---- !u!114 &1938869368410345386
+--- !u!114 &7918758139510543549
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -136,7 +136,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6675930426900349286}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2b6fed0a4cf84b74b3da9395e7ac57d, type: 3}
+  m_Script: {fileID: 11500000, guid: 0ff685e897f414e28bdc49f953d2ec85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 0}
@@ -160,7 +160,7 @@ MonoBehaviour:
   debugPath: []
   AgentTypeName: Small
   MoveDirection: {x: 0, y: 0}
-  SidestepAvoidance: 1
+  SidestepAvoidance: 0
   CanTakeDamage: 1
   health: 1
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
@@ -170,6 +170,3 @@ MonoBehaviour:
   flashInterval: 0.05
   flashCount: 5
   ContactDamage: {fileID: 0}
-  onDestruct:
-    m_PersistentCalls:
-      m_Calls: []
