@@ -379,6 +379,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""ScrollWheel"",
+                    ""type"": ""Value"",
+                    ""id"": ""75e2adcf-a38b-42e1-bb3e-4ca98d3ecead"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -555,6 +563,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e79a5b7d-8958-4685-aa68-25be52563a6f"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard"",
+                    ""action"": ""ScrollWheel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1124,6 +1143,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_MenuActions_Back = m_MenuActions.FindAction("Back", throwIfNotFound: true);
         m_MenuActions_Point = m_MenuActions.FindAction("Point", throwIfNotFound: true);
         m_MenuActions_Click = m_MenuActions.FindAction("Click", throwIfNotFound: true);
+        m_MenuActions_ScrollWheel = m_MenuActions.FindAction("ScrollWheel", throwIfNotFound: true);
         // BipedActions
         m_BipedActions = asset.FindActionMap("BipedActions", throwIfNotFound: true);
         m_BipedActions_MoveRight = m_BipedActions.FindAction("MoveRight", throwIfNotFound: true);
@@ -1294,6 +1314,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_MenuActions_Back;
     private readonly InputAction m_MenuActions_Point;
     private readonly InputAction m_MenuActions_Click;
+    private readonly InputAction m_MenuActions_ScrollWheel;
     public struct MenuActionsActions
     {
         private @Controls m_Wrapper;
@@ -1303,6 +1324,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Back => m_Wrapper.m_MenuActions_Back;
         public InputAction @Point => m_Wrapper.m_MenuActions_Point;
         public InputAction @Click => m_Wrapper.m_MenuActions_Click;
+        public InputAction @ScrollWheel => m_Wrapper.m_MenuActions_ScrollWheel;
         public InputActionMap Get() { return m_Wrapper.m_MenuActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1327,6 +1349,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Click.started -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnClick;
                 @Click.performed -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnClick;
                 @Click.canceled -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnClick;
+                @ScrollWheel.started -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnScrollWheel;
+                @ScrollWheel.performed -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnScrollWheel;
+                @ScrollWheel.canceled -= m_Wrapper.m_MenuActionsActionsCallbackInterface.OnScrollWheel;
             }
             m_Wrapper.m_MenuActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -1346,6 +1371,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Click.started += instance.OnClick;
                 @Click.performed += instance.OnClick;
                 @Click.canceled += instance.OnClick;
+                @ScrollWheel.started += instance.OnScrollWheel;
+                @ScrollWheel.performed += instance.OnScrollWheel;
+                @ScrollWheel.canceled += instance.OnScrollWheel;
             }
         }
     }
@@ -1557,6 +1585,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnBack(InputAction.CallbackContext context);
         void OnPoint(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
+        void OnScrollWheel(InputAction.CallbackContext context);
     }
     public interface IBipedActionsActions
     {

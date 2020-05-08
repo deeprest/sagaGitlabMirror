@@ -1136,7 +1136,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
       ResolutionHeight = int.Parse( tokens[1].Trim() );
       StringSetting["Resolution"].Value = ResolutionWidth.ToString() + "x" + ResolutionHeight.ToString();
     } );
-    CreateFloatSetting( "UIScale", 1, 0.1f, 4, 20, null );
+    //CreateFloatSetting( "UIScale", 1, 0.1f, 4, 20, null );
 
     CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 20, delegate ( float value ) { mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) ); } );
     CreateFloatSetting( "MusicVolume", 0.9f, 0, 1, 20, delegate ( float value ) { mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) ); } );
@@ -1326,7 +1326,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
 #else
     Screen.SetResolution( ResolutionWidth, ResolutionHeight, BoolSetting["Fullscreen"].Value );
 #endif
-    CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
+    //CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
     ScreenSettingsCountdownTimer.Stop( false );
     ConfirmDialog.Unselect();
   }
@@ -1335,7 +1335,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
   {
     public bool Fullscreen;
     public string Resolution;
-    public float UIScale;
+    //public float UIScale;
   }
   ScreenSettings CachedScreenSettings = new ScreenSettings();
 
@@ -1343,11 +1343,11 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
   {
     CachedScreenSettings.Fullscreen = Screen.fullScreen;
     CachedScreenSettings.Resolution = Screen.width.ToString() + "x" + Screen.height.ToString();
-    CachedScreenSettings.UIScale = CanvasScaler.scaleFactor;
+    //CachedScreenSettings.UIScale = CanvasScaler.scaleFactor;
 
     ConfirmDialog.Select();
     Screen.SetResolution( ResolutionWidth, ResolutionHeight, BoolSetting["Fullscreen"].Value );
-    CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
+    //CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
 
     TimerParams tp = new TimerParams
     {
@@ -1367,7 +1367,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
   {
     BoolSetting["Fullscreen"].Value = CachedScreenSettings.Fullscreen;
     StringSetting["Resolution"].Value = CachedScreenSettings.Resolution;
-    FloatSetting["UIScale"].Value = CachedScreenSettings.UIScale;
+    //FloatSetting["UIScale"].Value = CachedScreenSettings.UIScale;
     ApplyScreenSettings();
   }
 
