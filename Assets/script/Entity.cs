@@ -151,7 +151,7 @@ public class Entity : MonoBehaviour, IDamage
   {
     if( ContactDamage != null )
     {
-      hitCount = Physics2D.BoxCastNonAlloc( body.position, box.size, 0, velocity, RaycastHits, raylength, Global.CharacterDamageLayers );
+      hitCount = Physics2D.BoxCastNonAlloc( box.transform.position, box.size, 0, velocity, RaycastHits, raylength, Global.CharacterDamageLayers );
       for( int i = 0; i < hitCount; i++ )
       {
         hit = RaycastHits[i];
@@ -165,7 +165,6 @@ public class Entity : MonoBehaviour, IDamage
           dmg.point = hit.point;
           dam.TakeDamage( dmg );
         }
-
       }
     }
   }

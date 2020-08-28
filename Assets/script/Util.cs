@@ -9,6 +9,15 @@ using UnityEditor;
 
 public static class Util
 {
+  public static float HermiteAlpha( float s1, float s2, float alpha )
+  {
+    const float n1 = 0.0f;
+    const float n2 = 1.0f;
+    float a2 = alpha*alpha;
+    float a3 = a2*alpha;
+    return (2*a3 - 3*a2 + 1)*n1 + (-2*a3 + 3*a2)*n2 + (a3 - 2*a2 + alpha)*s1 + (a3 - a2)*s2;
+  }
+  
   public static float DbFromNormalizedVolume( float normalizedVolume )
   {
     return (1 - Mathf.Sqrt( normalizedVolume )) * -60f;

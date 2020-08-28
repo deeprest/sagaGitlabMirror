@@ -5010,6 +5010,7 @@ MonoBehaviour:
   Team: 1
   body: {fileID: 2111217764532811413}
   box: {fileID: 61999569739760366}
+  circle: {fileID: 0}
   renderer: {fileID: 212107818795109166}
   animator: {fileID: 1697597636064711849}
   IgnoreCollideObjects: []
@@ -5026,7 +5027,7 @@ MonoBehaviour:
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  health: 1
+  health: 20
   MaxHealth: 20
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
@@ -5040,8 +5041,10 @@ MonoBehaviour:
       m_Calls: []
   controller: {fileID: 0}
   input:
-    MoveRight: 0
     MoveLeft: 0
+    MoveRight: 0
+    MoveUp: 0
+    MoveDown: 0
     JumpStart: 0
     JumpEnd: 0
     DashStart: 0
@@ -5053,8 +5056,9 @@ MonoBehaviour:
     Fire: 0
     Interact: 0
     NextWeapon: 0
-    Down: 0
     Aim: {x: 0, y: 0}
+  CursorWorldPosition: {x: 0, y: 0}
+  InteractIndicator: {fileID: 7746566914802738857}
   audio: {fileID: 82117261715149456}
   audio2: {fileID: 82627251547920718}
   dashSmoke: {fileID: 198502029244883790}
@@ -5086,11 +5090,9 @@ MonoBehaviour:
   wallsliding: 0
   landing: 0
   dashing: 0
-  InteractIndicator: {fileID: 7746566914802738857}
   Cursor: {fileID: 4008285515826600317}
   CursorSnapped: {fileID: 1711276206321528171}
   CursorAutoAim: {fileID: 7882001112357268195}
-  CursorWorldPosition: {x: 0, y: 0}
   CursorScale: 2
   SnapAngleDivide: 8
   SnapCursorDistance: 1
@@ -5119,6 +5121,48 @@ MonoBehaviour:
   damageBlinkDuration: 1.5
   damageLift: 2
   damagePushAmount: 1
+  damageShakeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.4
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.6
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   graphookTip: {fileID: 4836708145371954099}
   grapCableRender: {fileID: 525432861771323797}
   grapDistance: 10

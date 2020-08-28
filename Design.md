@@ -2,6 +2,7 @@ pP
 
 # DESIGN pillars (from gdu.io)
 1. Mantra:  "Mega Man X movement with Metroid exploration in a generated city"
+or "You are a robotic ninja, fighting large robots and pirating their parts."
 1. Design pillars, describing *feel* (three phrases):  Nimble and Agile. Repurpose! Irreverent Distractions.
 2. Summary. Destroy bad robots and use their parts to improve yourself to save the city!
 3. Features: aiming, modify oneself with exchangeable parts, generated city
@@ -18,7 +19,7 @@ pP
 * A little robot that gets excited and follows you around (jeans badger)
 * A couple of idle idiots speculating on why the robots are now evil.
 * A miniboss inspired by the **relentless** posturing that evil enemies (in movies) do, which buys the good guys enough time to defeat them. A big guy that never stops taunting and cannot be damaged, but has a single weakness that is revealed at some point. Since this game has no death, maybe he's only vulnerable to the spiderbot form.
-* "we're running critically low on stickers!"
+* "we're running dangerously low on stickers!"
 * "My only regret..."
   * is not eating more [snausages]
   * is upgrading my wireless data plan
@@ -120,6 +121,22 @@ give you a goal
 mechanics: give you abilities to reach that goal
 provide obstacles to challenge your progress
 overcoming the challenge is one source of enjoyment; not too hard or too easy.
+
+### Robot, Pirate, Ninja, Monkey
+**"You are a robotic ninja (monkey on inside), fighting large robots and pirating their parts."**
+1. robot
+mechanical, repairable
+*mech*
+2. ninja
+agile
+*primary form*
+3. pirate
+charismatic / social
+*stop and chat with npcs*
+4. monkey
+small, climber
+*spiderbot*
+
 
 # Influences
 - dash, walljump, charged shot. Mega Man X (1993)
@@ -312,7 +329,7 @@ Before lawmakers could address ethical and legal concerns, the systems were bein
 
 Soldiers gained enhanced sensory perception and battlefield domination through unparalleled execution of drones. [accelerated healing, pain blockers, impulse control,
 
-Researchers with improved cognition and eidetic memory raced to invent the singularity. The tradeoff of having supreme focus is a moral blindspot.
+Researchers with improved cognition and eidetic memory raced to invent the singularity. The tradeoff of having supreme focus is having an ethical blindspot.
 "I prefer to work with people that have a proclivity to be efficient and reliable."
 "We're creating a better world. One that will fight us tooth and nail all the way to enlightenment."
 "They meant well, but they lost their way. We have a plan to help them focus."

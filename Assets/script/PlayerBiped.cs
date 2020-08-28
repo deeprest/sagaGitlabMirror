@@ -110,6 +110,7 @@ public class PlayerBiped : Pawn
   public float damageBlinkDuration = 1f;
   public float damageLift = 1f;
   public float damagePushAmount = 1f;
+  [SerializeField] private AnimationCurve damageShakeCurve;
 
   [Header( "Graphook" )]
   [SerializeField] GameObject graphookTip;
@@ -1065,7 +1066,12 @@ public class PlayerBiped : Pawn
 
     partHead.transform.localScale = Vector3.one * (1 + (health / MaxHealth) * 10);
     audio.PlayOneShot( soundDamage );
-    Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
+    CameraShake shaker = Global.instance.CameraController.GetComponent<CameraShake>();
+    shaker.amplitude = 0.3f;
+    shaker.duration = 0.5f;
+    shaker.rate = 100;
+    shaker.intensityCurve = damageShakeCurve;
+    shaker.enabled = true;
     Play( "damage" );
     float sign = Mathf.Sign( d.damageSource.position.x - transform.position.x );
     facingRight = sign > 0;
