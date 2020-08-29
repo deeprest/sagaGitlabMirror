@@ -159,7 +159,9 @@ GameObject:
   - component: {fileID: 1040200706130907882}
   - component: {fileID: 1040200706130907884}
   - component: {fileID: 1191369002}
-  m_Layer: 10
+  - component: {fileID: 1191369004}
+  - component: {fileID: 1191369005}
+  m_Layer: 0
   m_Name: fist
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +176,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1040200706130907881}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.383, y: 0.001, z: 0}
+  m_LocalPosition: {x: -0.44, y: 0.001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1040200704269296388}
@@ -247,6 +249,178 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.25
+--- !u!114 &1191369004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040200706130907881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1ac58a19f68d4e4fa78cea1abfcd40d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Team: 3
+  body: {fileID: 0}
+  box: {fileID: 0}
+  circle: {fileID: 1191369002}
+  renderer: {fileID: 0}
+  animator: {fileID: 0}
+  IgnoreCollideObjects:
+  - {fileID: 1040200706280075669}
+  spriteRenderers: []
+  UseGravity: 0
+  IsStatic: 0
+  BoxCollisionOne: 0
+  velocity: {x: 0, y: 0}
+  pushVelocity: {x: 0, y: 0}
+  carryCharacter: {fileID: 0}
+  friction: 0.05
+  raylength: 0.01
+  contactSeparation: 0.01
+  EnablePathing: 0
+  AgentTypeName: Small
+  CanTakeDamage: 0
+  health: 5
+  MaxHealth: 5
+  explosion: {fileID: 0}
+  soundHit: {fileID: 0}
+  spawnWhenDead: {fileID: 0}
+  spawnChance: 1
+  flashInterval: 0.05
+  flashCount: 5
+  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  EventDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  fistSpeed: 10
+  shakeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.10338346
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.10526317
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  smashDirection: {x: 0, y: 0, z: 0}
+  DamageThreshold: 10
+  audio: {fileID: 1191369005}
+  soundReflect: {fileID: 8300000, guid: 74baea719e21e419cbf02dfd10d88643, type: 3}
+  soundSmash: {fileID: 8300000, guid: e5de759ee211b4724be6ba2c82fa2a42, type: 3}
+  soundLaunch: {fileID: 8300000, guid: ec22311f57e264c6999aa70be70d1f4b, type: 3}
+--- !u!82 &1191369005
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040200706130907881}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1040200706280075668
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,40 +500,20 @@ MonoBehaviour:
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []
-  fist: {fileID: 1191369002}
+  fist: {fileID: 1191369004}
   sc: {fileID: 1040200704269296386}
-  shakeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.10338346
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.10526317
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  tangentLength: 0.5
-  smashDirection: {x: 1, y: 0, z: 0}
   fistSpeed: 10
   fistRetractSpeed: 5
+  restDelay: 1
+  launchDelay: 1
   restOffset: 0.5
   shakeInterval: 0.3
   shakeCount: 3
-  devSmash: 0
+  tangentLength: 0.2
+  smashDirection: {x: -1, y: 0, z: 0}
+  sightRange: 6
+  Target: {fileID: 0}
+  soundTargetAcquired: {fileID: 8300000, guid: 701440f3932dc4a4e8ca8561e6365356, type: 3}
 --- !u!212 &1040200706280075670
 SpriteRenderer:
   m_ObjectHideFlags: 0
