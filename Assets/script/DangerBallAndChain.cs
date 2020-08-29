@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.U2D;
 
-public class Monster : Entity
+public class DangerBallAndChain : Entity
 {
   [SerializeField] private DangerBall fist;
   [SerializeField] private SpriteShapeController sc;
@@ -10,10 +10,10 @@ public class Monster : Entity
   [SerializeField] private float fistRetractSpeed = 5;
   [SerializeField] private float restDelay = 1;
   [SerializeField] float launchDelay = 1;
-  [SerializeField] float restOffset = 1;
+  [SerializeField] float restOffset = 0.5f;
   [SerializeField] private float shakeInterval = 0.3f;
   [SerializeField] private int shakeCount = 3;
-  [SerializeField] private float tangentLength = 0.5f;
+  [SerializeField] private float tangentLength = 0.2f;
   [SerializeField] private Vector3 smashDirection;
   private Timer timer = new Timer();
   private Timer shakeTimer = new Timer();
@@ -86,10 +86,12 @@ public class Monster : Entity
           sc.spline.SetRightTangent( 0, Vector3.Lerp( startTangent, smashDirection * tangentLength, shakeTimer.ProgressNormalized ) );
         }, null );
 
+        fist.transform.parent = null;
         fist.Launch( smashDirection, fistSpeed );
         // timeout
         timer.Start( 1, null, delegate
         {
+          fist.transform.parent = transform;
           fist.Stop();
           fist.UseGravity = true;
           WaitToRetract();
@@ -150,6 +152,7 @@ public class Monster : Entity
         }, delegate
         {
           fist.transform.position = restTarget;
+          fist.transform.parent = transform;
           fist.Stop();
           timer.Start( restDelay, null, null );
         } );

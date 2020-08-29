@@ -142,7 +142,7 @@ public class Mech : Entity
       }
     }
 
-    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
+    transform.localScale = new Vector3( facingRight ? Scale : -Scale, Scale, 1 );
 
     bool oldGround = onGround;
     onGround = collideBottom || (collideLeft && collideRight);
@@ -151,6 +151,8 @@ public class Mech : Entity
       //landTimer.Start( landDuration, null, null )
     }
   }
+
+  public float Scale = 1;
 
   void StartJump()
   {

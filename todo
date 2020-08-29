@@ -1,4 +1,8 @@
+
+* need new repo on gitlab
+
 - Design doc
+- fix: enemy LOS raycast hits themselves
 
 - spiderbot
 spiderpawn has dynamic body
@@ -8,11 +12,18 @@ removed layers: flameprojectile, enemy
 - reclaim body
 
 
-
-
 playercontroller record/input, moveup/movedown, add spider action map
 - stickybomb exploding interaction with shield:
   1) do raycast to each IDamage within range
   2) if raycast hits something else, do a projection of the collider onto a perpendicular vector of the normal
   3) use the projected endpoints to do two more raycasts
   4) if the raycast hits an IDamage collider, proceed
+
+
+
+  spawn position in boss scene
+
+  # big mech boss
+  spline culling
+  mech scaling when flip... looks bad. no flipping.
+  "danger ball and chain" needs destruction anims; explosions, and particles?
