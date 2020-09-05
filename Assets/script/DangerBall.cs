@@ -2,11 +2,10 @@
 
 public class DangerBall : Entity
 {
-  [Header( "DangerBall" )] [SerializeField]
-  float fistSpeed = 10;
+  [SerializeField] float MinVelDamageThreshold = 0.1f;
+  [SerializeField] float fistSpeed = 10;
 
   [SerializeField] private AnimationCurve shakeCurve;
-  [SerializeField] private Vector3 smashDirection;
   [SerializeField] float DamageThreshold = 2;
   public AudioSource audio;
   public AudioClip soundReflect;
@@ -16,7 +15,7 @@ public class DangerBall : Entity
   private bool launched = false;
 
   // use to report a hit to the controlling entity
-  public System.Action<RaycastHit2D> OnHit;
+  public System.Action OnHit;
 
   public void Launch( Vector2 direction, float speed )
   {
@@ -41,23 +40,26 @@ public class DangerBall : Entity
   {
     base.Start();
     UpdateLogic = null;
-    UpdateHit = null;
-    UpdateCollision = LocalCollision;
+    UpdateHit = LocalHit;
+    UpdateCollision = BoxCollisionVelocity;
     UpdatePosition = BasicPosition;
   }
 
-  void LocalCollision()
+  void LocalHit()
   {
-    if( !launched )
+    if( !(launched || UseGravity) )
       return;
-    // hitCount = Physics2D.BoxCastNonAlloc( box.transform.position, box.size, 0, smashDirection, RaycastHits, Mathf.Max(0.01f, Time.deltaTime * fistSpeed), Global.DefaultProjectileCollideLayers );
-    hitCount = Physics2D.CircleCastNonAlloc( transform.position, circle.radius + 0.002f, smashDirection, RaycastHits, Mathf.Max( 0.005f, Time.deltaTime * fistSpeed ), Global.DefaultProjectileCollideLayers );
+    if( velocity.magnitude < MinVelDamageThreshold )
+      return;
+    hitCount = Physics2D.BoxCastNonAlloc( transform.position, box.size, 0, velocity, RaycastHits, Mathf.Max( 0.005f, Time.deltaTime * velocity.magnitude ), Global.DefaultProjectileCollideLayers );
+    //hitCount = Physics2D.CircleCastNonAlloc( transform.position, circle.radius, velocity, RaycastHits, Mathf.Max( 0.005f, Time.deltaTime * velocity.magnitude ), Global.DefaultProjectileCollideLayers );
     if( hitCount > 0 )
     {
       for( int i = 0; i < hitCount; i++ )
       {
         hit = RaycastHits[i];
-        if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
+
+        if( hit.collider.isTrigger || hit.collider.GetInstanceID() == box.GetInstanceID() || (IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider )) )
           continue;
 
         IDamage dam = hit.transform.GetComponent<IDamage>();
@@ -72,12 +74,12 @@ public class DangerBall : Entity
 
         bool isStatic = true;
         Entity ent = hit.transform.GetComponent<Entity>();
-        if( ent!=null && !ent.IsStatic )
+        if( ent != null && !ent.IsStatic )
           isStatic = false;
         Rigidbody2D rb2d = hit.rigidbody;
         if( rb2d != null && rb2d.bodyType != RigidbodyType2D.Static )
           isStatic = false;
-        
+
         if( isStatic )
         {
           CameraShake shaker = Global.instance.CameraController.GetComponent<CameraShake>();
@@ -90,8 +92,8 @@ public class DangerBall : Entity
           Stop();
           // after Stop() to avoid audio conflict
           audio.PlayOneShot( soundSmash );
-          
-          OnHit( hit );
+
+          OnHit();
           break;
         }
       }
@@ -115,7 +117,7 @@ public class DangerBall : Entity
           case Weapon.WeaponType.Projectile:
             //projectile.transform.position = transform.position + Vector3.Project( (Vector3)d.point - transform.position, transform.right );
             projectile.velocity = Vector3.Reflect( projectile.velocity, (d.instigator.transform.position - transform.position).normalized );
-            Physics2D.IgnoreCollision( projectile.circle, circle, false );
+            Physics2D.IgnoreCollision( projectile.circle, box, false );
 
             foreach( var cldr in projectile.instigator.IgnoreCollideObjects )
             {

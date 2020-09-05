@@ -125,6 +125,7 @@ public class Entity : MonoBehaviour, IDamage
       pathAgent.transform = transform;
       pathAgent.AgentTypeID = Global.instance.AgentType[AgentTypeName];
     }
+    InitializeParts();
   }
 
   void Update()
@@ -145,6 +146,14 @@ public class Entity : MonoBehaviour, IDamage
       UpdateCollision();
 
     //body.MovePosition( transform.position );
+  }
+  
+  void LateUpdate()
+  {
+    if( !Global.instance.Updating )
+      return;
+
+    UpdateParts();
   }
 
   protected void BoxHit()
@@ -233,6 +242,65 @@ public class Entity : MonoBehaviour, IDamage
     carryCharacter = null;
   }
 
+  protected void BoxCollisionVelocity()
+  {
+    // Do a single box cast in the direction of velocity
+    collideRight = false;
+    collideLeft = false;
+    collideTop = false;
+    collideBottom = false;
+    const float corner = 0.707f;
+    boxOffset.x = box.offset.x * Mathf.Sign( transform.localScale.x );
+    boxOffset.y = box.offset.y;
+    adjust = (Vector2)transform.position + boxOffset;
+
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, velocity, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
+    {
+      hit = RaycastHits[i];
+      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
+        continue;
+      if( hit.normal.y > corner )
+      {
+        collideBottom = true;
+        adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation;
+        // moving platforms
+        Entity cha = hit.transform.GetComponent<Entity>();
+        if( cha != null )
+        {
+#if UNITY_EDITOR
+          if( cha.GetInstanceID() == GetInstanceID() )
+          {
+            Debug.LogError( "character set itself as carry character", gameObject );
+            Debug.Break();
+          }
+#endif
+          carryCharacter = cha;
+        }
+        break;
+      }
+      if( hit.normal.y < -corner )
+      {
+        collideTop = true;
+        adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
+        break;
+      }
+      if( hit.normal.x > corner )
+      {
+        collideLeft = true;
+        adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
+        break;
+      }
+      if( hit.normal.x < -corner )
+      {
+        collideRight = true;
+        adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
+        break;
+      }
+    }
+    transform.position = adjust - boxOffset;
+  }
+  
   protected void BoxCollisionOneDown()
   {
     collideRight = false;
@@ -332,7 +400,6 @@ public class Entity : MonoBehaviour, IDamage
         if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
           continue;
         collideLeft = true;
-        //hitLeft = hit;
         adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
         break;
       }
@@ -347,7 +414,6 @@ public class Entity : MonoBehaviour, IDamage
         if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
           continue;
         collideRight = true;
-        //hitRight = hit;
         adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
         break;
       }
@@ -440,5 +506,34 @@ public class Entity : MonoBehaviour, IDamage
   public virtual bool IsEnemyTeam( Team other )
   {
     return Team != Team.None && other != Team.None && other != Team;
+  }
+  
+  
+  
+  [Header( "Character Parts" )]
+  public int CharacterLayer;
+
+  [System.Serializable]
+  public struct CharacterPart
+  {
+    public Transform transform;
+    public Animator animator;
+    public Renderer renderer;
+    public int layerAnimated;
+  }
+  
+  public List<CharacterPart> CharacterParts;
+
+  // Call from Awake()
+  public virtual void InitializeParts()
+  {
+    // empty
+  }
+
+  // Call from LateUpdate()
+  public void UpdateParts()
+  {
+    foreach( var part in CharacterParts )
+      part.renderer.sortingOrder = CharacterLayer + part.layerAnimated;
   }
 }

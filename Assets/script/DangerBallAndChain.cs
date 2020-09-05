@@ -5,6 +5,7 @@ public class DangerBallAndChain : Entity
 {
   [SerializeField] private DangerBall fist;
   [SerializeField] private SpriteShapeController sc;
+  [SerializeField] private LineRenderer lineRenderer;
 
   [SerializeField] float fistSpeed = 10;
   [SerializeField] private float fistRetractSpeed = 5;
@@ -33,8 +34,8 @@ public class DangerBallAndChain : Entity
     UpdateHit = null;
     UpdateCollision = null;
     UpdatePosition = null;
-    Physics2D.IgnoreCollision( circle, fist.circle );
-    fist.OnHit = SomethingSolidWasHit;
+    Physics2D.IgnoreCollision( circle, fist.box );
+    fist.OnHit = WaitToRetract;
     // sight pulse
     SightMask = LayerMask.GetMask( new string[] {"character"} );
     SightPulseTimer.Start( int.MaxValue, 3, ( x ) =>
@@ -76,14 +77,14 @@ public class DangerBallAndChain : Entity
       {
         if( Target == null )
           return;
-        smashDirection = Target.transform.position - transform.position;
-        sc.spline.SetRightTangent( 1, smashDirection );
+        smashDirection = Target.transform.position - fist.transform.position;
+        //sc.spline.SetRightTangent( 1, smashDirection );
 
         // straighten chain when firing
         shakeTimer.Start( 0.2f, delegate( Timer timer3 )
         {
-          Vector2 startTangent = sc.spline.GetRightTangent( 0 );
-          sc.spline.SetRightTangent( 0, Vector3.Lerp( startTangent, smashDirection * tangentLength, shakeTimer.ProgressNormalized ) );
+          // Vector2 startTangent = sc.spline.GetRightTangent( 0 );
+          // sc.spline.SetRightTangent( 0, Vector3.Lerp( startTangent, smashDirection * tangentLength, shakeTimer.ProgressNormalized ) );
         }, null );
 
         fist.transform.parent = null;
@@ -99,17 +100,17 @@ public class DangerBallAndChain : Entity
       } );
     }
 
-    sc.spline.SetPosition( 1, sc.transform.worldToLocalMatrix.MultiplyPoint( fist.transform.position ) );
+    //sc.spline.SetPosition( 1, sc.transform.worldToLocalMatrix.MultiplyPoint( fist.transform.position ) );
+    lineRenderer.SetPosition( 1, lineRenderer.transform.worldToLocalMatrix.MultiplyPoint( fist.transform.position ) );
   }
 
-  public void SomethingSolidWasHit( RaycastHit2D hit )
-  {
-    WaitToRetract();
-  }
-
+  private bool retracting = false;
+  
   public void WaitToRetract()
   {
-    fist.UseGravity = false;
+    if( retracting )
+      return;
+    retracting = true;
     timer.Start( 1, null, () =>
     {
       // yank a few times
@@ -120,13 +121,13 @@ public class DangerBallAndChain : Entity
       {
         if( toggle )
         {
-          Vector2 startTangent = sc.spline.GetRightTangent( 0 );
-          shakeTimer.Start( shakeInterval, delegate( Timer timer3 ) { sc.spline.SetRightTangent( 0, Vector3.Lerp( startTangent, perp * tangentLength, shakeTimer.ProgressNormalized ) ); }, null );
+          // Vector2 startTangent = sc.spline.GetRightTangent( 0 );
+          // shakeTimer.Start( shakeInterval, delegate( Timer timer3 ) { sc.spline.SetRightTangent( 0, Vector3.Lerp( startTangent, perp * tangentLength, shakeTimer.ProgressNormalized ) ); }, null );
         }
         else
         {
-          Vector2 startTangent = sc.spline.GetRightTangent( 0 );
-          shakeTimer.Start( shakeInterval, delegate( Timer timer3 ) { sc.spline.SetRightTangent( 0, Vector3.Lerp( startTangent, smashDirection * tangentLength, shakeTimer.ProgressNormalized ) ); }, null );
+          // Vector2 startTangent = sc.spline.GetRightTangent( 0 );
+          // shakeTimer.Start( shakeInterval, delegate( Timer timer3 ) { sc.spline.SetRightTangent( 0, Vector3.Lerp( startTangent, smashDirection * tangentLength, shakeTimer.ProgressNormalized ) ); }, null );
         }
         toggle = !toggle;
       }, () =>
@@ -137,8 +138,8 @@ public class DangerBallAndChain : Entity
         // straighten chain out while retracting
         shakeTimer.Start( 0.5f, delegate( Timer timer3 )
         {
-          Vector2 startTangent = sc.spline.GetRightTangent( 0 );
-          sc.spline.SetRightTangent( 0, Vector3.Lerp( startTangent, (transform.worldToLocalMatrix.rotation * smashDirection) * tangentLength, shakeTimer.ProgressNormalized ) );
+          // Vector2 startTangent = sc.spline.GetRightTangent( 0 );
+          // sc.spline.SetRightTangent( 0, Vector3.Lerp( startTangent, (transform.worldToLocalMatrix.rotation * smashDirection) * tangentLength, shakeTimer.ProgressNormalized ) );
         }, null );
 
         // bring the fist back to rest position
@@ -155,6 +156,7 @@ public class DangerBallAndChain : Entity
           fist.transform.parent = transform;
           fist.Stop();
           timer.Start( restDelay, null, null );
+          retracting = false;
         } );
       } );
     } );

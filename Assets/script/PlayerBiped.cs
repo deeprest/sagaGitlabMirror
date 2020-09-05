@@ -171,6 +171,7 @@ public class PlayerBiped : Pawn
 
   public override void PreSceneTransition()
   {
+    velocity = Vector2.zero;
     StopCharge();
     StopGrap();
     // "pack" the graphook with this gameobject
@@ -1148,39 +1149,26 @@ public class PlayerBiped : Pawn
   }
 
 
-  [Header( "Character Parts" )]
-  [SerializeField] int CharacterLayer;
-
-  [System.Serializable]
-  public struct CharacterPart
-  {
-    public Transform transform;
-    public Animator animator;
-    public SpriteRenderer renderer;
-    public int layerAnimated;
-    //public BoxCollider2D box;
-  }
+  [Header( "Character Parts player biped" )]
 
   public CharacterPart partBody;
   public CharacterPart partHead;
   public CharacterPart partArmBack;
   public CharacterPart partArmFront;
 
-  List<CharacterPart> CharacterParts;
-
   // Call from Awake()
-  void InitializeParts()
+  public override void InitializeParts()
   {
     CharacterParts = new List<CharacterPart> { partBody, partHead, partArmBack, partArmFront };
   }
-
+/*
   // Call from LateUpdate()
   void UpdateParts()
   {
     foreach( var part in CharacterParts )
       part.renderer.sortingOrder = CharacterLayer + part.layerAnimated;
   }
-
+*/
   void Play( string anim )
   {
     partBody.animator.Play( anim );

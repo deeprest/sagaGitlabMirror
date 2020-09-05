@@ -5,6 +5,8 @@ using UnityEngine;
 // TODO dash smoke, dash sound
 public class Mech : Entity
 {
+  public float Scale = 1;
+  
   public AudioSource audio;
 
   public bool facingRight;
@@ -151,9 +153,7 @@ public class Mech : Entity
       //landTimer.Start( landDuration, null, null )
     }
   }
-
-  public float Scale = 1;
-
+  
   void StartJump()
   {
     velocity.y = jumpSpeed;

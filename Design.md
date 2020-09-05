@@ -3,7 +3,7 @@ pP
 # DESIGN pillars (from gdu.io)
 1. Mantra:  "Mega Man X movement with Metroid exploration in a generated city"
 or "You are a robotic ninja, fighting large robots and pirating their parts."
-1. Design pillars, describing *feel* (three phrases):  Nimble and Agile. Repurpose! Irreverent Distractions.
+1. Design pillars, describing *feel* (three phrases):  Nimbly pimbly. Upgrade! Irreverent Distractions.
 2. Summary. Destroy bad robots and use their parts to improve yourself to save the city!
 3. Features: aiming, modify oneself with exchangeable parts, generated city
 4. Target platform: MacOS, Linux, etc
@@ -225,8 +225,7 @@ level generation
 
 # Cycles
 - combat cycle. aware of enemy, visual contact, observe, attack, evade => death or success
-
-- death cycle. transformation.
+- death cycle. transformation: ninja => spider
 
 # Spiderbot
 start as spiderbot (maybe nothing notices you when you're a spiderbot)
@@ -241,11 +240,7 @@ can zap doors, enemies
 cannibalize small enemies to build needed body parts
 
 - stage cycle. HQ to generated level. boss, weapon.
-
 - system upgrades: sensory (blobs on perif), targeting (projectile path, highlight enemies), weakness scan (show weak spots on large enemies)
-
--
-
 
 # Ideas
 Main Menu is an in-game menu. player can shoot the options.

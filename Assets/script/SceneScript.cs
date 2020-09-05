@@ -10,9 +10,12 @@ public class SceneScript : MonoBehaviour
 
   public virtual void StartScene()
   {
-    if( Application.isEditor && !Global.instance.SimulatePlayer && Global.instance.CurrentPlayer == null )
+    if( Application.isEditor && !Global.instance.SimulatePlayer )
     {
-      Global.instance.SpawnPlayer();
+      if( Global.instance.CurrentPlayer == null )
+        Global.instance.SpawnPlayer();
+      else
+        Global.instance.CurrentPlayer.transform.position = Global.instance.FindRandomSpawnPosition();
     }
 
     Global.instance.AssignCameraZone( CameraZone );

@@ -1,25 +1,20 @@
-
-* need new repo on gitlab
-
 - Design doc
-- fix: enemy LOS raycast hits themselves
-
-- spiderbot
-spiderpawn has dynamic body
-liftbot kinematic
-remove trigger layer, add OnTriggerEnter, collider->trigger = true
-removed layers: flameprojectile, enemy
+- fix: enemy LOS raycast hits themselves (airbot)
+- spiderpawn has dynamic body
 - reclaim body
+- liftbot kinematic
+- remove trigger layer, add OnTriggerEnter, collider->trigger = true
 
-
-playercontroller record/input, moveup/movedown, add spider action map
+- playercontroller record/input, moveup/movedown, add spider action map
 - stickybomb exploding interaction with shield:
   1) do raycast to each IDamage within range
   2) if raycast hits something else, do a projection of the collider onto a perpendicular vector of the normal
   3) use the projected endpoints to do two more raycasts
   4) if the raycast hits an IDamage collider, proceed
 
-
+- music zones, or proximity to notable enemies
+- boss scene: why is player not spawing at correct location?
+- bigboss0
 
   spawn position in boss scene
 
