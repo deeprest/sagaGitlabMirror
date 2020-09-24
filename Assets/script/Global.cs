@@ -1,4 +1,4 @@
-//﻿#pragma warning disable 414
+// #pragma warning disable 414
 
 using System.Collections;
 using System.Collections.Generic;
@@ -245,16 +245,16 @@ public class Global : MonoBehaviour
     //Application.targetFrameRate = 60;
 
     // note: allowing characters to collide introduces risk of being forced into a corner
-    CharacterCollideLayers = LayerMask.GetMask( new string[] { "Default", "destructible", "triggerAndCollision" } ); //, "character", "enemy" };
-    CharacterSidestepLayers = LayerMask.GetMask( new string[] { "character", "enemy" } );
+    CharacterCollideLayers = LayerMask.GetMask( new string[] { "Default", "destructible", "triggerAndCollision" } ); //, "character" };
+    CharacterSidestepLayers = LayerMask.GetMask( new string[] { "character" } );
     CharacterDamageLayers = LayerMask.GetMask( new string[] { "character" } );
     TriggerLayers = LayerMask.GetMask( new string[] { "trigger", "triggerAndCollision" } );
     WorldSelectableLayers = LayerMask.GetMask( new string[] { "worldselect" } );
     ProjectileNoShootLayers = LayerMask.GetMask( new string[] { "Default" } );
-    DefaultProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" } );
-    FlameProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" } );
-    DamageCollideLayers = LayerMask.GetMask( new string[] { "character", "triggerAndCollision", "enemy", "projectile", "destructible" } );
-    StickyBombCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "projectile", "destructible" } );
+    DefaultProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible", "bouncyGrenade" } );
+    FlameProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible", "bouncyGrenade" } );
+    DamageCollideLayers = LayerMask.GetMask( new string[] { "character", "triggerAndCollision", "projectile", "destructible" } );
+    StickyBombCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "projectile", "destructible" } );
     TurretSightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" } );
     EnemySightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" } );
 
@@ -704,6 +704,7 @@ public class Global : MonoBehaviour
     PlayerBiped pawn = go.GetComponent<PlayerBiped>();
     CurrentPlayer = pawn;
     PlayerController.AssignPawn( pawn );
+    Global.instance.CameraController.orthoTarget = 3;
   }
 
   public Vector3 FindSpawnPosition()

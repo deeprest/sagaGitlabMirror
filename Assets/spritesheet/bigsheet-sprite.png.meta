@@ -628,7 +628,10 @@ TextureImporter:
     second: bigsheet-sprite_20
   - first:
       213: 8736462838602879013
-    second: bigsheet-sprite_21
+    second: airbot-spike-left
+  - first:
+      213: 1761372648653217958
+    second: airbot-spike-right
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -4612,8 +4615,8 @@ TextureImporter:
         y: 464
         width: 64
         height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 19, y: 0, z: 19, w: 19}
       outline: []
       physicsShape: []
@@ -4789,6 +4792,48 @@ TextureImporter:
       bones: []
       spriteID: fcbec12a12d842400800000000000000
       internalID: 298518650906536911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: airbot-spike-left
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 96
+        width: 10
+        height: 11
+      alignment: 9
+      pivot: {x: 0.6572502, y: 0.67154557}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5205358f9a62e3970800000000000000
+      internalID: 8736462838602879013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: airbot-spike-right
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 96
+        width: 10
+        height: 11
+      alignment: 9
+      pivot: {x: 0.34275207, y: 0.68107605}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6a060108717a17810800000000000000
+      internalID: 1761372648653217958
       vertices: []
       indices: 
       edges: []

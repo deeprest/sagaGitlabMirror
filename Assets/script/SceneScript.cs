@@ -15,7 +15,10 @@ public class SceneScript : MonoBehaviour
       if( Global.instance.CurrentPlayer == null )
         Global.instance.SpawnPlayer();
       else
+      {
         Global.instance.CurrentPlayer.transform.position = Global.instance.FindRandomSpawnPosition();
+        Global.instance.CurrentPlayer.velocity = Vector2.zero;
+      }
     }
 
     Global.instance.AssignCameraZone( CameraZone );

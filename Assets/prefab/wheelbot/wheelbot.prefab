@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4032389116732274}
   - component: {fileID: 212949075796312028}
+  - component: {fileID: 565244711017747629}
   - component: {fileID: 8402770076920746544}
   - component: {fileID: 88018454292964798}
-  - component: {fileID: 4426325592450729683}
   m_Layer: 10
   m_Name: wheelbot
   m_TagString: Untagged
@@ -85,6 +85,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!58 &565244711017747629
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1094346900350558}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.23
 --- !u!114 &8402770076920746544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,8 +115,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 2
   body: {fileID: 88018454292964798}
-  box: {fileID: 4426325592450729683}
-  circle: {fileID: 0}
+  box: {fileID: 0}
+  circle: {fileID: 565244711017747629}
   renderer: {fileID: 212949075796312028}
   animator: {fileID: 0}
   IgnoreCollideObjects: []
@@ -129,6 +145,8 @@ MonoBehaviour:
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []
+  CharacterLayer: 0
+  CharacterParts: []
   rotator: {fileID: 110268027408849183}
   wheelAnimRate: 4
   wheelVelocity: 2
@@ -153,32 +171,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &4426325592450729683
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1094346900350558}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.328125, y: 0.328125}
-    newSize: {x: 0.25, y: 0.375}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.328125, y: 0.328125}
-  m_EdgeRadius: 0
 --- !u!1 &5490519860742726923
 GameObject:
   m_ObjectHideFlags: 0

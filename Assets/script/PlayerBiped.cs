@@ -1048,6 +1048,7 @@ public class PlayerBiped : Pawn
       spider = go.GetComponent<SpiderPawn>();
     }
     controller.AssignPawn( spider );
+    Global.instance.CameraController.orthoTarget = 1;
   }
 
   public override bool TakeDamage( Damage d )

@@ -178,11 +178,11 @@ public class Entity : MonoBehaviour, IDamage
     }
   }
 
-  /*protected void CircleHit()
+  protected void CircleHit()
   {
     if( ContactDamage != null )
     {
-      hitCount = Physics2D.CircleCastNonAlloc( body.position, circle.radius, body.velocity, RaycastHits, raylength, Global.CharacterDamageLayers );
+      hitCount = Physics2D.CircleCastNonAlloc( circle.transform.position, circle.radius, velocity, RaycastHits, raylength, Global.CharacterDamageLayers );
       for( int i = 0; i < hitCount; i++ )
       {
         hit = RaycastHits[i];
@@ -199,7 +199,7 @@ public class Entity : MonoBehaviour, IDamage
 
       }
     }
-  }*/
+  }
 
   public void Push( Vector2 pVelocity, float duration )
   {
@@ -299,6 +299,63 @@ public class Entity : MonoBehaviour, IDamage
       }
     }
     transform.position = adjust - boxOffset;
+  }
+  
+  protected void CircleCollisionVelocity()
+  {
+    // Do a single circle cast in the direction of velocity
+    collideRight = false;
+    collideLeft = false;
+    collideTop = false;
+    collideBottom = false;
+    const float corner = 0.707f;
+    adjust = transform.position;
+
+    hitCount = Physics2D.CircleCastNonAlloc( adjust, circle.radius, velocity, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
+    for( int i = 0; i < hitCount; i++ )
+    {
+      hit = RaycastHits[i];
+      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
+        continue;
+      if( hit.normal.y > corner )
+      {
+        collideBottom = true;
+        adjust.y = hit.point.y + circle.radius + contactSeparation;
+        // moving platforms
+        Entity cha = hit.transform.GetComponent<Entity>();
+        if( cha != null )
+        {
+#if UNITY_EDITOR
+          if( cha.GetInstanceID() == GetInstanceID() )
+          {
+            Debug.LogError( "character set itself as carry character", gameObject );
+            Debug.Break();
+          }
+#endif
+          carryCharacter = cha;
+        }
+        break;
+      }
+      if( hit.normal.y < -corner )
+      {
+        collideTop = true;
+        adjust.y = hit.point.y - circle.radius - contactSeparation;
+        break;
+      }
+      if( hit.normal.x > corner )
+      {
+        collideLeft = true;
+        adjust.x = hit.point.x + circle.radius + contactSeparation;
+        break;
+      }
+      if( hit.normal.x < -corner )
+      {
+        collideRight = true;
+        adjust.x = hit.point.x - circle.radius - contactSeparation;
+        break;
+      }
+    }
+    transform.position = adjust;
   }
   
   protected void BoxCollisionOneDown()
