@@ -1,13 +1,12 @@
 pP
 
 # DESIGN pillars (from gdu.io)
-1. Mantra:  "Mega Man X movement with Metroid exploration in a generated city"
-or "You are a robotic ninja, fighting large robots and pirating their parts."
+1. Mantra:  "You are a robotic ninja, fighting large robots and pirating their parts."
 1. Design pillars, describing *feel* (three phrases):  Nimbly pimbly. Upgrades! Irreverent Distractions.
 2. Summary. Destroy bad robots and use their parts to improve yourself to save the city!
 3. Features: aiming, modify oneself with exchangeable parts, generated city
 4. Target platform: MacOS, Linux, etc
-5. Target Audience: Me. Any old fans of MMX.
+5. Target Audience: Any fans of MMX that want to see evolved gameplay.
 6. Game Details (see below)
 7. Interface, Controls: m+k, gamepads
 8. Artstyle: cyberpunk pixelart hq3x. Composite sprites with lighting, normal+emissive maps.
