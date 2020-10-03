@@ -648,7 +648,7 @@ MonoBehaviour:
   - sceneAsset: {fileID: 102900000, guid: 3bd2ea2daf4aa468fbd22b4c6c6c8392, type: 3}
     scenePath: Assets/scene/fall-test.unity
   - sceneAsset: {fileID: 102900000, guid: e25ec4c772e0542ea9a954f39750785a, type: 3}
-    scenePath: Assets/scene/shadow test.unity
+    scenePath: Assets/scene/shadows.unity
   - sceneAsset: {fileID: 102900000, guid: 3fdde71a3ca2e43efa5d107418e4f6d2, type: 3}
     scenePath: Assets/scene/boss.unity
   RandomSeedOnStart: 0
@@ -1286,6 +1286,7 @@ GameObject:
   - component: {fileID: 7197562399528161157}
   - component: {fileID: 5256872053445144375}
   - component: {fileID: 2916400019914139743}
+  - component: {fileID: 7107097183546616196}
   m_Layer: 0
   m_Name: cam
   m_TagString: MainCamera
@@ -1389,6 +1390,26 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &7107097183546616196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 603064957685407736}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c88f5cead0c0b2a4eb05b5900433f8d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AssetsPPU: 64
+  m_RefResolutionX: 640
+  m_RefResolutionY: 400
+  m_UpscaleRT: 0
+  m_PixelSnapping: 0
+  m_CropFrameX: 0
+  m_CropFrameY: 0
+  m_StretchFill: 0
 --- !u!1 &668824099340487306
 GameObject:
   m_ObjectHideFlags: 0

@@ -24,7 +24,19 @@ pP
   * is upgrading my wireless data plan
   * is not buying that timeshare in Florida
   * is not robbing that waffle house
-
+* STUPID/LAZY/CRAZY. The game starts out with positive encouragement, and increasingly gets negative until it's throwing negative gremlin thoughts at you.
+  * "you'll do fine!" ("pfft" says a bystander)
+  * "I'm sure you'll be the greatest hero we've ever seen"
+  * "You're not that bad."
+  * "I've seen worse."
+  * Too bad you blew up the supplies...
+  * Not the most graceful hero I've seen.
+  * The real heroes must have been busy saving someone else.
+  * Eventually:
+  * "why do you even bother"
+  * you're never going to finish.
+  * you're a loser. just admit it.
+  * Why try so hard? You're going to quit this just like everything else you start.
 
 ## GDC Hitchhiker's Guide to Rapid prototypes
 Minimum Viable product.
@@ -62,8 +74,6 @@ Humility will spot external barriers:
 ### Vision
 Two parts: Game Concept and Design. Focus more on the design iteration.
 Core Mechanic. Secondary Mechanics. progression. Narrative.
-
-
 
 
 # project Goals
@@ -316,7 +326,7 @@ weapons: blaster, bouncygrenade, stickybomb, flame, laser
 # first anim sequence
 Fade in to a dark room with lab equipment in the center.  There is a man leaning over a large capsule, and a device on a table nearby. The capsule is emitting light, but we cannot see inside.  The device on the table looks like a ball with tendrils, and is plugged in to the capsule.  The building shakes; chunks of the ceiling fall nearby.  The man looks up. "We have to get out of here". He unplugs the device and takes it under his arm and heads for the door.  Before he can reach the door the wall collapses on him. The device bounces on the floor and slides a short distance away.  It lies still for a moment before a light on the side emits a glow.
 
-# the big picture (Apparently I'm using every science fiction trope here...)
+# the big picture (every science fiction trope?)
 [The man] is a scientist that worked on the team that developed the first biotic, autonomous AI systems. Originally designed for head trauma patients, neurological-interfaces were coupled with machine learning to assist in recovery. Eventually the systems moved beyond analysis and treatment and showed  neural pathway augmentation.
 
 Before lawmakers could address ethical and legal concerns, the systems were being licensed commercially to militaries, research labs, and the wealthy.
@@ -333,6 +343,7 @@ The wealthy proceeds to consolidate power throughout the governments of the worl
 
 ## aesthetics
 1. Sounds are complimentary with instruments in the music.
-1. Music has energy. melody. Stages take roughly 3x music loops to avoid letting the music get stale.
+1. Music has energy. melody.
+1. Music zones, possibly centered around major enemies. ( In MMX, stages take roughly 3x music loops to avoid letting the music get stale. )
 1. Camera. Screen shake. Camera smooth lerp.
 1. Atmosphere. Environment animations.
