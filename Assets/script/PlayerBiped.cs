@@ -12,28 +12,44 @@ public class PlayerBiped : Pawn
   public Transform arm;
 
   const float raydown = 0.2f;
+
   const float downOffset = 0.12f;
+
   // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
   public Vector2 headbox = new Vector2( .1f, .1f );
   const float headboxy = -0.1f;
   const float downslopefudge = 0.2f;
   const float corner = 0.707f;
 
-  [Header( "Setting" )]
-  public float speedFactorNormalized = 1;
+  [Header( "Setting" )] public float speedFactorNormalized = 1;
 
   // movement
   public float moveVelMin = 1.5f;
   public float moveVelMax = 3;
-  public float moveSpeed { get { return moveVelMin + (moveVelMax - moveVelMin) * speedFactorNormalized; } }
+
+  public float moveSpeed
+  {
+    get { return moveVelMin + (moveVelMax - moveVelMin) * speedFactorNormalized; }
+  }
+
   public float jumpVelMin = 5;
   public float jumpVelMax = 10;
-  public float jumpSpeed { get { return jumpVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized; } }
+
+  public float jumpSpeed
+  {
+    get { return jumpVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized; }
+  }
+
   public float jumpDuration = 0.4f;
   public float jumpRepeatInterval = 0.1f;
   public float dashVelMin = 3;
   public float dashVelMax = 10;
-  public float dashSpeed { get { return dashVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized; } }
+
+  public float dashSpeed
+  {
+    get { return dashVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized; }
+  }
+
   public float dashDuration = 1;
   public float wallJumpPushVelocity = 1.5f;
   public float wallJumpPushDuration = 0.1f;
@@ -42,8 +58,7 @@ public class PlayerBiped : Pawn
 
   Vector2 shoot;
 
-  [Header( "State" )]
-  [SerializeField] bool facingRight = true;
+  [Header( "State" )] [SerializeField] bool facingRight = true;
   [SerializeField] bool onGround;
   [SerializeField] bool jumping;
   [SerializeField] bool walljumping;
@@ -61,9 +76,13 @@ public class PlayerBiped : Pawn
 
   [Header( "Cursor" )]
   // public GameObject InteractIndicator;
-  [SerializeField] Transform Cursor;
+  [SerializeField]
+  Transform Cursor;
+
   public Transform CursorSnapped;
+
   public Transform CursorAutoAim;
+
   // public Vector2 CursorWorldPosition;
   public float CursorScale = 2;
   public float SnapAngleDivide = 8;
@@ -74,8 +93,7 @@ public class PlayerBiped : Pawn
   bool CursorAboveMinimumDistance;
   [SerializeField] LineRenderer lineRenderer;
 
-  [Header( "Weapon" )]
-  public Weapon weapon;
+  [Header( "Weapon" )] public Weapon weapon;
   public int CurrentWeaponIndex;
   [SerializeField] List<Weapon> weapons;
   Timer shootRepeatTimer = new Timer();
@@ -93,13 +111,11 @@ public class PlayerBiped : Pawn
   float chargeStart;
   GameObject chargeEffectGO;
 
-  [Header( "Sound" )]
-  public AudioClip soundJump;
+  [Header( "Sound" )] public AudioClip soundJump;
   public AudioClip soundDash;
   public AudioClip soundDamage;
 
-  [Header( "Damage" )]
-  [SerializeField] float damageDuration = 0.5f;
+  [Header( "Damage" )] [SerializeField] float damageDuration = 0.5f;
   bool takingDamage;
   bool damagePassThrough;
   Timer damageTimer = new Timer();
@@ -112,8 +128,9 @@ public class PlayerBiped : Pawn
   public float damagePushAmount = 1f;
   [SerializeField] private AnimationCurve damageShakeCurve;
 
-  [Header( "Graphook" )]
-  [SerializeField] GameObject graphookTip;
+  [Header( "Graphook" )] [SerializeField]
+  GameObject graphookTip;
+
   [SerializeField] SpriteRenderer grapCableRender;
   public float grapDistance = 10;
   public float grapSpeed = 5;
@@ -231,7 +248,7 @@ public class PlayerBiped : Pawn
       WorldSelection = null;
     }
   }
-  
+
   new void UpdateHit( float dT )
   {
     pups.Clear();
@@ -269,7 +286,7 @@ public class PlayerBiped : Pawn
       IWorldSelectable pup = hit.transform.GetComponent<IWorldSelectable>();
       if( pup != null )
       {
-        pups.Add( (Component)pup );
+        pups.Add( (Component) pup );
         /*if( !highlightedPickups.Contains( pup ) )
         {
           pup.Highlight();
@@ -278,7 +295,7 @@ public class PlayerBiped : Pawn
       }
     }
     //WorldSelectable closest = (WorldSelectable)FindClosest( transform.position, pups.ToArray() );
-    IWorldSelectable closest = (IWorldSelectable)Util.FindSmallestAngle( transform.position, shoot, pups.ToArray() );
+    IWorldSelectable closest = (IWorldSelectable) Util.FindSmallestAngle( transform.position, shoot, pups.ToArray() );
     if( closest == null )
     {
       if( closestISelect != null )
@@ -320,6 +337,7 @@ public class PlayerBiped : Pawn
     adjust = transform.position;
 
     #region multisampleAttempt
+
     /*
     // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground bug by 'sampling' the ground at multiple points
     RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
@@ -355,10 +373,14 @@ public class PlayerBiped : Pawn
       Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.grey );
 
     */
+
     #endregion
+
+    string temp = "";
 
     float down = jumping ? raydown - downOffset : raydown;
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
+    temp += "down: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -367,20 +389,23 @@ public class PlayerBiped : Pawn
       if( hit.normal.y > corner )
       {
         collideBottom = true;
-        adjust.y = hit.point.y + box.size.y * 0.5f + downOffset;
+        if( hit.normal.x > 0 )
+          adjust.y = hit.point.y + (box.size.y * 0.5f * Mathf.Abs( hit.normal.x ) / hit.normal.y) + downOffset;
+        else
+          adjust.y = hit.point.y + box.size.y * 0.5f + downOffset;
+
         hitBottomNormal = hit.normal;
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
         {
-
 #if UNITY_EDITOR
-        if( cha.GetInstanceID() == GetInstanceID() )
-        {
-          Debug.LogError( "character set itself as carry character", gameObject );
-          Debug.Break();
-        }
-#endif  
+          if( cha.GetInstanceID() == GetInstanceID() )
+          {
+            Debug.LogError( "character set itself as carry character", gameObject );
+            Debug.Break();
+          }
+#endif
           carryCharacter = cha;
         }
         break;
@@ -388,6 +413,7 @@ public class PlayerBiped : Pawn
     }
 
     hitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.down * headboxy, headbox, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
+    temp += "up: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -402,6 +428,7 @@ public class PlayerBiped : Pawn
     }
 
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.left, RaycastHits, Mathf.Max( contactSeparation, -velocity.x * dT ), Global.CharacterCollideLayers );
+    temp += "left: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -418,6 +445,7 @@ public class PlayerBiped : Pawn
     }
 
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.right, RaycastHits, Mathf.Max( contactSeparation, velocity.x * dT ), Global.CharacterCollideLayers );
+    temp += "right: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -432,13 +460,13 @@ public class PlayerBiped : Pawn
         break;
       }
     }
-
+    Debug.Log( temp );
     transform.position = adjust;
   }
 
   Vector2 GetShotOriginPosition()
   {
-    return (Vector2)arm.position + shoot.normalized * armRadius;
+    return (Vector2) arm.position + shoot.normalized * armRadius;
   }
 
   void Shoot()
@@ -485,7 +513,7 @@ public class PlayerBiped : Pawn
     Vector3 pos = GetShotOriginPosition();
     if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
     {
-      RaycastHit2D hit = Physics2D.Raycast( pos, shoot, grapDistance, LayerMask.GetMask( new string[] { "Default", "triggerAndCollision", "enemy" } ) );
+      RaycastHit2D hit = Physics2D.Raycast( pos, shoot, grapDistance, LayerMask.GetMask( new string[] {"Default", "triggerAndCollision", "enemy"} ) );
       if( hit )
       {
         //Debug.DrawLine( pos, hit.point, Color.red );
@@ -495,31 +523,32 @@ public class PlayerBiped : Pawn
         graphookTip.transform.parent = null;
         graphookTip.transform.localScale = Vector3.one;
         graphookTip.transform.position = pos;
-        graphookTip.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - transform.position) ) ); ;
+        graphookTip.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - transform.position) ) );
+        ;
         grapTimer.Start( grapTimeout, delegate
-        {
-          pos = GetShotOriginPosition();
-          graphookTip.transform.position = Vector3.MoveTowards( graphookTip.transform.position, graphitpos, grapSpeed * Time.deltaTime );
-          //grap cable
-          grapCableRender.gameObject.SetActive( true );
-          grapCableRender.transform.parent = null;
-          grapCableRender.transform.localScale = Vector3.one;
-          grapCableRender.transform.position = pos;
-          grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - pos) ) );
-          grapSize = grapCableRender.size;
-          grapSize.x = Vector3.Distance( graphookTip.transform.position, pos );
-          grapCableRender.size = grapSize;
-
-          if( Vector3.Distance( graphookTip.transform.position, graphitpos ) < 0.01f )
           {
-            grapShooting = false;
-            grapPulling = true;
-            grapTimer.Stop( false );
-            grapTimer.Start( grapTimeout, null, StopGrap );
-            audio.PlayOneShot( grapHitSound );
-          }
-        },
-        StopGrap );
+            pos = GetShotOriginPosition();
+            graphookTip.transform.position = Vector3.MoveTowards( graphookTip.transform.position, graphitpos, grapSpeed * Time.deltaTime );
+            //grap cable
+            grapCableRender.gameObject.SetActive( true );
+            grapCableRender.transform.parent = null;
+            grapCableRender.transform.localScale = Vector3.one;
+            grapCableRender.transform.position = pos;
+            grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - pos) ) );
+            grapSize = grapCableRender.size;
+            grapSize.x = Vector3.Distance( graphookTip.transform.position, pos );
+            grapCableRender.size = grapSize;
+
+            if( Vector3.Distance( graphookTip.transform.position, graphitpos ) < 0.01f )
+            {
+              grapShooting = false;
+              grapPulling = true;
+              grapTimer.Stop( false );
+              grapTimer.Start( grapTimeout, null, StopGrap );
+              audio.PlayOneShot( grapHitSound );
+            }
+          },
+          StopGrap );
         audio.PlayOneShot( grapShotSound );
       }
     }
@@ -576,7 +605,7 @@ public class PlayerBiped : Pawn
     if( Global.instance.AutoAim )
     {
       CursorWorldPosition = cursorOrigin + cursorDelta;
-      RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
+      RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] {"enemy"} ) );
       float distance = Mathf.Infinity;
       Transform closest = null;
       foreach( var hit in hits )
@@ -606,7 +635,7 @@ public class PlayerBiped : Pawn
       CursorAutoAim.gameObject.SetActive( false );
     }
 
-    shoot = AimPosition - (Vector2)arm.position;
+    shoot = AimPosition - (Vector2) arm.position;
     // if no inputs override, then default to facing the aim direction
     if( shoot.sqrMagnitude < 0.0001f )
       shoot = facingRight ? Vector2.right : Vector2.left;
@@ -667,7 +696,7 @@ public class PlayerBiped : Pawn
         WorldSelection.Select();
         if( WorldSelection is Pickup )
         {
-          Pickup pickup = (Pickup)closestISelect;
+          Pickup pickup = (Pickup) closestISelect;
           if( pickup.weapon != null )
           {
             if( !weapons.Contains( pickup.weapon ) )
@@ -750,11 +779,9 @@ public class PlayerBiped : Pawn
 
       if( onGround && input.JumpStart )
         StartJump();
-      else
-      if( input.JumpEnd )
+      else if( input.JumpEnd )
         StopJump();
-      else
-      if( collideRight && input.MoveRight && hitRight.normal.y >= 0 )
+      else if( collideRight && input.MoveRight && hitRight.normal.y >= 0 )
       {
         if( input.JumpStart )
         {
@@ -856,7 +883,7 @@ public class PlayerBiped : Pawn
     }
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
 
-    transform.position += (Vector3)velocity * Time.deltaTime;
+    transform.position += (Vector3) velocity * Time.deltaTime;
     carryCharacter = null;
 
     UpdateHit( Time.deltaTime );
@@ -1083,15 +1110,15 @@ public class PlayerBiped : Pawn
     takingDamage = true;
     damagePassThrough = true;
     StopGrap();
-    damageTimer.Start( damageDuration, delegate ( Timer t )
+    damageTimer.Start( damageDuration, delegate( Timer t )
     {
       //push.x = -sign * damagePushAmount;
-    }, delegate ()
+    }, delegate()
     {
       takingDamage = false;
       arm.gameObject.SetActive( true );
       DamagePulseFlip();
-      damageTimer.Start( damageBlinkDuration, null, delegate ()
+      damageTimer.Start( damageBlinkDuration, null, delegate()
       {
         foreach( var sr in spriteRenderers )
           sr.enabled = true;
@@ -1151,8 +1178,8 @@ public class PlayerBiped : Pawn
 
 
   [Header( "Character Parts player biped" )]
-
   public CharacterPart partBody;
+
   public CharacterPart partHead;
   public CharacterPart partArmBack;
   public CharacterPart partArmFront;
@@ -1160,16 +1187,17 @@ public class PlayerBiped : Pawn
   // Call from Awake()
   public override void InitializeParts()
   {
-    CharacterParts = new List<CharacterPart> { partBody, partHead, partArmBack, partArmFront };
+    CharacterParts = new List<CharacterPart> {partBody, partHead, partArmBack, partArmFront};
   }
-/*
-  // Call from LateUpdate()
-  void UpdateParts()
-  {
-    foreach( var part in CharacterParts )
-      part.renderer.sortingOrder = CharacterLayer + part.layerAnimated;
-  }
-*/
+
+  /*
+    // Call from LateUpdate()
+    void UpdateParts()
+    {
+      foreach( var part in CharacterParts )
+        part.renderer.sortingOrder = CharacterLayer + part.layerAnimated;
+    }
+  */
   void Play( string anim )
   {
     partBody.animator.Play( anim );
