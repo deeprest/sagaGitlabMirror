@@ -3,6 +3,14 @@ using UnityEngine;
 
 public class PlayerBiped : Pawn
 {
+  [Header("PlayerBiped")]
+  
+  public float slidingOffset = 1;
+  public float slidingOffsetTarget = 1;
+  public float slidingOffsetRate = 4;
+  const float raydown = 0.2f;
+  const float downOffset = 0.12f;
+  
   public AudioSource audio;
   public AudioSource audio2;
   public ParticleSystem dashSmoke;
@@ -10,10 +18,6 @@ public class PlayerBiped : Pawn
   public GameObject walljumpEffect;
   [SerializeField] Transform WallkickPosition;
   public Transform arm;
-
-  const float raydown = 0.2f;
-
-  const float downOffset = 0.12f;
 
   // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
   public Vector2 headbox = new Vector2( .1f, .1f );
@@ -128,7 +132,8 @@ public class PlayerBiped : Pawn
   public float damagePushAmount = 1f;
   [SerializeField] private AnimationCurve damageShakeCurve;
 
-  [Header( "Graphook" )] [SerializeField]
+  [Header( "Graphook" )]
+  [SerializeField]
   GameObject graphookTip;
 
   [SerializeField] SpriteRenderer grapCableRender;
@@ -328,6 +333,8 @@ public class PlayerBiped : Pawn
     */
   }
 
+
+
   new void UpdateCollision( float dT )
   {
     collideRight = false;
@@ -376,6 +383,8 @@ public class PlayerBiped : Pawn
 
     #endregion
 
+    slidingOffsetTarget = 1;
+
     string temp = "";
 
     float down = jumping ? raydown - downOffset : raydown;
@@ -389,10 +398,19 @@ public class PlayerBiped : Pawn
       if( hit.normal.y > corner )
       {
         collideBottom = true;
-        if( hit.normal.x > 0 )
-          adjust.y = hit.point.y + (box.size.y * 0.5f * Mathf.Abs( hit.normal.x ) / hit.normal.y) + downOffset;
+        // sliding offset. This moves the player downward a little bit on slopes to
+        // close the tiny gap created by the corners of the box during boxcast.
+        if( Mathf.Abs( hit.normal.x ) > 0 )
+        {
+          slidingOffsetTarget = 1 - Mathf.Abs( hit.normal.x ) / hit.normal.y;
+          slidingOffset = Mathf.MoveTowards( slidingOffset, slidingOffsetTarget, slidingOffsetRate * dT );
+        }
         else
-          adjust.y = hit.point.y + box.size.y * 0.5f + downOffset;
+        {
+          slidingOffset = 1;
+        }
+        
+        adjust.y = hit.point.y + box.size.y * 0.5f + slidingOffset * downOffset;
 
         hitBottomNormal = hit.normal;
         // moving platforms
@@ -460,7 +478,7 @@ public class PlayerBiped : Pawn
         break;
       }
     }
-    Debug.Log( temp );
+    //Debug.Log( temp );
     transform.position = adjust;
   }
 

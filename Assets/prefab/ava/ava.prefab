@@ -5039,6 +5039,8 @@ MonoBehaviour:
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []
+  CharacterLayer: 0
+  CharacterParts: []
   controller: {fileID: 0}
   input:
     MoveLeft: 0
@@ -5068,6 +5070,9 @@ MonoBehaviour:
     type: 3}
   WallkickPosition: {fileID: 3338230634142500909}
   arm: {fileID: 4897319614591276}
+  slidingDownwardOffset: 1
+  downwardOffsetTarget: 1
+  offsetRate: 4
   headbox: {x: 0.1, y: 0.1}
   speedFactorNormalized: 1
   moveVelMin: 1.5
@@ -5178,7 +5183,6 @@ MonoBehaviour:
   SpiderbotPrefab: {fileID: 1789244597324514, guid: bc604b646e0954c2db323b783ef578cf,
     type: 3}
   spider: {fileID: 0}
-  CharacterLayer: 0
   partBody:
     transform: {fileID: 4857518412556878}
     animator: {fileID: 1697597636064711849}

@@ -1,14 +1,12 @@
-﻿﻿using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine.Profiling;
-
-
 #if UNITY_EDITOR
 using UnityEditor;
 
-[CustomEditor( typeof( SceneCity ) )]
+[CustomEditor( typeof(SceneCity) )]
 public class SceneCityEditor : Editor
 {
   public override void OnInspectorGUI()
@@ -48,7 +46,9 @@ public static class PixelBit
 [ExecuteInEditMode]
 public class SceneCity : SceneScript
 {
-  [Header( "City" )]
+  [Header( "City" )]  
+  
+  [SerializeField] private bool DoChopDrop = true;
   [SerializeField] Chopper chopper;
   [SerializeField] float runRightDuration = 3;
 
@@ -59,24 +59,24 @@ public class SceneCity : SceneScript
     if( GenerateLevelOnStart )
       Generate();
 
-    chopper.StartDrop( Global.instance.CurrentPlayer );
-    //Global.instance.ready.SetActive( true );
-    Global.instance.PlayerController.FireOnlyInputMode();
-    new Timer( runRightDuration, delegate
+    if( DoChopDrop )
     {
-      // get the input state to *modify* instead of overwrite/assign
-      ref InputState inputStateRef = ref Global.instance.PlayerController.GetInput();
-      inputStateRef.MoveRight = true;
-    }, delegate
-    {
-      Global.instance.PlayerController.NormalInputMode();
-    } );
+      chopper.StartDrop( Global.instance.CurrentPlayer );
 
+      //Global.instance.ready.SetActive( true );
+      Global.instance.PlayerController.FireOnlyInputMode();
+      new Timer( runRightDuration, delegate
+      {
+        // get the input state to *modify* instead of overwrite/assign
+        ref InputState inputStateRef = ref Global.instance.PlayerController.GetInput();
+        inputStateRef.MoveRight = true;
+      }, delegate { Global.instance.PlayerController.NormalInputMode(); } );
+    }
+    
     Global.instance.CameraController.orthoTarget = 3;
   }
 
-  [Header( "Level Generation" )]
-  public bool GenerateLevelOnStart = true;
+  [Header( "Level Generation" )] public bool GenerateLevelOnStart = true;
   public bool RandomSeedOnStart = false;
   public int seed;
   public Vector2Int dimension = new Vector2Int( 20, 8 );
@@ -84,25 +84,33 @@ public class SceneCity : SceneScript
   public Bounds bounds;
   public int GroundY = 2;
   public bool UseDensity;
-  [Range( 0, 100 )]
-  [SerializeField] int density = 60;
+  [Range( 0, 100 )] [SerializeField] int density = 60;
   public bool SineCurve;
   [SerializeField] int spaceMax = 2;
   [SerializeField] int buildingWidthMax = 3;
   [SerializeField] float highwayY = 10;
   public int MaxLinkPasses = 30;
+
   public GameObject spawnPointPrefab;
+
   // marching square
-  string StructurePath { get { return Application.persistentDataPath + "/structure.png"; } }
+  string StructurePath
+  {
+    get { return Application.persistentDataPath + "/structure.png"; }
+  }
+
   [SerializeField] Texture2D StructureTexture;
   Dictionary<int, List<GameObject>> built = new Dictionary<int, List<GameObject>>();
   Color32[] structureData;
   public MarchingSquare.MarchingSquareData building;
   public MarchingSquare.MarchingSquareData buildingBG;
   public MarchingSquare.MarchingSquareData underground;
+
   List<MarchingSquare.MarchingSquareData> msd;
+
   // nodelinks
   List<GameObject> gens = new List<GameObject>();
+
   List<LineSegment> debugSegments = new List<LineSegment>();
   /*
 #if UNITY_EDITOR
@@ -136,7 +144,8 @@ public class SceneCity : SceneScript
       if( ss.NavmeshBox != null )
       {
         ss.NavmeshBox.size = new Vector3( bounds.size.x, 0, bounds.size.y );
-        Vector3 boxpos = bounds.center; boxpos.z = 0;
+        Vector3 boxpos = bounds.center;
+        boxpos.z = 0;
         ss.NavmeshBox.transform.position = boxpos;
       }
     }
@@ -189,21 +198,19 @@ public class SceneCity : SceneScript
         for( int y = 0; y < dimension.y; y++ )
           SetStructureValue( x, y, PixelBit.None );
       }
-      else
-      if( spaceWidth > 0 )
+      else if( spaceWidth > 0 )
       {
         spaceWidth--;
         if( spaceWidth == 0 )
           buildingWidth = Random.Range( 1, buildingWidthMax + 1 );
       }
-      else
-      if( buildingWidth > 0 )
+      else if( buildingWidth > 0 )
       {
         for( int y = 1; y < dimension.y; y++ )
         {
           int height = dimension.y;
           if( SineCurve )
-            height = Mathf.RoundToInt( dimension.y * Mathf.Sin( ((float)x / (float)dimension.x) * Mathf.PI ) + 0.5f );
+            height = Mathf.RoundToInt( dimension.y * Mathf.Sin( ((float) x / (float) dimension.x) * Mathf.PI ) + 0.5f );
           if( y < height )
           {
             if( !UseDensity || Random.Range( 0, 100 ) < density )
@@ -223,14 +230,14 @@ public class SceneCity : SceneScript
     GenerateChain( "street bg", new Vector2( 0, highwayY ), false );
     GenerateChain( "street", new Vector2( 0, highwayY ), true );
 
-
     SceneScript ss = FindObjectOfType<SceneScript>();
     if( ss != null )
     {
       if( ss.NavmeshBox != null )
       {
         ss.NavmeshBox.size = new Vector3( bounds.size.x, 0, bounds.size.y );
-        Vector3 boxpos = bounds.center; boxpos.z = 0;
+        Vector3 boxpos = bounds.center;
+        boxpos.z = 0;
         ss.NavmeshBox.transform.position = boxpos;
       }
     }
@@ -314,7 +321,7 @@ public class SceneCity : SceneScript
     else
     {
 #if UNITY_EDITOR
-      go = (GameObject)PrefabUtility.InstantiatePrefab( prefab );
+      go = (GameObject) PrefabUtility.InstantiatePrefab( prefab );
       go.transform.position = pos;
 #endif
     }
@@ -337,7 +344,6 @@ public class SceneCity : SceneScript
         for( int i = 0; i < built[pair.Key].Count; i++ )
         {
           DestroyImmediate( built[pair.Key][i] );
-
         }
     built.Clear();
   }
@@ -383,7 +389,7 @@ public class SceneCity : SceneScript
       for( int y = 0; y < StructureTexture.height; y++ )
       {
         Color32 color32 = structureData[x + y * dimension.x];
-        StructureTexture.SetPixel( x, y, new Color( (float)color32.r / 255, 0, 0, 1 ) );
+        StructureTexture.SetPixel( x, y, new Color( (float) color32.r / 255, 0, 0, 1 ) );
       }
     }
     StructureTexture.Apply();
@@ -468,7 +474,6 @@ public class SceneCity : SceneScript
       }
     }*/
 
-
     for( int y = oy; y < oy + h && y < dimension.y; y++ )
     {
       for( int x = ox; x < ox + w && x < dimension.x; x++ )
@@ -528,7 +533,6 @@ public class SceneCity : SceneScript
           */
       }
     }
-
   }
 
   void SingleCell( int key, int x, int y, GameObject prefab )
@@ -544,7 +548,7 @@ public class SceneCity : SceneScript
       else
       {
 #if UNITY_EDITOR
-        go = (GameObject)PrefabUtility.InstantiatePrefab( prefab );
+        go = (GameObject) PrefabUtility.InstantiatePrefab( prefab );
         go.transform.position = pos;
 #endif
       }
@@ -564,5 +568,3 @@ public class SceneCity : SceneScript
     return y <= GroundY;
   }
 }
-
-
