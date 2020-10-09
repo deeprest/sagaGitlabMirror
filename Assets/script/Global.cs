@@ -147,6 +147,7 @@ public class Global : MonoBehaviour
   public bool ShowAimPath;
   // status
   public Image weaponIcon;
+  public Image abilityIcon;
   // settings
   public GameObject SettingsParent;
   [SerializeField] Selectable previousNavSelectable;
@@ -466,7 +467,13 @@ public class Global : MonoBehaviour
       RecordingIndicator.gameObject.SetActive( PlayerController.IsRecording() );
     };
 
-
+    Controls.GlobalActions.DevSlowmo.performed += ( obj ) => {
+      if( Slowed )
+        NoSlow();
+      else
+        Slow();
+    };
+    
     Controls.MenuActions.Back.performed += ( obj ) => {
       if( MenuShowing )
       {
@@ -488,13 +495,7 @@ public class Global : MonoBehaviour
     Controls.BipedActions.Minimap.performed += ( obj ) => {
       ToggleMinimap();
     };
-
-    Controls.BipedActions.DevSlowmo.performed += ( obj ) => {
-      if( Slowed )
-        NoSlow();
-      else
-        Slow();
-    };
+    
   }
 
   public void LoadScene( SceneReference scene, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true, System.Action onFail = null )

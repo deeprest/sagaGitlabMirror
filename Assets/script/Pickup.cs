@@ -2,11 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PickupPart
+{
+  None,
+  Head,
+  ArmFront,
+  ArmBack,
+  Legs
+}
+
 public class Pickup : WorldSelectable
 {
   [SerializeField] Animator animator;
   public Weapon weapon;
   public Ability ability;
+  public PickupPart PickupPart;
 
   Vector2 velocity;
   public BoxCollider2D box;

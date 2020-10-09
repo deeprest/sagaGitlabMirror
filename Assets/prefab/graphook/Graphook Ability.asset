@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13698ae41630d417480f14b13979949e, type: 3}
+  m_Name: Graphook Ability
+  m_EditorClassIdentifier: 
+  icon: {fileID: -3422296157070212591, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
+  cursor: {fileID: 2008927550669943001, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
+  prefab: {fileID: 0}
+  go: {fileID: 0}
+  grapDistance: 10
+  grapSpeed: 15
+  grapTimeout: 5
+  grapPullSpeed: 10
+  grapStopDistance: 0.1
+  grapShotSound: {fileID: 8300000, guid: 714bd8ea9667041e99bb9a12a950f4f3, type: 3}
+  grapHitSound: {fileID: 8300000, guid: 55037177bb692440ebfcf4e001cef0aa, type: 3}
+  graphookTipPrefab: {fileID: 7185080631370466625, guid: ccc755d9cb1ad406ca4b77ac909ef045,
+    type: 3}
+  grapCablePrefab: {fileID: 4828538510348554853, guid: b471abadf55c7440bbc95cf0b71d4c79,
+    type: 3}
+  graphookTip: {fileID: 0}
+  grapCableRenderer: {fileID: 0}
+  grapShooting: 0
+  grapPulling: 0

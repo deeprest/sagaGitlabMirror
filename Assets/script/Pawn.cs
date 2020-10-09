@@ -18,12 +18,12 @@ public struct InputState
   // todo charge state only needs one bool
   public bool ChargeStart;
   public bool ChargeEnd;
-  public bool Graphook;
+  public bool Ability;
   public bool Shield;
   public bool Fire;
   public bool Interact;
   public bool NextWeapon;
-  // ---
+  public bool NextAbility;
   // 8 byte
   public Vector2 Aim;
 }
@@ -31,11 +31,10 @@ public struct InputState
 public class Pawn : Entity
 {
   public Controller controller;
-  public InputState input = new InputState();
+  public InputState input;
 
   public Vector2 CursorWorldPosition;
   public GameObject InteractIndicator;
-  //public bool CursorInfluence;
 
   public void ApplyInput( InputState state )
   {
@@ -52,4 +51,15 @@ public class Pawn : Entity
 
   public virtual void UnselectWorldSelection(){}
 
+  
+  public virtual  Vector2 GetShotOriginPosition()
+  {
+    return transform.position;
+  }
+
+  public virtual Vector2 GetAimVector()
+  {
+    return Vector2.up;
+  }
+  
 }

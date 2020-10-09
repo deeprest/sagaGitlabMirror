@@ -33,7 +33,7 @@ public class Entity : MonoBehaviour, IDamage
   public bool BoxCollisionOne = false;
   public Vector2 velocity = Vector2.zero;
   public Vector2 pushVelocity = Vector2.zero;
-  protected Timer pushTimer = new Timer();
+  public Timer pushTimer = new Timer();
   public bool hanging { get; set; }
   // moving platforms / stacking characters
   public Entity carryCharacter;
@@ -59,7 +59,7 @@ public class Entity : MonoBehaviour, IDamage
 
   [Header( "Damage" )]
   public bool CanTakeDamage = true;
-  public int health = 5;
+  public int Health = 5;
   public int MaxHealth = 5;
   public GameObject explosion;
   public AudioClip soundHit;
@@ -491,12 +491,12 @@ public class Entity : MonoBehaviour, IDamage
   public virtual bool TakeDamage( Damage d )
   {
     // dead characters will not absorb projectiles
-    if( !CanTakeDamage || health <= 0 )
+    if( !CanTakeDamage || Health <= 0 )
       return false;
     if( d.instigator != null && d.instigator.Team == Team )
       return false;
-    health -= d.amount;
-    if( health <= 0 )
+    Health -= d.amount;
+    if( Health <= 0 )
     {
       flashTimer.Stop( false );
       Die();
@@ -571,8 +571,9 @@ public class Entity : MonoBehaviour, IDamage
   public int CharacterLayer;
 
   [System.Serializable]
-  public struct CharacterPart
+  public class CharacterPart
   {
+    public bool enabled = true;
     public Transform transform;
     public Animator animator;
     public Renderer renderer;

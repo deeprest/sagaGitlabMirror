@@ -170,9 +170,10 @@ no death: transform from biped to tentacle bot (two forms: biped and tentacle bo
 ---
 collecting parts: automatic by proximity. show parts on bot.
 biped body assembly. Get to safety to rebuild?
-collect parts: graphook, shield, propeller.
+collect parts: legs, arms, head
+coleect abilities: graphook, shield, propeller.
 build weapons onto biped arm slots
-find secret body upgrades: run speed, jump height, etc
+find body upgrades: run speed, jump height, etc
 navigation: minimap or beacons.
 encounter bosses
 interact with random npcs (navigation help for bosses. tells where secrets are. in-game tips.)
