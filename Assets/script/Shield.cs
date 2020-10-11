@@ -18,6 +18,7 @@ public class Shield : MonoBehaviour, IDamage
   public float hitPushSpeed = 1;
   public float hitPushDuration = 1;
   public float reflectOffset = 0.1f;
+  [SerializeField] private float MaximumDamage = 2;
 
   void OnDestroy()
   {
@@ -65,32 +66,35 @@ public class Shield : MonoBehaviour, IDamage
       chr.Push( hitPushSpeed * ((Vector2)(d.damageSource.transform.position - transform.position)).normalized, hitPushDuration );
     }
 
-    Projectile projectile = d.damageSource.GetComponent<Projectile>();
-    if( projectile != null )
+    if( d.amount <= MaximumDamage )
     {
-      switch( projectile.weapon.weaponType )
+      Projectile projectile = d.damageSource.GetComponent<Projectile>();
+      if( projectile != null )
       {
-        case Weapon.WeaponType.Projectile:
-        projectile.transform.position = transform.position + Vector3.Project( (Vector3)d.point - transform.position, transform.right );
-        projectile.velocity = Vector3.Reflect( projectile.velocity, transform.up );
-        Physics2D.IgnoreCollision( projectile.circle, collider, false );
-        foreach( var cldr in projectile.instigator.IgnoreCollideObjects )
+        switch( projectile.weapon.weaponType )
         {
-          if( cldr == null )
-            Debug.Log( "ignorecolideobjects null" );
-          else
-            Physics2D.IgnoreCollision( projectile.circle, cldr, false );
+          case Weapon.WeaponType.Projectile:
+            projectile.transform.position = transform.position + Vector3.Project( (Vector3) d.point - transform.position, transform.right );
+            projectile.velocity = Vector3.Reflect( projectile.velocity, transform.up );
+            Physics2D.IgnoreCollision( projectile.circle, collider, false );
+            foreach( var cldr in projectile.instigator.IgnoreCollideObjects )
+            {
+              if( cldr == null )
+                Debug.Log( "ignorecolideobjects null" );
+              else
+                Physics2D.IgnoreCollision( projectile.circle, cldr, false );
+            }
+            if( character != null )
+              projectile.instigator = character;
+            projectile.ignore.Add( transform );
+            break;
+
+          case Weapon.WeaponType.Laser:
+            // create second beam
+            break;
         }
-        if( character != null )
-          projectile.instigator = character;
-        projectile.ignore.Add( transform );
-        break;
 
-        case Weapon.WeaponType.Laser:
-        // create second beam
-        break;
       }
-
     }
 
     return false;

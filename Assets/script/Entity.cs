@@ -59,7 +59,7 @@ public class Entity : MonoBehaviour, IDamage
 
   [Header( "Damage" )]
   public bool CanTakeDamage = true;
-  public int Health = 5;
+  public int Health = 3;
   public int MaxHealth = 5;
   public GameObject explosion;
   public AudioClip soundHit;

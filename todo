@@ -1,6 +1,9 @@
-- reclaim body, or build with parts
+*** reclaim body, or build with parts
+- spider movement
+- equip ability when spider
+- should not shoot without backArm
+- should not be able to use ability without front arm
 
-- remove trigger layer, add OnTriggerEnter, collider->trigger = true
 - auto slide when falling against slanted wall
 - playercontroller record/input, moveup/movedown, add spider action map
 - stickybomb exploding interaction with shield:
@@ -8,15 +11,3 @@
   2) if raycast hits something else, do a projection of the collider onto a perpendicular vector of the normal
   3) use the projected endpoints to do two more raycasts
   4) if the raycast hits an IDamage collider, proceed
-
-- music zones, or proximity to notable enemies
-- boss scene: why is player not spawing at correct location?
-- bigboss0
-
-
-  # big mech boss
-  + FIX: spline culling. Use line renderer instead.
-  mech scaling when flip... looks bad. no flipping.
-  "danger ball and chain" needs destruction anims; explosions, and particles?
-
-- ENGINE/OS abort signal on exit leads to crash

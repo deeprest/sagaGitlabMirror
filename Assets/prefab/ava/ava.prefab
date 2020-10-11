@@ -5006,8 +5006,6 @@ MonoBehaviour:
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  health: 1
-  MaxHealth: 20
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
   spawnWhenDead: {fileID: 0}
@@ -5044,6 +5042,8 @@ MonoBehaviour:
   slidingOffset: 1
   slidingOffsetTarget: 1
   slidingOffsetRate: 4
+  SpiderDownOffset: 0.12
+  downOffset: 0.12
   audio: {fileID: 82117261715149456}
   audio2: {fileID: 82627251547920718}
   dashSmoke: {fileID: 198502029244883790}
@@ -5083,7 +5083,7 @@ MonoBehaviour:
   SnapCursorDistance: 1
   AutoAimCircleRadius: 1
   AutoAimDistance: 5
-  DirectionalMinimum: 0.3
+  DirectionalMinimum: 0.25
   lineRenderer: {fileID: 2130140940285502981}
   weapon: {fileID: 0}
   CurrentWeaponIndex: 0
@@ -5184,8 +5184,6 @@ MonoBehaviour:
     animator: {fileID: 3399048259800362818}
     renderer: {fileID: 2234524318100601442}
     layerAnimated: -2
-  avaController: {fileID: 9100000, guid: 848a5349d117b45498c969ca2624b53f, type: 2}
-  spiderController: {fileID: 22100000, guid: 847f96f83b5884867ae0f7ef7a7c069d, type: 2}
 --- !u!212 &212107818795109166
 SpriteRenderer:
   m_ObjectHideFlags: 0

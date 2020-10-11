@@ -221,6 +221,8 @@ public class PlayerBiped : Pawn
 
   void NextWeapon()
   {
+    if( weapons.Count == 0 )
+      return;
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % weapons.Count;
     AssignWeapon( weapons[CurrentWeaponIndex] );
   }
@@ -237,6 +239,8 @@ public class PlayerBiped : Pawn
   
   void NextAbility()
   {
+    if( abilities.Count == 0 )
+      return;
     CurrentAbilityIndex = (CurrentAbilityIndex + 1) % abilities.Count;
     AssignAbility( abilities[CurrentAbilityIndex] );
   }
@@ -1260,7 +1264,7 @@ public class PlayerBiped : Pawn
     {
       // GO INTO BIPED MODE!!!!
       downOffset = BipedDownOffset;
-      part.transform.GetComponent<BoxCollider2D>().size = new Vector2(0.15f,0.3f);
+      part.transform.GetComponent<BoxCollider2D>().size = new Vector2(0.2f,0.3f);
       part.renderer.enabled = true;
       ((PlayerController)controller).EnableBipedControls();
       Global.instance.CameraController.orthoTarget = 3;

@@ -712,7 +712,9 @@ public class Global : MonoBehaviour
   {
     // todo find more appropriate position based on some criteria
     GameObject go = null;
-    go = GameObject.FindGameObjectWithTag( "Respawn" );
+    go = GameObject.FindGameObjectWithTag( "FirstSpawn" );
+    if( go == null )
+      go = GameObject.FindGameObjectWithTag( "Respawn" );
     if( go != null )
       return go.transform.position;
     return Vector3.zero;

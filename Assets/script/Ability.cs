@@ -8,8 +8,6 @@ public class Ability : ScriptableObject
 {
   public Sprite icon;
   public Sprite cursor;
-
-  [FormerlySerializedAs( "activatePrefab" )]
   public GameObject prefab;
 
   // transient

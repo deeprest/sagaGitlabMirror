@@ -1,5 +1,17 @@
 pP
 
+# TODO (maybe)
+- music zones, or proximity to notable enemies
+- boss scene: why is player not spawing at correct location?
+- bigboss0
+
+  # big mech boss
+  + FIX: spline culling. Use line renderer instead.
+  mech scaling when flip... looks bad. no flipping.
+  "danger ball and chain" needs destruction anims; explosions, and particles?
+
+- ENGINE/OS abort signal on exit leads to crash
+
 # DESIGN pillars (from gdu.io)
 1. Mantra:  "You are a robotic ninja, fighting large robots and pirating their parts."
 1. Design pillars, describing *feel* (three phrases):  Nimbly pimbly. Upgrades! Irreverent Distractions.
