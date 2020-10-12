@@ -5006,6 +5006,8 @@ MonoBehaviour:
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
+  Health: 3
+  MaxHealth: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
   spawnWhenDead: {fileID: 0}
@@ -5039,21 +5041,16 @@ MonoBehaviour:
     Aim: {x: 0, y: 0}
   CursorWorldPosition: {x: 0, y: 0}
   InteractIndicator: {fileID: 7746566914802738857}
-  slidingOffset: 1
-  slidingOffsetTarget: 1
-  slidingOffsetRate: 4
+  DownOffset: 0.12
   SpiderDownOffset: 0.12
-  downOffset: 0.12
-  audio: {fileID: 82117261715149456}
-  audio2: {fileID: 82627251547920718}
-  dashSmoke: {fileID: 198502029244883790}
-  dashflashPrefab: {fileID: 8084430867303457385, guid: c98c1e30c637a4aa7b76b48386862633,
-    type: 3}
-  walljumpEffect: {fileID: 1227316525270448, guid: 05e0cbf9577c34e97ab17dc9d4638a7a,
-    type: 3}
-  WallkickPosition: {fileID: 3338230634142500909}
-  arm: {fileID: 4897319614591276}
   headbox: {x: 0.1, y: 0.1}
+  facingRight: 0
+  onGround: 0
+  jumping: 0
+  walljumping: 0
+  wallsliding: 0
+  landing: 0
+  dashing: 0
   speedFactorNormalized: 1
   moveVelMin: 1.5
   moveVelMax: 3
@@ -5068,13 +5065,13 @@ MonoBehaviour:
   wallJumpPushDuration: 0.1
   wallSlideFactor: 8
   landDuration: 0.1
-  facingRight: 0
-  onGround: 0
-  jumping: 0
-  walljumping: 0
-  wallsliding: 0
-  landing: 0
-  dashing: 0
+  dashSmoke: {fileID: 198502029244883790}
+  dashflashPrefab: {fileID: 8084430867303457385, guid: c98c1e30c637a4aa7b76b48386862633,
+    type: 3}
+  walljumpEffect: {fileID: 1227316525270448, guid: 05e0cbf9577c34e97ab17dc9d4638a7a,
+    type: 3}
+  WallkickPosition: {fileID: 3338230634142500909}
+  arm: {fileID: 4897319614591276}
   Cursor: {fileID: 4008285515826600317}
   CursorSnapped: {fileID: 1711276206321528171}
   CursorAutoAim: {fileID: 7882001112357268195}
@@ -5099,6 +5096,8 @@ MonoBehaviour:
   ability: {fileID: 0}
   abilities: []
   CurrentAbilityIndex: 0
+  audio: {fileID: 82117261715149456}
+  audio2: {fileID: 82627251547920718}
   soundJump: {fileID: 8300000, guid: 3634bba7cfee0409cb0ba088753bc669, type: 3}
   soundDash: {fileID: 8300000, guid: fa292f5f0979c4ce49e47c2a103a585b, type: 3}
   soundDamage: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
@@ -6276,7 +6275,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8616572461203542388}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.016, y: 0.094, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4857518412556878}

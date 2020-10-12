@@ -724,7 +724,10 @@ public class Global : MonoBehaviour
   {
     // cycle through random spawn points
     GameObject go = null;
-    GameObject[] spawns = GameObject.FindGameObjectsWithTag( "Respawn" );
+    List<GameObject> gos = new List<GameObject>();
+    gos.AddRange( GameObject.FindGameObjectsWithTag( "Respawn" ) );
+    gos.AddRange(GameObject.FindGameObjectsWithTag("FirstSpawn" ) );
+    GameObject[] spawns = gos.ToArray();
     if( spawns.Length > 0 )
     {
       spawnCycleIndex %= spawns.Length;

@@ -11,6 +11,7 @@ pP
   "danger ball and chain" needs destruction anims; explosions, and particles?
 
 - ENGINE/OS abort signal on exit leads to crash
+- jumping and sliding up and over a ledge only **sometimes** snaps to ground
 
 # DESIGN pillars (from gdu.io)
 1. Mantra:  "You are a robotic ninja, fighting large robots and pirating their parts."
