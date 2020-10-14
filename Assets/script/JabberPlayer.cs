@@ -68,7 +68,8 @@ public class JabberPlayer : MonoBehaviour
 
   public void Stop()
   {
-    audioSource.pitch = 1;
+    if( jabber.EnablePitchVariation )
+      audioSource.pitch = 1;
     audioSource.Stop();
     isPlaying = false;
   }

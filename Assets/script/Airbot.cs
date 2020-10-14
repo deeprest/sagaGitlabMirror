@@ -3,7 +3,6 @@
 public class Airbot : Entity
 {
   Timer hitPauseTimer = new Timer();
-  bool hitpause = false;
   const float small = 0.1f;
   const float hitPauseOffset = 0.5f;
   private Vector2 direction;
@@ -80,12 +79,16 @@ public class Airbot : Entity
     {
       Vector2 playerpos = NearbyTarget.transform.position;
       Vector2 delta = playerpos - (Vector2) transform.position;
-      if( delta.sqrMagnitude > sightRange * sightRange )
+      if( delta.sqrMagnitude < circle.radius * circle.radius )
+      {
+        HitPause();
+      }
+      else if( delta.sqrMagnitude > sightRange * sightRange )
       {
         animator.Play( "idle" );
         Wander();
       }
-      else if( !hitpause )
+      else if( !hitPauseTimer.IsActive )
       {
         Entity visibleTarget = null;
         // check line of sight to potential target
@@ -176,16 +179,16 @@ public class Airbot : Entity
         dmg.point = hit.point;
         if( dam.TakeDamage( dmg ) )
         {
-          hitpause = true;
           pathAgent.SetPath( new Vector3( hit.point.x, hit.point.y, 0 ) + Vector3.up * hitPauseOffset );
-          animator.Play( "laugh" );
-          hitPauseTimer.Start( 1, null, delegate
-          {
-            hitpause = false;
-            animator.Play( "idle" );
-          } );
+          HitPause();
         }
       }
     }
+  }
+
+  void HitPause()
+  {
+    animator.Play( "laugh" );
+    hitPauseTimer.Start( 1, null, delegate { animator.Play( "idle" ); } );
   }
 }

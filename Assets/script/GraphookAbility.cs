@@ -26,6 +26,11 @@ public class GraphookAbility : Ability
   public bool grapShooting;
   public bool grapPulling;
 
+  bool IsActive
+  {
+    get { return grapShooting || grapPulling; }
+  }
+
   public override void Equip( Transform parentTransform )
   {
     graphookTip = Instantiate( graphookTipPrefab, parentTransform.position, Quaternion.identity, parentTransform );
@@ -47,11 +52,21 @@ public class GraphookAbility : Ability
 
   public override void Activate( Vector2 origin, Vector2 aim )
   {
+    if( grapShooting )
+      return;
+    if( grapPulling )
+    {
+      StopGrap();
+      return;
+    }
     ShootGraphook( origin, aim );
   }
 
   public override void UpdateAbility( Pawn pawn )
   {
+    if( !IsActive )
+      return;
+    
     Vector3 armpos = pawn.GetShotOriginPosition();
     grapCableRenderer.transform.position = armpos;
     grapCableRenderer.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - armpos) ) );
@@ -92,10 +107,11 @@ public class GraphookAbility : Ability
 
   void ShootGraphook( Vector2 origin, Vector2 direction )
   {
-    if( grapShooting )
-      return;
-    if( grapPulling )
-      StopGrap();
+    // if( grapShooting )
+    //   return;
+    // if( grapPulling )
+    //   StopGrap();
+
     Vector3 pos = origin;
     if( !Physics2D.Linecast( origin, pos, Global.ProjectileNoShootLayers ) )
     {

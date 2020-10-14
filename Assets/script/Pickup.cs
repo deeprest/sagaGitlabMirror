@@ -10,7 +10,7 @@ public enum PickupPart
   ArmBack,
   Legs
 }
-
+[SelectionBase]
 public class Pickup : WorldSelectable
 {
   [SerializeField] Animator animator;
@@ -62,9 +62,10 @@ public class Pickup : WorldSelectable
       animator.Play( "idle" );
   }
 
+  /*
   void Update()
   {
-    BoxCollision();
+     BoxCollision();
 
     velocity.y -= Global.Gravity * Time.deltaTime;
 
@@ -89,6 +90,7 @@ public class Pickup : WorldSelectable
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     transform.position += (Vector3)velocity * Time.deltaTime;
   }
+  */
 
   protected void BoxCollision()
   {
@@ -101,7 +103,7 @@ public class Pickup : WorldSelectable
     boxOffset.y = box.offset.y;
     adjust = (Vector2)transform.position + boxOffset;
 
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers | Global.WorldSelectableLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];

@@ -194,6 +194,8 @@ public class PlayerBiped : Pawn
     InteractIndicator.transform.SetParent( gameObject.transform );
     if( ability != null )
       ability.PreSceneTransition();
+    WorldSelection = null;
+    closestISelect = null;
   }
 
   public override void PostSceneTransition()
