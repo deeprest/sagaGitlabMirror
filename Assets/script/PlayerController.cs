@@ -176,10 +176,7 @@ public class PlayerController : Controller
 
   public void OnUnpause()
   {
-    if( pawn is PlayerBiped && ((PlayerBiped)pawn).IsBiped )
-      Global.instance.Controls.BipedActions.Enable();
-    // else
-    //   Global.instance.Controls.SpiderActions.Enable();
+    Global.instance.Controls.BipedActions.Enable();
   }
   
   #region Record

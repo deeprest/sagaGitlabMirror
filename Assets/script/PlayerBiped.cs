@@ -1140,8 +1140,6 @@ public class PlayerBiped : Pawn
     DisablePart( partArmFront );
   }
 
-  public int damageSmokeSteps = 3;
-  
   public override bool TakeDamage( Damage d )
   {
     if( !CanTakeDamage || damagePassThrough || Health <= 0 )
