@@ -265,6 +265,7 @@ public class PlayerBiped : Pawn
     if( abilities.Contains( alt ) )
       return false;
     abilities.Add( alt );
+    alt.OnAcquire( this );
     CurrentAbilityIndex = abilities.Count - 1;
     AssignAbility( abilities[ CurrentAbilityIndex ] );
     return true;
