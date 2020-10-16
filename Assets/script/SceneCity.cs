@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine.Profiling;
+
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -70,7 +71,10 @@ public class SceneCity : SceneScript
         // get the input state to *modify* instead of overwrite/assign
         ref InputState inputStateRef = ref Global.instance.PlayerController.GetInput();
         inputStateRef.MoveRight = true;
-      }, delegate { Global.instance.PlayerController.NormalInputMode(); } );
+      }, delegate
+      {
+        Global.instance.PlayerController.NormalInputMode();
+      } );
     }
     
     Global.instance.CameraController.orthoTarget = 3;

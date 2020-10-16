@@ -19,26 +19,63 @@ public class Turret : Entity
   [SerializeField] float max = 90;
   public float maxShootAngle = 5;
 
+  
+  // sight, target
+  Collider2D[] results = new Collider2D[8];
+  int LayerMaskCharacter;
+  [SerializeField] Entity Target;
+  Timer SightPulseTimer = new Timer();
+
+  protected override void OnDestroy()
+  {
+    if( Global.IsQuiting )
+      return;
+    base.OnDestroy();
+    SightPulseTimer.Stop( false );
+  }
+  
   protected override void Start()
   {
     base.Start();
     UpdateLogic = UpdateTurret;
     UpdatePosition = null;
     UpdateCollision = null;
+    
+    LayerMaskCharacter = LayerMask.GetMask( new string[] { "character" } );
+    SightPulseTimer.Start( int.MaxValue, 3, ( x ) => {
+      // reaffirm target
+      Target = null;
+      int count = Physics2D.OverlapCircleNonAlloc( transform.position, sightRange, results, LayerMaskCharacter );
+      for( int i = 0; i < count; i++ )
+      {
+        Collider2D cld = results[i];
+        //Character character = results[i].transform.root.GetComponentInChildren<Character>();
+        Entity character = results[i].GetComponent<Entity>();
+        if( character != null && IsEnemyTeam( character.Team ) )
+        {
+          Target = character;
+          break;
+        }
+      }
+    }, null );
   }
 
   void UpdateTurret()
   {
-    if( Global.instance.CurrentPlayer != null )
+    if( Target == null )
+    {
+      animator.Play( "idle" );
+    }
+    else
     {
       Vector2 pos = cannon.position;
-      Vector2 player = Global.instance.CurrentPlayer.transform.position;
+      Vector2 player = Target.transform.position;
       Vector2 delta = player - pos;
       if( delta.sqrMagnitude < sightRange * sightRange )
       {
         Transform target = null;
         RaycastHit2D hit = Physics2D.Linecast( (Vector2)sightOrigin.position + delta.normalized * sightStartRadius, player, Global.TurretSightLayers );
-        if( hit.transform.root == Global.instance.CurrentPlayer.transform )
+        if( hit.transform.root == Target.transform )
           target = hit.transform;
         if( target == null )
         {
@@ -53,7 +90,7 @@ public class Turret : Entity
           float angle = Mathf.Clamp( Util.NormalizeAngle( Mathf.Rad2Deg * Mathf.Atan2( local.y, local.x ) - 90 ), min, max );
           cannon.rotation = Quaternion.RotateTowards( cannon.rotation, Quaternion.Euler( 0, 0, angle ) * transform.localToWorldMatrix.rotation, rotspeed * Time.deltaTime );
           Vector2 aim = cannon.transform.up;
-          if( target != null && target.IsChildOf( Global.instance.CurrentPlayer.transform ) )
+          if( target != null && target.IsChildOf( Target.transform ) )
           {
             if( Vector2.Angle( delta, aim ) < maxShootAngle )
               if( !shootRepeatTimer.IsActive )

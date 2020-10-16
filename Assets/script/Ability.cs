@@ -6,6 +6,7 @@ using UnityEngine.Serialization;
 [CreateAssetMenu]
 public class Ability : ScriptableObject
 {
+  public bool IsActive;
   public Sprite icon;
   public Sprite cursor;
   public GameObject prefab;
@@ -27,9 +28,17 @@ public class Ability : ScriptableObject
     Destroy( go );
   }
 
-  public virtual void Activate( Vector2 origin, Vector2 aim ) { }
+  public virtual void Activate( Vector2 origin, Vector2 aim )
+  {
+    IsActive = true;
+  }
+
   public virtual void UpdateAbility( Pawn pawn ) { }
-  public virtual void Deactivate() { }
+
+  public virtual void Deactivate()
+  {
+    IsActive = false;
+  }
 
   public virtual void PreSceneTransition() { }
   public virtual void PostSceneTransition() { }

@@ -42,7 +42,7 @@ public class GraphookAbility : Ability
   public override void Unequip()
   {
     Destroy( graphookTip );
-    Destroy( grapCableRenderer.gameObject  );
+    Destroy( grapCableRenderer.gameObject );
   }
 
   private void OnDestroy()
@@ -52,28 +52,23 @@ public class GraphookAbility : Ability
 
   public override void Activate( Vector2 origin, Vector2 aim )
   {
-    if( grapShooting )
-      return;
-    if( grapPulling )
-    {
+    if( grapShooting || grapPulling )
       StopGrap();
-      return;
-    }
-    ShootGraphook( origin, aim );
+    else
+      ShootGraphook( origin, aim );
   }
 
   public override void UpdateAbility( Pawn pawn )
   {
     if( !IsActive )
       return;
-    
+
     Vector3 armpos = pawn.GetShotOriginPosition();
     grapCableRenderer.transform.position = armpos;
     grapCableRenderer.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - armpos) ) );
-    
+
     if( grapPulling )
     {
-
       grapSize = grapCableRenderer.size;
       grapSize.x = Vector3.Distance( graphookTip.transform.position, armpos );
       grapCableRenderer.size = grapSize;
@@ -84,12 +79,9 @@ public class GraphookAbility : Ability
       else if( grapDelta.magnitude > 0.01f )
         pawn.velocity = grapDelta.normalized * grapPullSpeed;
     }
-    
-    // grap force
-    if( !grapPulling && pawn.pushTimer.IsActive )
-      pawn.velocity.x = pawn.pushVelocity.x;
+
   }
-  
+
   public override void Deactivate()
   {
     StopGrap();
@@ -101,9 +93,7 @@ public class GraphookAbility : Ability
     Unequip();
   }
 
-  public override void PostSceneTransition()
-  {
-  }
+  public override void PostSceneTransition() { }
 
   void ShootGraphook( Vector2 origin, Vector2 direction )
   {
@@ -125,32 +115,31 @@ public class GraphookAbility : Ability
         graphookTip.transform.parent = null;
         graphookTip.transform.localScale = Vector3.one;
         graphookTip.transform.position = pos;
-        graphookTip.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - (Vector3)origin ) ) );
+        graphookTip.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - (Vector3) origin) ) );
         ;
         grapTimer.Start( grapTimeout, delegate
-          {
-            pos = origin;
-            graphookTip.transform.position = Vector3.MoveTowards( graphookTip.transform.position, graphitpos, grapSpeed * Time.deltaTime );
-            //grap cable
-            grapCableRenderer.gameObject.SetActive( true );
-            grapCableRenderer.transform.parent = null;
-            grapCableRenderer.transform.localScale = Vector3.one;
-            grapCableRenderer.transform.position = pos;
-            grapCableRenderer.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - pos) ) );
-            grapSize = grapCableRenderer.size;
-            grapSize.x = Vector3.Distance( graphookTip.transform.position, pos );
-            grapCableRenderer.size = grapSize;
+        {
+          pos = origin;
+          graphookTip.transform.position = Vector3.MoveTowards( graphookTip.transform.position, graphitpos, grapSpeed * Time.deltaTime );
+          //grap cable
+          grapCableRenderer.gameObject.SetActive( true );
+          grapCableRenderer.transform.parent = null;
+          grapCableRenderer.transform.localScale = Vector3.one;
+          grapCableRenderer.transform.position = pos;
+          grapCableRenderer.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - pos) ) );
+          grapSize = grapCableRenderer.size;
+          grapSize.x = Vector3.Distance( graphookTip.transform.position, pos );
+          grapCableRenderer.size = grapSize;
 
-            if( Vector3.Distance( graphookTip.transform.position, graphitpos ) < 0.01f )
-            {
-              grapShooting = false;
-              grapPulling = true;
-              grapTimer.Stop( false );
-              grapTimer.Start( grapTimeout, null, StopGrap );
-              Global.instance.AudioOneShot( grapHitSound, origin );
-            }
-          },
-          StopGrap );
+          if( Vector3.Distance( graphookTip.transform.position, graphitpos ) < 0.01f )
+          {
+            grapShooting = false;
+            grapPulling = true;
+            grapTimer.Stop( false );
+            grapTimer.Start( grapTimeout, null, StopGrap );
+            Global.instance.AudioOneShot( grapHitSound, origin );
+          }
+        }, StopGrap );
         Global.instance.AudioOneShot( grapShotSound, origin );
       }
     }

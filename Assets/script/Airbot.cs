@@ -100,12 +100,19 @@ public class Airbot : Entity
             continue;
           if( hit.transform.root == NearbyTarget.transform )
           {
+            // allows for targeting child entities of larger entities
             visibleTarget = hit.transform.GetComponent<Entity>();
-            lastKnownTargetDirection = visibleTarget.velocity;
-            lastKnownTargetPosition = visibleTarget.transform.position;
-            animator.Play( "alert" );
-            speed = AttackSpeed;
-            pathAgent.SetPath( visibleTarget.transform.position + Vector3.up * targetOffset, null );
+            if( visibleTarget == null && hit.transform.root != null )
+              visibleTarget = hit.transform.root.GetComponent<Entity>();
+
+            if( visibleTarget != null )
+            {
+              lastKnownTargetDirection = visibleTarget.velocity;
+              lastKnownTargetPosition = visibleTarget.transform.position;
+              animator.Play( "alert" );
+              speed = AttackSpeed;
+              pathAgent.SetPath( visibleTarget.transform.position + Vector3.up * targetOffset, null );
+            }
           }
           // early out on first visible thing
           break;

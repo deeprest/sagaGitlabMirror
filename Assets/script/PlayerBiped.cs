@@ -13,8 +13,6 @@ public class PlayerBiped : Pawn
   [FormerlySerializedAs( "downOffset" )]
   [SerializeField] private float DownOffset = BipedDownOffset;
   const float BipedDownOffset = 0.12f;
-  public float SpiderDownOffset = 0.12f;
-  
 
   // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
   public Vector2 headbox = new Vector2( .1f, .1f );
@@ -42,7 +40,7 @@ public class PlayerBiped : Pawn
   Timer walljumpTimer = new Timer();
 
 
-  [Header( "Setting" )] 
+  [Header( "Setting" )]
   public float speedFactorNormalized = 1;
 
   // movement
@@ -84,8 +82,9 @@ public class PlayerBiped : Pawn
   public GameObject walljumpEffect;
   [SerializeField] Transform WallkickPosition;
   public Transform arm;
+  
 
-  [Header( "Cursor" )] 
+  [Header( "Cursor" )]
   [SerializeField] Transform Cursor;
   public Transform CursorSnapped;
   public Transform CursorAutoAim;
@@ -134,7 +133,7 @@ public class PlayerBiped : Pawn
   public AudioClip soundDash;
   public AudioClip soundDamage;
 
-  [Header( "Damage" )] 
+  [Header( "Damage" )]
   [SerializeField] float damageDuration = 0.5f;
   bool takingDamage;
   bool damagePassThrough;
@@ -144,9 +143,10 @@ public class PlayerBiped : Pawn
   Timer damagePulseTimer = new Timer();
   public float damagePulseInterval = .1f;
   public float damageBlinkDuration = 1f;
-  public float damageLift = 1f;
+  const float damageLift = 0;
   public float damagePushAmount = 1f;
   [SerializeField] private AnimationCurve damageShakeCurve;
+  public ParticleSystem damageSmoke;
 
   // cached for optimization
   int HitLayers;
@@ -161,6 +161,12 @@ public class PlayerBiped : Pawn
 
   [SerializeField] GameObject SpiderbotPrefab;
   public SpiderPawn spider;
+
+  public bool IsBiped { get { return partLegs.enabled;  } }
+  public bool grapPulling
+  {
+    get { return ability != null && ability is GraphookAbility && ability.IsActive;  }
+  }
 
   protected override void Awake()
   {
@@ -223,10 +229,19 @@ public class PlayerBiped : Pawn
     chargePulse.Stop( false );
   }
 
+  bool AddWeapon( Weapon wpn )
+  {
+    if( weapons.Contains( wpn ) )
+      return false;
+    weapons.Add( wpn );
+    CurrentWeaponIndex = weapons.Count - 1;
+    AssignWeapon( weapons[ CurrentWeaponIndex ] );
+    return true;
+  }
+  
   void AssignWeapon( Weapon wpn )
   {
     weapon = wpn;
-    Global.instance.weaponIcon.sprite = weapon.icon;
     Global.instance.weaponIcon.sprite = weapon.icon;
     Cursor.GetComponent<SpriteRenderer>().sprite = weapon.cursor;
     StopCharge();
@@ -245,6 +260,16 @@ public class PlayerBiped : Pawn
     AssignWeapon( weapons[CurrentWeaponIndex] );
   }
 
+  bool AddAbility( Ability alt )
+  {
+    if( abilities.Contains( alt ) )
+      return false;
+    abilities.Add( alt );
+    CurrentAbilityIndex = abilities.Count - 1;
+    AssignAbility( abilities[ CurrentAbilityIndex ] );
+    return true;
+  }
+  
   void AssignAbility( Ability alt )
   {
     if( ability != null )
@@ -252,7 +277,8 @@ public class PlayerBiped : Pawn
     ability = alt;
     ability.Equip( armMount );
     Global.instance.abilityIcon.sprite = ability.icon;
-    Cursor.GetComponent<SpriteRenderer>().sprite = ability.cursor;
+    if( ability.cursor != null )
+      Cursor.GetComponent<SpriteRenderer>().sprite = ability.cursor;
   }
 
   void NextAbility()
@@ -360,7 +386,7 @@ public class PlayerBiped : Pawn
     collideBottom = false;
     adjust = transform.position;
 
-    #region multisampleAttempt
+#region multisampleAttempt
 
     /*
     // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground bug by 'sampling' the ground at multiple points
@@ -398,7 +424,7 @@ public class PlayerBiped : Pawn
 
     */
 
-    #endregion
+#endregion
 
     // slidingOffsetTarget = 1;
 
@@ -513,8 +539,6 @@ public class PlayerBiped : Pawn
 
   void Shoot()
   {
-    if( !partArmBack.enabled )
-      return;
     if( weapon == null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
       return;
     if( !weapon.fullAuto )
@@ -550,8 +574,6 @@ public class PlayerBiped : Pawn
 
   void UseAbility()
   {
-    if( ability == null || !partArmFront.enabled )
-      return;
     ability.Activate( GetShotOriginPosition(), shoot );
   }
 
@@ -645,28 +667,33 @@ public class PlayerBiped : Pawn
       landTimer.Start( landDuration, null, delegate { landing = false; } );
     }
     wallsliding = false;
+    
     // must have input (or push) to move horizontally, so allow no persistent horizontal velocity (without push)
-    // if( grapPulling )
-    //   velocity = Vector3.zero;
-    // else 
-    if( !(input.MoveRight || input.MoveLeft) )
+    if( grapPulling )
+      velocity = Vector3.zero;
+    else if( !(input.MoveRight || input.MoveLeft) )
       velocity.x = 0;
-
     if( carryCharacter != null )
       velocity = carryCharacter.velocity;
+    
+    if( partArmBack.enabled )
+    {
+      // WEAPONS / ABILITIES
+      if( input.Fire )
+        Shoot();
 
-    // WEAPONS / ABILITIES
-    if( input.Fire )
-      Shoot();
+      if( input.ChargeStart )
+        StartCharge();
 
-    if( input.ChargeStart )
-      StartCharge();
+      if( input.ChargeEnd )
+        ShootCharged();
+    }
 
-    if( input.ChargeEnd )
-      ShootCharged();
-
-    if( input.Ability )
-      UseAbility();
+    if( ability != null && partArmFront.enabled )
+    {
+      if( input.Ability )
+        UseAbility();
+    }
 
     if( input.NextWeapon )
       NextWeapon();
@@ -690,20 +717,13 @@ public class PlayerBiped : Pawn
           Pickup pickup = (Pickup) WorldSelection;
           if( pickup.weapon != null )
           {
-            if( !weapons.Contains( pickup.weapon ) )
-            {
-              weapons.Add( pickup.weapon );
-              AssignWeapon( pickup.weapon );
-            }
+            if( AddWeapon( pickup.weapon ) )
+              Destroy( pickup.gameObject );
           }
           else if( pickup.ability != null )
           {
-            if( !abilities.Contains( pickup.ability ) )
-            {
-              abilities.Add( pickup.ability );
-              AssignAbility( pickup.ability );
-            }
-            Destroy( pickup.gameObject );
+            if( AddAbility( pickup.ability ) )
+              Destroy( pickup.gameObject );
           }
           else if( pickup.PickupPart != PickupPart.None )
           {
@@ -853,7 +873,7 @@ public class PlayerBiped : Pawn
     {
       // SPIDER
       UseGravity = !(collideBottom || collideTop || collideRight || collideLeft);
-      
+
       if( input.MoveRight )
       {
         facingRight = true;
@@ -866,13 +886,7 @@ public class PlayerBiped : Pawn
         velocity.x = -moveSpeed;
       }
 
-      if( onGround && input.JumpStart )
-        StartJump();
-      else
-      if( input.JumpEnd )
-        StopJump();
-      
-      if( collideLeft || collideRight )
+      if( collideLeft || collideRight || collideTop )
       {
         if( input.MoveUp )
           velocity.y = moveSpeed;
@@ -881,13 +895,11 @@ public class PlayerBiped : Pawn
         if( !input.MoveUp && !input.MoveDown )
           velocity.y = 0;
       }
-      else
-      if( collideTop )
-      {
-        if( input.MoveDown )
-          velocity.y = -moveSpeed;
-      }
-
+      
+      if( onGround && input.JumpStart )
+        StartJump();
+      else if( input.JumpEnd )
+        StopJump();
     }
 
     if( ability != null )
@@ -896,6 +908,9 @@ public class PlayerBiped : Pawn
     // add gravity before velocity limits
     if( UseGravity )
       velocity.y -= Global.Gravity * Time.deltaTime;
+    
+    if( !grapPulling && pushTimer.IsActive )
+      velocity.x = pushVelocity.x;
 
     if( hanging )
       velocity = Vector3.zero;
@@ -921,8 +936,8 @@ public class PlayerBiped : Pawn
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
+    
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-
     transform.position += (Vector3) velocity * Time.deltaTime;
     carryCharacter = null;
 
@@ -1108,7 +1123,8 @@ public class PlayerBiped : Pawn
   protected override void Die()
   {
     StopCharge();
-
+    damageSmoke.Stop();
+    dashSmoke.Stop();
     /*
     if( spider == null )
     {
@@ -1124,6 +1140,8 @@ public class PlayerBiped : Pawn
     DisablePart( partArmFront );
   }
 
+  public int damageSmokeSteps = 3;
+  
   public override bool TakeDamage( Damage d )
   {
     if( !CanTakeDamage || damagePassThrough || Health <= 0 )
@@ -1137,6 +1155,13 @@ public class PlayerBiped : Pawn
       Die();
       return true;
     }
+    damageSmoke.Play();
+    
+    ParticleSystem.EmissionModule damageSmokeEmission = damageSmoke.emission;
+    ParticleSystem.MinMaxCurve rateCurve = damageSmokeEmission.rateOverTime;
+    rateCurve.constant = 20.0f - 20.0f * ((float)Health / (float)MaxHealth);
+    damageSmokeEmission.rateOverTime = rateCurve;
+    
     StopCharge();
     partHead.transform.localScale = Vector3.one * (1 + (Health / MaxHealth) * 10);
     audio.PlayOneShot( soundDamage );
@@ -1296,7 +1321,7 @@ public class PlayerBiped : Pawn
       DownOffset = BipedDownOffset;
       part.transform.GetComponent<BoxCollider2D>().size = new Vector2( 0.2f, 0.3f );
       part.renderer.enabled = true;
-      ((PlayerController) controller).EnableBipedControls();
+      // ((PlayerController) controller).EnableBipedControls();
       Global.instance.CameraController.orthoTarget = 3;
       Global.instance.CameraController.UseVerticalRange = true;
       CanTakeDamage = true;
@@ -1319,7 +1344,7 @@ public class PlayerBiped : Pawn
       DownOffset = 0.03f;
       part.transform.GetComponent<BoxCollider2D>().size = new Vector2( 0.15f, 0.15f );
       part.renderer.enabled = false;
-      ((PlayerController) controller).EnableSpiderControls();
+      // ((PlayerController) controller).EnableSpiderControls();
       Global.instance.CameraController.orthoTarget = 1;
       Global.instance.CameraController.UseVerticalRange = false;
       CanTakeDamage = false;

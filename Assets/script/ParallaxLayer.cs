@@ -18,9 +18,12 @@ public class ParallaxLayer : MonoBehaviour
   void LateUpdate()
   {
 #if UNITY_EDITOR
-    // avoid changing the transform unnecessarily, which makes the scene dirty.
-    if( cam == null )
-      cam = SceneView.GetAllSceneCameras()[0].transform;
+    if( !Application.isPlaying )
+    {
+      // avoid changing the transform unnecessarily, which makes the scene dirty.
+      if( cam == null )
+        cam = SceneView.GetAllSceneCameras()[0].transform;
+    }
 #endif
     if( cam != null )
       transform.position = Vector3.Scale( cam.position, Scale );

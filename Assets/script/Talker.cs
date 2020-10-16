@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using LitJson;
 using Random = UnityEngine.Random;
 #if UNITY_EDITOR
@@ -24,6 +21,7 @@ public class TalkerEditor : Editor
 #endif
 
 [RequireComponent( typeof(JabberPlayer), typeof(Animator) )]
+[SelectionBase]
 public class Talker : WorldSelectable
 {
   public CharacterIdentity identity;

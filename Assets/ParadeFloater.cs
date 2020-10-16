@@ -11,8 +11,9 @@ public class ParadeFloater : MonoBehaviour
   public Transform LocalPosition;
   public Talker talker;
   Timer restPeriod = new Timer();
-  public float speed = 1;
-  public float targetRadius = 1;
+  public float Speed = 0.5f;
+  public float TargetRadius = 1;
+  public float StayAboveY = 6;
 
   void OnDestroy()
   {
@@ -39,9 +40,10 @@ public class ParadeFloater : MonoBehaviour
         target = Target.position - (transform.TransformPoint( LocalPosition.localPosition ) - transform.position);
       else
         target = Target.position;
-      transform.position = Vector3.MoveTowards( transform.position, target, speed * Time.deltaTime );
+      target.y = Mathf.Max( StayAboveY, target.y );
+      transform.position = Vector3.MoveTowards( transform.position, target, Speed * Time.deltaTime );
 
-      if( Vector3.Distance( target, transform.position ) < targetRadius )
+      if( Vector3.Distance( LocalPosition.position, Target.position ) < TargetRadius )
       {
         restPeriod.Start( 10 );
         if( talker != null && sayCount == 0 )

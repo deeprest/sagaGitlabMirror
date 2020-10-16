@@ -26,7 +26,7 @@ public class PlayerControllerEditor : Editor
 public class PlayerController : Controller
 {
   Controls.BipedActionsActions BA;
-  Controls.SpiderActionsActions SA;
+  // Controls.SpiderActionsActions SA;
 
   public float DirectionalCursorDistance = 3;
 
@@ -58,26 +58,26 @@ public class PlayerController : Controller
 
     if( pawn is PlayerBiped )
       EnableBipedControls();
-    else if( pawn is SpiderPawn )
-      EnableSpiderControls();
+    // else if( pawn is SpiderPawn )
+    //   EnableSpiderControls();
   }
 
   public void EnableBipedControls()
   {
     Global.instance.Controls.BipedActions.Enable();
-    Global.instance.Controls.SpiderActions.Disable();
+    // Global.instance.Controls.SpiderActions.Disable();
   }
 
-  public void EnableSpiderControls()
-  {
-    Global.instance.Controls.BipedActions.Disable();
-    Global.instance.Controls.SpiderActions.Enable();
-  }
+  // public void EnableSpiderControls()
+  // {
+  //   Global.instance.Controls.BipedActions.Disable();
+  //   Global.instance.Controls.SpiderActions.Enable();
+  // }
 
   private void BindControls()
   {
     BA = Global.instance.Controls.BipedActions;
-    SA = Global.instance.Controls.SpiderActions;
+    // SA = Global.instance.Controls.SpiderActions;
 
     BA.Fire.started += ( obj ) => input.Fire = true;
     BA.Fire.canceled += ( obj ) => input.Fire = false;
@@ -92,14 +92,13 @@ public class PlayerController : Controller
     BA.Charge.canceled += ( obj ) => input.ChargeEnd = true;
     BA.Down.performed += ( obj ) => input.MoveDown = true;
     BA.Interact.performed += ( obj ) => { input.Interact = true; };
-
     BA.Aim.performed += ( obj ) => { aimDeltaSinceLastFrame += obj.ReadValue<Vector2>(); };
 
-    SA.Fire.started += ( obj ) => input.Fire = true;
-    SA.Fire.canceled += ( obj ) => input.Fire = false;
-    SA.Ability.performed += ( obj ) => input.Ability = true;
-    SA.NextAbility.performed += ( obj ) => input.NextAbility = true;
-    SA.NextWeapon.performed += ( obj ) => input.NextWeapon = true;
+    // SA.Fire.started += ( obj ) => input.Fire = true;
+    // SA.Fire.canceled += ( obj ) => input.Fire = false;
+    // SA.Ability.performed += ( obj ) => input.Ability = true;
+    // SA.NextAbility.performed += ( obj ) => input.NextAbility = true;
+    // SA.NextWeapon.performed += ( obj ) => input.NextWeapon = true;
   }
 
   // apply input to pawn
@@ -118,24 +117,26 @@ public class PlayerController : Controller
     }
     else
     {
-      if( Global.instance.UsingGamepad )
+      if( Cursor.lockState != CursorLockMode.None )
       {
-        cursorDelta = BA.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
+        if( Global.instance.UsingGamepad )
+        {
+          cursorDelta = BA.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
+        }
+        else
+        {
+          cursorDelta += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity;
+          /*cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;*/
+          aimDeltaSinceLastFrame = Vector2.zero;
+          cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
+        }
       }
-      else
-      {
-        cursorDelta += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity;
-        /*cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;*/
-        aimDeltaSinceLastFrame = Vector2.zero;
-        cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
-      }
-
       input.Aim = cursorDelta;
-
+      
       if( BA.MoveRight.ReadValue<float>() > 0.5f ) input.MoveRight = true;
       if( BA.MoveLeft.ReadValue<float>() > 0.5f ) input.MoveLeft = true;
 
-      Vector2 move = SA.Move.ReadValue<Vector2>();
+      Vector2 move = BA.Move.ReadValue<Vector2>();
       if( move.x > 0.5f ) input.MoveRight = true;
       if( move.x < -0.5f ) input.MoveLeft = true;
       if( move.y > 0.5f ) input.MoveUp = true;
@@ -167,6 +168,20 @@ public class PlayerController : Controller
     Global.instance.Controls.BipedActions.Enable();
   }
 
+  public void OnPauseMenu()
+  {
+    Global.instance.Controls.BipedActions.Disable();
+    // Global.instance.Controls.SpiderActions.Disable();
+  }
+
+  public void OnUnpause()
+  {
+    if( pawn is PlayerBiped && ((PlayerBiped)pawn).IsBiped )
+      Global.instance.Controls.BipedActions.Enable();
+    // else
+    //   Global.instance.Controls.SpiderActions.Enable();
+  }
+  
   #region Record
 
   // todo record the initial state of all objects in the scene
