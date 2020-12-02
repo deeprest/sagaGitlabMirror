@@ -13,8 +13,10 @@ public class PlayerBiped : Pawn
   public float slidingOffsetRate = 4;*/
   //[SerializeField] private float DownOffset = BipedDownOffset;
   
+#if BODY_PART_HUNT
   const float BipedDownOffset = 0.1f;
   public float SpiderDownOffset = 0.1f;
+#endif
 
   // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
   public Vector2 headbox = new Vector2( .1f, .1f );
@@ -191,7 +193,9 @@ public class PlayerBiped : Pawn
 
   protected override void Start()
   {
+#if BODY_PART_HUNT    
     DownOffset = BipedDownOffset;
+#endif
     HitLayers = Global.TriggerLayers | Global.CharacterDamageLayers;
     IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
     spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
@@ -1172,9 +1176,7 @@ public class PlayerBiped : Pawn
     DisablePart( partArmBack );
     DisablePart( partArmFront );
 #endif
-
     
-
 #if PICKLE
     // PICKLE RICK EXPERIMENT
     Scale *= 0.5f;
@@ -1198,10 +1200,12 @@ public class PlayerBiped : Pawn
     // embigginning!
     
 #else
+    
     // RESPAWN
     controller.RemovePawn();
     Destroy( gameObject );
     new Timer( 5, null, Global.instance.SpawnPlayer );
+    
 #endif
 
   }
@@ -1382,7 +1386,9 @@ public class PlayerBiped : Pawn
     if( part.transform == partLegs.transform )
     {
       // GO INTO BIPED MODE!!!!
+#if BODY_PART_HUNT
       DownOffset = BipedDownOffset;
+#endif
       part.transform.GetComponent<BoxCollider2D>().size = new Vector2( 0.2f, 0.3f );
       part.renderer.enabled = true;
       Global.instance.CameraController.orthoTarget = 3;
@@ -1404,7 +1410,9 @@ public class PlayerBiped : Pawn
     if( part.transform == partLegs.transform )
     {
       // GO INTO SPIDER MODE!!!
+#if BODY_PART_HUNT      
       DownOffset = SpiderDownOffset;
+#endif
       part.transform.GetComponent<BoxCollider2D>().size = new Vector2( 0.15f, 0.15f );
       part.renderer.enabled = false;
       Global.instance.CameraController.orthoTarget = 1;
