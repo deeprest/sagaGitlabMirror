@@ -624,14 +624,6 @@ public class Global : MonoBehaviour
         }
       };
       musicTimer.Start( musicTimerParamsFadeIn );
-      sceneScript = FindObjectOfType<SceneScript>();
-      if( sceneScript != null )
-        sceneScript.StartScene();
-
-      GameObject generatedMeshCollider = Util.GenerateNavMeshForEdgeColliders();
-      foreach( var mesh in meshSurfaces )
-        mesh.BuildNavMesh();
-      Destroy( generatedMeshCollider );
 
       if( CurrentPlayer == null )
       {
@@ -642,6 +634,15 @@ public class Global : MonoBehaviour
       {
         CurrentPlayer.PostSceneTransition();
       }
+      
+      sceneScript = FindObjectOfType<SceneScript>();
+      if( sceneScript != null )
+        sceneScript.StartScene();
+      
+      GameObject generatedMeshCollider = Util.GenerateNavMeshForEdgeColliders();
+      foreach( var mesh in meshSurfaces )
+        mesh.BuildNavMesh();
+      Destroy( generatedMeshCollider );
     }
     else
     {
@@ -691,6 +692,8 @@ public class Global : MonoBehaviour
     shiftyColor = Color.HSVToRGB( H, 1, 1 );
     shifty.color = shiftyColor;
 
+    // DEBUG ZOOM WITH MOUSE
+    /*
     if( Camera.main.orthographic )
     {
       if( Mathf.Abs( zoomDelta ) > 0 )
@@ -707,6 +710,7 @@ public class Global : MonoBehaviour
       debugText.text = CameraController.zOffset.ToString( "##.#" );
     }
     zoomDelta = 0;
+    */
 
     if( MinimapCamera.enabled )
     {

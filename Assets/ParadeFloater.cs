@@ -24,8 +24,6 @@ public class ParadeFloater : MonoBehaviour
   {
     if( talker != null )
       talker.animator.speed = 0.5f;
-    if( FollowPlayer )
-      Target = Global.instance.PlayerController.GetPawn().transform;
   }
 
   private Vector3 target;
@@ -34,7 +32,13 @@ public class ParadeFloater : MonoBehaviour
 
   void Update()
   {
-    if( !restPeriod.IsActive )
+    if( FollowPlayer )
+    {
+      // HACK
+      if( Global.instance.PlayerController != null && Global.instance.PlayerController.GetPawn() != null )
+        Target = Global.instance.PlayerController.GetPawn().transform;
+    }
+    if( Target != null && !restPeriod.IsActive )
     {
       if( LocalPosition != null )
         target = Target.position - (transform.TransformPoint( LocalPosition.localPosition ) - transform.position);

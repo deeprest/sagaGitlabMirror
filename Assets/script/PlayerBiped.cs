@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿//#define PICKLE
+//#define BODY_PART_HUNT
+
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -8,15 +11,14 @@ public class PlayerBiped : Pawn
   /*public float slidingOffset = 1;
   public float slidingOffsetTarget = 1;
   public float slidingOffsetRate = 4;*/
-  const float raydown = 0.2f;
-
-  [FormerlySerializedAs( "downOffset" )]
-  [SerializeField] private float DownOffset = BipedDownOffset;
-  const float BipedDownOffset = 0.12f;
+  //[SerializeField] private float DownOffset = BipedDownOffset;
+  
+  const float BipedDownOffset = 0.1f;
+  public float SpiderDownOffset = 0.1f;
 
   // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
   public Vector2 headbox = new Vector2( .1f, .1f );
-  const float headboxy = -0.1f;
+  public float headboxy = 0.1f;
   const float downslopefudge = 0.2f;
   const float corner = 0.707f;
   Vector2 shoot;
@@ -41,33 +43,46 @@ public class PlayerBiped : Pawn
 
 
   [Header( "Setting" )]
+  public float spiderMoveSpeed = 5;
   public float speedFactorNormalized = 1;
 
   // movement
   public float moveVelMin = 1.5f;
   public float moveVelMax = 3;
-
+  // PICKLE
   public float moveSpeed
   {
-    get { return moveVelMin + (moveVelMax - moveVelMin) * speedFactorNormalized; }
+    get { return (moveVelMin + (moveVelMax - moveVelMin) * speedFactorNormalized) 
+#if PICKLE 
+* Scale 
+#endif
+      ; }
   }
 
   public float jumpVelMin = 5;
   public float jumpVelMax = 10;
-
+  // PICKLE
   public float jumpSpeed
   {
-    get { return jumpVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized; }
+    get { return (jumpVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized) 
+#if PICKLE 
+* Scale 
+#endif
+      ; }
   }
 
   public float jumpDuration = 0.4f;
   public float jumpRepeatInterval = 0.1f;
   public float dashVelMin = 3;
   public float dashVelMax = 10;
-
+  // PICKLE
   public float dashSpeed
   {
-    get { return dashVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized; }
+    get { return (dashVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized) 
+#if PICKLE 
+* Scale 
+#endif
+      ; }
   }
 
   public float dashDuration = 1;
@@ -176,6 +191,7 @@ public class PlayerBiped : Pawn
 
   protected override void Start()
   {
+    DownOffset = BipedDownOffset;
     HitLayers = Global.TriggerLayers | Global.CharacterDamageLayers;
     IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
     spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
@@ -428,11 +444,9 @@ public class PlayerBiped : Pawn
 #endregion
 
     // slidingOffsetTarget = 1;
-
     string temp = "";
-
-    float down = (jumping || walljumping) ? raydown - DownOffset : raydown;
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
+    float down = (jumping || walljumping) ? contactSeparation : DownOffset + contactSeparation + raylength;
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size * Scale, 0, Vector2.down, RaycastHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
     temp += "down: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
@@ -456,7 +470,7 @@ public class PlayerBiped : Pawn
         }
         adjust.y = hit.point.y + box.size.y * 0.5f + slidingOffset * downOffset;
         */
-        adjust.y = hit.point.y + box.size.y * 0.5f + DownOffset;
+        adjust.y = hit.point.y + box.size.y * 0.5f * Scale + DownOffset + contactSeparation;
 
         hitBottomNormal = hit.normal;
         // moving platforms
@@ -476,7 +490,7 @@ public class PlayerBiped : Pawn
       }
     }
 
-    hitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.down * headboxy, headbox, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.up * headboxy, headbox, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
     temp += "up: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
@@ -547,8 +561,13 @@ public class PlayerBiped : Pawn
     if( weapon.HasInterval )
       shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector2 pos = GetShotOriginPosition();
+    // PICKLE
     if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
-      weapon.FireWeapon( this, pos, shoot );
+      weapon.FireWeapon( this, pos, shoot
+#if PICKLE 
+, Scale 
+#endif
+    );
   }
 
   void ShootCharged()
@@ -668,7 +687,7 @@ public class PlayerBiped : Pawn
       landTimer.Start( landDuration, null, delegate { landing = false; } );
     }
     wallsliding = false;
-    
+
     // must have input (or push) to move horizontally, so allow no persistent horizontal velocity (without push)
     if( grapPulling )
       velocity = Vector3.zero;
@@ -676,7 +695,7 @@ public class PlayerBiped : Pawn
       velocity.x = 0;
     if( carryCharacter != null )
       velocity = carryCharacter.velocity;
-    
+
     if( partArmBack.enabled )
     {
       // WEAPONS / ABILITIES
@@ -874,19 +893,22 @@ public class PlayerBiped : Pawn
     {
       // SPIDER
       UseGravity = !(collideBottom || collideTop || collideRight || collideLeft);
-
       if( input.MoveRight )
       {
         facingRight = true;
-        velocity.x = moveSpeed;
+        velocity.x = spiderMoveSpeed;
       }
-
       if( input.MoveLeft )
       {
         facingRight = false;
-        velocity.x = -moveSpeed;
+        velocity.x = -spiderMoveSpeed;
       }
+      if( !collideTop && input.MoveUp )
+        velocity.y = spiderMoveSpeed;
+      if( !collideBottom && input.MoveDown )
+        velocity.y = -spiderMoveSpeed;
 
+      /*
       if( collideLeft || collideRight || collideTop )
       {
         if( input.MoveUp )
@@ -901,6 +923,7 @@ public class PlayerBiped : Pawn
         StartJump();
       else if( input.JumpEnd )
         StopJump();
+        */
     }
 
     if( ability != null )
@@ -909,7 +932,7 @@ public class PlayerBiped : Pawn
     // add gravity before velocity limits
     if( UseGravity )
       velocity.y -= Global.Gravity * Time.deltaTime;
-    
+
     if( !grapPulling && pushTimer.IsActive )
       velocity.x = pushVelocity.x;
 
@@ -937,7 +960,7 @@ public class PlayerBiped : Pawn
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
-    
+
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     transform.position += (Vector3) velocity * Time.deltaTime;
     carryCharacter = null;
@@ -973,7 +996,7 @@ public class PlayerBiped : Pawn
       anim = "fall";
 
     Play( anim );
-    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
+    transform.localScale = (new Vector3( facingRight ? 1 : -1, 1, 1 )) * Scale;
     renderer.material.SetInt( "_FlipX", facingRight ? 0 : 1 );
     arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, shoot ) );
@@ -1121,11 +1144,15 @@ public class PlayerBiped : Pawn
     } );
   }
 
+  public GameObject PlayerPrefab;
+  // PICKLE
+  public float Scale = 1;
+  
   protected override void Die()
   {
-    StopCharge();
-    damageSmoke.Stop();
-    dashSmoke.Stop();
+    Instantiate( spawnWhenDead, transform.position, Quaternion.identity );
+    // todo death sound
+    
     /*
     if( spider == null )
     {
@@ -1135,10 +1162,48 @@ public class PlayerBiped : Pawn
     controller.AssignPawn( spider );
     */
 
+    // BODY PART HUNT EXPERIMENT
+#if BODY_PART_HUNT
+    StopCharge();
+    damageSmoke.Stop();
+    dashSmoke.Stop();
     DisablePart( partHead );
     DisablePart( partLegs );
     DisablePart( partArmBack );
     DisablePart( partArmFront );
+#endif
+
+    
+
+#if PICKLE
+    // PICKLE RICK EXPERIMENT
+    Scale *= 0.5f;
+    Health = 3;//MaxHealth;
+    DownOffset *= 0.5f;
+    jumpDuration *= 1.0f / Scale;
+    dashSmoke.transform.localScale = Vector3.one * Scale;
+    damageSmoke.transform.localScale = Vector3.one * Scale;
+    Global.instance.CameraController.orthoTarget = Scale * 2;
+    Global.instance.CameraController.yHalfWidth *= 0.5f;
+    // damage smoke
+    ParticleSystem.MainModule damageSmokeMain = damageSmoke.main;
+    ParticleSystem.MinMaxCurve rateCurve = damageSmokeMain.startSpeed;
+    rateCurve.constant *= 0.5f;
+    damageSmokeMain.startSpeed = rateCurve;
+    // dash effect
+    // no jump
+    // scale debris
+    // projectile speed
+    
+    // embigginning!
+    
+#else
+    // RESPAWN
+    controller.RemovePawn();
+    Destroy( gameObject );
+    new Timer( 5, null, Global.instance.SpawnPlayer );
+#endif
+
   }
 
   public override bool TakeDamage( Damage d )
@@ -1320,7 +1385,6 @@ public class PlayerBiped : Pawn
       DownOffset = BipedDownOffset;
       part.transform.GetComponent<BoxCollider2D>().size = new Vector2( 0.2f, 0.3f );
       part.renderer.enabled = true;
-      // ((PlayerController) controller).EnableBipedControls();
       Global.instance.CameraController.orthoTarget = 3;
       Global.instance.CameraController.UseVerticalRange = true;
       CanTakeDamage = true;
@@ -1340,10 +1404,9 @@ public class PlayerBiped : Pawn
     if( part.transform == partLegs.transform )
     {
       // GO INTO SPIDER MODE!!!
-      DownOffset = 0.03f;
+      DownOffset = SpiderDownOffset;
       part.transform.GetComponent<BoxCollider2D>().size = new Vector2( 0.15f, 0.15f );
       part.renderer.enabled = false;
-      // ((PlayerController) controller).EnableSpiderControls();
       Global.instance.CameraController.orthoTarget = 1;
       Global.instance.CameraController.UseVerticalRange = false;
       CanTakeDamage = false;

@@ -62,6 +62,13 @@ public class PlayerController : Controller
     //   EnableSpiderControls();
   }
 
+  public override void RemovePawn( )
+  {
+    Global.instance.CameraController.LookTarget = null;
+    pawn = null;
+    Global.instance.Controls.BipedActions.Disable();
+  }
+
   public void EnableBipedControls()
   {
     Global.instance.Controls.BipedActions.Enable();

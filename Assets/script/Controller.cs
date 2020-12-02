@@ -45,6 +45,8 @@ public class Controller : ScriptableObject
     return pawn;
   }
 
+  public virtual void RemovePawn() { }
+
   //public void AddMinion( Pawn pawn )
   //{
   //  minions.Add( pawn );

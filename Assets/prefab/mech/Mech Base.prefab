@@ -387,10 +387,11 @@ MonoBehaviour:
   friction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
+  DownOffset: 0.1
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  health: 20
+  Health: 3
   MaxHealth: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
@@ -470,7 +471,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.21}
+  m_Offset: {x: 0, y: 0.28}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -481,7 +482,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.5}
+  m_Size: {x: 0.2, y: 0.39}
   m_EdgeRadius: 0
 --- !u!82 &8324022198147396173
 AudioSource:

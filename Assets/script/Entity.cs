@@ -40,6 +40,13 @@ public class Entity : MonoBehaviour, IDamage
   public float friction = 0.05f;
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
+
+  public float raydown
+  {
+    get { return DownOffset + contactSeparation; }
+  }
+
+  public float DownOffset = 0;
   // collision flags
   protected bool collideRight = false;
   protected bool collideLeft = false;
@@ -254,7 +261,7 @@ public class Entity : MonoBehaviour, IDamage
     boxOffset.y = box.offset.y;
     adjust = (Vector2)transform.position + boxOffset;
 
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, velocity, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, velocity, RaycastHits, Mathf.Max( raydown, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -263,7 +270,7 @@ public class Entity : MonoBehaviour, IDamage
       if( hit.normal.y > corner )
       {
         collideBottom = true;
-        adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation;
+        adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation + DownOffset;
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
@@ -320,7 +327,7 @@ public class Entity : MonoBehaviour, IDamage
       if( hit.normal.y > corner )
       {
         collideBottom = true;
-        adjust.y = hit.point.y + circle.radius + contactSeparation;
+        adjust.y = hit.point.y + circle.radius + contactSeparation + DownOffset;
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
@@ -369,7 +376,7 @@ public class Entity : MonoBehaviour, IDamage
     boxOffset.y = box.offset.y;
     adjust = (Vector2)transform.position + boxOffset;
 
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( raydown, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -378,7 +385,7 @@ public class Entity : MonoBehaviour, IDamage
         if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
           continue;
         collideBottom = true;
-        adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation;
+        adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation + DownOffset;
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
@@ -409,7 +416,7 @@ public class Entity : MonoBehaviour, IDamage
     boxOffset.y = box.offset.y;
     adjust = (Vector2)transform.position + boxOffset;
 
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( raydown, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -418,7 +425,7 @@ public class Entity : MonoBehaviour, IDamage
         if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
           continue;
         collideBottom = true;
-        adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation;
+        adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation + DownOffset;
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )

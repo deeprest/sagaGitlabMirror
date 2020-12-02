@@ -5004,14 +5004,16 @@ MonoBehaviour:
   friction: 8
   raylength: 0.05
   contactSeparation: 0.01
+  DownOffset: 0.1
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  Health: 10
+  Health: 3
   MaxHealth: 10
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
-  spawnWhenDead: {fileID: 0}
+  spawnWhenDead: {fileID: 1678155047526447402, guid: 0b441ca38fb9146debe1d70a64193693,
+    type: 3}
   spawnChance: 1
   flashInterval: 0.05
   flashCount: 5
@@ -5042,8 +5044,9 @@ MonoBehaviour:
     Aim: {x: 0, y: 0}
   CursorWorldPosition: {x: 0, y: 0}
   InteractIndicator: {fileID: 7746566914802738857}
-  DownOffset: 0.12
-  headbox: {x: 0.1, y: 0.1}
+  SpiderDownOffset: 0.03
+  headbox: {x: 0.05, y: 0.1}
+  headboxy: -0.15
   facingRight: 0
   onGround: 0
   jumping: 0
@@ -5051,6 +5054,7 @@ MonoBehaviour:
   wallsliding: 0
   landing: 0
   dashing: 0
+  spiderMoveSpeed: 4
   speedFactorNormalized: 1
   moveVelMin: 1.5
   moveVelMax: 3
@@ -5153,7 +5157,8 @@ MonoBehaviour:
   SpiderbotPrefab: {fileID: 1789244597324514, guid: bc604b646e0954c2db323b783ef578cf,
     type: 3}
   spider: {fileID: 0}
-  damageSmokeSteps: 3
+  PlayerPrefab: {fileID: 0}
+  Scale: 1
   partLegs:
     enabled: 1
     transform: {fileID: 4857518412556878}
@@ -5179,7 +5184,7 @@ MonoBehaviour:
     renderer: {fileID: 91856526698937445}
     layerAnimated: 2
   partSpider:
-    enabled: 1
+    enabled: 0
     transform: {fileID: 1009928158934774287}
     animator: {fileID: 3399048259800362818}
     renderer: {fileID: 2234524318100601442}
@@ -6267,7 +6272,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1009928158934774287
 Transform:
   m_ObjectHideFlags: 0

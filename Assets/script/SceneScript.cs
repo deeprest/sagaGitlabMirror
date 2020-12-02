@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Experimental.Rendering.Universal;
 
 
 public class SceneScript : MonoBehaviour
@@ -7,6 +8,7 @@ public class SceneScript : MonoBehaviour
   public AudioLoop music;
   public CameraZone CameraZone;
   public BoxCollider NavmeshBox;
+  public Light2D ambientLight;
 
   public virtual void StartScene()
   {
@@ -26,6 +28,8 @@ public class SceneScript : MonoBehaviour
     if( music != null )
       Global.instance.PlayMusic( music );
 
+    if( ambientLight != null )
+      new Timer( 3, delegate( Timer timer ) { ambientLight.intensity = timer.ProgressNormalized; }, null );
   }
 
   public void PlayerInputOff()

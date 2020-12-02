@@ -202,6 +202,8 @@ public class Mech : Entity
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
+      if( hit.transform.root == transform.root )
+        return;
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
@@ -217,6 +219,8 @@ public class Mech : Entity
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
+      if( hit.transform.root == transform.root )
+        return;
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
@@ -233,6 +237,8 @@ public class Mech : Entity
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
+      if( hit.transform.root == transform.root )
+        return;
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {

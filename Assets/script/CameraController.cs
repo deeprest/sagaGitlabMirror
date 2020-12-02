@@ -67,7 +67,7 @@ public class CameraController : MonoBehaviour
     float ortho = orthoTarget;
     pos.z = zOffset;
 
-    if( !lerp.enabled && LookTarget != null )
+    if( !lerp.enabled && LookTarget != null && LookTarget.pawn != null )
     {
       Vector3 lookTarget = LookTarget.pawn.transform.position;
 

@@ -643,12 +643,6 @@ MonoBehaviour:
     scenePath: Assets/scene/city-highway.unity
   - sceneAsset: {fileID: 102900000, guid: 56e93a81d13cb4b16b412eddef1070e2, type: 3}
     scenePath: Assets/scene/tutorial.unity
-  - sceneAsset: {fileID: 102900000, guid: 8fadde24c73f244708a25cce2f9e84e1, type: 3}
-    scenePath: Assets/scene/camera test.unity
-  - sceneAsset: {fileID: 102900000, guid: 3bd2ea2daf4aa468fbd22b4c6c6c8392, type: 3}
-    scenePath: Assets/scene/fall-test.unity
-  - sceneAsset: {fileID: 102900000, guid: e25ec4c772e0542ea9a954f39750785a, type: 3}
-    scenePath: Assets/scene/shadows.unity
   - sceneAsset: {fileID: 102900000, guid: 3fdde71a3ca2e43efa5d107418e4f6d2, type: 3}
     scenePath: Assets/scene/boss.unity
   RandomSeedOnStart: 0
@@ -1446,10 +1440,10 @@ RectTransform:
   m_Father: {fileID: 9017725798544722384}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -25}
-  m_SizeDelta: {x: 193.33333, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1096132239290882112
 CanvasRenderer:
@@ -2276,7 +2270,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 522.1427, y: -30.289978}
+  m_AnchoredPosition: {x: 522.1427, y: -30.29004}
   m_SizeDelta: {x: 288.1, y: 631.70996}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2493318434377679591
@@ -3440,10 +3434,10 @@ RectTransform:
   m_Father: {fileID: 9017725798544722384}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 96.666664, y: -25}
-  m_SizeDelta: {x: 193.33333, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2198220974979071943
 CanvasRenderer:
@@ -5079,8 +5073,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 781135732748285823, guid: a160a919950ed4ed881995f5aab37c04,
-    type: 2}
+  m_Material: {fileID: 2100000, guid: f98012393b5a449c7a1498125aee6b28, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -5984,10 +5977,10 @@ RectTransform:
   m_Father: {fileID: 9017725798544722384}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 503.3333, y: -25}
-  m_SizeDelta: {x: 193.33333, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1605776728505953149
 CanvasRenderer:
