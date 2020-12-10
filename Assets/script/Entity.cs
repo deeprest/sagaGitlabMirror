@@ -25,8 +25,8 @@ public class Entity : MonoBehaviour, IDamage
 
   public List<Collider2D> IgnoreCollideObjects;
   public List<SpriteRenderer> spriteRenderers;
-  // when Characters are composite under same transform root
-  Entity parentCharacter;
+  // composite entities
+  Entity rootEntity;
 
   public bool UseGravity = true;
   public bool IsStatic = false;
@@ -38,15 +38,17 @@ public class Entity : MonoBehaviour, IDamage
   // moving platforms / stacking characters
   public Entity carryCharacter;
   public float friction = 0.05f;
+  
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
+  public float DownOffset = 0;
 
   public float raydown
   {
     get { return DownOffset + contactSeparation; }
   }
 
-  public float DownOffset = 0;
+  
   // collision flags
   protected bool collideRight = false;
   protected bool collideLeft = false;
@@ -105,15 +107,15 @@ public class Entity : MonoBehaviour, IDamage
       return;
     flashTimer.Stop( false );
     pushTimer.Stop( false );
-    if( parentCharacter != null )
-      parentCharacter.RemoveChild( this );
-    parentCharacter = null;
+    if( rootEntity != null )
+      rootEntity.RemoveChild( this );
+    rootEntity = null;
   }
 
   protected virtual void Start()
   {
     if( transform.parent != null )
-      parentCharacter = transform.parent.GetComponent<Entity>();
+      rootEntity = transform.root.GetComponent<Entity>();
     IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
     spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
     UpdateHit = BoxHit;
@@ -133,6 +135,7 @@ public class Entity : MonoBehaviour, IDamage
       pathAgent.AgentTypeID = Global.instance.AgentType[AgentTypeName];
     }
     InitializeParts();
+    
   }
 
   void Update()
@@ -514,17 +517,14 @@ public class Entity : MonoBehaviour, IDamage
         Global.instance.AudioOneShot( soundHit, transform.position );
       // color pulse
       flip = false;
+      
       foreach( var sr in spriteRenderers )
         sr.material.SetFloat( "_FlashAmount", flashOn );
       flashTimer.Start( flashCount * 2, flashInterval, delegate ( Timer t )
       {
         flip = !flip;
-        if( flip )
-          foreach( var sr in spriteRenderers )
-            sr.material.SetFloat( "_FlashAmount", flashOn );
-        else
-          foreach( var sr in spriteRenderers )
-            sr.material.SetFloat( "_FlashAmount", 0 );
+        foreach( var sr in spriteRenderers )
+          sr.material.SetFloat( "_FlashAmount", flip? flashOn : 0 );
       }, delegate
       {
         foreach( var sr in spriteRenderers )
@@ -547,20 +547,20 @@ public class Entity : MonoBehaviour, IDamage
       }
     }
 
+    // remove all sprite renderers from the child entity
     SpriteRenderer[] srs = spriteRenderers.ToArray();
+    SpriteRenderer[] csrs = child.spriteRenderers.ToArray();
+    for( int c = 0; c < csrs.Length; c++ )
     for( int i = 0; i < srs.Length; i++ )
     {
-      if( srs[i].transform == child.transform )
+      if( srs[i].transform == csrs[c].transform )
       {
         spriteRenderers.Remove( srs[i] );
         break;
       }
     }
   }
-
-
-
-
+  
   // for EventDestroyed unity events
   public void DestroyGameObject( GameObject go )
   {
@@ -571,7 +571,6 @@ public class Entity : MonoBehaviour, IDamage
   {
     return Team != Team.None && other != Team.None && other != Team;
   }
-  
   
   
   [Header( "Character Parts" )]

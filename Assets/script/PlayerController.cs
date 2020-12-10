@@ -100,7 +100,7 @@ public class PlayerController : Controller
     BA.Down.performed += ( obj ) => input.MoveDown = true;
     BA.Interact.performed += ( obj ) => { input.Interact = true; };
     BA.Aim.performed += ( obj ) => { aimDeltaSinceLastFrame += obj.ReadValue<Vector2>(); };
-
+    
     // SA.Fire.started += ( obj ) => input.Fire = true;
     // SA.Fire.canceled += ( obj ) => input.Fire = false;
     // SA.Ability.performed += ( obj ) => input.Ability = true;
@@ -135,7 +135,7 @@ public class PlayerController : Controller
           cursorDelta += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity;
           /*cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;*/
           aimDeltaSinceLastFrame = Vector2.zero;
-          cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.1f );
+          cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.01f );
         }
       }
       input.Aim = cursorDelta;

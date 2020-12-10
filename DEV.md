@@ -1,8 +1,12 @@
-pP
 *Establish the design before resuming work*
-+ Pawns and Controllers
-+ turret projectiles do not hit player
-+ fix chop drop input
+
+DEATH options:
+1. Respawn
+2. Parts. reclaim parts
+3. Gears. Health can be reclaimed from dropped "gears" ala Sonic. Respawn if empty.
+4. Instant Replay. Go back before death and replay with a few seconds leeway.
+- Instant Replay: Playback system, use for death cycle:  go back in time to last grace period, play a couple seconds, and have a countdown, then let the player resume where they were at that point. If they die within 3 seconds, rewind even further to grace period before that.
+5. Tiny
 
 - spiderbot.
 spiderpawn has dynamic body
@@ -15,16 +19,6 @@ Use abilities gained from defeating enemies in the stage to defeat the boss. Can
 Weapons are acquired from bosses. Weapons persist at all times; you can switch to them anytime.
 
 Bosses.  Big wrecking ball robot. Agile melee ninja.
-
-DEATH options:
-1. Respawn
-2. Parts. reclaim parts
-3. Gears. Health can be reclaimed from dropped "gears" ala Sonic. Respawn if empty.
-4. Instant Replay. Go back before death and replay with a few seconds leeway.
-5. Tiny
-
-- Instant Replay: Playback system, use for death cycle:  go back in time to last grace period, play a couple seconds, and have a countdown, then let the player resume where they were at that point. If they die within 3 seconds, rewind even further to grace period before that.
-
 
 - confirm that Teams are set for all characters.
 - remove global references to CurrentPlayer where possible

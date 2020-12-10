@@ -5044,7 +5044,6 @@ MonoBehaviour:
     Aim: {x: 0, y: 0}
   CursorWorldPosition: {x: 0, y: 0}
   InteractIndicator: {fileID: 7746566914802738857}
-  SpiderDownOffset: 0.03
   headbox: {x: 0.05, y: 0.1}
   headboxy: -0.15
   facingRight: 0
@@ -5054,6 +5053,41 @@ MonoBehaviour:
   wallsliding: 0
   landing: 0
   dashing: 0
+  MoveScale: 0.5
+  JumpScale: 0.5
+  OrthoScale:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.0032348633
+      value: 0
+      inSlope: 3.880336
+      outSlope: 3.880336
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.26834828
+    - serializedVersion: 3
+      time: 1
+      value: 2
+      inSlope: 1.2203978
+      outSlope: 1.2203978
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 9.967742
+      value: 6.010774
+      inSlope: -0.04605159
+      outSlope: -0.04605159
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.14454335
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   spiderMoveSpeed: 4
   speedFactorNormalized: 1
   moveVelMin: 1.5
@@ -5157,7 +5191,6 @@ MonoBehaviour:
   SpiderbotPrefab: {fileID: 1789244597324514, guid: bc604b646e0954c2db323b783ef578cf,
     type: 3}
   spider: {fileID: 0}
-  PlayerPrefab: {fileID: 0}
   Scale: 1
   partLegs:
     enabled: 1

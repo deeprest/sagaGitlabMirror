@@ -623,6 +623,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "Minimap",
+                    "type": "Button",
+                    "id": "0f90ef74-ed44-45eb-9e8f-c77310b2ce21",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "DEV-Zoom",
                     "type": "Value",
                     "id": "daad5be2-bb09-4201-939d-730f35d6594c",
@@ -631,10 +639,18 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Minimap",
+                    "name": "DEV-Big",
                     "type": "Button",
-                    "id": "0f90ef74-ed44-45eb-9e8f-c77310b2ce21",
-                    "expectedControlType": "",
+                    "id": "5dbb8ef0-995e-4241-8ff7-36c21aff5edd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "DEV-Small",
+                    "type": "Button",
+                    "id": "9a62a876-af59-45a1-81a3-fd4085bd20af",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 }
@@ -791,28 +807,6 @@
                     "processors": "StickDeadzone(min=0.5,max=1)",
                     "groups": "Gamepad",
                     "action": "Aim",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "0696d703-2cb9-420e-bf32-8409870ca4d2",
-                    "path": "<Mouse>/scroll/y",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse+Keyboard",
-                    "action": "DEV-Zoom",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "bd7888e5-dec7-4c73-8ea1-e6a6b38577b2",
-                    "path": "<Gamepad>/leftStick/y",
-                    "interactions": "",
-                    "processors": "AxisDeadzone(min=0.3,max=1)",
-                    "groups": "Gamepad",
-                    "action": "DEV-Zoom",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1068,6 +1062,50 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "0696d703-2cb9-420e-bf32-8409870ca4d2",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse+Keyboard",
+                    "action": "DEV-Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bd7888e5-dec7-4c73-8ea1-e6a6b38577b2",
+                    "path": "<Gamepad>/leftStick/y",
+                    "interactions": "",
+                    "processors": "AxisDeadzone(min=0.3,max=1)",
+                    "groups": "Gamepad",
+                    "action": "DEV-Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "630865f1-1736-4b93-b151-8d5b50222055",
+                    "path": "<Keyboard>/n",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse+Keyboard",
+                    "action": "DEV-Big",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5f5b1b16-d1ed-4049-b4e3-9541d8042e51",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse+Keyboard",
+                    "action": "DEV-Small",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

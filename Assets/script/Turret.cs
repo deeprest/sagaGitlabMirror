@@ -75,20 +75,22 @@ public class Turret : Entity
       {
         Transform target = null;
         RaycastHit2D hit = Physics2D.Linecast( (Vector2)sightOrigin.position + delta.normalized * sightStartRadius, player, Global.TurretSightLayers );
-        if( hit.transform.root == Target.transform )
+        if( hit.transform != null && hit.transform.root == Target.transform )
           target = hit.transform;
         if( target == null )
         {
-          cannon.rotation = Quaternion.RotateTowards( cannon.rotation, Quaternion.Euler( 0, 0, 0 ) * transform.localToWorldMatrix.rotation, rotspeed * Time.deltaTime );
           animator.Play( "idle" );
+          //cannon.rotation = Quaternion.RotateTowards( cannon.rotation, transform.localToWorldMatrix.rotation, rotspeed * Time.deltaTime );
+          cannon.localRotation = Quaternion.RotateTowards( cannon.localRotation, Quaternion.identity, rotspeed * Time.deltaTime );
         }
         else
         {
           animator.Play( "alert" );
           Vector2 local = transform.worldToLocalMatrix.MultiplyVector( delta );
-          // todo prevent cannon from rotating outside of 180 degree range 
+          // prevent cannon from rotating outside of 180 degree range 
           float angle = Mathf.Clamp( Util.NormalizeAngle( Mathf.Rad2Deg * Mathf.Atan2( local.y, local.x ) - 90 ), min, max );
-          cannon.rotation = Quaternion.RotateTowards( cannon.rotation, Quaternion.Euler( 0, 0, angle ) * transform.localToWorldMatrix.rotation, rotspeed * Time.deltaTime );
+          cannon.localRotation = Quaternion.RotateTowards( cannon.localRotation, Quaternion.Euler( 0, 0, angle ), rotspeed * Time.deltaTime );
+          //cannon.rotation = Quaternion.RotateTowards( cannon.rotation, Quaternion.Euler( 0, 0, angle ) * transform.localToWorldMatrix.rotation, rotspeed * Time.deltaTime );
           Vector2 aim = cannon.transform.up;
           if( target != null && target.IsChildOf( Target.transform ) )
           {

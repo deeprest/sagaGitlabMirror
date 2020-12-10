@@ -93,7 +93,7 @@ public class Weapon : ScriptableObject
   {
     if( weaponType == WeaponType.Projectile )
     {
-      Collider2D col = Physics2D.OverlapCircle( pos, projectilePrefab.circle.radius, Global.ProjectileNoShootLayers );
+      Collider2D col = Physics2D.OverlapCircle( pos, projectilePrefab.circle.radius * scale, Global.ProjectileNoShootLayers );
       if( col == null )
       {
         GameObject go = Instantiate( projectilePrefab.gameObject, pos, Quaternion.identity );
@@ -101,7 +101,8 @@ public class Weapon : ScriptableObject
         Projectile projectile = go.GetComponent<Projectile>();
         projectile.weapon = this;
         projectile.instigator = instigator;
-        projectile.velocity = GetInitialVelocity( projectile, shoot ) * scale;
+        projectile.velocity = GetInitialVelocity( projectile, shoot );
+        projectile.Scale = scale;
 
         foreach( var c in instigator.IgnoreCollideObjects )
           Physics2D.IgnoreCollision( projectile.circle, c, true );

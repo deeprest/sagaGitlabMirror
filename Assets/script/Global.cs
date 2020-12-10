@@ -509,8 +509,9 @@ public class Global : MonoBehaviour
 
     // DEVELOPMENT
     Controls.BipedActions.DEVZoom.started += ( obj ) => { zoomDelta += obj.ReadValue<float>(); };
-
-    Controls.BipedActions.Minimap.performed += ( obj ) => { ToggleMinimap(); };
+    //Controls.BipedActions.Minimap.performed += ( obj ) => { ToggleMinimap(); };
+    Controls.BipedActions.DEVBig.performed += context => ((PlayerBiped) PlayerController.pawn).ScaleChange( 2 );
+    Controls.BipedActions.DEVSmall.performed += context => ((PlayerBiped) PlayerController.pawn).ScaleChange( 0.5f );
 
     if( Application.isEditor )
     {
@@ -702,7 +703,9 @@ public class Global : MonoBehaviour
         CameraController.orthoTarget = Mathf.Clamp( CameraController.orthoTarget, 1, 10 );
         FloatSetting["Zoom"].Value = CameraController.orthoTarget;
       }
-      debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
+      */
+      debugText.text = Camera.main.orthographicSize.ToString( "##.#" ); 
+      /*
     }
     else
     {

@@ -12,15 +12,16 @@ public class PlayerBiped : Pawn
   public float slidingOffsetTarget = 1;
   public float slidingOffsetRate = 4;*/
   //[SerializeField] private float DownOffset = BipedDownOffset;
-  
+
 #if BODY_PART_HUNT
   const float BipedDownOffset = 0.1f;
   public float SpiderDownOffset = 0.1f;
 #endif
 
-  // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
+  public float Scale = 1;
+  // smaller head box allows for easier jump out and up onto an overhead wall when standing on a ledge.
   public Vector2 headbox = new Vector2( .1f, .1f );
-  public float headboxy = 0.1f;
+  public float headboxy = -0.1f;
   const float downslopefudge = 0.2f;
   const float corner = 0.707f;
   Vector2 shoot;
@@ -44,6 +45,11 @@ public class PlayerBiped : Pawn
   Timer walljumpTimer = new Timer();
 
 
+  [Header( "DEV" )]
+  public float MoveScale = 0.5f;
+  public float JumpScale = 0.5f;
+  public AnimationCurve OrthoScale;
+  
   [Header( "Setting" )]
   public float spiderMoveSpeed = 5;
   public float speedFactorNormalized = 1;
@@ -54,9 +60,11 @@ public class PlayerBiped : Pawn
   // PICKLE
   public float moveSpeed
   {
-    get { return (moveVelMin + (moveVelMax - moveVelMin) * speedFactorNormalized) 
-#if PICKLE 
-* Scale 
+    get
+    {
+      return (moveVelMin + (moveVelMax - moveVelMin) * speedFactorNormalized)
+#if PICKLE
+      * 1f + (Scale - 1f) * MoveScale; 
 #endif
       ; }
   }
@@ -68,7 +76,7 @@ public class PlayerBiped : Pawn
   {
     get { return (jumpVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized) 
 #if PICKLE 
-* Scale 
+        * 1f + (Scale - 1f) * JumpScale;
 #endif
       ; }
   }
@@ -82,7 +90,7 @@ public class PlayerBiped : Pawn
   {
     get { return (dashVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized) 
 #if PICKLE 
-* Scale 
+* 1f + (Scale - 1f) * JumpScale; 
 #endif
       ; }
   }
@@ -509,7 +517,7 @@ public class PlayerBiped : Pawn
       }
     }
 
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.left, RaycastHits, Mathf.Max( contactSeparation, -velocity.x * dT ), Global.CharacterCollideLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.left, RaycastHits, Mathf.Max( raylength, -velocity.x * dT ), Global.CharacterCollideLayers );
     temp += "left: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
@@ -526,7 +534,7 @@ public class PlayerBiped : Pawn
       }
     }
 
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.right, RaycastHits, Mathf.Max( contactSeparation, velocity.x * dT ), Global.CharacterCollideLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.right, RaycastHits, Mathf.Max( raylength, velocity.x * dT ), Global.CharacterCollideLayers );
     temp += "right: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
@@ -542,13 +550,13 @@ public class PlayerBiped : Pawn
         break;
       }
     }
-    //Debug.Log( temp );
+    // Debug.Log( temp );
     transform.position = adjust;
   }
 
   public override Vector2 GetShotOriginPosition()
   {
-    return (Vector2) arm.position + shoot.normalized * armRadius;
+    return (Vector2) arm.position + shoot.normalized * armRadius * Scale;
   }
 
   public override Vector2 GetAimVector()
@@ -848,7 +856,7 @@ public class PlayerBiped : Pawn
             Push( Vector2.left * (input.DashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
             jumpRepeatTimer.Start( jumpRepeatInterval );
             walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
-            audio.PlayOneShot( soundJump );
+            audio.PlayOneShot( soundJump ); 
             Instantiate( walljumpEffect, WallkickPosition.position, Quaternion.identity );
           }
           else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
@@ -1147,10 +1155,39 @@ public class PlayerBiped : Pawn
       DamagePulseFlip();
     } );
   }
+  
 
-  public GameObject PlayerPrefab;
-  // PICKLE
-  public float Scale = 1;
+
+  public void ScaleChange( float scale )
+  {
+#if PICKLE    
+    Scale *= scale;
+    
+    DownOffset = 0.1f * Scale;
+    raylength = 0.05f * Scale;
+    contactSeparation = 0.01f * Scale;
+    SetAnimatorSpeed( 1f + (1f - Scale) * MoveScale );
+    
+    Health = MaxHealth;
+    dashSmoke.transform.localScale = Vector3.one * Scale;
+    damageSmoke.transform.localScale = Vector3.one * Scale;
+    Global.instance.CameraController.orthoTarget = OrthoScale.Evaluate( Scale );
+    // HACK hardcoded value
+    Global.instance.CameraController.yHalfWidth = 0.5f * Scale; 
+    // damage smoke
+    ParticleSystem.MainModule damageSmokeMain = damageSmoke.main;
+    ParticleSystem.MinMaxCurve rateCurve = damageSmokeMain.startSpeed;
+    // HACK hardcoded value
+    rateCurve.constant = 0.5f * Scale;
+    damageSmokeMain.startSpeed = rateCurve;
+    
+    // todo 
+    // dash effect
+    // no jump
+    // scale debris
+    // projectile speed
+#endif
+  }
   
   protected override void Die()
   {
@@ -1179,26 +1216,7 @@ public class PlayerBiped : Pawn
     
 #if PICKLE
     // PICKLE RICK EXPERIMENT
-    Scale *= 0.5f;
-    Health = 3;//MaxHealth;
-    DownOffset *= 0.5f;
-    jumpDuration *= 1.0f / Scale;
-    dashSmoke.transform.localScale = Vector3.one * Scale;
-    damageSmoke.transform.localScale = Vector3.one * Scale;
-    Global.instance.CameraController.orthoTarget = Scale * 2;
-    Global.instance.CameraController.yHalfWidth *= 0.5f;
-    // damage smoke
-    ParticleSystem.MainModule damageSmokeMain = damageSmoke.main;
-    ParticleSystem.MinMaxCurve rateCurve = damageSmokeMain.startSpeed;
-    rateCurve.constant *= 0.5f;
-    damageSmokeMain.startSpeed = rateCurve;
-    // dash effect
-    // no jump
-    // scale debris
-    // projectile speed
-    
-    // embigginning!
-    
+    ScaleChange( 0.5f );
 #else
     
     // RESPAWN
@@ -1231,7 +1249,7 @@ public class PlayerBiped : Pawn
     damageSmokeEmission.rateOverTime = rateCurve;
     
     StopCharge();
-    partHead.transform.localScale = Vector3.one * (1 + (Health / MaxHealth) * 10);
+    //partHead.transform.localScale = Vector3.one * (1 + (Health / MaxHealth) * 10);
     audio.PlayOneShot( soundDamage );
     CameraShake shaker = Global.instance.CameraController.GetComponent<CameraShake>();
     shaker.amplitude = 0.3f;
