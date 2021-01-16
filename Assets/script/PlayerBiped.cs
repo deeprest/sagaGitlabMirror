@@ -8,9 +8,7 @@ using UnityEngine.Serialization;
 public class PlayerBiped : Pawn
 {
   [Header( "PlayerBiped" )]
-  
-  public float DownOffset = 0;
-  
+
   /*public float slidingOffset = 1;
   public float slidingOffsetTarget = 1;
   public float slidingOffsetRate = 4;*/
@@ -993,7 +991,7 @@ public class PlayerBiped : Pawn
     carryCharacter = null;
 
     UpdateHit( dT );
-    // update collision flags, and adjust position before render
+    // update collision flags, and adjust position
     UpdateCollision( dT );
 
     transform.position = pos;

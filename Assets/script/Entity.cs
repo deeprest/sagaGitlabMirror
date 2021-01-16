@@ -52,7 +52,7 @@ public class Entity : MonoBehaviour, IDamage
   
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
-  const float DownOffset = 0; //0.13f;
+  public float DownOffset = 0;
 
   public float Raydown 
   {
@@ -112,7 +112,7 @@ public class Entity : MonoBehaviour, IDamage
 
   protected virtual void Awake()
   {
-    print("entity awake "+name  );
+
     if( !Limit.OnCreate( this ) )
       return;
     EntityAwake();

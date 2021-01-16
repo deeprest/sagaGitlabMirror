@@ -4,7 +4,6 @@ public class PhysicsPawn : Pawn
 {
   public float moveSpeed = 3;
   public float jumpSpeed = 5;
-  public float DownOffset = 0;
   const float corner = 0.707f;
   private float Scale = 1;
   public float airFriction = 0;
