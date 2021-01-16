@@ -63,7 +63,7 @@ public class Shield : MonoBehaviour, IDamage
     {
       if( damage != null )
         chr.TakeDamage( damage );
-      chr.Push( hitPushSpeed * ((Vector2)(d.damageSource.transform.position - transform.position)).normalized, hitPushDuration );
+      chr.OverrideVelocity( hitPushSpeed * ((Vector2)(d.damageSource.transform.position - transform.position)).normalized, hitPushDuration );
     }
 
     if( d.amount <= MaximumDamage )

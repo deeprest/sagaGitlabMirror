@@ -718,7 +718,7 @@ public class PlayerBiped : Pawn
     if( grapPulling )
       velocity = Vector3.zero;
     else if( !(input.MoveRight || input.MoveLeft) )
-      velocity.x = 0;
+      velocity.x = inertia.x;
 
     if( partArmBack.enabled )
     {
@@ -802,13 +802,14 @@ public class PlayerBiped : Pawn
         if( input.MoveRight )
         {
           facingRight = true;
+          inertia.x = Mathf.Max( inertia.x, 0 );
           // move along floor if angled downwards
           Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.forward );
           if( onGround && hitnormalCross.y < 0 )
             // add a small downward vector for curved surfaces
             velocity = hitnormalCross * moveSpeed + Vector3.down * downslopefudge;
           else
-            velocity.x = moveSpeed;
+            velocity.x = moveSpeed + inertia.x;
           if( !facingRight && onGround )
             StopDash();
         }
@@ -816,13 +817,14 @@ public class PlayerBiped : Pawn
         if( input.MoveLeft )
         {
           facingRight = false;
+          inertia.x = Mathf.Min( inertia.x, 0 );
           // move along floor if angled downwards
           Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.back );
           if( onGround && hitnormalCross.y < 0 )
             // add a small downward vector for curved surfaces
             velocity = hitnormalCross * moveSpeed + Vector3.down * downslopefudge;
           else
-            velocity.x = -moveSpeed;
+            velocity.x = -moveSpeed + inertia.x;
           if( facingRight && onGround )
             StopDash();
         }
@@ -865,7 +867,7 @@ public class PlayerBiped : Pawn
           {
             walljumping = true;
             velocity.y = jumpSpeed;
-            Push( Vector2.left * (input.DashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
+            OverrideVelocity( Vector2.left * (input.DashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
             jumpRepeatTimer.Start( jumpRepeatInterval );
             walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
             audio.PlayOneShot( soundJump );
@@ -886,7 +888,7 @@ public class PlayerBiped : Pawn
           {
             walljumping = true;
             velocity.y = jumpSpeed;
-            Push( Vector2.right * (input.DashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
+            OverrideVelocity( Vector2.right * (input.DashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
             jumpRepeatTimer.Start( jumpRepeatInterval );
             walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
             audio.PlayOneShot( soundJump );
@@ -957,8 +959,8 @@ public class PlayerBiped : Pawn
     if( UseGravity )
       velocity.y -= Global.Gravity * dT;
 
-    if( !grapPulling && pushTimer.IsActive )
-      velocity.x = pushVelocity.x;
+    if( !grapPulling && overrideVelocityTimer.IsActive )
+      velocity.x = overrideVelocity.x;
 
     if( hanging )
       velocity = Vector3.zero;
@@ -967,18 +969,19 @@ public class PlayerBiped : Pawn
     if( collideRight )
     {
       velocity.x = Mathf.Min( velocity.x, 0 );
-      pushVelocity.x = Mathf.Min( pushVelocity.x, 0 );
+      inertia.x = Mathf.Min( inertia.x, 0 );
     }
     if( collideLeft )
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
-      pushVelocity.x = Mathf.Max( pushVelocity.x, 0 );
+      inertia.x = Mathf.Max( inertia.x, 0 );
     }
     // NOTE: "onGround" is not the same as "collideBottom"
     if( onGround )
     {
       velocity.y = Mathf.Max( velocity.y, 0 );
-      pushVelocity.x -= (pushVelocity.x * friction) * dT;
+      //inertia.x -= (inertia.x * friction) * dT;
+      inertia.x = 0;
     }
     if( collideTop )
     {
@@ -988,6 +991,8 @@ public class PlayerBiped : Pawn
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     // value is adjusted later by collision
     pos = transform.position + (Vector3) Velocity * dT;
+
+    Entity previousCarry = carryCharacter;
     carryCharacter = null;
 
     UpdateHit( dT );
@@ -995,7 +1000,11 @@ public class PlayerBiped : Pawn
     UpdateCollision( dT );
 
     transform.position = pos;
-    
+
+    // carry momentum when jumping from moving platforms
+    if( previousCarry != null && carryCharacter == null )
+      inertia = previousCarry.Velocity;
+
     UpdateCursor();
 
     if( takingDamage )
@@ -1279,7 +1288,7 @@ public class PlayerBiped : Pawn
     float sign = Mathf.Sign( d.damageSource.position.x - transform.position.x );
     facingRight = sign > 0;
     velocity.y = 0;
-    Push( new Vector2( -sign * damagePushAmount, damageLift ), damageDuration );
+    OverrideVelocity( new Vector2( -sign * damagePushAmount, damageLift ), damageDuration );
     arm.gameObject.SetActive( false );
     takingDamage = true;
     damagePassThrough = true;
