@@ -7,16 +7,23 @@ public interface ILimit
   bool IsUnderLimit();
 }
 
+/*
+// Put this in Awake()
+if( !Limit.OnCreate( this ) )     
+  return;
+*/
+
 public class Limit<T> where T : MonoBehaviour
 {
   public List<T> All = new List<T>();
-  public bool IsUnderLimit(){ return All.Count < Upper; }
-  public int Upper = 10;
+  public bool IsUnderLimit(){ return All.Count < UpperLimit; }
+  public int UpperLimit = 10;
   public bool EnforceUpper = true;
+  public bool AlwaysCreate = false;
 
   public bool OnCreate( T obj )
   {
-    if( EnforceUpper && All.Count >= Upper )
+    if( EnforceUpper && All.Count >= UpperLimit )
     {
       Object.Destroy( obj.gameObject );
       return false;

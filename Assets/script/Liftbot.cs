@@ -76,7 +76,7 @@ public class Liftbot : Entity, IWorldSelectable
     UpdateLogic = UpdateLiftbot;
     UpdateHit = null;
     UpdateCollision = null;
-    UpdatePosition = null; // BasicPosition;
+    UpdatePosition = BasicPosition;
     origin = transform.position;
     if( !IsTriggeredByPlayer )
       timeout.Start( waitDuration, null, NextWaypoint );
@@ -118,7 +118,12 @@ public class Liftbot : Entity, IWorldSelectable
       if( DistanceToWaypoint() < closeEnough || dot < 0 )
       {
         velocity = Vector2.zero;
-        transform.position = origin + path[pathIndex];
+        
+        // WARNING
+        // This does not update player position, which creates an immediate an noticeable offset
+        // between the player's feet and the liftbot when reaching a waypoint. 
+        /*transform.position = origin + path[pathIndex];*/
+        
         if( !waiting )
         {
           waiting = true;
@@ -134,14 +139,6 @@ public class Liftbot : Entity, IWorldSelectable
     else
     {
       velocity = Vector2.zero;
-    }
-  }
-
-  private void FixedUpdate()
-  {
-    if( body.bodyType == RigidbodyType2D.Kinematic )
-    {
-      body.MovePosition( body.position + (velocity * Time.fixedDeltaTime) );
     }
   }
 

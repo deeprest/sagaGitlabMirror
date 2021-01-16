@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class SpiderPawn : Pawn
 {
-  [Header( "Setting" )] public float moveSpeed = 3;
+  [Header( "Setting" )] 
+  public float moveSpeed = 3;
   public float jumpSpeed = 5;
 
   [Header( "Ability" )] [SerializeField] Ability ability;

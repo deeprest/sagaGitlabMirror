@@ -8,6 +8,9 @@ using UnityEngine.Serialization;
 public class PlayerBiped : Pawn
 {
   [Header( "PlayerBiped" )]
+  
+  public float DownOffset = 0;
+  
   /*public float slidingOffset = 1;
   public float slidingOffsetTarget = 1;
   public float slidingOffsetRate = 4;*/
@@ -195,6 +198,8 @@ public class PlayerBiped : Pawn
 
   protected override void Awake()
   {
+    // do not add to the Limit
+    // EntityAwake();
     base.Awake();
     InitializeParts();
   }
@@ -327,10 +332,12 @@ public class PlayerBiped : Pawn
     }
   }
 
+  private Vector2 pos;
+
   new void UpdateHit( float dT )
   {
     pups.Clear();
-    hitCount = Physics2D.BoxCastNonAlloc( transform.position, box.size, 0, velocity, RaycastHits, Mathf.Max( raylength, velocity.magnitude * dT ), HitLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( pos, box.size, 0, velocity, RaycastHits, Mathf.Max( raylength, velocity.magnitude * dT ), HitLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -413,22 +420,22 @@ public class PlayerBiped : Pawn
     collideLeft = false;
     collideTop = false;
     collideBottom = false;
-    adjust = transform.position;
+    adjust = pos;
 
 #region multisampleAttempt
 
     /*
     // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground bug by 'sampling' the ground at multiple points
-    RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
-    RaycastHit2D left = Physics2D.Raycast( adjust + Vector2.left * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+    RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
+    RaycastHit2D left = Physics2D.Raycast( adjust + Vector2.left * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
     if( right.transform != null )
       rightFoot = right.point;
     else
-      rightFoot = adjust + ( Vector2.right * box.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * Time.deltaTime ) );
+      rightFoot = adjust + ( Vector2.right * box.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * dT ) );
     if( left.transform != null )
       leftFoot = left.point;
     else
-      leftFoot = adjust + ( Vector2.left * box.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * Time.deltaTime ) );
+      leftFoot = adjust + ( Vector2.left * box.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * dT ) );
 
     if( right.transform != null || left.transform != null )
     {
@@ -454,10 +461,16 @@ public class PlayerBiped : Pawn
     */
 
 #endregion
-
+    
     // slidingOffsetTarget = 1;
     string temp = "";
-    float down = (jumping || walljumping) ? contactSeparation : DownOffset + contactSeparation + raylength;
+    //float down = (jumping || walljumping) ? contactSeparation : DownOffset + contactSeparation + raylength;
+    //float down = (jumping || walljumping) ? 0 : DownOffset;
+    
+    const float raydown = 0.2f;
+    const float downOffset = 0.12f;
+    float down = jumping ? raydown - downOffset : raydown;
+    //float down = DownOffset + contactSeparation;
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size * Scale, 0, Vector2.down, RaycastHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
     temp += "down: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
@@ -482,7 +495,7 @@ public class PlayerBiped : Pawn
         }
         adjust.y = hit.point.y + box.size.y * 0.5f + slidingOffset * downOffset;
         */
-        adjust.y = hit.point.y + box.size.y * 0.5f * Scale + DownOffset + contactSeparation;
+        adjust.y = hit.point.y + box.size.y * 0.5f * Scale + downOffset;
 
         hitBottomNormal = hit.normal;
         // moving platforms
@@ -551,7 +564,10 @@ public class PlayerBiped : Pawn
       }
     }
     // Debug.Log( temp );
-    transform.position = adjust;
+
+    pos = adjust;
+    //transform.position = adjust;
+
   }
 
   public override Vector2 GetShotOriginPosition()
@@ -682,13 +698,13 @@ public class PlayerBiped : Pawn
     if( shoot.sqrMagnitude < 0.0001f )
       shoot = facingRight ? Vector2.right : Vector2.left;
   }
-
-  void Update()
+  
+  public override void EntityUpdate( )
   {
+    float dT = Time.deltaTime;
+    
     if( Global.Paused )
       return;
-
-    UpdateCursor();
 
     string anim = "idle";
     bool previousGround = onGround;
@@ -705,8 +721,6 @@ public class PlayerBiped : Pawn
       velocity = Vector3.zero;
     else if( !(input.MoveRight || input.MoveLeft) )
       velocity.x = 0;
-    if( carryCharacter != null )
-      velocity = carryCharacter.velocity;
 
     if( partArmBack.enabled )
     {
@@ -856,13 +870,13 @@ public class PlayerBiped : Pawn
             Push( Vector2.left * (input.DashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
             jumpRepeatTimer.Start( jumpRepeatInterval );
             walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
-            audio.PlayOneShot( soundJump ); 
+            audio.PlayOneShot( soundJump );
             Instantiate( walljumpEffect, WallkickPosition.position, Quaternion.identity );
           }
           else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
           {
             wallsliding = true;
-            velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
+            velocity.y += (-velocity.y * wallSlideFactor) * dT;
             dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
             if( !dashSmoke.isPlaying )
               dashSmoke.Play();
@@ -883,7 +897,7 @@ public class PlayerBiped : Pawn
           else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
           {
             wallsliding = true;
-            velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
+            velocity.y += (-velocity.y * wallSlideFactor) * dT;
             dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
             if( !dashSmoke.isPlaying )
               dashSmoke.Play();
@@ -941,9 +955,9 @@ public class PlayerBiped : Pawn
     if( ability != null )
       ability.UpdateAbility( this );
 
-    // add gravity before velocity limits
+    // // add gravity before velocity limits
     if( UseGravity )
-      velocity.y -= Global.Gravity * Time.deltaTime;
+      velocity.y -= Global.Gravity * dT;
 
     if( !grapPulling && pushTimer.IsActive )
       velocity.x = pushVelocity.x;
@@ -966,7 +980,7 @@ public class PlayerBiped : Pawn
     if( onGround )
     {
       velocity.y = Mathf.Max( velocity.y, 0 );
-      pushVelocity.x -= (pushVelocity.x * friction) * Time.deltaTime;
+      pushVelocity.x -= (pushVelocity.x * friction) * dT;
     }
     if( collideTop )
     {
@@ -974,12 +988,17 @@ public class PlayerBiped : Pawn
     }
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    transform.position += (Vector3) velocity * Time.deltaTime;
+    // value is adjusted later by collision
+    pos = transform.position + (Vector3) Velocity * dT;
     carryCharacter = null;
 
-    UpdateHit( Time.deltaTime );
+    UpdateHit( dT );
     // update collision flags, and adjust position before render
-    UpdateCollision( Time.deltaTime );
+    UpdateCollision( dT );
+
+    transform.position = pos;
+    
+    UpdateCursor();
 
     if( takingDamage )
       anim = "damage";
@@ -1010,6 +1029,7 @@ public class PlayerBiped : Pawn
     Play( anim );
     transform.localScale = (new Vector3( facingRight ? 1 : -1, 1, 1 )) * Scale;
     renderer.material.SetInt( "_FlipX", facingRight ? 0 : 1 );
+
     arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, shoot ) );
     if( wallsliding && collideRight )

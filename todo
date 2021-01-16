@@ -1,14 +1,20 @@
 * respawn, parts, pickle *
 
-- auto slide when falling against slanted wall
++ FIX: lift jitter Build 0421 has no jitter on the lift. Find out why and fix it.
+CAUSE: camera lerps, liftbot snapping to waypoint.
+
+
+- FIX: stuck on wall 
+- figure out inertia when moving horizontal on lift
+- NEW: auto slide when falling against slanted wall
+- FIX: graphook
 
 # PARTS
 - cursor after death
 - should not shoot without backArm
 - should not be able to use ability without front arm
-
-- fix graphook
 - shield on back? propellar on back? dash in air to use prop. press down to use shield?
+
 - playercontroller record/input, moveup/movedown, add spider action map
 - stickybomb exploding interaction with shield:
   1) do raycast to each IDamage within range

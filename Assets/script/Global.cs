@@ -12,6 +12,8 @@ using UnityEngine.AI;
 using LitJson;
 using Ionic.Zip;
 // deeprest.SerializedObject
+using UnityEngine.Profiling;
+
 using deeprest;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -674,10 +676,20 @@ public class Global : MonoBehaviour
     if( !Updating )
       return;
 
+    
+    
+    //Profiler.BeginSample( "EntityUpdate" );
+    for( int i = 0; i < Entity.Limit.All.Count; i++ )
+      Entity.Limit.All[ i ].EntityUpdate();
+
     for( int i = 0; i < Controller.All.Count; i++ )
-    {
       Controller.All[i].Update();
-    }
+    
+    // pawns are not added to Limit
+    for( int i = 0; i < Controller.All.Count; i++ )
+      if( Controller.All[i].pawn != null )
+        Controller.All[i].pawn.EntityUpdate();
+    //Profiler.EndSample();
 
     if( loadingScene )
     {
@@ -736,13 +748,21 @@ public class Global : MonoBehaviour
   {
     if( !Updating )
       return;
+
+    Profiler.BeginSample( "EntityLateUpdate" );
+    for( int i = 0; i < Entity.Limit.All.Count; i++ )
+    {
+      Entity.Limit.All[ i ].EntityLateUpdate();
+    }
+    Profiler.EndSample();
+    
     CameraController.CameraLateUpdate();
   }
 
   public void SpawnPlayer()
   {
     GameObject go = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
-    PlayerBiped pawn = go.GetComponent<PlayerBiped>();
+    Pawn pawn = go.GetComponent<Pawn>();
     CurrentPlayer = pawn;
     PlayerController.AssignPawn( pawn );
     Global.instance.CameraController.orthoTarget = 3;
@@ -1207,7 +1227,7 @@ public class Global : MonoBehaviour
 
     CreateFloatSetting( "CursorOuter", 1, 0, 1, 20, delegate( float value ) { CursorOuter = value; } );
     CreateFloatSetting( "CursorSensitivity", 1, 0.001f, 1, 1000, delegate( float value ) { CursorSensitivity = value; } );
-    CreateFloatSetting( "CameraLerpAlpha", 10, 1, 10, 100, delegate( float value ) { CameraController.lerpAlpha = value; } );
+    CreateFloatSetting( "CameraLerpAlpha", 10, 0, 10, 100, delegate( float value ) { CameraController.lerpAlpha = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 20, delegate( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 10, delegate ( float value ) { deadZone = value; } );
     CreateFloatSetting( "PlayerSpeedFactor", 0.3f, 0, 1, 10, delegate( float value )
