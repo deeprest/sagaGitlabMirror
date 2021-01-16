@@ -1,13 +1,10 @@
-* respawn, parts, pickle *
-
-+ FIX: lift jitter Build 0421 has no jitter on the lift. Find out why and fix it.
-CAUSE: camera lerps, liftbot snapping to waypoint.
-
-
++ FIX: lift jitter (Build 0421 has no jitter on the lift)
 - FIX: stuck on wall 
-- figure out inertia when moving horizontal on lift
+
+- NEW maintain inertia when moving horizontal on lift
 - NEW: auto slide when falling against slanted wall
 - FIX: graphook
+- FIX pushTImer during slowmo?
 
 # PARTS
 - cursor after death

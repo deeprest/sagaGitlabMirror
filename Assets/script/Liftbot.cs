@@ -59,16 +59,18 @@ public class LiftbotEdtitor : Editor
 public class Liftbot : Entity, IWorldSelectable
 {
   public float flySpeed = 2;
-  public float waitDuration = 2;
+  public float slowSpeed = 200;
+  public float waitDuration = 1;
   int pathIndex = 0;
   public Vector2 origin;
   public Vector2[] path;
   Timer timeout = new Timer();
-  bool waiting = true;
   public bool pingpong = false;
   int indexIncrement = 1;
   public bool UseWaitDuration = true;
   public bool IsTriggeredByPlayer = false;
+  //protected float closeEnough { get { return flySpeed * 0.0167f * Time.timeScale; } }
+  public float closeEnough = 0.25f;
 
   protected override void Start()
   {
@@ -90,55 +92,65 @@ public class Liftbot : Entity, IWorldSelectable
     timeout.Stop( false );
   }
 
-  protected float DistanceToWaypoint()
+  float DistanceToWaypoint()
   {
     return Vector3.Distance( transform.position, origin + path[pathIndex] );
   }
 
   protected void NextWaypoint()
   {
-    waiting = false;
     int next = pathIndex + indexIncrement;
     if( pingpong && (next >= path.Length || next < 0) )
       indexIncrement = -indexIncrement;
     pathIndex = (pathIndex + indexIncrement) % path.Length;
-    timeout.Stop( false );
     //if( flySpeed > 0 )
     //  timeout.Start( DistanceToWaypoint() / flySpeed, null, NextWaypoint );
   }
-
-  protected float closeEnough { get { return flySpeed * Time.maximumDeltaTime * Time.timeScale; } }
-
+  
   void UpdateLiftbot()
   {
-    if( !waiting && path.Length > 0 )
+    /*Vector2 line = path[pathIndex] - path[(pathIndex-1+path.Length) % path.Length];
+    Debug.DrawLine( origin+path[pathIndex], origin +path[(pathIndex-1+path.Length) % path.Length], Color.green );*/
+    
+    // check for waiting flag from last frame
+    //  if( waiting )
+    //    velocity = Vector2.zero;
+    // else 
+    if( path.Length > 0 )
     {
+      /*Vector2 normal = path[(pathIndex - 1 + path.Length) % path.Length] - path[pathIndex];
+      Vector2 rdelta = (Vector2)transform.position - path[pathIndex];
+      Vector2 targetOnLine = origin + path[pathIndex] + Util.Project2D( rdelta, normal );
+      Vector2 delta = targetOnLine - (Vector2) transform.position;
+      Debug.DrawLine( targetOnLine, (Vector2)transform.position, Color.red );*/
+      
       Vector2 delta = origin + path[pathIndex] - (Vector2)transform.position;
-      float dot = Vector2.Dot( velocity, delta );
-      if( DistanceToWaypoint() < closeEnough || dot < 0 )
+      //float dot = Vector2.Dot( velocity, delta );
+      if( delta.sqrMagnitude < closeEnough*closeEnough )// || dot < 0 )
       {
-        velocity = Vector2.zero;
+        //velocity = delta.normalized * slowSpeed;
         
         // WARNING
         // This does not update player position, which creates an immediate an noticeable offset
         // between the player's feet and the liftbot when reaching a waypoint. 
-        /*transform.position = origin + path[pathIndex];*/
+        //transform.position = origin + path[pathIndex];
         
-        if( !waiting )
+        // Set the velocity for one frame to arrive almost exactly at the target.
+        // The velocity is set to zero when the waiting flag is checked.  
+        velocity = delta * Time.smoothDeltaTime * slowSpeed;
+
+        if( UseWaitDuration )
         {
-          waiting = true;
-          if( UseWaitDuration )
+          if( !timeout.IsActive )
             timeout.Start( waitDuration, null, NextWaypoint );
         }
+        else
+          NextWaypoint();
       }
       else
       {
-        velocity = (origin + path[pathIndex] - (Vector2)transform.position).normalized * flySpeed;
+        velocity = delta.normalized * flySpeed;
       }
-    }
-    else
-    {
-      velocity = Vector2.zero;
     }
   }
 
