@@ -1,10 +1,9 @@
-﻿﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.Events;
+//using Random = UnityEngine.Random;
 
-public enum Team
+ public enum Team
 {
   None,
   GoodGuys,
@@ -113,6 +112,7 @@ public class Entity : MonoBehaviour, IDamage
 
   protected virtual void Awake()
   {
+    print("entity awake "+name  );
     if( !Limit.OnCreate( this ) )
       return;
     EntityAwake();
@@ -161,7 +161,7 @@ public class Entity : MonoBehaviour, IDamage
     
   }
 
-  public virtual void EntityUpdate( )
+  public virtual void EntityUpdate()
   {
     if( Global.Paused )
       return;
@@ -437,11 +437,12 @@ public class Entity : MonoBehaviour, IDamage
     collideTop = false;
     collideBottom = false;
     const float corner = 0.707f;
+    const float raydown = 0.2f;
     boxOffset.x = box.offset.x * Mathf.Sign( transform.localScale.x );
     boxOffset.y = box.offset.y;
     adjust = (Vector2)transform.position + boxOffset;
 
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( Raydown /*raylength*/, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( raydown, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
