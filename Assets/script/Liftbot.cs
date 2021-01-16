@@ -59,8 +59,10 @@ public class LiftbotEdtitor : Editor
 public class Liftbot : Entity, IWorldSelectable
 {
   public float flySpeed = 2;
-  public float slowSpeed = 200;
+  const float slowSpeed = 200;
   public float waitDuration = 1;
+  const float closeEnough = 0.25f;
+  //protected float closeEnough { get { return flySpeed * Application.targetFrameRate * Time.timeScale; } }
   int pathIndex = 0;
   public Vector2 origin;
   public Vector2[] path;
@@ -69,8 +71,6 @@ public class Liftbot : Entity, IWorldSelectable
   int indexIncrement = 1;
   public bool UseWaitDuration = true;
   public bool IsTriggeredByPlayer = false;
-  //protected float closeEnough { get { return flySpeed * 0.0167f * Time.timeScale; } }
-  public float closeEnough = 0.25f;
 
   protected override void Start()
   {
@@ -112,31 +112,18 @@ public class Liftbot : Entity, IWorldSelectable
     /*Vector2 line = path[pathIndex] - path[(pathIndex-1+path.Length) % path.Length];
     Debug.DrawLine( origin+path[pathIndex], origin +path[(pathIndex-1+path.Length) % path.Length], Color.green );*/
     
-    // check for waiting flag from last frame
-    //  if( waiting )
-    //    velocity = Vector2.zero;
-    // else 
     if( path.Length > 0 )
     {
-      /*Vector2 normal = path[(pathIndex - 1 + path.Length) % path.Length] - path[pathIndex];
-      Vector2 rdelta = (Vector2)transform.position - path[pathIndex];
-      Vector2 targetOnLine = origin + path[pathIndex] + Util.Project2D( rdelta, normal );
-      Vector2 delta = targetOnLine - (Vector2) transform.position;
-      Debug.DrawLine( targetOnLine, (Vector2)transform.position, Color.red );*/
-      
       Vector2 delta = origin + path[pathIndex] - (Vector2)transform.position;
       //float dot = Vector2.Dot( velocity, delta );
       if( delta.sqrMagnitude < closeEnough*closeEnough )// || dot < 0 )
       {
-        //velocity = delta.normalized * slowSpeed;
-        
         // WARNING
         // This does not update player position, which creates an immediate an noticeable offset
         // between the player's feet and the liftbot when reaching a waypoint. 
-        //transform.position = origin + path[pathIndex];
+        /*transform.position = origin + path[pathIndex];*/
         
-        // Set the velocity for one frame to arrive almost exactly at the target.
-        // The velocity is set to zero when the waiting flag is checked.  
+        // Smooth arrival
         velocity = delta * Time.smoothDeltaTime * slowSpeed;
 
         if( UseWaitDuration )
@@ -163,7 +150,6 @@ public class Liftbot : Entity, IWorldSelectable
   protected override void Die()
   {
     base.Die();
-    // todo
   }
 
   public void Highlight()

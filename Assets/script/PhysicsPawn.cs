@@ -25,8 +25,8 @@ public class PhysicsPawn : Pawn
       inputVelocity.y = 0;
 
     Vector2 acc = Vector2.zero;
-    if( pushTimer.IsActive )
-      acc += pushVelocity;
+    if( overrideVelocityTimer.IsActive )
+      acc += overrideVelocity;
     acc += Vector2.down * Global.Gravity;
     velocity += acc * Time.fixedDeltaTime;
     

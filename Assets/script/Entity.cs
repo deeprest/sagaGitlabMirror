@@ -32,7 +32,7 @@ public class Entity : MonoBehaviour, IDamage
   public bool UseGravity = true;
   public bool IsStatic = false;
   public bool BoxCollisionOne = false;
-  public Vector2 velocity = Vector2.zero;
+  public Vector2 velocity;
   public Vector2 Velocity
   {
     get
@@ -43,8 +43,9 @@ public class Entity : MonoBehaviour, IDamage
         return velocity + carryCharacter.Velocity;
     }
   }
-  public Vector2 pushVelocity = Vector2.zero;
-  public Timer pushTimer = new Timer();
+  public Vector2 inertia;
+  public Vector2 overrideVelocity;
+  public Timer overrideVelocityTimer = new Timer();
   public bool hanging { get; set; }
   // moving platforms / stacking characters
   public Entity carryCharacter;
@@ -129,7 +130,7 @@ public class Entity : MonoBehaviour, IDamage
       return;
     Limit.OnDestroy( this );
     flashTimer.Stop( false );
-    pushTimer.Stop( false );
+    overrideVelocityTimer.Stop( false );
     if( rootEntity != null )
       rootEntity.RemoveChild( this );
     rootEntity = null;
@@ -234,17 +235,23 @@ public class Entity : MonoBehaviour, IDamage
     }
   }
 
-  public void Push( Vector2 pVelocity, float duration )
+  public void OverrideVelocity( Vector2 pVelocity, float duration )
   {
-    pushVelocity = pVelocity;
-    pushTimer.Start( duration );
+    overrideVelocityTimer.Stop( false );
+    overrideVelocityTimer.Start( duration, delegate( Timer timer )
+    {
+      overrideVelocity = pVelocity;
+    }, delegate
+    {
+      overrideVelocity = Vector2.zero;
+    });
   }
 
   protected void BasicPosition()
   {
 
-    if( pushTimer.IsActive )
-      velocity = pushVelocity;
+    if( overrideVelocityTimer.IsActive )
+      velocity = overrideVelocity;
 
     if( UseGravity )
       velocity.y += -Global.Gravity * Time.deltaTime;
