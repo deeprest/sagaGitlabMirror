@@ -282,6 +282,10 @@ public class Global : MonoBehaviour
     InitializeInput();
 
     PlayerController = ScriptableObject.CreateInstance<PlayerController>();
+    
+    // SCRIPT EXECUTION ORDER Global.cs is first priority so that Awake() called from scene load in editor respects the code below.
+    //Entity.Limit.UpperLimit = 1000;
+    Entity.Limit.EnforceUpper = false;
 
     SceneManager.sceneLoaded += delegate( Scene arg0, LoadSceneMode arg1 )
     {
