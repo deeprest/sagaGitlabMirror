@@ -8,15 +8,12 @@ DEATH options:
 - Instant Replay: Playback system, use for death cycle:  go back in time to last grace period, play a couple seconds, and have a countdown, then let the player resume where they were at that point. If they die within 3 seconds, rewind even further to grace period before that.
 5. Tiny
 
-- spiderbot.
-spiderpawn has dynamic body
-liftbot kinematic
++ liftbot
 remove trigger layer, add OnTriggerEnter, collider->trigger = true
 removed layers: flameprojectile, enemy
 
 Use abilities gained from defeating enemies in the stage to defeat the boss. Can only use one ability per each MOUNT point. Abilities persist as long as they are installed. Replacing an ability drops it on the ground.
-
-Weapons are acquired from bosses. Weapons persist at all times; you can switch to them anytime.
+Weapons are acquired from bosses. You can switch to them anytime.
 
 Bosses.  Big wrecking ball robot. Agile melee ninja.
 
@@ -38,7 +35,7 @@ Bosses.  Big wrecking ball robot. Agile melee ninja.
 - landing snaps. possible anim frame adjustment will fix
 - adjust jump anim frame. it pops at the jump arc apex
 - high offset off angled floor
-- fix long slide clipping. collision should reduce velocity, not only position.
+- FIX long slide clipping. collision should reduce velocity, not only position.
 + mushy on lift. consider the velocity of the object being collided-with. [CarryObject]
 
 ### Menu / UI

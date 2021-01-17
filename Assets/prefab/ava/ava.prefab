@@ -4999,7 +4999,8 @@ MonoBehaviour:
   IsStatic: 0
   BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
-  pushVelocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
+  overrideVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 8
   raylength: 0.03
@@ -5102,7 +5103,9 @@ MonoBehaviour:
   dashDuration: 0.5
   wallJumpPushVelocity: 1.5
   wallJumpPushDuration: 0.1
-  wallSlideFactor: 8
+  wallSlideFactor: 6
+  wallSlideRotateSpeed: 0.5
+  wallSlideDownSpeed: 0.5
   landDuration: 0.1
   dashSmoke: {fileID: 198502029244883790}
   dashflashPrefab: {fileID: 8084430867303457385, guid: c98c1e30c637a4aa7b76b48386862633,
@@ -5192,6 +5195,7 @@ MonoBehaviour:
   SpiderbotPrefab: {fileID: 1789244597324514, guid: bc604b646e0954c2db323b783ef578cf,
     type: 3}
   spider: {fileID: 0}
+  wallSlideHardAngleTHreshold: 25
   partLegs:
     enabled: 1
     transform: {fileID: 4857518412556878}

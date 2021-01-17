@@ -132,7 +132,7 @@ public class PlayerController : Controller
         }
         else
         {
-          cursorDelta += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity;
+          cursorDelta += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity * Time.deltaTime;
           /*cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;*/
           aimDeltaSinceLastFrame = Vector2.zero;
           cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.01f );

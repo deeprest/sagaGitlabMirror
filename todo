@@ -1,14 +1,9 @@
++ NEW: auto slide when falling against slanted wall.
++ FIX long slide clipping. collision should reduce velocity, not only position.
 
-+ NEW maintain inertia when moving horizontal on lift
-
-- NEW: auto slide when falling against slanted wall
 - FIX: graphook
 - FIX pushTImer during slowmo?
 
-# PARTS
-- cursor after death
-- should not shoot without backArm
-- should not be able to use ability without front arm
 - shield on back? propellar on back? dash in air to use prop. press down to use shield?
 
 - playercontroller record/input, moveup/movedown, add spider action map

@@ -24,7 +24,10 @@ public class PlayerBiped : Pawn
   public Vector2 headbox = new Vector2( .1f, .1f );
   public float headboxy = -0.1f;
   const float downslopefudge = 0.2f;
-  const float corner = 0.707f;
+  private const float corner = 0.707106769f;
+  const float bottomCornerNormalY = 0.65f;
+  const float sideCornerNormalX = 0.707f;
+  
   Vector2 shoot;
 
   [Header( "State" )]
@@ -39,6 +42,7 @@ public class PlayerBiped : Pawn
 
   Vector3 hitBottomNormal;
   Vector2 wallSlideNormal;
+  private Vector2 wallSlideTargetNormal;
   Timer dashTimer = new Timer();
   Timer jumpTimer = new Timer();
   Timer jumpRepeatTimer = new Timer();
@@ -100,6 +104,8 @@ public class PlayerBiped : Pawn
   public float wallJumpPushVelocity = 1.5f;
   public float wallJumpPushDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
+  public float wallSlideRotateSpeed = 1;
+  public float wallSlideDownSpeed = 1;
   public float landDuration = 0.1f;
 
 
@@ -468,7 +474,6 @@ public class PlayerBiped : Pawn
     const float raydown = 0.2f;
     const float downOffset = 0.12f;
     float down = jumping ? raydown - downOffset : raydown;
-    //float down = DownOffset + contactSeparation;
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size * Scale, 0, Vector2.down, RaycastHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
     temp += "down: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
@@ -476,7 +481,7 @@ public class PlayerBiped : Pawn
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.y > corner )
+      if( hit.normal.y > bottomCornerNormalY )
       {
         collideBottom = true;
         /*
@@ -511,6 +516,32 @@ public class PlayerBiped : Pawn
         }
         break;
       }
+      /*
+      if( hit.normal.x > corner )
+      {
+        collideLeft = true;
+        hitLeft = hit;
+        adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
+        wallSlideNormal = hit.normal;
+        //break;
+      }
+      
+      if( hit.normal.x < -corner )
+      {
+        collideRight = true;
+        hitRight = hit;
+        adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
+        wallSlideNormal = hit.normal;
+        // break;
+      }
+      
+      if( hit.normal.y < -corner )
+      {
+        collideTop = true;
+        adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
+        // break;
+      }
+      */
     }
 
     hitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.up * headboxy, headbox, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
@@ -528,6 +559,8 @@ public class PlayerBiped : Pawn
       }
     }
 
+    // prefer more-horizontal walls for wall sliding
+    // float prefer = 2;
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.left, RaycastHits, Mathf.Max( raylength, -velocity.x * dT ), Global.CharacterCollideLayers );
     temp += "left: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
@@ -535,16 +568,23 @@ public class PlayerBiped : Pawn
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.x > corner )
+      if( hit.normal.x > sideCornerNormalX /*corner*/ )
       {
-        collideLeft = true;
-        hitLeft = hit;
-        adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
-        wallSlideNormal = hit.normal;
-        break;
+        // if( hit.normal.x < prefer )
+        // {
+          collideLeft = true;
+          hitLeft = hit;
+          adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
+          wallSlideTargetNormal = hit.normal;
+          // prevent clipping through angled walls when falling fast.
+          velocity.y -= Util.Project2D( velocity, hit.normal ).y;
+        //   prefer = hit.normal.x;
+        // }
       }
     }
 
+    // start out of normal range
+    // prefer = -2;
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.right, RaycastHits, Mathf.Max( raylength, velocity.x * dT ), Global.CharacterCollideLayers );
     temp += "right: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
@@ -552,22 +592,28 @@ public class PlayerBiped : Pawn
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.x < -corner )
+      if( hit.normal.x < -sideCornerNormalX /*-corner*/ )
       {
-        collideRight = true;
-        hitRight = hit;
-        adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
-        wallSlideNormal = hit.normal;
-        break;
+        // if( hit.normal.x > prefer )
+        // {
+          collideRight = true;
+          hitRight = hit;
+          adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
+          wallSlideTargetNormal = hit.normal;
+          // prevent clipping through angled walls when falling fast.
+          velocity.y -= Util.Project2D( velocity, hit.normal ).y;
+        //   prefer = hit.normal.x;
+        // }
       }
     }
+    
     // Debug.Log( temp );
 
     pos = adjust;
     //transform.position = adjust;
 
   }
-
+  
   public override Vector2 GetShotOriginPosition()
   {
     return (Vector2) arm.position + shoot.normalized * armRadius * Scale;
@@ -696,11 +742,12 @@ public class PlayerBiped : Pawn
     if( shoot.sqrMagnitude < 0.0001f )
       shoot = facingRight ? Vector2.right : Vector2.left;
   }
+
+  private bool previousWallsliding;
+  Vector2 previousWallSlideTargetNormal;
   
   public override void EntityUpdate( )
   {
-    float dT = Time.deltaTime;
-    
     if( Global.Paused )
       return;
 
@@ -712,6 +759,8 @@ public class PlayerBiped : Pawn
       landing = true;
       landTimer.Start( landDuration, null, delegate { landing = false; } );
     }
+    previousWallsliding = wallsliding;
+    previousWallSlideTargetNormal = wallSlideTargetNormal; 
     wallsliding = false;
 
     // must have input (or push) to move horizontally, so allow no persistent horizontal velocity (without push)
@@ -799,7 +848,11 @@ public class PlayerBiped : Pawn
       }
       else
       {
-        if( input.MoveRight )
+        if( input.MoveRight && input.MoveLeft )
+        {
+          velocity.x = 0;
+        }
+        else if( input.MoveRight )
         {
           facingRight = true;
           inertia.x = Mathf.Max( inertia.x, 0 );
@@ -813,8 +866,7 @@ public class PlayerBiped : Pawn
           if( !facingRight && onGround )
             StopDash();
         }
-
-        if( input.MoveLeft )
+        else if( input.MoveLeft )
         {
           facingRight = false;
           inertia.x = Mathf.Min( inertia.x, 0 );
@@ -861,7 +913,7 @@ public class PlayerBiped : Pawn
           StartJump();
         else if( input.JumpEnd )
           StopJump();
-        else if( collideRight && input.MoveRight && hitRight.normal.y >= 0 )
+        else if( collideRight && /*input.MoveRight &&*/ hitRight.normal.y >= 0 )
         {
           if( input.JumpStart )
           {
@@ -875,14 +927,11 @@ public class PlayerBiped : Pawn
           }
           else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
           {
-            wallsliding = true;
-            velocity.y += (-velocity.y * wallSlideFactor) * dT;
-            dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
-            if( !dashSmoke.isPlaying )
-              dashSmoke.Play();
+            facingRight = true;
+            Wallslide();
           }
         }
-        else if( collideLeft && input.MoveLeft && hitLeft.normal.y >= 0 )
+        else if( collideLeft && /*input.MoveLeft &&*/ hitLeft.normal.y >= 0 )
         {
           if( input.JumpStart )
           {
@@ -896,13 +945,18 @@ public class PlayerBiped : Pawn
           }
           else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
           {
-            wallsliding = true;
-            velocity.y += (-velocity.y * wallSlideFactor) * dT;
-            dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
-            if( !dashSmoke.isPlaying )
-              dashSmoke.Play();
+            facingRight = false;
+            Wallslide();
           }
         }
+      }
+
+      if( wallsliding && input.MoveDown )
+      {
+        if( wallSlideNormal.x > 0 )
+          velocity += new Vector2( wallSlideTargetNormal.y, -wallSlideTargetNormal.x ) * wallSlideDownSpeed;
+        else
+          velocity += new Vector2( -wallSlideTargetNormal.y, wallSlideTargetNormal.x ) * wallSlideDownSpeed;
       }
 
       if( velocity.y < 0 )
@@ -915,49 +969,13 @@ public class PlayerBiped : Pawn
       if( !((onGround && dashing) || wallsliding) )
         dashSmoke.Stop();
     }
-    else
-    {
-      // SPIDER
-      UseGravity = !(collideBottom || collideTop || collideRight || collideLeft);
-      if( input.MoveRight )
-      {
-        facingRight = true;
-        velocity.x = spiderMoveSpeed;
-      }
-      if( input.MoveLeft )
-      {
-        facingRight = false;
-        velocity.x = -spiderMoveSpeed;
-      }
-      if( !collideTop && input.MoveUp )
-        velocity.y = spiderMoveSpeed;
-      if( !collideBottom && input.MoveDown )
-        velocity.y = -spiderMoveSpeed;
-
-      /*
-      if( collideLeft || collideRight || collideTop )
-      {
-        if( input.MoveUp )
-          velocity.y = moveSpeed;
-        if( input.MoveDown )
-          velocity.y = -moveSpeed;
-        if( !input.MoveUp && !input.MoveDown )
-          velocity.y = 0;
-      }
-      
-      if( onGround && input.JumpStart )
-        StartJump();
-      else if( input.JumpEnd )
-        StopJump();
-        */
-    }
 
     if( ability != null )
       ability.UpdateAbility( this );
 
     // // add gravity before velocity limits
     if( UseGravity )
-      velocity.y -= Global.Gravity * dT;
+      velocity.y -= Global.Gravity * Time.deltaTime;
 
     if( !grapPulling && overrideVelocityTimer.IsActive )
       velocity.x = overrideVelocity.x;
@@ -990,14 +1008,24 @@ public class PlayerBiped : Pawn
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     // value is adjusted later by collision
-    pos = transform.position + (Vector3) Velocity * dT;
+    pos = transform.position + (Vector3) Velocity * Time.deltaTime;
 
     Entity previousCarry = carryCharacter;
     carryCharacter = null;
 
-    UpdateHit( dT );
+    UpdateHit( Time.deltaTime );
     // update collision flags, and adjust position
-    UpdateCollision( dT );
+    UpdateCollision( Time.deltaTime );
+
+    // must be after collision
+    if( wallsliding )
+    {
+      float angle = Vector2.Angle( previousWallSlideTargetNormal, wallSlideTargetNormal );
+      if( previousWallsliding && angle < wallSlideHardAngleTHreshold )
+        wallSlideNormal = Vector2.MoveTowards( wallSlideNormal, wallSlideTargetNormal, wallSlideRotateSpeed * Time.deltaTime );
+      else
+        wallSlideNormal = wallSlideTargetNormal;
+    }
 
     transform.position = pos;
 
@@ -1069,6 +1097,16 @@ public class PlayerBiped : Pawn
     {
       lineRenderer.enabled = false;
     }
+  }
+
+  public float wallSlideHardAngleTHreshold = 20;
+  void Wallslide()
+  {
+    wallsliding = true;
+    velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
+    dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
+    if( !dashSmoke.isPlaying )
+      dashSmoke.Play();
   }
 
   void StartJump()

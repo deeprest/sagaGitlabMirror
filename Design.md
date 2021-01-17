@@ -1,5 +1,10 @@
 pP
 
+## design graveyard
+- spiderbot
+- body parts enable abilities. recollect on death.
+- pickle/tiny when damaged
+
 # TODO (maybe)
 - music zones, or proximity to notable enemies
 - boss scene: why is player not spawing at correct location?
