@@ -467,9 +467,6 @@ public class PlayerBiped : Pawn
     
     // slidingOffsetTarget = 1;
     string temp = "";
-    //float down = (jumping || walljumping) ? contactSeparation : DownOffset + contactSeparation + raylength;
-    //float down = (jumping || walljumping) ? 0 : DownOffset;
-    
     const float raydown = 0.2f;
     const float downOffset = 0.12f;
     float down = jumping ? raydown - downOffset : raydown;
@@ -558,8 +555,8 @@ public class PlayerBiped : Pawn
       }
     }
 
-    // prefer more-horizontal walls for wall sliding
-    // float prefer = 2;
+    // Prefer more-horizontal walls for wall sliding. Start beyond normal range.
+    float prefer = 2;
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.left, RaycastHits, Mathf.Max( raylength, -velocity.x * dT ), Global.CharacterCollideLayers );
     temp += "left: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
@@ -569,21 +566,20 @@ public class PlayerBiped : Pawn
         continue;
       if( hit.normal.x > sideCornerNormalX /*corner*/ )
       {
-        // if( hit.normal.x < prefer )
-        // {
+        if( hit.normal.x < prefer )
+        {
+          prefer = hit.normal.x;
           collideLeft = true;
           hitLeft = hit;
           adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
           wallSlideTargetNormal = hit.normal;
           // prevent clipping through angled walls when falling fast.
           velocity.y -= Util.Project2D( velocity, hit.normal ).y;
-        //   prefer = hit.normal.x;
-        // }
+        }
       }
     }
-
-    // start out of normal range
-    // prefer = -2;
+    
+    prefer = -2;
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.right, RaycastHits, Mathf.Max( raylength, velocity.x * dT ), Global.CharacterCollideLayers );
     temp += "right: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
@@ -593,24 +589,21 @@ public class PlayerBiped : Pawn
         continue;
       if( hit.normal.x < -sideCornerNormalX /*-corner*/ )
       {
-        // if( hit.normal.x > prefer )
-        // {
+        if( hit.normal.x > prefer )
+        {
+          prefer = hit.normal.x;
           collideRight = true;
           hitRight = hit;
           adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
           wallSlideTargetNormal = hit.normal;
           // prevent clipping through angled walls when falling fast.
           velocity.y -= Util.Project2D( velocity, hit.normal ).y;
-        //   prefer = hit.normal.x;
-        // }
+        }
       }
     }
     
     // Debug.Log( temp );
-
     pos = adjust;
-    //transform.position = adjust;
-
   }
   
   public override Vector2 GetShotOriginPosition()
