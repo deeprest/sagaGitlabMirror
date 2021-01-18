@@ -1,16 +1,6 @@
-+ NEW: auto slide when falling against slanted wall.
-+ FIX long slide clipping. collision should reduce velocity, not only position.
 
-- FIX: graphook
-- FIX pushTImer during slowmo?
-
-- shield on back? propellar on back? dash in air to use prop. press down to use shield?
-
-- playercontroller record/input, moveup/movedown, add spider action map
-- stickybomb exploding interaction with shield:
-  1) do raycast to each IDamage within range
-  2) if raycast hits something else, do a projection of the collider onto a perpendicular vector of the normal
-  3) use the projected endpoints to do two more raycasts
-  4) if the raycast hits an IDamage collider, proceed
-- polish HUD: ability icon. off when no abilities available.
-- implement airbot ability
+- FIX graphook
+- FIX pushTimer during slowmo?
+- FIX interact indicator for switches
+- FIX HUD ability icon. off when no abilities available.
+- FIX boss scene: why is player not spawing at correct location?

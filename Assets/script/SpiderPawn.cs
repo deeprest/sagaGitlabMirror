@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if false
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpiderPawn : Pawn
@@ -74,9 +75,9 @@ public class SpiderPawn : Pawn
       else
       {
         body.gravityScale = 1;
-        if( input.JumpEnd )
+        if( input.NOTUSED0 )
           body.AddForce( Mathf.Min( 0, -body.velocity.y ) * Vector2.up * body.mass, ForceMode2D.Impulse );
-        else if( collideBottom && input.JumpStart )
+        else if( collideBottom && input.Jump )
           body.AddForce( jumpSpeed * Vector2.up * body.mass, ForceMode2D.Impulse );
       }
     }
@@ -86,8 +87,8 @@ public class SpiderPawn : Pawn
       if( input.MoveRight ) velocity.x = moveSpeed;
       if( input.MoveLeft ) velocity.x = -moveSpeed;
       if( !input.MoveRight && !input.MoveLeft ) velocity.x = 0;
-      if( collideBottom && input.JumpStart ) velocity.y = jumpSpeed;
-      else if( input.JumpEnd ) velocity.y = 0;
+      if( collideBottom && input.Jump ) velocity.y = jumpSpeed;
+      else if( input.NOTUSED0 ) velocity.y = 0;
     }
 
     // You want to reset the collision flags after each time you "process" the inputs.
@@ -412,3 +413,4 @@ public class SpiderPawn : Pawn
     Cursor.position = CursorWorldPosition;
   }
 }
+#endif

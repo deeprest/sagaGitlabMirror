@@ -19,9 +19,9 @@ public class PhysicsPawn : Pawn
       inputVelocity.x = -moveSpeed;
     else
       inputVelocity.x = 0;
-    if( collideBottom && input.JumpStart )
+    if( collideBottom && (input.Jump&&!pinput.Jump) )
       inputVelocity.y = jumpSpeed;
-    else if( input.JumpEnd )
+    else if( (!input.Jump&&pinput.Jump) )
       inputVelocity.y = 0;
 
     Vector2 acc = Vector2.zero;

@@ -8,22 +8,19 @@ public struct InputState
   public bool MoveRight;
   public bool MoveUp;
   public bool MoveDown;
-  // todo remove start/end
-  public bool JumpStart;
-  public bool JumpEnd;
-  // todo just have dash, forget start/end
-  public bool DashStart;
-  public bool DashEnd;
-  // 1 byte
-  // todo charge state only needs one bool
-  public bool ChargeStart;
-  public bool ChargeEnd;
-  public bool Ability;
-  public bool Shield;
+  public bool Jump;
+  public bool Dash;
   public bool Fire;
+  public bool Charge;
+  // 1 byte
+  public bool Ability;
   public bool Interact;
   public bool NextWeapon;
   public bool NextAbility;
+  public bool NOTUSED0;
+  public bool NOTUSED1;
+  public bool NOTUSED2;
+  public bool NOTUSED3;
   // 8 byte
   public Vector2 Aim;
 }
@@ -32,6 +29,7 @@ public class Pawn : Entity
 {
   public Controller controller;
   public InputState input;
+  public InputState pinput;
 
   public Vector2 CursorWorldPosition;
   public GameObject InteractIndicator;
@@ -49,6 +47,7 @@ public class Pawn : Entity
 
   protected void ResetInput()
   {
+    pinput = input;
     input = default;
   }
 

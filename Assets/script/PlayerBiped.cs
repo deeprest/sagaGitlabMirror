@@ -39,6 +39,7 @@ public class PlayerBiped : Pawn
   [SerializeField] bool wallsliding;
   [SerializeField] bool landing;
   [SerializeField] bool dashing;
+  [SerializeField] bool firing;
 
   Vector3 hitBottomNormal;
   Vector2 wallSlideNormal;
@@ -106,6 +107,7 @@ public class PlayerBiped : Pawn
   public float wallSlideFactor = 0.5f;
   public float wallSlideRotateSpeed = 1;
   public float wallSlideDownSpeed = 1;
+  public float wallSlideHardAngleThreshold = 25;
   public float landDuration = 0.1f;
 
 
@@ -149,7 +151,7 @@ public class PlayerBiped : Pawn
   public float chargePulseInterval = 0.1f;
   public Color chargeColor = Color.white;
   public Transform armMount;
-  float chargeStart;
+  float chargeStartTime;
   GameObject chargeEffectGO;
 
   [Header( "Ability" )]
@@ -190,9 +192,6 @@ public class PlayerBiped : Pawn
   IWorldSelectable closestISelect;
   IWorldSelectable WorldSelection;
   List<Component> pups = new List<Component>();
-
-  [SerializeField] GameObject SpiderbotPrefab;
-  public SpiderPawn spider;
 
   public bool IsBiped { get { return partLegs.enabled;  } }
   public bool grapPulling
@@ -626,11 +625,11 @@ public class PlayerBiped : Pawn
 
   void Shoot()
   {
-    if( weapon == null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
+    if( weapon == null ||
+      !weapon.fullAuto && pinput.Fire ||
+      shootRepeatTimer.IsActive ) 
       return;
-    if( !weapon.fullAuto )
-      input.Fire = false;
-    if( weapon.HasInterval )
+    if( weapon.shootInterval > 0 )
       shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector2 pos = GetShotOriginPosition();
     // PICKLE
@@ -653,7 +652,7 @@ public class PlayerBiped : Pawn
     if( chargeEffect != null )
     {
       audio.Stop();
-      if( (Time.time - chargeStart) > chargeMin )
+      if( (Time.time - chargeStartTime) > chargeMin )
       {
         audio.PlayOneShot( weapon.soundChargeShot );
         Vector3 pos = GetShotOriginPosition();
@@ -745,7 +744,14 @@ public class PlayerBiped : Pawn
 
   private bool previousWallsliding;
   Vector2 previousWallSlideTargetNormal;
-  
+
+  bool jumpStart { get { return input.Jump && !pinput.Jump;  } }
+  bool jumpStop { get { return !input.Jump && pinput.Jump;  } }
+  bool dashStart { get { return (input.Dash && !pinput.Dash); } }
+  bool dashStop { get { return (!input.Dash && pinput.Dash); } }
+  bool chargeStart { get { return input.Charge && !pinput.Charge;  } }
+  bool chargeStop { get { return !input.Charge && pinput.Charge;  } }
+
   public override void EntityUpdate( )
   {
     if( Global.Paused )
@@ -769,24 +775,23 @@ public class PlayerBiped : Pawn
     else if( !(input.MoveRight || input.MoveLeft) )
       velocity.x = inertia.x;
 
-    if( partArmBack.enabled )
+    // WEAPONS / ABILITIES
+    if( weapon != null )
     {
-      // WEAPONS / ABILITIES
       if( input.Fire )
         Shoot();
 
-      if( input.ChargeStart )
-        StartCharge();
-
-      if( input.ChargeEnd )
-        ShootCharged();
+      if( weapon.HasChargeVariant )
+      {
+        if( chargeStart )
+          StartCharge();
+        if( chargeStop )
+          ShootCharged();
+      }
     }
 
-    if( ability != null && partArmFront.enabled )
-    {
-      if( input.Ability )
-        UseAbility();
-    }
+    if( ability != null && partArmFront.enabled && input.Ability )
+      UseAbility();
 
     if( input.NextWeapon )
       NextWeapon();
@@ -881,10 +886,10 @@ public class PlayerBiped : Pawn
             StopDash();
         }
 
-        if( input.DashStart && (onGround || collideLeft || collideRight) )
+        if( dashStart && (onGround || collideLeft || collideRight) )
           StartDash();
 
-        if( input.DashEnd && !jumping )
+        if( dashStop && !jumping )
           StopDash();
 
         if( dashing )
@@ -909,17 +914,17 @@ public class PlayerBiped : Pawn
           }
         }
 
-        if( onGround && input.JumpStart )
+        if( onGround && jumpStart )
           StartJump();
-        else if( input.JumpEnd )
+        else if( jumpStop )
           StopJump();
         else if( collideRight && /*input.MoveRight &&*/ hitRight.normal.y >= 0 )
         {
-          if( input.JumpStart )
+          if( jumpStart && input.MoveRight )
           {
             walljumping = true;
             velocity.y = jumpSpeed;
-            OverrideVelocity( Vector2.left * (input.DashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
+            OverrideVelocity( Vector2.left * (input.Dash ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
             jumpRepeatTimer.Start( jumpRepeatInterval );
             walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
             audio.PlayOneShot( soundJump );
@@ -933,11 +938,11 @@ public class PlayerBiped : Pawn
         }
         else if( collideLeft && /*input.MoveLeft &&*/ hitLeft.normal.y >= 0 )
         {
-          if( input.JumpStart )
+          if( jumpStart && input.MoveLeft )
           {
             walljumping = true;
             velocity.y = jumpSpeed;
-            OverrideVelocity( Vector2.right * (input.DashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
+            OverrideVelocity( Vector2.right * (input.Dash ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
             jumpRepeatTimer.Start( jumpRepeatInterval );
             walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
             audio.PlayOneShot( soundJump );
@@ -1021,7 +1026,7 @@ public class PlayerBiped : Pawn
     if( wallsliding )
     {
       float angle = Vector2.Angle( previousWallSlideTargetNormal, wallSlideTargetNormal );
-      if( previousWallsliding && angle < wallSlideHardAngleTHreshold )
+      if( previousWallsliding && angle < wallSlideHardAngleThreshold )
         wallSlideNormal = Vector2.MoveTowards( wallSlideNormal, wallSlideTargetNormal, wallSlideRotateSpeed * Time.deltaTime );
       else
         wallSlideNormal = wallSlideTargetNormal;
@@ -1098,8 +1103,7 @@ public class PlayerBiped : Pawn
       lineRenderer.enabled = false;
     }
   }
-
-  public float wallSlideHardAngleTHreshold = 20;
+  
   void Wallslide()
   {
     wallsliding = true;
@@ -1171,7 +1175,7 @@ public class PlayerBiped : Pawn
           Destroy( chargeEffectGO );
         chargeEffectGO = Instantiate( weapon.ChargeEffect, transform );
         chargeEffect = chargeEffectGO.GetComponent<ParticleSystem>();
-        chargeStart = Time.time;
+        chargeStartTime = Time.time;
       } );
     }
   }
@@ -1397,8 +1401,7 @@ public class PlayerBiped : Pawn
       SetAnimatorUpdateMode( AnimatorUpdateMode.Normal );
     };
   }
-
-
+  
   [FormerlySerializedAs( "partBody" )]
   [Header( "Character Parts player biped" )]
   public CharacterPart partLegs;

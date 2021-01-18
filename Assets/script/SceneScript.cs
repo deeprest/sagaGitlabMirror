@@ -29,7 +29,10 @@ public class SceneScript : MonoBehaviour
       Global.instance.PlayMusic( music );
 
     if( ambientLight != null )
-      new Timer( 3, delegate( Timer timer ) { ambientLight.intensity = timer.ProgressNormalized; }, null );
+    {
+      float targetIntensity = ambientLight.intensity;
+      new Timer( 3, delegate( Timer timer ) { ambientLight.intensity = timer.ProgressNormalized * targetIntensity; }, null );
+    }
   }
 
   public void PlayerInputOff()

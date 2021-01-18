@@ -20,7 +20,6 @@ public class Weapon : ScriptableObject
   public AudioClip StartSound;
   Projectile projectileInstance;
   public bool fullAuto;
-  public bool HasInterval = true;
   public float shootInterval = 0.1f;
   public float speedIncrease;
   public int projectileCount = 1;
@@ -28,6 +27,7 @@ public class Weapon : ScriptableObject
   public float AimDistanceMax = 2;
 
   [Header( "Charge Variant" )]
+  public bool HasChargeVariant;
   public Weapon ChargeVariant;
   public GameObject ChargeEffect;
   public AudioClip soundCharge;
