@@ -5009,7 +5009,7 @@ MonoBehaviour:
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  Health: 3
+  Health: 10
   MaxHealth: 10
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
@@ -5068,7 +5068,7 @@ MonoBehaviour:
   headboxy: 0
   bottomCornerNormalY: 0.707
   sideCornerNormalX: 0.707
-  collisionCorner: {x: 0.5, y: 1}
+  collisionCorner: {x: 1, y: 1}
   facingRight: 0
   jumping: 0
   walljumping: 0
@@ -5158,7 +5158,8 @@ MonoBehaviour:
   chargeColor: {r: 0, g: 0.796, b: 1, a: 1}
   armMount: {fileID: 605154778494882277}
   ability: {fileID: 0}
-  abilities: []
+  abilities:
+  - {fileID: 11400000, guid: 39bf040ed32b341949b26dc763e52b74, type: 2}
   CurrentAbilityIndex: 0
   audio: {fileID: 82117261715149456}
   audio2: {fileID: 82627251547920718}
@@ -6592,7 +6593,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 2
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -7077,7 +7078,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 50
+    maxNumParticles: 1000
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -7342,7 +7343,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 20
+      scalar: 50
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -7772,7 +7773,7 @@ ParticleSystem:
         m_RotationOrder: 4
     separateAxes: 0
   ColorModule:
-    enabled: 0
+    enabled: 1
     gradient:
       serializedVersion: 2
       minMaxState: 1
@@ -7781,7 +7782,7 @@ ParticleSystem:
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
-        key1: {r: 1, g: 1, b: 1, a: 1}
+        key1: {r: 1, g: 1, b: 1, a: 0}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
@@ -7796,7 +7797,7 @@ ParticleSystem:
         ctime5: 0
         ctime6: 0
         ctime7: 0
-        atime0: 0
+        atime0: 46453
         atime1: 65535
         atime2: 0
         atime3: 0

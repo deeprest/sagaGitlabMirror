@@ -650,7 +650,9 @@ MonoBehaviour:
   - sceneAsset: {fileID: 102900000, guid: e25ec4c772e0542ea9a954f39750785a, type: 3}
     scenePath: Assets/scene/shadows.unity
   - sceneAsset: {fileID: 102900000, guid: 3bd2ea2daf4aa468fbd22b4c6c6c8392, type: 3}
-    scenePath: Assets/scene/fall-test.unity
+    scenePath: Assets/scene/fall_test.unity
+  - sceneAsset: {fileID: 102900000, guid: 7740e845f94dd4d8691a96ec6667e611, type: 3}
+    scenePath: Assets/scene/enemy_lineup.unity
   RandomSeedOnStart: 0
   SimulatePlayer: 0
   InitialScene:
@@ -984,6 +986,7 @@ MonoBehaviour:
   LookTarget: {fileID: 0}
   lerp: {fileID: 114891334979047146}
   UseVerticalRange: 1
+  CursorInfluence: 0
   cursorAlpha: 0.5
   lerpAlpha: 0
   SmoothSpeed: 10
@@ -2159,7 +2162,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2716119697075687498
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3011,8 +3014,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -35}
-  m_SizeDelta: {x: 200, y: 30}
+  m_AnchoredPosition: {x: 50, y: -40}
+  m_SizeDelta: {x: 263.3, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2332536243063267434
 CanvasRenderer:
@@ -3119,7 +3122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
   m_MinWidth: -1
-  m_MinHeight: 30
+  m_MinHeight: 40
   m_PreferredWidth: -1
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
@@ -3628,7 +3631,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4646860502293259614
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4727,7 +4730,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -4, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4087353808015693897
 CanvasRenderer:
@@ -4750,7 +4753,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 197eacf5c22d14d05b9f34cf21fd96f2, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.153, g: 0.153, b: 0.153, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -4758,9 +4761,9 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 197eacf5c22d14d05b9f34cf21fd96f2, type: 3}
-    m_FontSize: 14
+    m_FontSize: 17
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 10
     m_MaxSize: 40
     m_Alignment: 4
@@ -4769,9 +4772,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'scene template
-
-'
+  m_Text: scene template
 --- !u!1 &6002506246551165931
 GameObject:
   m_ObjectHideFlags: 0
@@ -6095,7 +6096,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4994832736186025724
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6172,7 +6173,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2384965751961763982
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6779,7 +6780,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4430380935434554411
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6923,7 +6924,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4752288304674484027
 RectTransform:
   m_ObjectHideFlags: 0

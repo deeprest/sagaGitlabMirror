@@ -34,6 +34,6 @@ A game prototype. This is mostly a Mega Man X gameplay clone with many improveme
 * Rider C# Editor from Jetbrains
 * Aseprite
 
-
 ## Copyright Acknowledgements
-* CAPCOM  
+* CAPCOM copyrights and trademarks...
+* Music

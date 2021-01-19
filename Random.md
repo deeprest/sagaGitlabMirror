@@ -103,7 +103,7 @@ Avoid: Arbitrarily adding things.
 ## misc thoughts
 The pivot model
 Flow: challenge vs ability
-tension and relief
+tension and release
 exploration: secret areas. beacons. minimap.
 
 efficiency: time and energy
@@ -121,6 +121,11 @@ provide obstacles to challenge your progress
 overcoming the challenge is one source of enjoyment; not too hard or too easy.
 
 
+# Potential Project Names
+Captain Commander USA
+SLAPCOM Presents: Teh Most Mighty of Men
+Jizzy Dickrabbit by Clifford Bleh
+
 
 # Spiderbot (defunct)
 start as spiderbot (maybe nothing notices you when you're a spiderbot)
@@ -134,6 +139,19 @@ find scrap to build onto oneself?
 can zap doors, enemies
 cannibalize small enemies to build needed body parts
 
+
+# Idea for a Unity importer that imports Aseprite layers and separating animated objects.
+# Unity importer
+1. parse layer name for token "ct" for child transform. ex: "ct-head"
+2. loop through pixels in cel until an opaque pixel (or special value?) is found, make note of position
+3. calculate local position based on sprite pixel density
+4. modify animation editor curve position of transform when generating animation
+# In Aseprite
+* create a layer in Aseprite for each child transform. head, arm
+* the first opaque pixel in each cel is the child transform position, the "pivot"
+* pivots can be any color. Use different colors for child pivots for contrast.
+* Editing pivots this way keeps the child transforms synced without edits in Unity.
+* rotation support not planned. (If it was, the color value would be used for the rotation angle)
 
 
 # first anim sequence
