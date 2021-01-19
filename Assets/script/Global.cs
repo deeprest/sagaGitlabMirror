@@ -1223,7 +1223,7 @@ public class Global : MonoBehaviour
     CreateBoolSetting( "UseCameraVertical", true, delegate( bool value ) { CameraController.UseVerticalRange = value; } );
     CreateBoolSetting( "CursorInfluence", false, delegate( bool value )
     {
-      if( PlayerController != null ) PlayerController.CursorInfluence = value;
+      if( PlayerController != null ) CameraController.CursorInfluence = value;
     } );
     CreateBoolSetting( "AimSnap", false, delegate( bool value ) { AimSnap = value; } );
     CreateBoolSetting( "AutoAim", false, delegate( bool value ) { AutoAim = value; } );

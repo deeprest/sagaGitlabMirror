@@ -229,7 +229,7 @@ public class PlayerBiped : Pawn
   {
     // settings are read before player is created, so set player settings here.
     speedFactorNormalized = Global.instance.FloatSetting["PlayerSpeedFactor"].Value;
-    controller.CursorInfluence = Global.instance.BoolSetting["CursorInfluence"].Value;
+    //controller.CursorInfluence = Global.instance.BoolSetting["CursorInfluence"].Value;
   }
 
   public override void PreSceneTransition()
@@ -660,10 +660,10 @@ public class PlayerBiped : Pawn
   void UpdateCursor()
   {
     Vector2 AimPosition = Vector2.zero;
-    Vector2 cursorOrigin = arm.position;
-    Vector2 cursorDelta = input.Aim;
+    Vector2 cursorOrigin = transform.position;
+    Vector2 inputAim = input.Aim;
 
-    CursorAboveMinimumDistance = cursorDelta.magnitude > DirectionalMinimum;
+    CursorAboveMinimumDistance = inputAim.magnitude > DirectionalMinimum;
     Cursor.gameObject.SetActive( CursorAboveMinimumDistance );
 
     if( Global.instance.AimSnap )
@@ -672,13 +672,13 @@ public class PlayerBiped : Pawn
       {
         // set cursor
         CursorSnapped.gameObject.SetActive( true );
-        float angle = Mathf.Atan2( cursorDelta.x, cursorDelta.y ) / Mathf.PI;
+        float angle = Mathf.Atan2( inputAim.x, inputAim.y ) / Mathf.PI;
         float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
         Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
         AimPosition = cursorOrigin + snapped * SnapCursorDistance;
         CursorSnapped.position = AimPosition;
         CursorSnapped.rotation = Quaternion.LookRotation( Vector3.forward, snapped );
-        CursorWorldPosition = cursorOrigin + cursorDelta;
+        CursorWorldPosition = cursorOrigin + inputAim;
       }
       else
       {
@@ -688,14 +688,14 @@ public class PlayerBiped : Pawn
     else
     {
       CursorSnapped.gameObject.SetActive( false );
-      AimPosition = cursorOrigin + cursorDelta;
+      AimPosition = cursorOrigin + inputAim;
       CursorWorldPosition = AimPosition;
     }
 
     if( Global.instance.AutoAim )
     {
-      CursorWorldPosition = cursorOrigin + cursorDelta;
-      RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] {"enemy"} ) );
+      CursorWorldPosition = cursorOrigin + inputAim;
+      RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, AutoAimCircleRadius, inputAim, AutoAimDistance, LayerMask.GetMask( new string[] {"enemy"} ) );
       float distance = Mathf.Infinity;
       Transform closest = null;
       foreach( var hit in hits )

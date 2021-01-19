@@ -10,7 +10,6 @@ public class Controller : ScriptableObject
   protected InputState input = new InputState();
   public Pawn pawn;
   //public List<Pawn> minions = new List<Pawn>();
-  public bool CursorInfluence;
 
   public virtual void Awake()
   {
