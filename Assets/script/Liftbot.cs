@@ -67,10 +67,10 @@ public class Liftbot : Entity, IWorldSelectable
   public Vector2 origin;
   public Vector2[] path;
   Timer timeout = new Timer();
-  public bool pingpong = false;
+  public bool pingpong;
   int indexIncrement = 1;
   public bool UseWaitDuration = true;
-  public bool IsTriggeredByPlayer = false;
+  public bool IsTriggeredByPlayer;
 
   protected override void Start()
   {
@@ -92,11 +92,6 @@ public class Liftbot : Entity, IWorldSelectable
     timeout.Stop( false );
   }
 
-  float DistanceToWaypoint()
-  {
-    return Vector3.Distance( transform.position, origin + path[pathIndex] );
-  }
-
   protected void NextWaypoint()
   {
     int next = pathIndex + indexIncrement;
@@ -115,8 +110,7 @@ public class Liftbot : Entity, IWorldSelectable
     if( path.Length > 0 )
     {
       Vector2 delta = origin + path[pathIndex] - (Vector2)transform.position;
-      //float dot = Vector2.Dot( velocity, delta );
-      if( delta.sqrMagnitude < closeEnough*closeEnough )// || dot < 0 )
+      if( delta.sqrMagnitude < closeEnough*closeEnough )
       {
         // WARNING
         // This does not update player position, which creates an immediate an noticeable offset
@@ -125,14 +119,16 @@ public class Liftbot : Entity, IWorldSelectable
         
         // Smooth arrival
         velocity = delta * Time.smoothDeltaTime * slowSpeed;
-
-        if( UseWaitDuration )
+        if( !IsTriggeredByPlayer )
         {
-          if( !timeout.IsActive )
-            timeout.Start( waitDuration, null, NextWaypoint );
+          if( UseWaitDuration )
+          {
+            if( !timeout.IsActive )
+              timeout.Start( waitDuration, null, NextWaypoint );
+          }
+          else 
+            NextWaypoint();
         }
-        else
-          NextWaypoint();
       }
       else
       {
@@ -168,7 +164,7 @@ public class Liftbot : Entity, IWorldSelectable
   public void Select()
   {
     UseWaitDuration = true;
-    if( IsTriggeredByPlayer && DistanceToWaypoint() < closeEnough )
+    if( IsTriggeredByPlayer && (origin + path[pathIndex] - (Vector2)transform.position).sqrMagnitude < closeEnough*closeEnough )
       NextWaypoint();
   }
   public void Unselect()

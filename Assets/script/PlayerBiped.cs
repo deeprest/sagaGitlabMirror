@@ -477,7 +477,7 @@ public class PlayerBiped : Pawn
    
 #if true
     // BOTTOM
-    prefer = 2;
+    prefer = float.MinValue;
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size * Scale, transform.rotation.eulerAngles.z, -(Vector2)transform.up, RaycastHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
     temp += "down: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
@@ -485,11 +485,10 @@ public class PlayerBiped : Pawn
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.y > 0 && hit.normal.y > collisionCorner.normalized.y && hit.normal.y < prefer )
+      if( hit.normal.y > 0 && hit.normal.y > collisionCorner.normalized.y && hit.point.y > prefer )
       {
-        prefer = hit.normal.y;
+        prefer = hit.point.y;
         collideBottom = true;
-        
         velocity.y = Mathf.Max( velocity.y, 0 );
         inertia.x = 0;
 #if false
@@ -596,7 +595,7 @@ public class PlayerBiped : Pawn
       }
     }
 
-    Debug.Log( temp );
+    //Debug.Log( temp );
     pos = adjust;
 
   }
