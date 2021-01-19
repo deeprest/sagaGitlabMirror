@@ -24,9 +24,10 @@ public class PlayerBiped : Pawn
   public Vector2 headbox = new Vector2( .1f, .1f );
   public float headboxy = -0.1f;
   const float downslopefudge = 0.2f;
-  private const float corner = 0.707106769f;
-  const float bottomCornerNormalY = 0.65f;
-  const float sideCornerNormalX = 0.707f;
+  //private const float corner = 0.707106769f;
+  public float bottomCornerNormalY = 0.65f;
+  public float sideCornerNormalX = 0.707f;
+  public Vector2 collisionCorner = Vector2.one;
   
   Vector2 shoot;
 
@@ -106,7 +107,10 @@ public class PlayerBiped : Pawn
   public float wallJumpPushDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
   public float wallSlideRotateSpeed = 1;
-  public float wallSlideDownSpeed = 1;
+  [FormerlySerializedAs( "wallSlideDownSpeedSide" )]
+  public float wallSlideDownX = 1;
+  [FormerlySerializedAs( "wallSlideDownSpeedDown" )]
+  public float wallSlideDownY = 1;
   public float wallSlideHardAngleThreshold = 25;
   public float landDuration = 0.1f;
 
@@ -425,20 +429,21 @@ public class PlayerBiped : Pawn
     collideBottom = false;
     adjust = pos;
 
-#region multisampleAttempt
+#if multisample
 
-    /*
+    Vector2 rightFoot;
+    Vector2 leftFoot;
     // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground bug by 'sampling' the ground at multiple points
-    RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
-    RaycastHit2D left = Physics2D.Raycast( adjust + Vector2.left * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * dT ), LayerMask.GetMask( PlayerCollideLayers ) );
+    RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.size.x, Vector2.down, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
+    RaycastHit2D left = Physics2D.Raycast( adjust + Vector2.left * box.size.x, Vector2.down, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
     if( right.transform != null )
       rightFoot = right.point;
     else
-      rightFoot = adjust + ( Vector2.right * box.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * dT ) );
+      rightFoot = adjust + ( Vector2.right * box.size.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * dT ) );
     if( left.transform != null )
       leftFoot = left.point;
     else
-      leftFoot = adjust + ( Vector2.left * box.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * dT ) );
+      leftFoot = adjust + ( Vector2.left * box.size.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * dT ) );
 
     if( right.transform != null || left.transform != null )
     {
@@ -447,40 +452,45 @@ public class PlayerBiped : Pawn
       if( sloped.y > corner )
       {
         collideBottom = true;
-        adjust.y = ( leftFoot + across * 0.5f ).y + contactSeparation + verticalOffset;
+        adjust.y = ( leftFoot + across * 0.5f ).y + downOffset;
         hitBottomNormal = sloped;
       }
     }
 
     if( left.transform != null )
-      Debug.DrawLine( adjust + Vector2.left * box.x, leftFoot, Color.green );
+      Debug.DrawLine( adjust + Vector2.left * box.size.x, leftFoot, Color.green );
     else
-      Debug.DrawLine( adjust + Vector2.left * box.x, leftFoot, Color.grey );
+      Debug.DrawLine( adjust + Vector2.left * box.size.x, leftFoot, Color.grey );
     if( right.transform != null )
-      Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.green );
+      Debug.DrawLine( adjust + Vector2.right * box.size.x, rightFoot, Color.green );
     else
-      Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.grey );
+      Debug.DrawLine( adjust + Vector2.right * box.size.x, rightFoot, Color.grey );
 
-    */
-
-#endregion
+#endif
     
     // slidingOffsetTarget = 1;
     string temp = "";
+
     const float raydown = 0.2f;
     const float downOffset = 0.12f;
     float down = jumping ? raydown - downOffset : raydown;
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size * Scale, 0, Vector2.down, RaycastHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
+    float prefer;
+   
+#if true
+    // BOTTOM
+    prefer = 2;
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size * Scale, transform.rotation.eulerAngles.z, -(Vector2)transform.up, RaycastHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
     temp += "down: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.y > bottomCornerNormalY )
+      if( hit.normal.y > 0 && hit.normal.y > collisionCorner.normalized.y && hit.normal.y < prefer )
       {
+        prefer = hit.normal.y;
         collideBottom = true;
-        /*
+#if false
         // sliding offset. This moves the player downward a little bit on slopes to
         // close the gap created by the corners of the box during boxcast.
         if( Mathf.Abs( hit.normal.x ) > 0 )
@@ -493,7 +503,7 @@ public class PlayerBiped : Pawn
           slidingOffset = 1;
         }
         adjust.y = hit.point.y + box.size.y * 0.5f + slidingOffset * downOffset;
-        */
+#endif
         adjust.y = hit.point.y + box.size.y * 0.5f * Scale + downOffset;
 
         hitBottomNormal = hit.normal;
@@ -510,53 +520,13 @@ public class PlayerBiped : Pawn
 #endif
           carryCharacter = cha;
         }
-        break;
-      }
-      /*
-      if( hit.normal.x > corner )
-      {
-        collideLeft = true;
-        hitLeft = hit;
-        adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
-        wallSlideNormal = hit.normal;
-        //break;
-      }
-      
-      if( hit.normal.x < -corner )
-      {
-        collideRight = true;
-        hitRight = hit;
-        adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
-        wallSlideNormal = hit.normal;
-        // break;
-      }
-      
-      if( hit.normal.y < -corner )
-      {
-        collideTop = true;
-        adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
-        // break;
-      }
-      */
-    }
-
-    hitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.up * headboxy, headbox, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
-    temp += "up: " + hitCount + " ";
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
-      if( hit.normal.y < -corner )
-      {
-        collideTop = true;
-        adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
-        break;
       }
     }
+#endif
 
+    // LEFT
     // Prefer more-horizontal walls for wall sliding. Start beyond normal range.
-    float prefer = 2;
+    prefer = 2;
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.left, RaycastHits, Mathf.Max( raylength, -velocity.x * dT ), Global.CharacterCollideLayers );
     temp += "left: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
@@ -564,21 +534,20 @@ public class PlayerBiped : Pawn
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.x > sideCornerNormalX /*corner*/ )
+      if( hit.normal.x > collisionCorner.normalized.x && hit.normal.x < prefer )
       {
-        if( hit.normal.x < prefer )
-        {
-          prefer = hit.normal.x;
+        prefer = hit.normal.x;
           collideLeft = true;
           hitLeft = hit;
           adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
           wallSlideTargetNormal = hit.normal;
           // prevent clipping through angled walls when falling fast.
           velocity.y -= Util.Project2D( velocity, hit.normal ).y;
-        }
+        //break;
       }
     }
     
+    // RIGHT
     prefer = -2;
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.right, RaycastHits, Mathf.Max( raylength, velocity.x * dT ), Global.CharacterCollideLayers );
     temp += "right: " + hitCount + " ";
@@ -587,23 +556,37 @@ public class PlayerBiped : Pawn
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.x < -sideCornerNormalX /*-corner*/ )
+      if( hit.normal.x < -collisionCorner.normalized.x && hit.normal.x > prefer )
       {
-        if( hit.normal.x > prefer )
-        {
-          prefer = hit.normal.x;
-          collideRight = true;
-          hitRight = hit;
-          adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
-          wallSlideTargetNormal = hit.normal;
-          // prevent clipping through angled walls when falling fast.
-          velocity.y -= Util.Project2D( velocity, hit.normal ).y;
-        }
+        prefer = hit.normal.x;
+        collideRight = true;
+        hitRight = hit;
+        adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
+        wallSlideTargetNormal = hit.normal;
+        // prevent clipping through angled walls when falling fast.
+        velocity.y -= Util.Project2D( velocity, hit.normal ).y;
+      }
+    }
+
+    // TOP
+    hitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.up * headboxy, headbox, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
+    temp += "up: " + hitCount + " ";
+    for( int i = 0; i < hitCount; i++ )
+    {
+      hit = RaycastHits[i];
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
+        continue;
+      if( hit.normal.y < -collisionCorner.y )
+      {
+        collideTop = true;
+        adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
+        break;
       }
     }
     
     // Debug.Log( temp );
     pos = adjust;
+
   }
   
   public override Vector2 GetShotOriginPosition()
@@ -757,6 +740,16 @@ public class PlayerBiped : Pawn
     {
       landing = true;
       landTimer.Start( landDuration, null, delegate { landing = false; } );
+    }
+    
+    // must be after collision
+    if( wallsliding )
+    {
+      float angle = Vector2.Angle( previousWallSlideTargetNormal, wallSlideTargetNormal );
+      if( previousWallsliding && angle < wallSlideHardAngleThreshold )
+        wallSlideNormal = Vector2.MoveTowards( wallSlideNormal, wallSlideTargetNormal, wallSlideRotateSpeed * Time.deltaTime );
+      else
+        wallSlideNormal = wallSlideTargetNormal;
     }
     previousWallsliding = wallsliding;
     previousWallSlideTargetNormal = wallSlideTargetNormal; 
@@ -951,10 +944,17 @@ public class PlayerBiped : Pawn
 
       if( wallsliding && input.MoveDown )
       {
-        if( wallSlideNormal.x > 0 )
-          velocity += new Vector2( wallSlideTargetNormal.y, -wallSlideTargetNormal.x ) * wallSlideDownSpeed;
+        Vector2 wsvel;
+        wsvel = Util.Project2D( -(Vector2) transform.up, wallSlideNormal.x > 0 ? Vector2.right : Vector2.left) * wallSlideDownX +
+          Vector2.down * wallSlideDownY;
+        /*
+        if( wallSlideNormal.x > 0 ) 
+          velocity += ((-(Vector2)transform.up + new Vector2( wallSlideTargetNormal.y, -wallSlideTargetNormal.x )) * 0.5f).normalized * wallSlideDownSpeed;
         else
-          velocity += new Vector2( -wallSlideTargetNormal.y, wallSlideTargetNormal.x ) * wallSlideDownSpeed;
+          velocity += ((-(Vector2)transform.up + new Vector2( -wallSlideTargetNormal.y, wallSlideTargetNormal.x )) * 0.5f).normalized * wallSlideDownSpeed;
+          */
+        Debug.DrawLine( (Vector2) transform.position, (Vector2) transform.position + wsvel, Color.yellow );
+        velocity += wsvel;
       }
 
       if( velocity.y < 0 )
@@ -1014,17 +1014,7 @@ public class PlayerBiped : Pawn
     UpdateHit( Time.deltaTime );
     // update collision flags, and adjust position
     UpdateCollision( Time.deltaTime );
-
-    // must be after collision
-    if( wallsliding )
-    {
-      float angle = Vector2.Angle( previousWallSlideTargetNormal, wallSlideTargetNormal );
-      if( previousWallsliding && angle < wallSlideHardAngleThreshold )
-        wallSlideNormal = Vector2.MoveTowards( wallSlideNormal, wallSlideTargetNormal, wallSlideRotateSpeed * Time.deltaTime );
-      else
-        wallSlideNormal = wallSlideTargetNormal;
-    }
-
+    
     transform.position = pos;
 
     // carry momentum when jumping from moving platforms
@@ -1073,6 +1063,10 @@ public class PlayerBiped : Pawn
       transform.rotation = Quaternion.Euler( 0, 0, 0 );
 
     ResetInput();
+    
+#if debugdraw || true
+    Debug.DrawLine( (Vector2)transform.position, (Vector2)transform.position + velocity, Color.magenta );
+#endif
   }
 
   void LateUpdate()

@@ -5004,7 +5004,7 @@ MonoBehaviour:
   carryCharacter: {fileID: 0}
   friction: 8
   raylength: 0.03
-  contactSeparation: 0.01
+  contactSeparation: 0.02
   DownOffset: 0.12
   EnablePathing: 0
   AgentTypeName: Small
@@ -5030,24 +5030,45 @@ MonoBehaviour:
     MoveRight: 0
     MoveUp: 0
     MoveDown: 0
-    JumpStart: 0
-    JumpEnd: 0
-    DashStart: 0
-    DashEnd: 0
-    ChargeStart: 0
-    ChargeEnd: 0
-    Ability: 0
-    Shield: 0
+    Jump: 0
+    Dash: 0
     Fire: 0
+    Charge: 0
+    Ability: 0
     Interact: 0
     NextWeapon: 0
     NextAbility: 0
+    NOTUSED0: 0
+    NOTUSED1: 0
+    NOTUSED2: 0
+    NOTUSED3: 0
+    Aim: {x: 0, y: 0}
+  pinput:
+    MoveLeft: 0
+    MoveRight: 0
+    MoveUp: 0
+    MoveDown: 0
+    Jump: 0
+    Dash: 0
+    Fire: 0
+    Charge: 0
+    Ability: 0
+    Interact: 0
+    NextWeapon: 0
+    NextAbility: 0
+    NOTUSED0: 0
+    NOTUSED1: 0
+    NOTUSED2: 0
+    NOTUSED3: 0
     Aim: {x: 0, y: 0}
   CursorWorldPosition: {x: 0, y: 0}
   InteractIndicator: {fileID: 7746566914802738857}
   Scale: 1
   headbox: {x: 0.05, y: 0.1}
   headboxy: -0.15
+  bottomCornerNormalY: 0.707
+  sideCornerNormalX: 0.707
+  collisionCorner: {x: 1, y: 1}
   facingRight: 0
   onGround: 0
   jumping: 0
@@ -5055,6 +5076,7 @@ MonoBehaviour:
   wallsliding: 0
   landing: 0
   dashing: 0
+  firing: 0
   MoveScale: 0.5
   JumpScale: 0.5
   OrthoScale:
@@ -5105,7 +5127,8 @@ MonoBehaviour:
   wallJumpPushDuration: 0.1
   wallSlideFactor: 6
   wallSlideRotateSpeed: 0.5
-  wallSlideDownSpeed: 0.5
+  wallSlideDownSpeed: 1
+  wallSlideHardAngleThreshold: 25
   landDuration: 0.1
   dashSmoke: {fileID: 198502029244883790}
   dashflashPrefab: {fileID: 8084430867303457385, guid: c98c1e30c637a4aa7b76b48386862633,
@@ -5192,10 +5215,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   damageSmoke: {fileID: 3827073479069855659}
   selectRange: 0.5
-  SpiderbotPrefab: {fileID: 1789244597324514, guid: bc604b646e0954c2db323b783ef578cf,
-    type: 3}
-  spider: {fileID: 0}
-  wallSlideHardAngleTHreshold: 25
   partLegs:
     enabled: 1
     transform: {fileID: 4857518412556878}
