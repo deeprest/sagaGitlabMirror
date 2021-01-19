@@ -267,26 +267,29 @@ public class Mech : Entity
         switch( projectile.weapon.weaponType )
         {
           case Weapon.WeaponType.Projectile:
-          //projectile.transform.position = transform.position + Vector3.Project( (Vector3)d.point - transform.position, transform.right );
-          projectile.velocity = Vector3.Reflect( projectile.velocity, (d.instigator.transform.position - transform.position).normalized );
-          Physics2D.IgnoreCollision( projectile.circle, box, false );
-          Physics2D.IgnoreCollision( projectile.circle, torso, false );
-          Physics2D.IgnoreCollision( projectile.circle, fist, false );
-
-          foreach( var cldr in projectile.instigator.IgnoreCollideObjects )
-          {
-            if( cldr == null )
-              Debug.Log( "ignorecolideobjects null" );
+            if( d.instigator == null )
+              projectile.velocity = Vector3.Reflect( projectile.velocity,(d.point - (Vector2)transform.position).normalized ); 
             else
-              Physics2D.IgnoreCollision( projectile.circle, cldr, false );
-          }
+              projectile.velocity = Vector3.Reflect( projectile.velocity, (d.instigator.transform.position - transform.position).normalized ); 
+            
+            Physics2D.IgnoreCollision( projectile.circle, box, false );
+            Physics2D.IgnoreCollision( projectile.circle, torso, false );
+            Physics2D.IgnoreCollision( projectile.circle, fist, false );
 
-          projectile.instigator = this;
-          projectile.ignore.Add( transform );
-          break;
+            foreach( var cldr in projectile.instigator.IgnoreCollideObjects )
+            {
+              if( cldr == null )
+                Debug.Log( "ignorecolideobjects null" );
+              else
+                Physics2D.IgnoreCollision( projectile.circle, cldr, false );
+            }
 
-          case Weapon.WeaponType.Laser:
-          // create second beam
+            projectile.instigator = this;
+            projectile.ignore.Add( transform );
+            break;
+
+            case Weapon.WeaponType.Laser:
+            // create second beam
           break;
         }
       }

@@ -5065,18 +5065,16 @@ MonoBehaviour:
   InteractIndicator: {fileID: 7746566914802738857}
   Scale: 1
   headbox: {x: 0.05, y: 0.1}
-  headboxy: -0.15
+  headboxy: 0
   bottomCornerNormalY: 0.707
   sideCornerNormalX: 0.707
   collisionCorner: {x: 1, y: 1}
   facingRight: 0
-  onGround: 0
   jumping: 0
   walljumping: 0
   wallsliding: 0
   landing: 0
   dashing: 0
-  firing: 0
   MoveScale: 0.5
   JumpScale: 0.5
   OrthoScale:
@@ -5127,7 +5125,8 @@ MonoBehaviour:
   wallJumpPushDuration: 0.1
   wallSlideFactor: 6
   wallSlideRotateSpeed: 0.5
-  wallSlideDownSpeed: 1
+  wallSlideDownX: 1
+  wallSlideDownY: 1
   wallSlideHardAngleThreshold: 25
   landDuration: 0.1
   dashSmoke: {fileID: 198502029244883790}
@@ -5215,6 +5214,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   damageSmoke: {fileID: 3827073479069855659}
   selectRange: 0.5
+  collisionCornerTop: 0
   partLegs:
     enabled: 1
     transform: {fileID: 4857518412556878}

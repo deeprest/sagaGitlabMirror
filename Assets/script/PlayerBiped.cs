@@ -34,13 +34,12 @@ public class PlayerBiped : Pawn
   [Header( "State" )]
   [SerializeField] bool facingRight = true;
 
-  [SerializeField] bool onGround;
+  bool onGround{get{return collideBottom || (collideLeft && collideRight);} }
   [SerializeField] bool jumping;
   [SerializeField] bool walljumping;
   [SerializeField] bool wallsliding;
   [SerializeField] bool landing;
   [SerializeField] bool dashing;
-  [SerializeField] bool firing;
 
   Vector3 hitBottomNormal;
   Vector2 wallSlideNormal;
@@ -490,6 +489,9 @@ public class PlayerBiped : Pawn
       {
         prefer = hit.normal.y;
         collideBottom = true;
+        
+        velocity.y = Mathf.Max( velocity.y, 0 );
+        inertia.x = 0;
 #if false
         // sliding offset. This moves the player downward a little bit on slopes to
         // close the gap created by the corners of the box during boxcast.
@@ -524,6 +526,24 @@ public class PlayerBiped : Pawn
     }
 #endif
 
+    
+    // TOP
+    hitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.up * headboxy, headbox, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
+    temp += "up: " + hitCount + " ";
+    for( int i = 0; i < hitCount; i++ )
+    {
+      hit = RaycastHits[i];
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
+        continue;
+      if( hit.normal.y < collisionCornerTop )
+      {
+        collideTop = true;
+        velocity.y = Mathf.Min( velocity.y, 0 );
+        adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
+      }
+    }
+
+
     // LEFT
     // Prefer more-horizontal walls for wall sliding. Start beyond normal range.
     prefer = 2;
@@ -538,6 +558,10 @@ public class PlayerBiped : Pawn
       {
         prefer = hit.normal.x;
           collideLeft = true;
+        
+        velocity.x = Mathf.Max( velocity.x, 0 );
+        inertia.x = Mathf.Max( inertia.x, 0 );
+        
           hitLeft = hit;
           adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
           wallSlideTargetNormal = hit.normal;
@@ -560,6 +584,10 @@ public class PlayerBiped : Pawn
       {
         prefer = hit.normal.x;
         collideRight = true;
+        
+        velocity.x = Mathf.Min( velocity.x, 0 );
+        inertia.x = Mathf.Min( inertia.x, 0 );
+        
         hitRight = hit;
         adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
         wallSlideTargetNormal = hit.normal;
@@ -568,27 +596,13 @@ public class PlayerBiped : Pawn
       }
     }
 
-    // TOP
-    hitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.up * headboxy, headbox, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
-    temp += "up: " + hitCount + " ";
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
-      if( hit.normal.y < -collisionCorner.y )
-      {
-        collideTop = true;
-        adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
-        break;
-      }
-    }
-    
-    // Debug.Log( temp );
+    Debug.Log( temp );
     pos = adjust;
 
   }
   
+  public float collisionCornerTop = 0f;
+
   public override Vector2 GetShotOriginPosition()
   {
     return (Vector2) arm.position + shoot.normalized * armRadius * Scale;
@@ -735,7 +749,7 @@ public class PlayerBiped : Pawn
 
     string anim = "idle";
     bool previousGround = onGround;
-    onGround = collideBottom || (collideLeft && collideRight);
+    //onGround = collideBottom || (collideLeft && collideRight);
     if( onGround && !previousGround )
     {
       landing = true;
@@ -1035,7 +1049,7 @@ public class PlayerBiped : Pawn
     {
       if( dashing )
         anim = "dash";
-      else if( input.MoveRight || input.MoveLeft )
+      else if( (input.MoveRight || input.MoveLeft) && Mathf.Abs(velocity.x)>0 )
         anim = "run";
       else if( landing )
         anim = "land";
@@ -1055,9 +1069,9 @@ public class PlayerBiped : Pawn
 
     arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, shoot ) );
-    if( wallsliding && collideRight )
+    if( wallsliding && wallSlideNormal.x < 0 )
       transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( wallSlideNormal.y, -wallSlideNormal.x ) );
-    else if( wallsliding && collideLeft )
+    else if( wallsliding && wallSlideNormal.x > 0 )
       transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( -wallSlideNormal.y, wallSlideNormal.x ) );
     else
       transform.rotation = Quaternion.Euler( 0, 0, 0 );
