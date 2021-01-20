@@ -5066,9 +5066,6 @@ MonoBehaviour:
   Scale: 1
   headbox: {x: 0.01, y: 0.1}
   headboxy: 0
-  bottomCornerNormalY: 0.707
-  sideCornerNormalX: 0.707
-  collisionCorner: {x: 0.8, y: 0.7}
   facingRight: 0
   jumping: 0
   walljumping: 0
@@ -5166,6 +5163,7 @@ MonoBehaviour:
   soundJump: {fileID: 8300000, guid: 3634bba7cfee0409cb0ba088753bc669, type: 3}
   soundDash: {fileID: 8300000, guid: fa292f5f0979c4ce49e47c2a103a585b, type: 3}
   soundDamage: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
+  soundDenied: {fileID: 8300000, guid: 33fa2607814e34283a6a7e5d17964fab, type: 3}
   damageDuration: 0.5
   damagePulseColor: {r: 1, g: 1, b: 1, a: 1}
   damagePulseInterval: 0.0167
@@ -5215,7 +5213,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   damageSmoke: {fileID: 3827073479069855659}
   selectRange: 0.5
-  collisionCornerTop: 0
   partLegs:
     enabled: 1
     transform: {fileID: 4857518412556878}

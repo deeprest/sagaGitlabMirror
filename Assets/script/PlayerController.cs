@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.IO;
@@ -26,12 +25,9 @@ public class PlayerControllerEditor : Editor
 public class PlayerController : Controller
 {
   Controls.BipedActionsActions BA;
-  // Controls.SpiderActionsActions SA;
-
   public float DirectionalCursorDistance = 3;
-
   // any persistent input variables
-  Vector2 cursorDelta = Vector2.zero;
+  Vector2 aimPosition = Vector2.zero;
   bool fire;
   public Vector2 aimDeltaSinceLastFrame;
 
@@ -52,14 +48,12 @@ public class PlayerController : Controller
   public override void AssignPawn( Pawn pwn )
   {
     base.AssignPawn( pwn );
-    // I'm the player, look at me!
+    // I'm Mr. Meseeks, look at me!
     Global.instance.CameraController.LookTarget = this;
     Global.instance.CameraController.transform.position = pawn.transform.position;
 
     if( pawn is PlayerBiped )
       EnableBipedControls();
-    // else if( pawn is SpiderPawn )
-    //   EnableSpiderControls();
   }
 
   public override void RemovePawn( )
@@ -72,43 +66,19 @@ public class PlayerController : Controller
   public void EnableBipedControls()
   {
     Global.instance.Controls.BipedActions.Enable();
-    // Global.instance.Controls.SpiderActions.Disable();
   }
-
-  // public void EnableSpiderControls()
-  // {
-  //   Global.instance.Controls.BipedActions.Disable();
-  //   Global.instance.Controls.SpiderActions.Enable();
-  // }
 
   private void BindControls()
   {
     BA = Global.instance.Controls.BipedActions;
-    // SA = Global.instance.Controls.SpiderActions;
-    
-    //BA.Fire.started += ( obj ) => input.FireStart = true;
-    //BA.Fire.canceled += ( obj ) => input.FireEnd = true;
-    // BA.Fire.started += ( obj ) => input.Fire = true;
-    // BA.Fire.canceled += ( obj ) => input.Fire = false;
-    
-    // BA.Jump.started += ( obj ) => input.JumpStart = true;
-    // BA.Jump.canceled += ( obj ) => input.JumpEnd = true;
-    // BA.Dash.started += ( obj ) => input.DashStart = true;
-    // BA.Dash.canceled += ( obj ) => input.DashEnd = true;
-    
+
     BA.Ability.performed += ( obj ) => input.Ability = true;
     BA.NextAbility.performed += ( obj ) => input.NextAbility = true;
     BA.NextWeapon.performed += ( obj ) => input.NextWeapon = true;
     //BA.Charge.started += ( obj ) => input.Charge = true;
     BA.Down.performed += ( obj ) => input.MoveDown = true;
     BA.Interact.performed += ( obj ) => { input.Interact = true; };
-    BA.Aim.performed += ( obj ) => { aimDeltaSinceLastFrame += obj.ReadValue<Vector2>(); };
-    
-    // SA.Fire.started += ( obj ) => input.Fire = true;
-    // SA.Fire.canceled += ( obj ) => input.Fire = false;
-    // SA.Ability.performed += ( obj ) => input.Ability = true;
-    // SA.NextAbility.performed += ( obj ) => input.NextAbility = true;
-    // SA.NextWeapon.performed += ( obj ) => input.NextWeapon = true;
+    //BA.Aim.performed += ( obj ) => { aimDeltaSinceLastFrame += obj.ReadValue<Vector2>(); };
   }
 
   // apply input to pawn
@@ -131,17 +101,17 @@ public class PlayerController : Controller
       {
         if( Global.instance.UsingGamepad )
         {
-          cursorDelta = BA.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
+          aimPosition = BA.Aim.ReadValue<Vector2>() * DirectionalCursorDistance;
         }
         else
         {
-          cursorDelta += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity * Time.deltaTime;
-          /*cursorDelta += Global.instance.Controls.BipedActions.Aim.ReadValue<Vector2>() * Global.instance.CursorSensitivity;*/
+          aimDeltaSinceLastFrame = BA.Aim.ReadValue<Vector2>();
+          aimPosition += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity * Time.unscaledDeltaTime;
           aimDeltaSinceLastFrame = Vector2.zero;
-          cursorDelta = cursorDelta.normalized * Mathf.Max( Mathf.Min( cursorDelta.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.01f );
+          aimPosition = aimPosition.normalized * Mathf.Max( Mathf.Min( aimPosition.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.01f );
         }
       }
-      input.Aim = cursorDelta;
+      input.Aim = aimPosition;
       
       if( BA.MoveRight.ReadValue<float>() > 0.5f ) input.MoveRight = true;
       if( BA.MoveLeft.ReadValue<float>() > 0.5f ) input.MoveLeft = true;
@@ -185,7 +155,6 @@ public class PlayerController : Controller
   public void OnPauseMenu()
   {
     Global.instance.Controls.BipedActions.Disable();
-    // Global.instance.Controls.SpiderActions.Disable();
   }
 
   public void OnUnpause()

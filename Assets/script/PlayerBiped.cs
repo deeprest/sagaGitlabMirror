@@ -169,6 +169,8 @@ public class PlayerBiped : Pawn
   public AudioClip soundJump;
   public AudioClip soundDash;
   public AudioClip soundDamage;
+  public AudioClip soundDenied;
+  public AudioClip soundWeaponFail;
 
   [Header( "Damage" )]
   [SerializeField] float damageDuration = 0.5f;
@@ -224,13 +226,18 @@ public class PlayerBiped : Pawn
     // acquire abilities serialized into the prefab
     for( int i = 0; i < abilities.Count; i++ )
       abilities[i].OnAcquire( this );
+    if( weapons.Count > 0 )
+      Global.instance.weaponIcon.sprite = weapon.icon;
+    else
+      Global.instance.weaponIcon.sprite = null;
+    Global.instance.abilityIcon.sprite = null;
   }
 
   public override void OnControllerAssigned()
   {
     // settings are read before player is created, so set player settings here.
     speedFactorNormalized = Global.instance.FloatSetting["PlayerSpeedFactor"].Value;
-    //controller.CursorInfluence = Global.instance.BoolSetting["CursorInfluence"].Value;
+    //CameraController.CursorInfluence = Global.instance.BoolSetting["CursorInfluence"].Value;
   }
 
   public override void PreSceneTransition()
@@ -274,7 +281,10 @@ public class PlayerBiped : Pawn
   bool AddWeapon( Weapon wpn )
   {
     if( weapons.Contains( wpn ) )
+    {
+      audio.PlayOneShot( soundDenied );
       return false;
+    }
     weapons.Add( wpn );
     CurrentWeaponIndex = weapons.Count - 1;
     AssignWeapon( weapons[ CurrentWeaponIndex ] );
@@ -305,7 +315,10 @@ public class PlayerBiped : Pawn
   bool AddAbility( Ability alt )
   {
     if( abilities.Contains( alt ) )
+    {
+      audio.PlayOneShot( soundDenied );
       return false;
+    }
     abilities.Add( alt );
     alt.OnAcquire( this );
     CurrentAbilityIndex = abilities.Count - 1;
@@ -637,10 +650,12 @@ public class PlayerBiped : Pawn
     // PICKLE
     if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
       weapon.FireWeapon( this, pos, shoot
-#if PICKLE 
-, Scale 
+#if PICKLE
+, Scale
 #endif
-    );
+      );
+    else
+      audio.PlayOneShot( soundWeaponFail );
   }
 
   void ShootCharged()

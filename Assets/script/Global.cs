@@ -1223,14 +1223,15 @@ public class Global : MonoBehaviour
     CreateBoolSetting( "UseCameraVertical", true, delegate( bool value ) { CameraController.UseVerticalRange = value; } );
     CreateBoolSetting( "CursorInfluence", false, delegate( bool value )
     {
-      if( PlayerController != null ) CameraController.CursorInfluence = value;
+      if( CameraController != null ) 
+        CameraController.CursorInfluence = value;
     } );
     CreateBoolSetting( "AimSnap", false, delegate( bool value ) { AimSnap = value; } );
     CreateBoolSetting( "AutoAim", false, delegate( bool value ) { AutoAim = value; } );
     CreateBoolSetting( "ShowAimPath", false, delegate( bool value ) { ShowAimPath = value; } );
 
     CreateFloatSetting( "CursorOuter", 1, 0, 1, 20, delegate( float value ) { CursorOuter = value; } );
-    CreateFloatSetting( "CursorSensitivity", 1, 0.001f, 1, 1000, delegate( float value ) { CursorSensitivity = value; } );
+    CreateFloatSetting( "CursorSensitivity", 1, 0.01f, 2, 100, delegate( float value ) { CursorSensitivity = value; } );
     CreateFloatSetting( "CameraLerpAlpha", 10, 0, 10, 100, delegate( float value ) { CameraController.lerpAlpha = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 20, delegate( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 10, delegate ( float value ) { deadZone = value; } );
