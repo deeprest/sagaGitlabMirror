@@ -132,7 +132,6 @@ public class GraphookAbility : Ability
         grapDeltaMagnitude = grapDelta.magnitude;
         grapDeltaMagnitudePrevious = grapDeltaMagnitude;
         
-        graphookTip.SetActive( true );
         graphookTip.transform.parent = null;
         graphookTip.transform.localScale = Vector3.one;
         graphookTip.transform.position = pos;
@@ -176,7 +175,9 @@ public class GraphookAbility : Ability
   {
     grapShooting = false;
     grapPulling = false;
-    graphookTip.SetActive( false );
+    graphookTip.transform.parent = parent;
+    graphookTip.transform.localPosition = Vector3.zero;
+    graphookTip.transform.localRotation = Quaternion.identity;
     grapCableRenderer.gameObject.SetActive( false );
     // avoid grapsize.y == 0 if StopGrap is called before grapSize is assigned
     grapSize.x = grapCableRenderer.size.x;

@@ -9,15 +9,17 @@ public class Switch : WorldSelectable
   [SerializeField] Animator animator;
   public UnityEngine.Events.UnityEvent onActivate;
   public UnityEngine.Events.UnityEvent onDeactivate;
-
+#if false
   public override void Highlight()
   {
+    base.Highlight();
     //animator.Play( "highlight" );
   }
   public override void Unhighlight()
   {
     //animator.Play( "idle" );
   }
+#endif
   public override void Select()
   {
     // toggle

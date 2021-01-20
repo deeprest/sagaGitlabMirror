@@ -396,6 +396,7 @@ public class PlayerBiped : Pawn
       {
         closestISelect.Unhighlight();
         closestISelect = null;
+        InteractIndicator.SetActive( false );
       }
       if( WorldSelection != null )
       {
@@ -406,9 +407,18 @@ public class PlayerBiped : Pawn
     else if( closest != closestISelect )
     {
       if( closestISelect != null )
+      {
         closestISelect.Unhighlight();
+        InteractIndicator.SetActive( false );
+      }
       closestISelect = closest;
       closestISelect.Highlight();
+      InteractIndicator.SetActive( true );
+      InteractIndicator.transform.position = closestISelect.GetPosition();
+    }
+    else
+    {
+      InteractIndicator.transform.position = closestISelect.GetPosition();
     }
     /*highlightedPickupsRemove.Clear();
     foreach( var pup in highlightedPickups )

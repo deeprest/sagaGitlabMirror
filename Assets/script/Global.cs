@@ -262,7 +262,7 @@ public class Global : MonoBehaviour
     //Application.targetFrameRate = 60;
 
     // note: allowing characters to collide introduces risk of being forced into a corner
-    CharacterCollideLayers = LayerMask.GetMask( new string[] {"Default", "destructible", "triggerAndCollision"} ); //, "character" };
+    CharacterCollideLayers = LayerMask.GetMask( new string[] {"Default", "destructible", "triggerAndCollision"} );
     CharacterSidestepLayers = LayerMask.GetMask( new string[] {"character"} );
     CharacterDamageLayers = LayerMask.GetMask( new string[] {"character"} );
     TriggerLayers = LayerMask.GetMask( new string[] {"trigger", "triggerAndCollision"} );

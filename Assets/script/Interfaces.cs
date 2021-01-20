@@ -44,4 +44,5 @@ public interface IWorldSelectable
   void Unhighlight();
   void Select();
   void Unselect();
+  Vector2 GetPosition();
 }

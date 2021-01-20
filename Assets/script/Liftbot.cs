@@ -171,4 +171,9 @@ public class Liftbot : Entity, IWorldSelectable
   {
     UseWaitDuration = false;
   }
+
+  public Vector2 GetPosition()
+  {
+    return transform.position;
+  }
 }
