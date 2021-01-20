@@ -57,7 +57,7 @@ public class Ability : ScriptableObject
     IsActive = true;
   }
 
-  public virtual void UpdateAbility( Pawn pawn ) { }
+  public virtual void UpdateAbility() { }
 
   public virtual void Deactivate()
   {

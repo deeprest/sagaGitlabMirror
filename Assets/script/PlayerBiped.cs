@@ -25,9 +25,9 @@ public class PlayerBiped : Pawn
   public float headboxy = -0.1f;
   const float downslopefudge = 0.2f;
   //private const float corner = 0.707106769f;
-  public float bottomCornerNormalY = 0.65f;
-  public float sideCornerNormalX = 0.707f;
-  public Vector2 collisionCorner = Vector2.one;
+  const float collisionCornerTop = 0f;
+  const float collisionCornerBottom = 0.7f;
+  const float collisionCornerSide = 0.8f;
   
   Vector2 shoot;
 
@@ -204,8 +204,6 @@ public class PlayerBiped : Pawn
 
   protected override void Awake()
   {
-    // do not add to the Limit
-    // EntityAwake();
     base.Awake();
     InitializeParts();
   }
@@ -223,6 +221,9 @@ public class PlayerBiped : Pawn
     // unpack
     InteractIndicator.SetActive( false );
     InteractIndicator.transform.SetParent( null );
+    // acquire abilities serialized into the prefab
+    for( int i = 0; i < abilities.Count; i++ )
+      abilities[i].OnAcquire( this );
   }
 
   public override void OnControllerAssigned()
@@ -266,6 +267,8 @@ public class PlayerBiped : Pawn
     }
     chargeStartDelay.Stop( false );
     chargePulse.Stop( false );
+    if( ability != null )
+      ability.Deactivate();
   }
 
   bool AddWeapon( Weapon wpn )
@@ -432,7 +435,7 @@ public class PlayerBiped : Pawn
 
     Vector2 rightFoot;
     Vector2 leftFoot;
-    // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground bug by 'sampling' the ground at multiple points
+    // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground issue by 'sampling' the ground at multiple points
     RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.size.x, Vector2.down, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
     RaycastHit2D left = Physics2D.Raycast( adjust + Vector2.left * box.size.x, Vector2.down, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
     if( right.transform != null )
@@ -485,7 +488,7 @@ public class PlayerBiped : Pawn
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.y > 0 && hit.normal.y > collisionCorner.normalized.y && hit.point.y > prefer )
+      if( hit.normal.y > 0 && hit.normal.y > collisionCornerBottom && hit.point.y > prefer )
       {
         prefer = hit.point.y;
         collideBottom = true;
@@ -553,7 +556,7 @@ public class PlayerBiped : Pawn
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.x > collisionCorner.normalized.x && hit.normal.x < prefer )
+      if( hit.normal.x > collisionCornerSide && hit.normal.x < prefer )
       {
         prefer = hit.normal.x;
           collideLeft = true;
@@ -579,7 +582,7 @@ public class PlayerBiped : Pawn
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.x < -collisionCorner.normalized.x && hit.normal.x > prefer )
+      if( hit.normal.x < -collisionCornerSide && hit.normal.x > prefer )
       {
         prefer = hit.normal.x;
         collideRight = true;
@@ -595,12 +598,12 @@ public class PlayerBiped : Pawn
       }
     }
 
-    //Debug.Log( temp );
+    // Debug.Log( temp );
     pos = adjust;
 
   }
   
-  public float collisionCornerTop = 0f;
+  
 
   public override Vector2 GetShotOriginPosition()
   {
@@ -960,12 +963,6 @@ public class PlayerBiped : Pawn
         Vector2 wsvel;
         wsvel = Util.Project2D( -(Vector2) transform.up, wallSlideNormal.x > 0 ? Vector2.right : Vector2.left) * wallSlideDownX +
           Vector2.down * wallSlideDownY;
-        /*
-        if( wallSlideNormal.x > 0 ) 
-          velocity += ((-(Vector2)transform.up + new Vector2( wallSlideTargetNormal.y, -wallSlideTargetNormal.x )) * 0.5f).normalized * wallSlideDownSpeed;
-        else
-          velocity += ((-(Vector2)transform.up + new Vector2( -wallSlideTargetNormal.y, wallSlideTargetNormal.x )) * 0.5f).normalized * wallSlideDownSpeed;
-          */
         Debug.DrawLine( (Vector2) transform.position, (Vector2) transform.position + wsvel, Color.yellow );
         velocity += wsvel;
       }
@@ -982,7 +979,7 @@ public class PlayerBiped : Pawn
     }
 
     if( ability != null )
-      ability.UpdateAbility( this );
+      ability.UpdateAbility( );
 
     // // add gravity before velocity limits
     if( UseGravity )
@@ -1056,7 +1053,7 @@ public class PlayerBiped : Pawn
       {
         anim = "idle";
         // when idling, always face aim direction
-        facingRight = shoot.x >= 0;
+        facingRight = CursorWorldPosition.x >= transform.position.x;
       }
     }
     else if( !jumping )
