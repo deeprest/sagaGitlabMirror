@@ -34,7 +34,7 @@ public class PlayerBiped : Pawn
   [Header( "State" )]
   [SerializeField] bool facingRight = true;
 
-  bool onGround{get{return collideBottom || (collideLeft && collideRight);} }
+  bool onGround;
   [SerializeField] bool jumping;
   [SerializeField] bool walljumping;
   [SerializeField] bool wallsliding;
@@ -776,7 +776,7 @@ public class PlayerBiped : Pawn
 
     string anim = "idle";
     bool previousGround = onGround;
-    //onGround = collideBottom || (collideLeft && collideRight);
+    onGround = collideBottom || (collideLeft && collideRight);
     if( onGround && !previousGround )
     {
       landing = true;
@@ -959,7 +959,7 @@ public class PlayerBiped : Pawn
           }
           else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
           {
-            facingRight = true;
+            facingRight = false;
             Wallslide();
           }
         }
@@ -977,7 +977,7 @@ public class PlayerBiped : Pawn
           }
           else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
           {
-            facingRight = false;
+            facingRight = true;
             Wallslide();
           }
         }
@@ -1130,7 +1130,7 @@ public class PlayerBiped : Pawn
   {
     wallsliding = true;
     velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
-    dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
+    dashSmoke.transform.localPosition = new Vector3( -0.2f, -0.2f, 0 );
     if( !dashSmoke.isPlaying )
       dashSmoke.Play();
   }
