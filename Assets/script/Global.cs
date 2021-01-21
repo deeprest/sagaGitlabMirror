@@ -639,6 +639,7 @@ public class Global : MonoBehaviour
       }
       else
       {
+        CurrentPlayer.transform.position = FindSpawnPosition();
         CurrentPlayer.PostSceneTransition();
       }
       
