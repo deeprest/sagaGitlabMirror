@@ -64,7 +64,11 @@ public class OnboardingControls : MonoBehaviour
     }
     Removal.Clear();
 
-    if( parent.childCount == 0 )
+    int activeCount=0;
+    for( int i = 0; i < parent.childCount; i++ )
+      if( parent.GetChild( i ).gameObject.activeSelf )
+        activeCount++;
+    if( activeCount == 0 )
     {
       gameObject.SetActive( false );
       updateTextTimer.Stop( false );
