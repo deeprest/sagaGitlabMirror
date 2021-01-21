@@ -167,11 +167,13 @@ MonoBehaviour:
   IsStatic: 1
   BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
-  pushVelocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
+  overrideVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
+  DownOffset: 0
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
@@ -191,9 +193,9 @@ MonoBehaviour:
   CharacterLayer: 0
   CharacterParts: []
   cannon: {fileID: 7994472611932889022}
-  sightRange: 6
+  sightRange: 10
   small: 0.1
-  rotspeed: 100
+  rotspeed: 200
   shotOrigin: {fileID: 7247093447307877551}
   weapon: {fileID: 11400000, guid: a8ad658bd78184cb1b60f1ad0e4f28fe, type: 2}
   sightOrigin: {fileID: 8268832754770838417}

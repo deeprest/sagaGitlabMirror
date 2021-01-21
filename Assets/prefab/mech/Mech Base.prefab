@@ -382,7 +382,8 @@ MonoBehaviour:
   IsStatic: 0
   BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
-  pushVelocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
+  overrideVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 0.05
   raylength: 0.01
@@ -391,8 +392,8 @@ MonoBehaviour:
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  Health: 3
-  MaxHealth: 5
+  Health: 15
+  MaxHealth: 15
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
   spawnWhenDead: {fileID: 0}
