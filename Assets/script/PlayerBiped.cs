@@ -26,8 +26,8 @@ public class PlayerBiped : Pawn
   const float downslopefudge = 0.2f;
   //private const float corner = 0.707106769f;
   const float collisionCornerTop = 0f;
-  const float collisionCornerBottom = 0.7f;
-  const float collisionCornerSide = 0.8f;
+  public float collisionCornerBottom = 0.658504546f;
+  public float collisionCornerSide = 0.752576649f;
   
   Vector2 shoot;
 
