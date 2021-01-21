@@ -1574,7 +1574,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Font Material
   m_Shader: {fileID: 4800000, guid: f843a4d1cd12b46a694d5c124292e1a4, type: 3}
-  m_ShaderKeywords: _ALPHAPREMULTIPLY_ON
+  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA _ALPHAPREMULTIPLY_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1593,7 +1593,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: abf1c85880cc04df791227a38a50fd25, type: 3}
+        m_Texture: {fileID: 2800000, guid: a0aad406a0ece4b03aff728c5d7dc01a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicTex:
@@ -1614,8 +1614,8 @@ Material:
     - _Metallic: 0
     - _TintAmount: 0
     m_Colors:
-    - _Color: {r: 0.34509802, g: 1, b: 0.98908496, a: 1}
-    - _Color2: {r: 0.87058824, g: 0.87058824, b: 0.87058824, a: 1}
+    - _Color: {r: 0, g: 0.7666669, b: 1, a: 1}
+    - _Color2: {r: 0.582, g: 0.9721333, b: 1, a: 1}
     - _FadeColor: {r: 1, g: 1, b: 1, a: 1}
     - _FlashColor: {r: 1, g: 1, b: 1, a: 1}
     - _IndexColor: {r: 1, g: 0, b: 0, a: 1}

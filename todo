@@ -1,18 +1,13 @@
-- Design doc
-
-- spiderbot
-spiderpawn has dynamic body
-liftbot kinematic
-remove trigger layer, add OnTriggerEnter, collider->trigger = true
-removed layers: flameprojectile, enemy
-- reclaim body
+BEFORE NEXT RELEASE
++FIX in builds, changing scene does not set player position
+test with mouse
 
 
-
-
-playercontroller record/input, moveup/movedown, add spider action map
-- stickybomb exploding interaction with shield:
-  1) do raycast to each IDamage within range
-  2) if raycast hits something else, do a projection of the collider onto a perpendicular vector of the normal
-  3) use the projected endpoints to do two more raycasts
-  4) if the raycast hits an IDamage collider, proceed
+START A DEVLOG ON ITCH.
+NEW music selection on pause menu
+NEW health pickups dropped by enemies
+NEW cheats menu
+is background no show in enemy_lineup?
+FIX slowmo: pushTimer
+FIX airbot pickup fall through vent covers?
+NEW damage when crushed by boxes

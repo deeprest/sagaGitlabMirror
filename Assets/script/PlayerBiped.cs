@@ -1,50 +1,40 @@
-﻿using System.Collections.Generic;
+﻿//#define PICKLE
+//#define BODY_PART_HUNT
+
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerBiped : Pawn
 {
-  public AudioSource audio;
-  public AudioSource audio2;
-  public ParticleSystem dashSmoke;
-  public GameObject dashflashPrefab;
-  public GameObject walljumpEffect;
-  [SerializeField] Transform WallkickPosition;
-  public Transform arm;
+  [Header( "PlayerBiped" )]
 
-  const float raydown = 0.2f;
-  const float downOffset = 0.12f;
-  // smaller head box allows for easier jump out and up onto wall from vertically-aligned ledge.
+  /*public float slidingOffset = 1;
+  public float slidingOffsetTarget = 1;
+  public float slidingOffsetRate = 4;*/
+  //[SerializeField] private float DownOffset = BipedDownOffset;
+
+#if BODY_PART_HUNT
+  const float BipedDownOffset = 0.1f;
+  public float SpiderDownOffset = 0.1f;
+#endif
+
+  public float Scale = 1;
+  // smaller head box allows for easier jump out and up onto an overhead wall when standing on a ledge.
   public Vector2 headbox = new Vector2( .1f, .1f );
-  const float headboxy = -0.1f;
+  public float headboxy = -0.1f;
   const float downslopefudge = 0.2f;
-  const float corner = 0.707f;
-
-  [Header( "Setting" )]
-  public float speedFactorNormalized = 1;
-
-  // movement
-  public float moveVelMin = 1.5f;
-  public float moveVelMax = 3;
-  public float moveSpeed { get { return moveVelMin + (moveVelMax - moveVelMin) * speedFactorNormalized; } }
-  public float jumpVelMin = 5;
-  public float jumpVelMax = 10;
-  public float jumpSpeed { get { return jumpVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized; } }
-  public float jumpDuration = 0.4f;
-  public float jumpRepeatInterval = 0.1f;
-  public float dashVelMin = 3;
-  public float dashVelMax = 10;
-  public float dashSpeed { get { return dashVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized; } }
-  public float dashDuration = 1;
-  public float wallJumpPushVelocity = 1.5f;
-  public float wallJumpPushDuration = 0.1f;
-  public float wallSlideFactor = 0.5f;
-  public float landDuration = 0.1f;
-
+  //private const float corner = 0.707106769f;
+  const float collisionCornerTop = 0f;
+  const float collisionCornerBottom = 0.7f;
+  const float collisionCornerSide = 0.8f;
+  
   Vector2 shoot;
 
   [Header( "State" )]
   [SerializeField] bool facingRight = true;
-  [SerializeField] bool onGround;
+
+  bool onGround;
   [SerializeField] bool jumping;
   [SerializeField] bool walljumping;
   [SerializeField] bool wallsliding;
@@ -53,18 +43,88 @@ public class PlayerBiped : Pawn
 
   Vector3 hitBottomNormal;
   Vector2 wallSlideNormal;
+  private Vector2 wallSlideTargetNormal;
   Timer dashTimer = new Timer();
   Timer jumpTimer = new Timer();
   Timer jumpRepeatTimer = new Timer();
   Timer landTimer = new Timer();
   Timer walljumpTimer = new Timer();
 
+
+  [Header( "DEV" )]
+  public float MoveScale = 0.5f;
+  public float JumpScale = 0.5f;
+  public AnimationCurve OrthoScale;
+  
+  [Header( "Setting" )]
+  public float spiderMoveSpeed = 5;
+  public float speedFactorNormalized = 1;
+
+  // movement
+  public float moveVelMin = 1.5f;
+  public float moveVelMax = 3;
+  // PICKLE
+  public float moveSpeed
+  {
+    get
+    {
+      return (moveVelMin + (moveVelMax - moveVelMin) * speedFactorNormalized)
+#if PICKLE
+      * 1f + (Scale - 1f) * MoveScale; 
+#endif
+      ; }
+  }
+
+  public float jumpVelMin = 5;
+  public float jumpVelMax = 10;
+  // PICKLE
+  public float jumpSpeed
+  {
+    get { return (jumpVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized) 
+#if PICKLE 
+        * 1f + (Scale - 1f) * JumpScale;
+#endif
+      ; }
+  }
+
+  public float jumpDuration = 0.4f;
+  public float jumpRepeatInterval = 0.1f;
+  public float dashVelMin = 3;
+  public float dashVelMax = 10;
+  // PICKLE
+  public float dashSpeed
+  {
+    get { return (dashVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized) 
+#if PICKLE 
+* 1f + (Scale - 1f) * JumpScale; 
+#endif
+      ; }
+  }
+
+  public float dashDuration = 1;
+  public float wallJumpPushVelocity = 1.5f;
+  public float wallJumpPushDuration = 0.1f;
+  public float wallSlideFactor = 0.5f;
+  public float wallSlideRotateSpeed = 1;
+  [FormerlySerializedAs( "wallSlideDownSpeedSide" )]
+  public float wallSlideDownX = 1;
+  [FormerlySerializedAs( "wallSlideDownSpeedDown" )]
+  public float wallSlideDownY = 1;
+  public float wallSlideHardAngleThreshold = 25;
+  public float landDuration = 0.1f;
+
+
+  public ParticleSystem dashSmoke;
+  public GameObject dashflashPrefab;
+  public GameObject walljumpEffect;
+  [SerializeField] Transform WallkickPosition;
+  public Transform arm;
+  
+
   [Header( "Cursor" )]
-  // public GameObject InteractIndicator;
   [SerializeField] Transform Cursor;
   public Transform CursorSnapped;
   public Transform CursorAutoAim;
-  // public Vector2 CursorWorldPosition;
   public float CursorScale = 2;
   public float SnapAngleDivide = 8;
   public float SnapCursorDistance = 1;
@@ -72,13 +132,18 @@ public class PlayerBiped : Pawn
   public float AutoAimDistance = 5;
   public float DirectionalMinimum = 0.3f;
   bool CursorAboveMinimumDistance;
+
+  // show aim path
   [SerializeField] LineRenderer lineRenderer;
 
   [Header( "Weapon" )]
   public Weapon weapon;
   public int CurrentWeaponIndex;
   [SerializeField] List<Weapon> weapons;
+
   Timer shootRepeatTimer = new Timer();
+
+  // charged shots
   ParticleSystem chargeEffect = null;
   public float chargeMin = 0.3f;
   public float armRadius = 0.3f;
@@ -89,14 +154,23 @@ public class PlayerBiped : Pawn
   public float chargePulseInterval = 0.1f;
   public Color chargeColor = Color.white;
   public Transform armMount;
-  [SerializeField] Ability secondary;
-  float chargeStart;
+  float chargeStartTime;
   GameObject chargeEffectGO;
 
+  [Header( "Ability" )]
+  [SerializeField] Ability ability;
+
+  [SerializeField] List<Ability> abilities;
+  public int CurrentAbilityIndex;
+
   [Header( "Sound" )]
+  public AudioSource audio;
+  public AudioSource audio2;
   public AudioClip soundJump;
   public AudioClip soundDash;
   public AudioClip soundDamage;
+  public AudioClip soundDenied;
+  public AudioClip soundWeaponFail;
 
   [Header( "Damage" )]
   [SerializeField] float damageDuration = 0.5f;
@@ -108,24 +182,10 @@ public class PlayerBiped : Pawn
   Timer damagePulseTimer = new Timer();
   public float damagePulseInterval = .1f;
   public float damageBlinkDuration = 1f;
-  public float damageLift = 1f;
+  const float damageLift = 0;
   public float damagePushAmount = 1f;
-
-  [Header( "Graphook" )]
-  [SerializeField] GameObject graphookTip;
-  [SerializeField] SpriteRenderer grapCableRender;
-  public float grapDistance = 10;
-  public float grapSpeed = 5;
-  public float grapTimeout = 5;
-  public float grapPullSpeed = 10;
-  public float grapStopDistance = 0.1f;
-  Timer grapTimer = new Timer();
-  Vector2 grapSize;
-  Vector3 graphitpos;
-  public bool grapShooting;
-  public bool grapPulling;
-  public AudioClip grapShotSound;
-  public AudioClip grapHitSound;
+  [SerializeField] private AnimationCurve damageShakeCurve;
+  public ParticleSystem damageSmoke;
 
   // cached for optimization
   int HitLayers;
@@ -138,8 +198,11 @@ public class PlayerBiped : Pawn
   IWorldSelectable WorldSelection;
   List<Component> pups = new List<Component>();
 
-  [SerializeField] GameObject SpiderbotPrefab;
-  public SpiderPawn spider;
+  public bool IsBiped { get { return partLegs.enabled;  } }
+  public bool grapPulling
+  {
+    get { return ability != null && ability is GraphookAbility && ability.IsActive;  }
+  }
 
   protected override void Awake()
   {
@@ -149,40 +212,51 @@ public class PlayerBiped : Pawn
 
   protected override void Start()
   {
+#if BODY_PART_HUNT    
+    DownOffset = BipedDownOffset;
+#endif
     HitLayers = Global.TriggerLayers | Global.CharacterDamageLayers;
     IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
     spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
-    graphookTip.SetActive( false );
-    grapCableRender.gameObject.SetActive( false );
     if( weapons.Count > 0 )
       weapon = weapons[CurrentWeaponIndex % weapons.Count];
     // unpack
     InteractIndicator.SetActive( false );
     InteractIndicator.transform.SetParent( null );
+    // acquire abilities serialized into the prefab
+    for( int i = 0; i < abilities.Count; i++ )
+      abilities[i].OnAcquire( this );
+    if( weapons.Count > 0 )
+      Global.instance.weaponIcon.sprite = weapon.icon;
+    else
+      Global.instance.weaponIcon.sprite = null;
+    Global.instance.abilityIcon.sprite = null;
   }
 
   public override void OnControllerAssigned()
   {
     // settings are read before player is created, so set player settings here.
     speedFactorNormalized = Global.instance.FloatSetting["PlayerSpeedFactor"].Value;
-    controller.CursorInfluence = Global.instance.BoolSetting["CursorInfluence"].Value;
+    //CameraController.CursorInfluence = Global.instance.BoolSetting["CursorInfluence"].Value;
   }
 
   public override void PreSceneTransition()
   {
+    velocity = Vector2.zero;
     StopCharge();
-    StopGrap();
-    // "pack" the graphook with this gameobject
-    // graphook is unpacked when used
-    graphookTip.transform.parent = gameObject.transform;
-    grapCableRender.transform.parent = gameObject.transform;
-    InteractIndicator.transform.parent = gameObject.transform;
+    InteractIndicator.transform.SetParent( gameObject.transform );
+    if( ability != null )
+      ability.PreSceneTransition();
+    WorldSelection = null;
+    closestISelect = null;
   }
 
   public override void PostSceneTransition()
   {
     InteractIndicator.SetActive( false );
     InteractIndicator.transform.SetParent( null );
+    if( ability != null )
+      ability.PostSceneTransition();
   }
 
   protected override void OnDestroy()
@@ -200,8 +274,23 @@ public class PlayerBiped : Pawn
     }
     chargeStartDelay.Stop( false );
     chargePulse.Stop( false );
+    if( ability != null )
+      ability.Deactivate();
   }
 
+  bool AddWeapon( Weapon wpn )
+  {
+    if( weapons.Contains( wpn ) )
+    {
+      audio.PlayOneShot( soundDenied );
+      return false;
+    }
+    weapons.Add( wpn );
+    CurrentWeaponIndex = weapons.Count - 1;
+    AssignWeapon( weapons[ CurrentWeaponIndex ] );
+    return true;
+  }
+  
   void AssignWeapon( Weapon wpn )
   {
     weapon = wpn;
@@ -217,8 +306,43 @@ public class PlayerBiped : Pawn
 
   void NextWeapon()
   {
+    if( weapons.Count == 0 )
+      return;
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % weapons.Count;
     AssignWeapon( weapons[CurrentWeaponIndex] );
+  }
+
+  bool AddAbility( Ability alt )
+  {
+    if( abilities.Contains( alt ) )
+    {
+      audio.PlayOneShot( soundDenied );
+      return false;
+    }
+    abilities.Add( alt );
+    alt.OnAcquire( this );
+    CurrentAbilityIndex = abilities.Count - 1;
+    AssignAbility( abilities[ CurrentAbilityIndex ] );
+    return true;
+  }
+  
+  void AssignAbility( Ability alt )
+  {
+    if( ability != null )
+      ability.Unequip();
+    ability = alt;
+    ability.Equip( armMount );
+    Global.instance.abilityIcon.sprite = ability.icon;
+    if( ability.cursor != null )
+      Cursor.GetComponent<SpriteRenderer>().sprite = ability.cursor;
+  }
+
+  void NextAbility()
+  {
+    if( abilities.Count == 0 )
+      return;
+    CurrentAbilityIndex = (CurrentAbilityIndex + 1) % abilities.Count;
+    AssignAbility( abilities[CurrentAbilityIndex] );
   }
 
   public override void UnselectWorldSelection()
@@ -229,11 +353,13 @@ public class PlayerBiped : Pawn
       WorldSelection = null;
     }
   }
-  
+
+  private Vector2 pos;
+
   new void UpdateHit( float dT )
   {
     pups.Clear();
-    hitCount = Physics2D.BoxCastNonAlloc( transform.position, box.size, 0, velocity, RaycastHits, Mathf.Max( raylength, velocity.magnitude * dT ), HitLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( pos, box.size, 0, velocity, RaycastHits, Mathf.Max( raylength, velocity.magnitude * dT ), HitLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -267,7 +393,7 @@ public class PlayerBiped : Pawn
       IWorldSelectable pup = hit.transform.GetComponent<IWorldSelectable>();
       if( pup != null )
       {
-        pups.Add( (Component)pup );
+        pups.Add( (Component) pup );
         /*if( !highlightedPickups.Contains( pup ) )
         {
           pup.Highlight();
@@ -276,13 +402,14 @@ public class PlayerBiped : Pawn
       }
     }
     //WorldSelectable closest = (WorldSelectable)FindClosest( transform.position, pups.ToArray() );
-    IWorldSelectable closest = (IWorldSelectable)Util.FindSmallestAngle( transform.position, shoot, pups.ToArray() );
+    IWorldSelectable closest = (IWorldSelectable) Util.FindSmallestAngle( transform.position, shoot, pups.ToArray() );
     if( closest == null )
     {
       if( closestISelect != null )
       {
         closestISelect.Unhighlight();
         closestISelect = null;
+        InteractIndicator.SetActive( false );
       }
       if( WorldSelection != null )
       {
@@ -293,9 +420,18 @@ public class PlayerBiped : Pawn
     else if( closest != closestISelect )
     {
       if( closestISelect != null )
+      {
         closestISelect.Unhighlight();
+        InteractIndicator.SetActive( false );
+      }
       closestISelect = closest;
       closestISelect.Highlight();
+      InteractIndicator.SetActive( true );
+      InteractIndicator.transform.position = closestISelect.GetPosition();
+    }
+    else
+    {
+      InteractIndicator.transform.position = closestISelect.GetPosition();
     }
     /*highlightedPickupsRemove.Clear();
     foreach( var pup in highlightedPickups )
@@ -309,27 +445,30 @@ public class PlayerBiped : Pawn
     */
   }
 
+
   new void UpdateCollision( float dT )
   {
     collideRight = false;
     collideLeft = false;
     collideTop = false;
     collideBottom = false;
-    adjust = transform.position;
+    adjust = pos;
 
-    #region multisampleAttempt
-    /*
-    // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground bug by 'sampling' the ground at multiple points
-    RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
-    RaycastHit2D left = Physics2D.Raycast( adjust + Vector2.left * box.x, Vector2.down, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), LayerMask.GetMask( PlayerCollideLayers ) );
+#if multisample
+
+    Vector2 rightFoot;
+    Vector2 leftFoot;
+    // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground issue by 'sampling' the ground at multiple points
+    RaycastHit2D right = Physics2D.Raycast( adjust + Vector2.right * box.size.x, Vector2.down, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
+    RaycastHit2D left = Physics2D.Raycast( adjust + Vector2.left * box.size.x, Vector2.down, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
     if( right.transform != null )
       rightFoot = right.point;
     else
-      rightFoot = adjust + ( Vector2.right * box.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * Time.deltaTime ) );
+      rightFoot = adjust + ( Vector2.right * box.size.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * dT ) );
     if( left.transform != null )
       leftFoot = left.point;
     else
-      leftFoot = adjust + ( Vector2.left * box.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * Time.deltaTime ) );
+      leftFoot = adjust + ( Vector2.left * box.size.x ) + ( Vector2.down * Mathf.Max( raylength, -velocity.y * dT ) );
 
     if( right.transform != null || left.transform != null )
     {
@@ -337,119 +476,186 @@ public class PlayerBiped : Pawn
       Vector3 sloped = Vector3.Cross( across.normalized, Vector3.back );
       if( sloped.y > corner )
       {
-        collideFeet = true;
-        adjust.y = ( leftFoot + across * 0.5f ).y + contactSeparation + verticalOffset;
+        collideBottom = true;
+        adjust.y = ( leftFoot + across * 0.5f ).y + downOffset;
         hitBottomNormal = sloped;
       }
     }
 
     if( left.transform != null )
-      Debug.DrawLine( adjust + Vector2.left * box.x, leftFoot, Color.green );
+      Debug.DrawLine( adjust + Vector2.left * box.size.x, leftFoot, Color.green );
     else
-      Debug.DrawLine( adjust + Vector2.left * box.x, leftFoot, Color.grey );
+      Debug.DrawLine( adjust + Vector2.left * box.size.x, leftFoot, Color.grey );
     if( right.transform != null )
-      Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.green );
+      Debug.DrawLine( adjust + Vector2.right * box.size.x, rightFoot, Color.green );
     else
-      Debug.DrawLine( adjust + Vector2.right * box.x, rightFoot, Color.grey );
+      Debug.DrawLine( adjust + Vector2.right * box.size.x, rightFoot, Color.grey );
 
-    */
-    #endregion
+#endif
+    
+    // slidingOffsetTarget = 1;
+    string temp = "";
 
+    const float raydown = 0.2f;
+    const float downOffset = 0.12f;
     float down = jumping ? raydown - downOffset : raydown;
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
+    float prefer;
+   
+#if true
+    // BOTTOM
+    prefer = float.MinValue;
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size * Scale, transform.rotation.eulerAngles.z, -(Vector2)transform.up, RaycastHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
+    temp += "down: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.y > corner )
+      if( hit.normal.y > 0 && hit.normal.y > collisionCornerBottom && hit.point.y > prefer )
       {
+        prefer = hit.point.y;
         collideBottom = true;
-        adjust.y = hit.point.y + box.size.y * 0.5f + downOffset;
+        velocity.y = Mathf.Max( velocity.y, 0 );
+        inertia.x = 0;
+#if false
+        // sliding offset. This moves the player downward a little bit on slopes to
+        // close the gap created by the corners of the box during boxcast.
+        if( Mathf.Abs( hit.normal.x ) > 0 )
+        {
+          slidingOffsetTarget = 1 - Mathf.Abs( hit.normal.x ) / hit.normal.y;
+          slidingOffset = Mathf.MoveTowards( slidingOffset, slidingOffsetTarget, slidingOffsetRate * dT );
+        }
+        else
+        {
+          slidingOffset = 1;
+        }
+        adjust.y = hit.point.y + box.size.y * 0.5f + slidingOffset * downOffset;
+#endif
+        adjust.y = hit.point.y + box.size.y * 0.5f * Scale + downOffset;
+
         hitBottomNormal = hit.normal;
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
         {
-
 #if UNITY_EDITOR
-        if( cha.GetInstanceID() == GetInstanceID() )
-        {
-          Debug.LogError( "character set itself as carry character", gameObject );
-          Debug.Break();
-        }
-#endif  
+          if( cha.GetInstanceID() == GetInstanceID() )
+          {
+            Debug.LogError( "character set itself as carry character", gameObject );
+            Debug.Break();
+          }
+#endif
           carryCharacter = cha;
         }
-        break;
       }
     }
+#endif
 
-    hitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.down * headboxy, headbox, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
+    
+    // TOP
+    hitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.up * headboxy, headbox, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
+    temp += "up: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.y < -corner )
+      if( hit.normal.y < collisionCornerTop )
       {
         collideTop = true;
+        velocity.y = Mathf.Min( velocity.y, 0 );
         adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
-        break;
       }
     }
 
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.left, RaycastHits, Mathf.Max( contactSeparation, -velocity.x * dT ), Global.CharacterCollideLayers );
+
+    // LEFT
+    // Prefer more-horizontal walls for wall sliding. Start beyond normal range.
+    prefer = 2;
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.left, RaycastHits, Mathf.Max( raylength, -velocity.x * dT ), Global.CharacterCollideLayers );
+    temp += "left: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.x > corner )
+      if( hit.normal.x > collisionCornerSide && hit.normal.x < prefer )
       {
-        collideLeft = true;
-        hitLeft = hit;
-        adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
-        wallSlideNormal = hit.normal;
-        break;
+        prefer = hit.normal.x;
+          collideLeft = true;
+        
+        velocity.x = Mathf.Max( velocity.x, 0 );
+        inertia.x = Mathf.Max( inertia.x, 0 );
+        
+          hitLeft = hit;
+          adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
+          wallSlideTargetNormal = hit.normal;
+          // prevent clipping through angled walls when falling fast.
+          velocity.y -= Util.Project2D( velocity, hit.normal ).y;
+        //break;
       }
     }
-
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.right, RaycastHits, Mathf.Max( contactSeparation, velocity.x * dT ), Global.CharacterCollideLayers );
+    
+    // RIGHT
+    prefer = -2;
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.right, RaycastHits, Mathf.Max( raylength, velocity.x * dT ), Global.CharacterCollideLayers );
+    temp += "right: " + hitCount + " ";
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.x < -corner )
+      if( hit.normal.x < -collisionCornerSide && hit.normal.x > prefer )
       {
+        prefer = hit.normal.x;
         collideRight = true;
+        
+        velocity.x = Mathf.Min( velocity.x, 0 );
+        inertia.x = Mathf.Min( inertia.x, 0 );
+        
         hitRight = hit;
         adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
-        wallSlideNormal = hit.normal;
-        break;
+        wallSlideTargetNormal = hit.normal;
+        // prevent clipping through angled walls when falling fast.
+        velocity.y -= Util.Project2D( velocity, hit.normal ).y;
       }
     }
 
-    transform.position = adjust;
+    // Debug.Log( temp );
+    pos = adjust;
+
+  }
+  
+  
+
+  public override Vector2 GetShotOriginPosition()
+  {
+    return (Vector2) arm.position + shoot.normalized * armRadius * Scale;
   }
 
-  Vector2 GetShotOriginPosition()
+  public override Vector2 GetAimVector()
   {
-    return (Vector2)arm.position + shoot.normalized * armRadius;
+    return shoot;
   }
 
   void Shoot()
   {
-    if( weapon == null || (weapon.HasInterval && shootRepeatTimer.IsActive) )
+    if( weapon == null ||
+      !weapon.fullAuto && pinput.Fire ||
+      shootRepeatTimer.IsActive ) 
       return;
-    if( !weapon.fullAuto )
-      input.Fire = false;
-    if( weapon.HasInterval )
+    if( weapon.shootInterval > 0 )
       shootRepeatTimer.Start( weapon.shootInterval, null, null );
     Vector2 pos = GetShotOriginPosition();
+    // PICKLE
     if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
-      weapon.FireWeapon( this, pos, shoot );
+      weapon.FireWeapon( this, pos, shoot
+#if PICKLE
+, Scale
+#endif
+      );
+    else
+      audio.PlayOneShot( soundWeaponFail );
   }
 
   void ShootCharged()
@@ -463,7 +669,7 @@ public class PlayerBiped : Pawn
     if( chargeEffect != null )
     {
       audio.Stop();
-      if( (Time.time - chargeStart) > chargeMin )
+      if( (Time.time - chargeStartTime) > chargeMin )
       {
         audio.PlayOneShot( weapon.soundChargeShot );
         Vector3 pos = GetShotOriginPosition();
@@ -474,75 +680,18 @@ public class PlayerBiped : Pawn
     StopCharge();
   }
 
-  void ShootGraphook()
+  void UseAbility()
   {
-    if( grapShooting )
-      return;
-    if( grapPulling )
-      StopGrap();
-    Vector3 pos = GetShotOriginPosition();
-    if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
-    {
-      RaycastHit2D hit = Physics2D.Raycast( pos, shoot, grapDistance, LayerMask.GetMask( new string[] { "Default", "triggerAndCollision", "enemy" } ) );
-      if( hit )
-      {
-        //Debug.DrawLine( pos, hit.point, Color.red );
-        grapShooting = true;
-        graphitpos = hit.point;
-        graphookTip.SetActive( true );
-        graphookTip.transform.parent = null;
-        graphookTip.transform.localScale = Vector3.one;
-        graphookTip.transform.position = pos;
-        graphookTip.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphitpos - transform.position) ) ); ;
-        grapTimer.Start( grapTimeout, delegate
-        {
-          pos = GetShotOriginPosition();
-          graphookTip.transform.position = Vector3.MoveTowards( graphookTip.transform.position, graphitpos, grapSpeed * Time.deltaTime );
-          //grap cable
-          grapCableRender.gameObject.SetActive( true );
-          grapCableRender.transform.parent = null;
-          grapCableRender.transform.localScale = Vector3.one;
-          grapCableRender.transform.position = pos;
-          grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - pos) ) );
-          grapSize = grapCableRender.size;
-          grapSize.x = Vector3.Distance( graphookTip.transform.position, pos );
-          grapCableRender.size = grapSize;
-
-          if( Vector3.Distance( graphookTip.transform.position, graphitpos ) < 0.01f )
-          {
-            grapShooting = false;
-            grapPulling = true;
-            grapTimer.Stop( false );
-            grapTimer.Start( grapTimeout, null, StopGrap );
-            audio.PlayOneShot( grapHitSound );
-          }
-        },
-        StopGrap );
-        audio.PlayOneShot( grapShotSound );
-      }
-    }
-  }
-
-  void StopGrap()
-  {
-    grapShooting = false;
-    grapPulling = false;
-    graphookTip.SetActive( false );
-    grapCableRender.gameObject.SetActive( false );
-    // avoid grapsize.y == 0 if StopGrap is called before grapSize is assigned
-    grapSize.y = grapCableRender.size.y;
-    grapSize.x = 0;
-    grapCableRender.size = grapSize;
-    grapTimer.Stop( false );
+    ability.Activate( GetShotOriginPosition(), shoot );
   }
 
   void UpdateCursor()
   {
     Vector2 AimPosition = Vector2.zero;
-    Vector2 cursorOrigin = arm.position;
-    Vector2 cursorDelta = input.Aim;
+    Vector2 cursorOrigin = transform.position;
+    Vector2 inputAim = input.Aim;
 
-    CursorAboveMinimumDistance = cursorDelta.magnitude > DirectionalMinimum;
+    CursorAboveMinimumDistance = inputAim.magnitude > DirectionalMinimum;
     Cursor.gameObject.SetActive( CursorAboveMinimumDistance );
 
     if( Global.instance.AimSnap )
@@ -551,13 +700,13 @@ public class PlayerBiped : Pawn
       {
         // set cursor
         CursorSnapped.gameObject.SetActive( true );
-        float angle = Mathf.Atan2( cursorDelta.x, cursorDelta.y ) / Mathf.PI;
+        float angle = Mathf.Atan2( inputAim.x, inputAim.y ) / Mathf.PI;
         float snap = Mathf.Round( angle * SnapAngleDivide ) / SnapAngleDivide;
         Vector2 snapped = new Vector2( Mathf.Sin( snap * Mathf.PI ), Mathf.Cos( snap * Mathf.PI ) );
         AimPosition = cursorOrigin + snapped * SnapCursorDistance;
         CursorSnapped.position = AimPosition;
         CursorSnapped.rotation = Quaternion.LookRotation( Vector3.forward, snapped );
-        CursorWorldPosition = cursorOrigin + cursorDelta;
+        CursorWorldPosition = cursorOrigin + inputAim;
       }
       else
       {
@@ -567,14 +716,14 @@ public class PlayerBiped : Pawn
     else
     {
       CursorSnapped.gameObject.SetActive( false );
-      AimPosition = cursorOrigin + cursorDelta;
+      AimPosition = cursorOrigin + inputAim;
       CursorWorldPosition = AimPosition;
     }
 
     if( Global.instance.AutoAim )
     {
-      CursorWorldPosition = cursorOrigin + cursorDelta;
-      RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, AutoAimCircleRadius, cursorDelta, AutoAimDistance, LayerMask.GetMask( new string[] { "enemy" } ) );
+      CursorWorldPosition = cursorOrigin + inputAim;
+      RaycastHit2D[] hits = Physics2D.CircleCastAll( transform.position, AutoAimCircleRadius, inputAim, AutoAimDistance, LayerMask.GetMask( new string[] {"enemy"} ) );
       float distance = Mathf.Infinity;
       Transform closest = null;
       foreach( var hit in hits )
@@ -604,18 +753,26 @@ public class PlayerBiped : Pawn
       CursorAutoAim.gameObject.SetActive( false );
     }
 
-    shoot = AimPosition - (Vector2)arm.position;
+    shoot = AimPosition - (Vector2) arm.position;
     // if no inputs override, then default to facing the aim direction
     if( shoot.sqrMagnitude < 0.0001f )
       shoot = facingRight ? Vector2.right : Vector2.left;
   }
 
-  void Update()
+  private bool previousWallsliding;
+  Vector2 previousWallSlideTargetNormal;
+
+  bool jumpStart { get { return input.Jump && !pinput.Jump;  } }
+  bool jumpStop { get { return !input.Jump && pinput.Jump;  } }
+  bool dashStart { get { return (input.Dash && !pinput.Dash); } }
+  bool dashStop { get { return (!input.Dash && pinput.Dash); } }
+  bool chargeStart { get { return input.Charge && !pinput.Charge;  } }
+  bool chargeStop { get { return !input.Charge && pinput.Charge;  } }
+
+  public override void EntityUpdate( )
   {
     if( Global.Paused )
       return;
-
-    UpdateCursor();
 
     string anim = "idle";
     bool previousGround = onGround;
@@ -625,32 +782,49 @@ public class PlayerBiped : Pawn
       landing = true;
       landTimer.Start( landDuration, null, delegate { landing = false; } );
     }
+    
+    // must be after collision
+    if( wallsliding )
+    {
+      float angle = Vector2.Angle( previousWallSlideTargetNormal, wallSlideTargetNormal );
+      if( previousWallsliding && angle < wallSlideHardAngleThreshold )
+        wallSlideNormal = Vector2.MoveTowards( wallSlideNormal, wallSlideTargetNormal, wallSlideRotateSpeed * Time.deltaTime );
+      else
+        wallSlideNormal = wallSlideTargetNormal;
+    }
+    previousWallsliding = wallsliding;
+    previousWallSlideTargetNormal = wallSlideTargetNormal; 
     wallsliding = false;
+
     // must have input (or push) to move horizontally, so allow no persistent horizontal velocity (without push)
     if( grapPulling )
       velocity = Vector3.zero;
     else if( !(input.MoveRight || input.MoveLeft) )
-      velocity.x = 0;
-
-    if( carryCharacter != null )
-      velocity = carryCharacter.velocity;
+      velocity.x = inertia.x;
 
     // WEAPONS / ABILITIES
-    if( input.Fire )
-      Shoot();
+    if( weapon != null )
+    {
+      if( input.Fire )
+        Shoot();
 
-    if( input.ChargeStart )
-      StartCharge();
+      if( weapon.HasChargeVariant )
+      {
+        if( chargeStart )
+          StartCharge();
+        if( chargeStop )
+          ShootCharged();
+      }
+    }
 
-    if( input.ChargeEnd )
-      ShootCharged();
-
-    if( input.Graphook )
-      ShootGraphook();
+    if( ability != null && partArmFront.enabled && input.Ability )
+      UseAbility();
 
     if( input.NextWeapon )
       NextWeapon();
-    //Shield.SetActive( input.Shield );
+
+    if( input.NextAbility )
+      NextAbility();
 
     if( input.MoveDown )
       hanging = false;
@@ -665,168 +839,179 @@ public class PlayerBiped : Pawn
         WorldSelection.Select();
         if( WorldSelection is Pickup )
         {
-          Pickup pickup = (Pickup)closestISelect;
+          Pickup pickup = (Pickup) WorldSelection;
           if( pickup.weapon != null )
           {
-            if( !weapons.Contains( pickup.weapon ) )
-            {
-              weapons.Add( pickup.weapon );
-              AssignWeapon( pickup.weapon );
-            }
+            if( AddWeapon( pickup.weapon ) )
+              Destroy( pickup.gameObject );
           }
           else if( pickup.ability != null )
           {
-            secondary = pickup.ability;
-            secondary.Activate( this );
-            Destroy( pickup.gameObject );
+            if( AddAbility( pickup.ability ) )
+              Destroy( pickup.gameObject );
+          }
+          else if( pickup.PickupPart != PickupPart.None )
+          {
+            switch( pickup.PickupPart )
+            {
+              case PickupPart.Legs:
+                EnablePart( partLegs );
+                break;
+              case PickupPart.Head:
+                EnablePart( partHead );
+                break;
+              case PickupPart.ArmFront:
+                EnablePart( partArmFront );
+                break;
+              case PickupPart.ArmBack:
+                EnablePart( partArmBack );
+                break;
+            }
           }
         }
       }
     }
 
-    if( takingDamage )
+    if( partLegs.enabled )
     {
-      velocity.y = 0;
-    }
-    else
-    {
-      if( input.MoveRight )
+      if( takingDamage )
       {
-        facingRight = true;
-        // move along floor if angled downwards
-        Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.forward );
-        if( onGround && hitnormalCross.y < 0 )
-          // add a small downward vector for curved surfaces
-          velocity = hitnormalCross * moveSpeed + Vector3.down * downslopefudge;
-        else
-          velocity.x = moveSpeed;
-        if( !facingRight && onGround )
-          StopDash();
+        velocity.y = 0;
       }
-
-      if( input.MoveLeft )
+      else
       {
-        facingRight = false;
-        // move along floor if angled downwards
-        Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.back );
-        if( onGround && hitnormalCross.y < 0 )
-          // add a small downward vector for curved surfaces
-          velocity = hitnormalCross * moveSpeed + Vector3.down * downslopefudge;
-        else
-          velocity.x = -moveSpeed;
-        if( facingRight && onGround )
-          StopDash();
-      }
-
-      if( input.DashStart && (onGround || collideLeft || collideRight) )
-        StartDash();
-
-      if( input.DashEnd && !jumping )
-        StopDash();
-
-      if( dashing )
-      {
-        if( onGround && !previousGround )
+        if( input.MoveRight && input.MoveLeft )
         {
-          StopDash();
+          velocity.x = 0;
         }
-        else if( facingRight )
+        else if( input.MoveRight )
         {
-          if( onGround || input.MoveRight )
-            velocity.x = dashSpeed;
-          if( (onGround || collideRight) && !dashTimer.IsActive )
+          facingRight = true;
+          inertia.x = Mathf.Max( inertia.x, 0 );
+          // move along floor if angled downwards
+          Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.forward );
+          if( onGround && hitnormalCross.y < 0 )
+            // add a small downward vector for curved surfaces
+            velocity = hitnormalCross * moveSpeed + Vector3.down * downslopefudge;
+          else
+            velocity.x = moveSpeed + inertia.x;
+          if( !facingRight && onGround )
             StopDash();
         }
-        else
+        else if( input.MoveLeft )
         {
-          if( onGround || input.MoveLeft )
-            velocity.x = -dashSpeed;
-          if( (onGround || collideLeft) && !dashTimer.IsActive )
+          facingRight = false;
+          inertia.x = Mathf.Min( inertia.x, 0 );
+          // move along floor if angled downwards
+          Vector3 hitnormalCross = Vector3.Cross( hitBottomNormal, Vector3.back );
+          if( onGround && hitnormalCross.y < 0 )
+            // add a small downward vector for curved surfaces
+            velocity = hitnormalCross * moveSpeed + Vector3.down * downslopefudge;
+          else
+            velocity.x = -moveSpeed + inertia.x;
+          if( facingRight && onGround )
             StopDash();
         }
+
+        if( dashStart && (onGround || collideLeft || collideRight) )
+          StartDash();
+
+        if( dashStop && !jumping )
+          StopDash();
+
+        if( dashing )
+        {
+          if( onGround && !previousGround )
+          {
+            StopDash();
+          }
+          else if( facingRight )
+          {
+            if( onGround || input.MoveRight )
+              velocity.x = dashSpeed;
+            if( (onGround || collideRight) && !dashTimer.IsActive )
+              StopDash();
+          }
+          else
+          {
+            if( onGround || input.MoveLeft )
+              velocity.x = -dashSpeed;
+            if( (onGround || collideLeft) && !dashTimer.IsActive )
+              StopDash();
+          }
+        }
+
+        if( onGround && jumpStart )
+          StartJump();
+        else if( jumpStop )
+          StopJump();
+        else if( collideRight && /*input.MoveRight &&*/ hitRight.normal.y >= 0 )
+        {
+          if( jumpStart && input.MoveRight )
+          {
+            walljumping = true;
+            velocity.y = jumpSpeed;
+            OverrideVelocity( Vector2.left * (input.Dash ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
+            jumpRepeatTimer.Start( jumpRepeatInterval );
+            walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
+            audio.PlayOneShot( soundJump );
+            Instantiate( walljumpEffect, WallkickPosition.position, Quaternion.identity );
+          }
+          else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
+          {
+            facingRight = false;
+            Wallslide();
+          }
+        }
+        else if( collideLeft && /*input.MoveLeft &&*/ hitLeft.normal.y >= 0 )
+        {
+          if( jumpStart && input.MoveLeft )
+          {
+            walljumping = true;
+            velocity.y = jumpSpeed;
+            OverrideVelocity( Vector2.right * (input.Dash ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
+            jumpRepeatTimer.Start( jumpRepeatInterval );
+            walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
+            audio.PlayOneShot( soundJump );
+            Instantiate( walljumpEffect, WallkickPosition.position, Quaternion.identity );
+          }
+          else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
+          {
+            facingRight = true;
+            Wallslide();
+          }
+        }
       }
 
-      if( onGround && input.JumpStart )
-        StartJump();
-      else
-      if( input.JumpEnd )
-        StopJump();
-      else
-      if( collideRight && input.MoveRight && hitRight.normal.y >= 0 )
+      if( wallsliding && input.MoveDown )
       {
-        if( input.JumpStart )
-        {
-          walljumping = true;
-          velocity.y = jumpSpeed;
-          Push( Vector2.left * (input.DashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
-          jumpRepeatTimer.Start( jumpRepeatInterval );
-          walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
-          audio.PlayOneShot( soundJump );
-          Instantiate( walljumpEffect, WallkickPosition.position, Quaternion.identity );
-        }
-        else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
-        {
-          wallsliding = true;
-          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
-          dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
-          if( !dashSmoke.isPlaying )
-            dashSmoke.Play();
-        }
+        Vector2 wsvel;
+        wsvel = Util.Project2D( -(Vector2) transform.up, wallSlideNormal.x > 0 ? Vector2.right : Vector2.left) * wallSlideDownX +
+          Vector2.down * wallSlideDownY;
+        Debug.DrawLine( (Vector2) transform.position, (Vector2) transform.position + wsvel, Color.yellow );
+        velocity += wsvel;
       }
-      else if( collideLeft && input.MoveLeft && hitLeft.normal.y >= 0 )
+
+      if( velocity.y < 0 )
       {
-        if( input.JumpStart )
-        {
-          walljumping = true;
-          velocity.y = jumpSpeed;
-          Push( Vector2.right * (input.DashStart ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
-          jumpRepeatTimer.Start( jumpRepeatInterval );
-          walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
-          audio.PlayOneShot( soundJump );
-          Instantiate( walljumpEffect, WallkickPosition.position, Quaternion.identity );
-        }
-        else if( !jumping && !walljumping && !onGround && velocity.y < 0 )
-        {
-          wallsliding = true;
-          velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
-          dashSmoke.transform.localPosition = new Vector3( 0.2f, -0.2f, 0 );
-          if( !dashSmoke.isPlaying )
-            dashSmoke.Play();
-        }
+        jumping = false;
+        walljumping = false;
+        walljumpTimer.Stop( false );
       }
+
+      if( !((onGround && dashing) || wallsliding) )
+        dashSmoke.Stop();
     }
 
-    if( velocity.y < 0 )
-    {
-      jumping = false;
-      walljumping = false;
-      walljumpTimer.Stop( false );
-    }
+    if( ability != null )
+      ability.UpdateAbility( );
 
-    if( !((onGround && dashing) || wallsliding) )
-      dashSmoke.Stop();
+    // // add gravity before velocity limits
+    if( UseGravity )
+      velocity.y -= Global.Gravity * Time.deltaTime;
 
-    if( grapPulling )
-    {
-      Vector3 armpos = GetShotOriginPosition();
-      grapCableRender.transform.position = armpos;
-      grapCableRender.transform.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, (graphookTip.transform.position - armpos) ) );
-      grapSize = grapCableRender.size;
-      grapSize.x = Vector3.Distance( graphookTip.transform.position, armpos );
-      grapCableRender.size = grapSize;
-
-      Vector3 grapDelta = graphitpos - transform.position;
-      if( grapDelta.magnitude < grapStopDistance )
-        StopGrap();
-      else if( grapDelta.magnitude > 0.01f )
-        velocity = grapDelta.normalized * grapPullSpeed;
-    }
-
-    // add gravity before velocity limits
-    velocity.y -= Global.Gravity * Time.deltaTime;
-    // grap force
-    if( !grapPulling && pushTimer.IsActive )
-      velocity.x = pushVelocity.x;
+    if( !grapPulling && overrideVelocityTimer.IsActive )
+      velocity.x = overrideVelocity.x;
 
     if( hanging )
       velocity = Vector3.zero;
@@ -835,35 +1020,45 @@ public class PlayerBiped : Pawn
     if( collideRight )
     {
       velocity.x = Mathf.Min( velocity.x, 0 );
-      pushVelocity.x = Mathf.Min( pushVelocity.x, 0 );
+      inertia.x = Mathf.Min( inertia.x, 0 );
     }
     if( collideLeft )
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
-      pushVelocity.x = Mathf.Max( pushVelocity.x, 0 );
+      inertia.x = Mathf.Max( inertia.x, 0 );
     }
-    // "onGround" is not the same as "collideFeet"
+    // NOTE: "onGround" is not the same as "collideBottom"
     if( onGround )
     {
       velocity.y = Mathf.Max( velocity.y, 0 );
-      pushVelocity.x -= (pushVelocity.x * friction) * Time.deltaTime;
+      //inertia.x -= (inertia.x * friction) * dT;
+      inertia.x = 0;
     }
     if( collideTop )
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
-    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
 
-    transform.position += (Vector3)velocity * Time.deltaTime;
+    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
+    // value is adjusted later by collision
+    pos = transform.position + (Vector3) Velocity * Time.deltaTime;
+
+    Entity previousCarry = carryCharacter;
     carryCharacter = null;
 
     UpdateHit( Time.deltaTime );
-    // update collision flags, and adjust position before render
+    // update collision flags, and adjust position
     UpdateCollision( Time.deltaTime );
+    
+    transform.position = pos;
 
-    if( health <= 0 )
-      anim = "death";
-    else if( takingDamage )
+    // carry momentum when jumping from moving platforms
+    if( previousCarry != null && carryCharacter == null )
+      inertia = previousCarry.Velocity;
+
+    UpdateCursor();
+
+    if( takingDamage )
       anim = "damage";
     else if( walljumping )
       anim = "walljump";
@@ -875,7 +1070,7 @@ public class PlayerBiped : Pawn
     {
       if( dashing )
         anim = "dash";
-      else if( input.MoveRight || input.MoveLeft )
+      else if( (input.MoveRight || input.MoveLeft) && Mathf.Abs(velocity.x)>0 )
         anim = "run";
       else if( landing )
         anim = "land";
@@ -883,25 +1078,30 @@ public class PlayerBiped : Pawn
       {
         anim = "idle";
         // when idling, always face aim direction
-        facingRight = shoot.x >= 0;
+        facingRight = CursorWorldPosition.x >= transform.position.x;
       }
     }
     else if( !jumping )
       anim = "fall";
 
     Play( anim );
-    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
+    transform.localScale = (new Vector3( facingRight ? 1 : -1, 1, 1 )) * Scale;
     renderer.material.SetInt( "_FlipX", facingRight ? 0 : 1 );
+
     arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     arm.rotation = Quaternion.LookRotation( Vector3.forward, Vector3.Cross( Vector3.forward, shoot ) );
-    if( wallsliding && collideRight )
+    if( wallsliding && wallSlideNormal.x < 0 )
       transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( wallSlideNormal.y, -wallSlideNormal.x ) );
-    else if( wallsliding && collideLeft )
+    else if( wallsliding && wallSlideNormal.x > 0 )
       transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( -wallSlideNormal.y, wallSlideNormal.x ) );
     else
       transform.rotation = Quaternion.Euler( 0, 0, 0 );
 
     ResetInput();
+    
+#if debugdraw || true
+    Debug.DrawLine( (Vector2)transform.position, (Vector2)transform.position + velocity, Color.magenta );
+#endif
   }
 
   void LateUpdate()
@@ -924,6 +1124,15 @@ public class PlayerBiped : Pawn
     {
       lineRenderer.enabled = false;
     }
+  }
+  
+  void Wallslide()
+  {
+    wallsliding = true;
+    velocity.y += (-velocity.y * wallSlideFactor) * Time.deltaTime;
+    dashSmoke.transform.localPosition = new Vector3( -0.2f, -0.2f, 0 );
+    if( !dashSmoke.isPlaying )
+      dashSmoke.Play();
   }
 
   void StartJump()
@@ -988,7 +1197,7 @@ public class PlayerBiped : Pawn
           Destroy( chargeEffectGO );
         chargeEffectGO = Instantiate( weapon.ChargeEffect, transform );
         chargeEffect = chargeEffectGO.GetComponent<ParticleSystem>();
-        chargeStart = Time.time;
+        chargeStartTime = Time.time;
       } );
     }
   }
@@ -1037,53 +1246,127 @@ public class PlayerBiped : Pawn
       DamagePulseFlip();
     } );
   }
+  
 
+
+  public void ScaleChange( float scale )
+  {
+#if PICKLE    
+    Scale *= scale;
+    
+    DownOffset = 0.1f * Scale;
+    raylength = 0.05f * Scale;
+    contactSeparation = 0.01f * Scale;
+    SetAnimatorSpeed( 1f + (1f - Scale) * MoveScale );
+    
+    Health = MaxHealth;
+    dashSmoke.transform.localScale = Vector3.one * Scale;
+    damageSmoke.transform.localScale = Vector3.one * Scale;
+    Global.instance.CameraController.orthoTarget = OrthoScale.Evaluate( Scale );
+    // HACK hardcoded value
+    Global.instance.CameraController.yHalfWidth = 0.5f * Scale; 
+    // damage smoke
+    ParticleSystem.MainModule damageSmokeMain = damageSmoke.main;
+    ParticleSystem.MinMaxCurve rateCurve = damageSmokeMain.startSpeed;
+    // HACK hardcoded value
+    rateCurve.constant = 0.5f * Scale;
+    damageSmokeMain.startSpeed = rateCurve;
+    
+    // todo 
+    // dash effect
+    // no jump
+    // scale debris
+    // projectile speed
+#endif
+  }
+  
   protected override void Die()
   {
+    Instantiate( spawnWhenDead, transform.position, Quaternion.identity );
+    // todo death sound
+    
+    /*
     if( spider == null )
     {
       GameObject go = Instantiate( SpiderbotPrefab, transform.position, Quaternion.identity );
       spider = go.GetComponent<SpiderPawn>();
     }
     controller.AssignPawn( spider );
+    */
+
+    // BODY PART HUNT EXPERIMENT
+#if BODY_PART_HUNT
+    StopCharge();
+    damageSmoke.Stop();
+    dashSmoke.Stop();
+    DisablePart( partHead );
+    DisablePart( partLegs );
+    DisablePart( partArmBack );
+    DisablePart( partArmFront );
+#endif
+    
+#if PICKLE
+    // PICKLE RICK EXPERIMENT
+    ScaleChange( 0.5f );
+#else
+    
+    // RESPAWN
+    controller.RemovePawn();
+    Destroy( gameObject );
+    new Timer( 5, null, Global.instance.SpawnPlayer );
+    
+#endif
+
   }
 
   public override bool TakeDamage( Damage d )
   {
-    if( !CanTakeDamage || damagePassThrough || health <= 0 )
+    if( !CanTakeDamage || damagePassThrough || Health <= 0 )
       return false;
     if( d.instigator != null && !IsEnemyTeam( d.instigator.Team ) )
       return false;
-
-    health -= d.amount;
-    if( health <= 0 )
+    Health -= d.amount;
+    if( Health <= 0 )
     {
       flashTimer.Stop( false );
       Die();
       return true;
     }
-
-    partHead.transform.localScale = Vector3.one * (1 + (health / MaxHealth) * 10);
+    damageSmoke.Play();
+    
+    ParticleSystem.EmissionModule damageSmokeEmission = damageSmoke.emission;
+    ParticleSystem.MinMaxCurve rateCurve = damageSmokeEmission.rateOverTime;
+    rateCurve.constant = 20.0f - 20.0f * ((float)Health / (float)MaxHealth);
+    damageSmokeEmission.rateOverTime = rateCurve;
+    
+    StopCharge();
+    //partHead.transform.localScale = Vector3.one * (1 + (Health / MaxHealth) * 10);
     audio.PlayOneShot( soundDamage );
-    Global.instance.CameraController.GetComponent<CameraShake>().enabled = true;
+    CameraShake shaker = Global.instance.CameraController.GetComponent<CameraShake>();
+    shaker.amplitude = 0.3f;
+    shaker.duration = 0.5f;
+    shaker.rate = 100;
+    shaker.intensityCurve = damageShakeCurve;
+    shaker.enabled = true;
     Play( "damage" );
     float sign = Mathf.Sign( d.damageSource.position.x - transform.position.x );
     facingRight = sign > 0;
     velocity.y = 0;
-    Push( new Vector2( -sign * damagePushAmount, damageLift ), damageDuration );
+    OverrideVelocity( new Vector2( -sign * damagePushAmount, damageLift ), damageDuration );
     arm.gameObject.SetActive( false );
     takingDamage = true;
     damagePassThrough = true;
-    StopGrap();
-    damageTimer.Start( damageDuration, delegate ( Timer t )
+    if( ability != null )
+      ability.Deactivate();
+    damageTimer.Start( damageDuration, delegate( Timer t )
     {
       //push.x = -sign * damagePushAmount;
-    }, delegate ()
+    }, delegate()
     {
       takingDamage = false;
       arm.gameObject.SetActive( true );
       DamagePulseFlip();
-      damageTimer.Start( damageBlinkDuration, null, delegate ()
+      damageTimer.Start( damageBlinkDuration, null, delegate()
       {
         foreach( var sr in spriteRenderers )
           sr.enabled = true;
@@ -1140,44 +1423,40 @@ public class PlayerBiped : Pawn
       SetAnimatorUpdateMode( AnimatorUpdateMode.Normal );
     };
   }
+  
+  [FormerlySerializedAs( "partBody" )]
+  [Header( "Character Parts player biped" )]
+  public CharacterPart partLegs;
 
-
-  [Header( "Character Parts" )]
-  [SerializeField] int CharacterLayer;
-
-  [System.Serializable]
-  public struct CharacterPart
-  {
-    public Transform transform;
-    public Animator animator;
-    public SpriteRenderer renderer;
-    public int layerAnimated;
-    //public BoxCollider2D box;
-  }
-
-  public CharacterPart partBody;
   public CharacterPart partHead;
   public CharacterPart partArmBack;
   public CharacterPart partArmFront;
-
-  List<CharacterPart> CharacterParts;
+  public CharacterPart partSpider;
 
   // Call from Awake()
-  void InitializeParts()
+  public override void InitializeParts()
   {
-    CharacterParts = new List<CharacterPart> { partBody, partHead, partArmBack, partArmFront };
+    CharacterParts = new List<CharacterPart> {partLegs, partHead, partArmBack, partArmFront, partSpider};
+    // testing
+    for( int i = 0; i < CharacterParts.Count; i++ )
+    {
+      CharacterPart part = CharacterParts[i];
+      part.enabled = true;
+      CharacterParts[i] = part;
+    }
   }
 
-  // Call from LateUpdate()
-  void UpdateParts()
-  {
-    foreach( var part in CharacterParts )
-      part.renderer.sortingOrder = CharacterLayer + part.layerAnimated;
-  }
-
+  /*
+    // Call from LateUpdate()
+    void UpdateParts()
+    {
+      foreach( var part in CharacterParts )
+        part.renderer.sortingOrder = CharacterLayer + part.layerAnimated;
+    }
+  */
   void Play( string anim )
   {
-    partBody.animator.Play( anim );
+    partLegs.animator.Play( anim );
     /*
     foreach( var part in CharacterParts )
       if( part.animator != null && part.animator.HasState( 0, Animator.StringToHash( anim ) ) )
@@ -1202,5 +1481,55 @@ public class PlayerBiped : Pawn
     foreach( var part in CharacterParts )
       if( part.animator != null )
         part.animator.speed = speed;
+  }
+
+
+  void EnablePart( CharacterPart part )
+  {
+    part.enabled = true;
+
+    if( part.animator != null )
+      part.animator.enabled = true;
+
+    if( part.transform == partLegs.transform )
+    {
+      // GO INTO BIPED MODE!!!!
+#if BODY_PART_HUNT
+      DownOffset = BipedDownOffset;
+#endif
+      part.transform.GetComponent<BoxCollider2D>().size = new Vector2( 0.2f, 0.3f );
+      part.renderer.enabled = true;
+      Global.instance.CameraController.orthoTarget = 3;
+      Global.instance.CameraController.UseVerticalRange = true;
+      CanTakeDamage = true;
+      Health = MaxHealth;
+      UseGravity = true;
+    }
+    part.transform.gameObject.SetActive( true );
+  }
+
+  void DisablePart( CharacterPart part )
+  {
+    part.enabled = false;
+
+    if( part.animator != null )
+      part.animator.enabled = false;
+
+    if( part.transform == partLegs.transform )
+    {
+      // GO INTO SPIDER MODE!!!
+#if BODY_PART_HUNT      
+      DownOffset = SpiderDownOffset;
+#endif
+      part.transform.GetComponent<BoxCollider2D>().size = new Vector2( 0.15f, 0.15f );
+      part.renderer.enabled = false;
+      Global.instance.CameraController.orthoTarget = 1;
+      Global.instance.CameraController.UseVerticalRange = false;
+      CanTakeDamage = false;
+    }
+    else
+    {
+      part.transform.gameObject.SetActive( false );
+    }
   }
 }

@@ -1,23 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Events;
 
 public class Switch : WorldSelectable
 {
   [SerializeField] bool InvokeOnStart;
   [SerializeField] bool on;
   [SerializeField] Animator animator;
-  public UnityEngine.Events.UnityEvent onActivate;
-  public UnityEngine.Events.UnityEvent onDeactivate;
-
+  public UnityEvent onActivate;
+  public UnityEvent onDeactivate;
+#if false
   public override void Highlight()
   {
+    base.Highlight();
     //animator.Play( "highlight" );
   }
   public override void Unhighlight()
   {
     //animator.Play( "idle" );
   }
+#endif
   public override void Select()
   {
     // toggle

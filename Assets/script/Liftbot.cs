@@ -1,7 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.AI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -59,16 +56,18 @@ public class LiftbotEdtitor : Editor
 public class Liftbot : Entity, IWorldSelectable
 {
   public float flySpeed = 2;
-  public float waitDuration = 2;
+  const float slowSpeed = 200;
+  public float waitDuration = 1;
+  const float closeEnough = 0.25f;
+  //protected float closeEnough { get { return flySpeed * Application.targetFrameRate * Time.timeScale; } }
   int pathIndex = 0;
   public Vector2 origin;
   public Vector2[] path;
   Timer timeout = new Timer();
-  bool waiting = true;
-  public bool pingpong = false;
+  public bool pingpong;
   int indexIncrement = 1;
   public bool UseWaitDuration = true;
-  public bool IsTriggeredByPlayer = false;
+  public bool IsTriggeredByPlayer;
 
   protected override void Start()
   {
@@ -76,7 +75,7 @@ public class Liftbot : Entity, IWorldSelectable
     UpdateLogic = UpdateLiftbot;
     UpdateHit = null;
     UpdateCollision = null;
-    UpdatePosition = null; // BasicPosition;
+    UpdatePosition = BasicPosition;
     origin = transform.position;
     if( !IsTriggeredByPlayer )
       timeout.Start( waitDuration, null, NextWaypoint );
@@ -90,58 +89,48 @@ public class Liftbot : Entity, IWorldSelectable
     timeout.Stop( false );
   }
 
-  protected float DistanceToWaypoint()
-  {
-    return Vector3.Distance( transform.position, origin + path[pathIndex] );
-  }
-
   protected void NextWaypoint()
   {
-    waiting = false;
     int next = pathIndex + indexIncrement;
     if( pingpong && (next >= path.Length || next < 0) )
       indexIncrement = -indexIncrement;
     pathIndex = (pathIndex + indexIncrement) % path.Length;
-    timeout.Stop( false );
     //if( flySpeed > 0 )
     //  timeout.Start( DistanceToWaypoint() / flySpeed, null, NextWaypoint );
   }
-
-  protected float closeEnough { get { return flySpeed * Time.maximumDeltaTime * Time.timeScale; } }
-
+  
   void UpdateLiftbot()
   {
-    if( !waiting && path.Length > 0 )
+    /*Vector2 line = path[pathIndex] - path[(pathIndex-1+path.Length) % path.Length];
+    Debug.DrawLine( origin+path[pathIndex], origin +path[(pathIndex-1+path.Length) % path.Length], Color.green );*/
+    
+    if( path.Length > 0 )
     {
       Vector2 delta = origin + path[pathIndex] - (Vector2)transform.position;
-      float dot = Vector2.Dot( velocity, delta );
-      if( DistanceToWaypoint() < closeEnough || dot < 0 )
+      if( delta.sqrMagnitude < closeEnough*closeEnough )
       {
-        velocity = Vector2.zero;
-        transform.position = origin + path[pathIndex];
-        if( !waiting )
+        // WARNING
+        // This does not update player position, which creates an immediate an noticeable offset
+        // between the player's feet and the liftbot when reaching a waypoint. 
+        /*transform.position = origin + path[pathIndex];*/
+        
+        // Smooth arrival
+        velocity = delta * Time.smoothDeltaTime * slowSpeed;
+        if( !IsTriggeredByPlayer )
         {
-          waiting = true;
           if( UseWaitDuration )
-            timeout.Start( waitDuration, null, NextWaypoint );
+          {
+            if( !timeout.IsActive )
+              timeout.Start( waitDuration, null, NextWaypoint );
+          }
+          else 
+            NextWaypoint();
         }
       }
       else
       {
-        velocity = (origin + path[pathIndex] - (Vector2)transform.position).normalized * flySpeed;
+        velocity = delta.normalized * flySpeed;
       }
-    }
-    else
-    {
-      velocity = Vector2.zero;
-    }
-  }
-
-  private void FixedUpdate()
-  {
-    if( body.bodyType == RigidbodyType2D.Kinematic )
-    {
-      body.MovePosition( body.position + (velocity * Time.fixedDeltaTime) );
     }
   }
 
@@ -154,7 +143,6 @@ public class Liftbot : Entity, IWorldSelectable
   protected override void Die()
   {
     base.Die();
-    // todo
   }
 
   public void Highlight()
@@ -173,11 +161,16 @@ public class Liftbot : Entity, IWorldSelectable
   public void Select()
   {
     UseWaitDuration = true;
-    if( IsTriggeredByPlayer && DistanceToWaypoint() < closeEnough )
+    if( IsTriggeredByPlayer && (origin + path[pathIndex] - (Vector2)transform.position).sqrMagnitude < closeEnough*closeEnough )
       NextWaypoint();
   }
   public void Unselect()
   {
     UseWaitDuration = false;
+  }
+
+  public Vector2 GetPosition()
+  {
+    return transform.position;
   }
 }

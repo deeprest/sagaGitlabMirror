@@ -24,4 +24,6 @@ public class Projectile : MonoBehaviour
   public int hitCount;
   public RaycastHit2D hit;
 
+  // PICKLE
+  public float Scale;
 }

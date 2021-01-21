@@ -78,8 +78,8 @@ SpriteShapeRenderer:
   m_Sprites:
   - {fileID: -161763649789766391, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   m_LocalAABB:
-    m_Center: {x: -0.14178608, y: 0.0090043545, z: -0.005}
-    m_Extent: {x: 0.14178608, y: 0.07665761, z: 0.005}
+    m_Center: {x: -0.14178608, y: 0.0090043545, z: -0.00005}
+    m_Extent: {x: 0.14178608, y: 0.07665761, z: 0.00005}
 --- !u!114 &2782770674635627481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,6 +127,7 @@ MonoBehaviour:
   m_OptimizeCollider: 1
   m_OptimizeGeometry: 1
   m_EnableTangents: 1
+  m_GeometryCached: 0
 --- !u!1 &1789244597324514
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,13 +137,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4857518412556878}
+  - component: {fileID: 68055858476057435}
   - component: {fileID: 212107818795109166}
   - component: {fileID: 82117261715149456}
   - component: {fileID: 82627251547920718}
   - component: {fileID: 1697597636064711849}
   - component: {fileID: 8221165626839734202}
   - component: {fileID: 2111217764532811413}
-  - component: {fileID: 68055858476057435}
   m_Layer: 10
   m_Name: spiderbot
   m_TagString: Untagged
@@ -163,9 +164,92 @@ Transform:
   m_Children:
   - {fileID: 4897319614591276}
   - {fileID: 7400327976941279454}
+  - {fileID: 9170177415762405005}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &68055858476057435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789244597324514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 298ae9a2d0feb47ecbe4be87f3df54a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Team: 1
+  body: {fileID: 2111217764532811413}
+  box: {fileID: 0}
+  circle: {fileID: 8221165626839734202}
+  renderer: {fileID: 212107818795109166}
+  animator: {fileID: 1697597636064711849}
+  IgnoreCollideObjects: []
+  spriteRenderers: []
+  UseGravity: 1
+  IsStatic: 0
+  BoxCollisionOne: 0
+  velocity: {x: 0, y: 0}
+  pushVelocity: {x: 0, y: 0}
+  carryCharacter: {fileID: 0}
+  friction: 0.05
+  raylength: 0.01
+  contactSeparation: 0.01
+  EnablePathing: 0
+  AgentTypeName: Small
+  CanTakeDamage: 0
+  health: 5
+  MaxHealth: 5
+  explosion: {fileID: 0}
+  soundHit: {fileID: 0}
+  spawnWhenDead: {fileID: 0}
+  spawnChance: 1
+  flashInterval: 0.05
+  flashCount: 5
+  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  EventDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  CharacterLayer: 0
+  CharacterParts: []
+  controller: {fileID: 0}
+  input:
+    MoveLeft: 0
+    MoveRight: 0
+    MoveUp: 0
+    MoveDown: 0
+    JumpStart: 0
+    JumpEnd: 0
+    DashStart: 0
+    DashEnd: 0
+    ChargeStart: 0
+    ChargeEnd: 0
+    Ability: 0
+    Shield: 0
+    Fire: 0
+    Interact: 0
+    NextWeapon: 0
+    NextAbility: 0
+    Aim: {x: 0, y: 0}
+  CursorWorldPosition: {x: 0, y: 0}
+  InteractIndicator: {fileID: 7746566914802738857}
+  moveSpeed: 3
+  jumpSpeed: 5
+  debugPath: []
+  drtm: 2
+  secondary: {fileID: 0}
+  selectRange: 3
+  Cursor: {fileID: 9170177415762405005}
+  CursorSnapped: {fileID: 9170177415762405005}
+  CursorAutoAim: {fileID: 9170177415762405005}
+  CursorScale: 2
+  SnapAngleDivide: 8
+  SnapCursorDistance: 1
+  AutoAimCircleRadius: 1
+  AutoAimDistance: 5
+  DirectionalMinimum: 0.3
 --- !u!212 &212107818795109166
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -467,74 +551,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &68055858476057435
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1789244597324514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 298ae9a2d0feb47ecbe4be87f3df54a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Team: 1
-  body: {fileID: 2111217764532811413}
-  box: {fileID: 0}
-  circle: {fileID: 8221165626839734202}
-  renderer: {fileID: 212107818795109166}
-  animator: {fileID: 1697597636064711849}
-  IgnoreCollideObjects: []
-  spriteRenderers: []
-  UseGravity: 1
-  IsStatic: 0
-  BoxCollisionOne: 0
-  velocity: {x: 0, y: 0}
-  pushVelocity: {x: 0, y: 0}
-  carryCharacter: {fileID: 0}
-  friction: 0.05
-  raylength: 0.01
-  contactSeparation: 0.01
-  EnablePathing: 0
-  AgentTypeName: Small
-  CanTakeDamage: 0
-  health: 5
-  MaxHealth: 5
-  explosion: {fileID: 0}
-  soundHit: {fileID: 0}
-  spawnWhenDead: {fileID: 0}
-  spawnChance: 1
-  flashInterval: 0.05
-  flashCount: 5
-  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
-  EventDestroyed:
-    m_PersistentCalls:
-      m_Calls: []
-  controller: {fileID: 0}
-  input:
-    MoveLeft: 0
-    MoveRight: 0
-    MoveUp: 0
-    MoveDown: 0
-    JumpStart: 0
-    JumpEnd: 0
-    DashStart: 0
-    DashEnd: 0
-    ChargeStart: 0
-    ChargeEnd: 0
-    Graphook: 0
-    Shield: 0
-    Fire: 0
-    Interact: 0
-    NextWeapon: 0
-    Aim: {x: 0, y: 0}
-  CursorWorldPosition: {x: 0, y: 0}
-  InteractIndicator: {fileID: 0}
-  moveSpeed: 3
-  jumpSpeed: 5
-  debugPath: []
-  drtm: 2
 --- !u!1 &7746566914802738857
 GameObject:
   m_ObjectHideFlags: 0
@@ -561,7 +577,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7746566914802738857}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4857518412556878}
@@ -627,6 +643,87 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: -8024883451242659751, guid: 64314a0420c93471b9990c7b9f080a39,
     type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.453125, y: 0.453125}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!1 &8542348749361703867
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9170177415762405005}
+  - component: {fileID: 3704955845457869139}
+  m_Layer: 0
+  m_Name: WorldSpaceCursor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9170177415762405005
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8542348749361703867}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4857518412556878}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &3704955845457869139
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8542348749361703867}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: d905710c44976415991cc7aff39cfb39, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 1820418687
+  m_SortingLayer: 3
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 709582824438758730, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

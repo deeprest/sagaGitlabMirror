@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Experimental.Rendering.Universal;
 
 
 public class SceneScript : MonoBehaviour
@@ -7,12 +8,19 @@ public class SceneScript : MonoBehaviour
   public AudioLoop music;
   public CameraZone CameraZone;
   public BoxCollider NavmeshBox;
+  public Light2D ambientLight;
 
   public virtual void StartScene()
   {
-    if( Application.isEditor && !Global.instance.SimulatePlayer && Global.instance.CurrentPlayer == null )
+    if( Application.isEditor && !Global.instance.SimulatePlayer )
     {
-      Global.instance.SpawnPlayer();
+      if( Global.instance.CurrentPlayer == null )
+        Global.instance.SpawnPlayer();
+      else
+      {
+        Global.instance.CurrentPlayer.transform.position = Global.instance.FindRandomSpawnPosition();
+        Global.instance.CurrentPlayer.velocity = Vector2.zero;
+      }
     }
 
     Global.instance.AssignCameraZone( CameraZone );
@@ -20,6 +28,11 @@ public class SceneScript : MonoBehaviour
     if( music != null )
       Global.instance.PlayMusic( music );
 
+    if( ambientLight != null )
+    {
+      float targetIntensity = ambientLight.intensity;
+      new Timer( 3, delegate( Timer timer ) { ambientLight.intensity = timer.ProgressNormalized * targetIntensity; }, null );
+    }
   }
 
   public void PlayerInputOff()

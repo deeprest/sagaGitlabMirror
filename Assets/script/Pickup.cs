@@ -1,12 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+public enum PickupPart
+{
+  None,
+  Head,
+  ArmFront,
+  ArmBack,
+  Legs
+}
+[SelectionBase]
 public class Pickup : WorldSelectable
 {
   [SerializeField] Animator animator;
   public Weapon weapon;
   public Ability ability;
+  public PickupPart PickupPart;
 
   Vector2 velocity;
   public BoxCollider2D box;
@@ -38,7 +46,7 @@ public class Pickup : WorldSelectable
   }
   public override void Select()
   {
-    Destroy( gameObject );
+    //Destroy( gameObject );
     /*if( animator != null )
       animator.Play( "selected" );*/
   }
@@ -52,9 +60,10 @@ public class Pickup : WorldSelectable
       animator.Play( "idle" );
   }
 
+  /*
   void Update()
   {
-    BoxCollision();
+     BoxCollision();
 
     velocity.y -= Global.Gravity * Time.deltaTime;
 
@@ -79,6 +88,7 @@ public class Pickup : WorldSelectable
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     transform.position += (Vector3)velocity * Time.deltaTime;
   }
+  */
 
   protected void BoxCollision()
   {
@@ -91,7 +101,7 @@ public class Pickup : WorldSelectable
     boxOffset.y = box.offset.y;
     adjust = (Vector2)transform.position + boxOffset;
 
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers | Global.WorldSelectableLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
