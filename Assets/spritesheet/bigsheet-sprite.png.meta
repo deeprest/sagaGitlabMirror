@@ -628,7 +628,25 @@ TextureImporter:
     second: bigsheet-sprite_20
   - first:
       213: 8736462838602879013
-    second: bigsheet-sprite_21
+    second: airbot-spike-left
+  - first:
+      213: 1761372648653217958
+    second: airbot-spike-right
+  - first:
+      213: -592079766083703614
+    second: pickup_boot
+  - first:
+      213: -9157261561148660083
+    second: pickup_arm
+  - first:
+      213: -7496056681565979719
+    second: pickup_head
+  - first:
+      213: -8569313727485505055
+    second: wea-border
+  - first:
+      213: -8526200524945674312
+    second: goldenwall_full
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -2086,10 +2104,10 @@ TextureImporter:
         serializedVersion: 2
         x: 192
         y: 32
-        width: 8
-        height: 5
-      alignment: 4
-      pivot: {x: 0, y: 0.5}
+        width: 5
+        height: 8
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -2126,8 +2144,8 @@ TextureImporter:
       name: xbuster-pewpew
       rect:
         serializedVersion: 2
-        x: 195
-        y: 40
+        x: 112
+        y: 74
         width: 8
         height: 6
       alignment: 0
@@ -2152,7 +2170,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 9
-      pivot: {x: 0.2, y: 0.5}
+      pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -4591,8 +4609,8 @@ TextureImporter:
         y: 464
         width: 64
         height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 19, y: 0, z: 19, w: 19}
       outline: []
       physicsShape: []
@@ -4768,6 +4786,153 @@ TextureImporter:
       bones: []
       spriteID: fcbec12a12d842400800000000000000
       internalID: 298518650906536911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: airbot-spike-left
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 96
+        width: 10
+        height: 11
+      alignment: 9
+      pivot: {x: 0.6572502, y: 0.67154557}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5205358f9a62e3970800000000000000
+      internalID: 8736462838602879013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: airbot-spike-right
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 96
+        width: 10
+        height: 11
+      alignment: 9
+      pivot: {x: 0.34275207, y: 0.68107605}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6a060108717a17810800000000000000
+      internalID: 1761372648653217958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pickup_boot
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 17
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2cc62e7f69288c7f0800000000000000
+      internalID: -592079766083703614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pickup_arm
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d86256c902fdae080800000000000000
+      internalID: -9157261561148660083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pickup_head
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bbf017f928a8f790800000000000000
+      internalID: -7496056681565979719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wea-border
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 17
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e11958219ea31980800000000000000
+      internalID: -8569313727485505055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: goldenwall_full
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 336
+        width: 48
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8bf2ddadbc9dca980800000000000000
+      internalID: -8526200524945674312
       vertices: []
       indices: 
       edges: []

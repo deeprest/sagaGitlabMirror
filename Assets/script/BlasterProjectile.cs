@@ -45,36 +45,41 @@ public class BlasterProjectile : Projectile, IDamage
     if( AlignRotationToVelocity )
       transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( velocity.normalized.y, velocity.normalized.x ) ) );
 
-    hitCount = Physics2D.CircleCastNonAlloc( transform.position, circle.radius, velocity, RaycastHits, raycastDistance, Global.DefaultProjectileCollideLayers );
-    for( int i = 0; i < hitCount; i++ )
+    if( instigator != null )
     {
-      hit = RaycastHits[i];
-      if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator.transform )) && !ignore.Contains( hit.transform ) )
+      hitCount = Physics2D.CircleCastNonAlloc( transform.position, circle.radius, velocity, RaycastHits, raycastDistance, Global.DefaultProjectileCollideLayers );
+      for( int i = 0; i < hitCount; i++ )
       {
-        IDamage dam = hit.transform.GetComponent<IDamage>();
-        if( dam != null )
+        hit = RaycastHits[i];
+        if( hit.transform != null && (instigator == null || !hit.transform.IsChildOf( instigator.transform )) && !ignore.Contains( hit.transform ) )
         {
-          Damage dmg = Instantiate( ContactDamage );
-          dmg.instigator = instigator;
-          dmg.damageSource = transform;
-          dmg.point = hit.point;
-          if( dam.TakeDamage( dmg ) )
+          IDamage dam = hit.transform.GetComponent<IDamage>();
+          if( dam != null )
           {
-            HitCount++;
-            if( HitCount >= DieAfterHitCount )
+            Damage dmg = Instantiate( ContactDamage );
+            dmg.amount = Mathf.FloorToInt( Scale * ContactDamage.amount );
+            dmg.instigator = instigator;
+            dmg.damageSource = transform;
+            dmg.point = hit.point;
+            if( dam.TakeDamage( dmg ) )
             {
-              Hit( hit.point );
-              return;
+              HitCount++;
+              if( HitCount >= DieAfterHitCount )
+              {
+                Hit( hit.point );
+                return;
+              }
             }
           }
-        }
-        else
-        {
-          Hit( hit.point );
-          return;
+          else
+          {
+            Hit( hit.point );
+            return;
+          }
         }
       }
     }
+
     transform.position += (Vector3)velocity * Time.fixedDeltaTime;
 
     /*SpriteRenderer sr = GetComponent<SpriteRenderer>();

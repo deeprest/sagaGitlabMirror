@@ -26,7 +26,8 @@ public class Chopper : MonoBehaviour {
       {
         ent.transform.parent = null;
         ent.hanging = false;
-        ent.Push( Vector2.right * speed, 3 );
+        ent.inertia = Vector2.right * speed;
+        //ent.OverrideVelocity( Vector2.right * speed, 2.8f );
         ent = null;
       }
     } );

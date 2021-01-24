@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: bigsheet background 1
+  m_Shader: {fileID: 4800000, guid: 698b4065d906744df93d4201355cfa71, type: 3}
+  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA _GLOSSYREFLECTIONS_OFF _METALLICGLOSSMAP
+    _NORMALMAP
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 18ba25556d0fb47b790986e99ee0e9a5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissiveTex:
+        m_Texture: {fileID: 2800000, guid: 0d190377119ef491aa72c1efdfe79531, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: 7f01739e8fe7846549bff1066366809f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _BlendAmount: 0
+    - _Cutoff: 0.001
+    - _EmissiveAmount: 0
+    - _FadeAmount: 0.764
+    - _FlashAmount: 0.672
+    - _FlipX: 0
+    - _Glossiness: 0.2
+    - _Metallic: 0
+    - _NormalAmount: 0.45
+    - _TintAmount: 0.69
+    m_Colors:
+    - _BlendColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _FadeColor: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+    - _FlashColor: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+    - _IndexColor: {r: 1, g: 0, b: 0, a: 1}
+    - _IndexColor2: {r: 1, g: 0, b: 0, a: 1}
+    - _Tint: {r: 0.153, g: 0.153, b: 0.153, a: 1}

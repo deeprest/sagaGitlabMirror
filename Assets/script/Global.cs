@@ -1,4 +1,4 @@
-//﻿#pragma warning disable 414
+// #pragma warning disable 414
 
 using System.Collections;
 using System.Collections.Generic;
@@ -12,14 +12,17 @@ using UnityEngine.AI;
 using LitJson;
 using Ionic.Zip;
 // deeprest.SerializedObject
-using deeprest;
+using UnityEngine.Profiling;
 
+using deeprest;
 #if UNITY_EDITOR
 using UnityEditor;
-[CustomEditor( typeof( Global ) )]
+
+[CustomEditor( typeof(Global) )]
 public class GlobalEditor : Editor
 {
   Global obj;
+
   public override void OnInspectorGUI()
   {
     //screenshotInterval = EditorGUILayout.IntField( "Screenshot Interval", screenshotInterval );
@@ -36,6 +39,7 @@ public class GlobalEditor : Editor
     }
     DrawDefaultInspector();
   }
+
   void StartTimer()
   {
     obj.ScreenshotTimer.Start( obj.screenshotInterval, null, delegate
@@ -76,7 +80,8 @@ public class Global : MonoBehaviour
   public float SidestepInterval = 1f;
   public float SidestepIgnoreWithinDistanceToGoal = 0.5f;
 
-  public static string[] persistentFilenames = new string[] {
+  public static string[] persistentFilenames = new string[]
+  {
     /*"settings.json",
     "characters.json",
     "events.json"*/
@@ -99,7 +104,12 @@ public class Global : MonoBehaviour
   public GameObject ToggleTemplate;
   public GameObject SliderTemplate;
   public GameObject StringTemplate;
-  string settingsPath { get { return Application.persistentDataPath + "/" + "settings.json"; } }
+
+  string settingsPath
+  {
+    get { return Application.persistentDataPath + "/" + "settings.json"; }
+  }
+
   public Dictionary<string, FloatValue> FloatSetting = new Dictionary<string, FloatValue>();
   public Dictionary<string, BoolValue> BoolSetting = new Dictionary<string, BoolValue>();
   public Dictionary<string, StringValue> StringSetting = new Dictionary<string, StringValue>();
@@ -133,7 +143,12 @@ public class Global : MonoBehaviour
   public GameObject SceneListElementTemplate;
   [SerializeField] GameObject HUD;
   DiageticUI ActiveDiegetic;
-  bool MenuShowing { get { return PauseMenu.gameObject.activeInHierarchy; } }
+
+  bool MenuShowing
+  {
+    get { return PauseMenu.gameObject.activeInHierarchy; }
+  }
+
   public GameObject LoadingScreen;
   [SerializeField] Image fader;
   public GameObject ready;
@@ -147,6 +162,7 @@ public class Global : MonoBehaviour
   public bool ShowAimPath;
   // status
   public Image weaponIcon;
+  public Image abilityIcon;
   // settings
   public GameObject SettingsParent;
   [SerializeField] Selectable previousNavSelectable;
@@ -215,6 +231,7 @@ public class Global : MonoBehaviour
   [SerializeField] GameObject Minimap;
   [SerializeField] float mmScrollSpeed = 10;
   [SerializeField] float mmOrthoSize = 1;
+
   // This will make sure there is always a GLOBAL object when playing a scene in the editor
   [RuntimeInitializeOnLoadMethod]
   static void OnLoadMethod()
@@ -245,18 +262,18 @@ public class Global : MonoBehaviour
     //Application.targetFrameRate = 60;
 
     // note: allowing characters to collide introduces risk of being forced into a corner
-    CharacterCollideLayers = LayerMask.GetMask( new string[] { "Default", "destructible", "triggerAndCollision" } ); //, "character", "enemy" };
-    CharacterSidestepLayers = LayerMask.GetMask( new string[] { "character", "enemy" } );
-    CharacterDamageLayers = LayerMask.GetMask( new string[] { "character" } );
-    TriggerLayers = LayerMask.GetMask( new string[] { "trigger", "triggerAndCollision" } );
-    WorldSelectableLayers = LayerMask.GetMask( new string[] { "worldselect" } );
-    ProjectileNoShootLayers = LayerMask.GetMask( new string[] { "Default" } );
-    DefaultProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" } );
-    FlameProjectileCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "destructible", "bouncyGrenade" } );
-    DamageCollideLayers = LayerMask.GetMask( new string[] { "character", "triggerAndCollision", "enemy", "projectile", "destructible" } );
-    StickyBombCollideLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "enemy", "projectile", "destructible" } );
-    TurretSightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" } );
-    EnemySightLayers = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "destructible" } );
+    CharacterCollideLayers = LayerMask.GetMask( new string[] {"Default", "destructible", "triggerAndCollision"} );
+    CharacterSidestepLayers = LayerMask.GetMask( new string[] {"character"} );
+    CharacterDamageLayers = LayerMask.GetMask( new string[] {"character"} );
+    TriggerLayers = LayerMask.GetMask( new string[] {"trigger", "triggerAndCollision"} );
+    WorldSelectableLayers = LayerMask.GetMask( new string[] {"worldselect"} );
+    ProjectileNoShootLayers = LayerMask.GetMask( new string[] {"Default"} );
+    DefaultProjectileCollideLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "destructible", "bouncyGrenade"} );
+    FlameProjectileCollideLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "destructible", "bouncyGrenade"} );
+    DamageCollideLayers = LayerMask.GetMask( new string[] {"character", "triggerAndCollision", "projectile", "destructible"} );
+    StickyBombCollideLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "projectile", "destructible"} );
+    TurretSightLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "destructible"} );
+    EnemySightLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "destructible"} );
 
     CanvasScaler = UI.GetComponent<CanvasScaler>();
     InitializeSettings();
@@ -265,12 +282,16 @@ public class Global : MonoBehaviour
     InitializeInput();
 
     PlayerController = ScriptableObject.CreateInstance<PlayerController>();
+    
+    // SCRIPT EXECUTION ORDER Global.cs is first priority so that Awake() called from scene load in editor respects the code below.
+    //Entity.Limit.UpperLimit = 1000;
+    Entity.Limit.EnforceUpper = false;
 
-    SceneManager.sceneLoaded += delegate ( Scene arg0, LoadSceneMode arg1 )
+    SceneManager.sceneLoaded += delegate( Scene arg0, LoadSceneMode arg1 )
     {
       //Debug.Log( "scene loaded: " + arg0.name );
     };
-    SceneManager.activeSceneChanged += delegate ( Scene arg0, Scene arg1 )
+    SceneManager.activeSceneChanged += delegate( Scene arg0, Scene arg1 )
     {
       //Debug.Log( "active scene changed from " + arg0.name + " to " + arg1.name );
     };
@@ -283,7 +304,7 @@ public class Global : MonoBehaviour
     foreach( var mesh in meshSurfaces )
       AgentType[NavMesh.GetSettingsNameFromID( mesh.agentTypeID )] = mesh.agentTypeID;
 
-    fpsTimer = new Timer( int.MaxValue, 1, delegate ( Timer tmr )
+    fpsTimer = new Timer( int.MaxValue, 1, delegate( Timer tmr )
     {
       debugFPS.text = frames.ToString();
       frames = 0;
@@ -306,8 +327,6 @@ public class Global : MonoBehaviour
     HidePauseMenu();
     HideLoadingScreen();
     SpeechBubble.SetActive( false );
-
-
 
     if( Application.isEditor && !SimulatePlayer )
     {
@@ -348,12 +367,12 @@ public class Global : MonoBehaviour
     //action.GetBindingDisplayString( InputBinding.DisplayStringOptions.DontUseShortDisplayNames );
 
     string outstr = "";
-    string[] tokens = source.Split( new char[] { '[' } );
+    string[] tokens = source.Split( new char[] {'['} );
     foreach( var tok in tokens )
     {
       if( tok.Contains( "]" ) )
       {
-        string[] ugh = tok.Split( new char[] { ']' } );
+        string[] ugh = tok.Split( new char[] {']'} );
         if( ugh.Length > 2 )
           return "BAD FORMAT";
         int inputTypeIndex = UsingGamepad ? 1 : 0;
@@ -388,18 +407,19 @@ public class Global : MonoBehaviour
 
   void InitializeInput()
   {
-    InputSystem.onDeviceChange += ( device, change ) => {
+    InputSystem.onDeviceChange += ( device, change ) =>
+    {
       switch( change )
       {
         case InputDeviceChange.Added:
-        Debug.Log( "Device added: " + device );
-        break;
+          Debug.Log( "Device added: " + device );
+          break;
         case InputDeviceChange.Removed:
-        Debug.Log( "Device removed: " + device );
-        break;
+          Debug.Log( "Device removed: " + device );
+          break;
         case InputDeviceChange.ConfigurationChanged:
-        Debug.Log( "Device configuration changed: " + device );
-        break;
+          Debug.Log( "Device configuration changed: " + device );
+          break;
       }
     };
 
@@ -416,10 +436,8 @@ public class Global : MonoBehaviour
     Controls.Enable();
     Controls.MenuActions.Disable();
 
-Controls.GlobalActions.Quit.performed += (obj)=>{
-	Application.Quit();
-};
-    Controls.GlobalActions.Any.performed += ( obj ) => {
+    Controls.GlobalActions.Any.performed += ( obj ) =>
+    {
       bool newvalue = obj.control.device.name.Contains( "Gamepad" );
       if( newvalue != UsingGamepad )
       {
@@ -430,7 +448,8 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     };
 
     Controls.GlobalActions.Menu.performed += ( obj ) => TogglePauseMenu();
-    Controls.GlobalActions.Pause.performed += ( obj ) => {
+    Controls.GlobalActions.Pause.performed += ( obj ) =>
+    {
       if( Paused )
         Unpause();
       else
@@ -446,7 +465,8 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
       PlayerController.AddMinion( pawn );
     };*/
 
-    Controls.GlobalActions.DEVRespawn.performed += ( obj ) => {
+    Controls.GlobalActions.DEVRespawn.performed += ( obj ) =>
+    {
       /*Chopper chopper = FindObjectOfType<Chopper>();
       if( chopper != null )
         chopper.StartDrop( CurrentPlayer );
@@ -459,18 +479,28 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
       }
     };
 
-    Controls.GlobalActions.RecordToggle.performed += ( obj ) => {
+    Controls.GlobalActions.RecordToggle.performed += ( obj ) =>
+    {
       PlayerController.RecordToggle();
       RecordingIndicator.gameObject.SetActive( PlayerController.IsRecording() );
     };
 
-    Controls.GlobalActions.RecordPlayback.performed += ( obj ) => {
+    Controls.GlobalActions.RecordPlayback.performed += ( obj ) =>
+    {
       PlayerController.RecordPlayback();
       RecordingIndicator.gameObject.SetActive( PlayerController.IsRecording() );
     };
 
+    Controls.GlobalActions.DevSlowmo.performed += ( obj ) =>
+    {
+      if( Slowed )
+        NoSlow();
+      else
+        Slow();
+    };
 
-    Controls.MenuActions.Back.performed += ( obj ) => {
+    Controls.MenuActions.Back.performed += ( obj ) =>
+    {
       if( MenuShowing )
       {
         PauseMenu.Back();
@@ -484,20 +514,35 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     };
 
     // DEVELOPMENT
-    Controls.BipedActions.DEVZoom.started += ( obj ) => {
-      zoomDelta += obj.ReadValue<float>();
-    };
+    Controls.BipedActions.DEVZoom.started += ( obj ) => { zoomDelta += obj.ReadValue<float>(); };
+    //Controls.BipedActions.Minimap.performed += ( obj ) => { ToggleMinimap(); };
+    Controls.BipedActions.DEVBig.performed += context => ((PlayerBiped) PlayerController.pawn).ScaleChange( 2 );
+    Controls.BipedActions.DEVSmall.performed += context => ((PlayerBiped) PlayerController.pawn).ScaleChange( 0.5f );
 
-    Controls.BipedActions.Minimap.performed += ( obj ) => {
-      ToggleMinimap();
-    };
+    if( Application.isEditor )
+    {
+      InputAction DevCursorUnlock = new InputAction( "CursorUnlock", InputActionType.Button, "<Keyboard>/escape" );
+      DevCursorUnlock.Enable();
+      DevCursorUnlock.performed += context =>
+      {
+        if( Cursor.lockState != CursorLockMode.None )
+        {
+          Cursor.lockState = CursorLockMode.None;
+          Cursor.visible = true;
+        }
+        else
+        {
+          Cursor.lockState = CursorLockMode.Locked;
+          Cursor.visible = false;
+        }
+      };
+      Controls.GlobalActions.Menu.AddBinding( "<Keyboard>/leftShift" );
+    }
+    else
+    {
+      Controls.GlobalActions.Menu.AddBinding( "<Keyboard>/escape" );
+    }
 
-    Controls.BipedActions.DevSlowmo.performed += ( obj ) => {
-      if( Slowed )
-        NoSlow();
-      else
-        Slow();
-    };
   }
 
   public void LoadScene( SceneReference scene, bool waitForFadeIn = true, bool spawnPlayer = true, bool fadeOut = true, bool showLoadingScreen = true, System.Action onFail = null )
@@ -532,7 +577,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
       unscaledTime = true,
       repeat = false,
       duration = MusicTransitionDuration,
-      UpdateDelegate = delegate ( Timer obj )
+      UpdateDelegate = delegate( Timer obj )
       {
         musicSource0.volume = 1 - obj.ProgressNormalized;
         musicSource1.volume = 1 - obj.ProgressNormalized;
@@ -574,7 +619,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
         unscaledTime = true,
         repeat = false,
         duration = MusicTransitionDuration,
-        UpdateDelegate = delegate ( Timer obj )
+        UpdateDelegate = delegate( Timer obj )
         {
           musicSource0.volume = obj.ProgressNormalized;
           musicSource1.volume = obj.ProgressNormalized;
@@ -586,14 +631,6 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
         }
       };
       musicTimer.Start( musicTimerParamsFadeIn );
-      sceneScript = FindObjectOfType<SceneScript>();
-      if( sceneScript != null )
-        sceneScript.StartScene();
-
-      GameObject generatedMeshCollider = Util.GenerateNavMeshForEdgeColliders();
-      foreach( var mesh in meshSurfaces )
-        mesh.BuildNavMesh();
-      Destroy( generatedMeshCollider );
 
       if( CurrentPlayer == null )
       {
@@ -602,8 +639,18 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
       }
       else
       {
+        CurrentPlayer.transform.position = FindSpawnPosition();
         CurrentPlayer.PostSceneTransition();
       }
+      
+      sceneScript = FindObjectOfType<SceneScript>();
+      if( sceneScript != null )
+        sceneScript.StartScene();
+      
+      GameObject generatedMeshCollider = Util.GenerateNavMeshForEdgeColliders();
+      foreach( var mesh in meshSurfaces )
+        mesh.BuildNavMesh();
+      Destroy( generatedMeshCollider );
     }
     else
     {
@@ -634,11 +681,20 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     if( !Updating )
       return;
 
+    
+    
+    //Profiler.BeginSample( "EntityUpdate" );
+    for( int i = 0; i < Entity.Limit.All.Count; i++ )
+      Entity.Limit.All[ i ].EntityUpdate();
 
     for( int i = 0; i < Controller.All.Count; i++ )
-    {
       Controller.All[i].Update();
-    }
+    
+    // pawns are not added to Limit
+    for( int i = 0; i < Controller.All.Count; i++ )
+      if( Controller.All[i].pawn != null )
+        Controller.All[i].pawn.EntityUpdate();
+    //Profiler.EndSample();
 
     if( loadingScene )
     {
@@ -654,6 +710,8 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     shiftyColor = Color.HSVToRGB( H, 1, 1 );
     shifty.color = shiftyColor;
 
+    // DEBUG ZOOM WITH MOUSE
+    /*
     if( Camera.main.orthographic )
     {
       if( Mathf.Abs( zoomDelta ) > 0 )
@@ -662,7 +720,9 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
         CameraController.orthoTarget = Mathf.Clamp( CameraController.orthoTarget, 1, 10 );
         FloatSetting["Zoom"].Value = CameraController.orthoTarget;
       }
-      debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
+      */
+      debugText.text = Camera.main.orthographicSize.ToString( "##.#" ); 
+      /*
     }
     else
     {
@@ -670,14 +730,14 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
       debugText.text = CameraController.zOffset.ToString( "##.#" );
     }
     zoomDelta = 0;
+    */
 
     if( MinimapCamera.enabled )
     {
       if( Controls.MenuActions.Move.enabled )
-        MinimapCamera.transform.position += (Vector3)(Controls.MenuActions.Move.ReadValue<Vector2>() * mmScrollSpeed * Time.unscaledDeltaTime);
+        MinimapCamera.transform.position += (Vector3) (Controls.MenuActions.Move.ReadValue<Vector2>() * mmScrollSpeed * Time.unscaledDeltaTime);
       MinimapCamera.orthographicSize = mmOrthoSize;
     }
-
   }
 
   void OnApplicationFocus( bool hasFocus )
@@ -693,22 +753,33 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
   {
     if( !Updating )
       return;
+
+    Profiler.BeginSample( "EntityLateUpdate" );
+    for( int i = 0; i < Entity.Limit.All.Count; i++ )
+    {
+      Entity.Limit.All[ i ].EntityLateUpdate();
+    }
+    Profiler.EndSample();
+    
     CameraController.CameraLateUpdate();
   }
 
   public void SpawnPlayer()
   {
     GameObject go = Spawn( AvatarPrefab, FindSpawnPosition(), Quaternion.identity, null, false );
-    PlayerBiped pawn = go.GetComponent<PlayerBiped>();
+    Pawn pawn = go.GetComponent<Pawn>();
     CurrentPlayer = pawn;
     PlayerController.AssignPawn( pawn );
+    Global.instance.CameraController.orthoTarget = 3;
   }
 
   public Vector3 FindSpawnPosition()
   {
     // todo find more appropriate position based on some criteria
     GameObject go = null;
-    go = GameObject.FindGameObjectWithTag( "Respawn" );
+    go = GameObject.FindGameObjectWithTag( "FirstSpawn" );
+    if( go == null )
+      go = GameObject.FindGameObjectWithTag( "Respawn" );
     if( go != null )
       return go.transform.position;
     return Vector3.zero;
@@ -718,7 +789,10 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
   {
     // cycle through random spawn points
     GameObject go = null;
-    GameObject[] spawns = GameObject.FindGameObjectsWithTag( "Respawn" );
+    List<GameObject> gos = new List<GameObject>();
+    gos.AddRange( GameObject.FindGameObjectsWithTag( "Respawn" ) );
+    gos.AddRange( GameObject.FindGameObjectsWithTag( "FirstSpawn" ) );
+    GameObject[] spawns = gos.ToArray();
     if( spawns.Length > 0 )
     {
       spawnCycleIndex %= spawns.Length;
@@ -738,10 +812,12 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     Slowed = true;
     Time.timeScale = slowtime;
     Time.fixedDeltaTime = 0.02f * Time.timeScale;
-    mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
+    mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[]
+    {
       snapNormal,
       snapSlowmo
-    }, new float[] {
+    }, new float[]
+    {
       0,
       1
     }, AudioFadeDuration );
@@ -752,10 +828,12 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     Slowed = false;
     Time.timeScale = 1;
     Time.fixedDeltaTime = 0.02f * Time.timeScale;
-    mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[] {
+    mixer.TransitionToSnapshots( new UnityEngine.Audio.AudioMixerSnapshot[]
+    {
       snapNormal,
       snapSlowmo
-    }, new float[] {
+    }, new float[]
+    {
       1,
       0
     }, AudioFadeDuration );
@@ -796,8 +874,8 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     }
     else
     {
+      PlayerController.OnPauseMenu();
       Controls.MenuActions.Enable();
-      Controls.BipedActions.Disable();
     }
     PauseMenu.Select();
     HUD.SetActive( false );
@@ -826,7 +904,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     else
     {
       UIInputModule.enabled = false;
-      Controls.BipedActions.Enable();
+      PlayerController.OnUnpause();
       Controls.MenuActions.Disable();
       UnityEngine.Cursor.lockState = CursorLockMode.Locked;
       UnityEngine.Cursor.visible = false;
@@ -968,10 +1046,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     GameObject go = Instantiate( audioOneShotPrefab, position, Quaternion.identity );
     AudioSource source = go.GetComponent<AudioSource>();
     source.PlayOneShot( clip );
-    new Timer( clip.length, null, delegate
-    {
-      Destroy( go );
-    } );
+    new Timer( clip.length, null, delegate { Destroy( go ); } );
   }
 
   public void FadeBlack()
@@ -986,16 +1061,13 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
       unscaledTime = true,
       repeat = false,
       duration = 1,
-      UpdateDelegate = delegate ( Timer t )
+      UpdateDelegate = delegate( Timer t )
       {
         Color fc = fader.color;
         fc.a = t.ProgressNormalized;
         fader.color = fc;
       },
-      CompleteDelegate = delegate
-      {
-        fader.color = Color.black;
-      }
+      CompleteDelegate = delegate { fader.color = Color.black; }
     };
     fadeTimer.Start( tp );
   }
@@ -1010,7 +1082,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
       unscaledTime = true,
       repeat = false,
       duration = 1,
-      UpdateDelegate = delegate ( Timer t )
+      UpdateDelegate = delegate( Timer t )
       {
         Color fc = fader.color;
         fc.a = 1 - t.ProgressNormalized;
@@ -1054,7 +1126,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     //SpeechText.rectTransform.localScale = Vector3.one * (1f - 0.5f * Mathf.Clamp( Mathf.Sqrt( DistanceSqr ) / SpeechRange, 0, 1 ));
 
     SpeechTimer.Stop( false );
-    SpeechTimer.Start( timeout, null, delegate ()
+    SpeechTimer.Start( timeout, null, delegate()
     {
       SpeechBubble.SetActive( false );
       SpeechCharacter = null;
@@ -1096,9 +1168,9 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     }
   }
 
-  #region Settings
+#region Settings
 
-  string[] resolutions = { "640x360", "640x400", "1024x512", "1280x720", "1280x800", "1920x1080" };
+  string[] resolutions = {"640x360", "640x400", "1024x512", "1280x720", "1280x800", "1920x1080"};
   int ResolutionWidth;
   int ResolutionHeight;
 
@@ -1128,19 +1200,19 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     // screen settings are applied explicitly when user pushes button
     CreateBoolSetting( "Fullscreen", false, null );
     CreateStringSetting( "Resolution", "1280x800", null );
-    CreateFloatSetting( "ResolutionSlider", 4, 0, resolutions.Length - 1, resolutions.Length - 1, delegate ( float value )
+    CreateFloatSetting( "ResolutionSlider", 4, 0, resolutions.Length - 1, resolutions.Length - 1, delegate( float value )
     {
       string Resolution = resolutions[Mathf.FloorToInt( Mathf.Clamp( value, 0, resolutions.Length - 1 ) )];
-      string[] tokens = Resolution.Split( new char[] { 'x' } );
+      string[] tokens = Resolution.Split( new char[] {'x'} );
       ResolutionWidth = int.Parse( tokens[0].Trim() );
       ResolutionHeight = int.Parse( tokens[1].Trim() );
       StringSetting["Resolution"].Value = ResolutionWidth.ToString() + "x" + ResolutionHeight.ToString();
     } );
-    //CreateFloatSetting( "UIScale", 1, 0.1f, 4, 20, null );
+    CreateFloatSetting( "UIScale", 1, 0.1f, 4, 20, null );
 
-    CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 20, delegate ( float value ) { mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) ); } );
-    CreateFloatSetting( "MusicVolume", 0.9f, 0, 1, 20, delegate ( float value ) { mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) ); } );
-    CreateFloatSetting( "SFXVolume", 1, 0, 1, 20, delegate ( float value )
+    CreateFloatSetting( "MasterVolume", 0.8f, 0, 1, 20, delegate( float value ) { mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( value ) ); } );
+    CreateFloatSetting( "MusicVolume", 0.9f, 0, 1, 20, delegate( float value ) { mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( value ) ); } );
+    CreateFloatSetting( "SFXVolume", 1, 0, 1, 20, delegate( float value )
     {
       mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( value ) );
       if( Updating )
@@ -1149,18 +1221,25 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     /*CreateFloatSetting( "MusicTrack", 0, 0, MusicLoops.Length - 1, 1.0f / (MusicLoops.Length - 1), delegate ( float value ){ PlayMusicLoop( MusicLoops[Mathf.FloorToInt( Mathf.Clamp( value, 0, MusicLoops.Length - 1 ) )] ); } );*/
 
     CreateBoolSetting( "ShowOnboardingControls", true, OnboardingControls.SetActive );
-    CreateBoolSetting( "UseCameraVertical", true, delegate ( bool value ) { CameraController.UseVerticalRange = value; } );
-    CreateBoolSetting( "CursorInfluence", false, delegate ( bool value ) { if( PlayerController != null ) PlayerController.CursorInfluence = value; } );
-    CreateBoolSetting( "AimSnap", false, delegate ( bool value ) { AimSnap = value; } );
-    CreateBoolSetting( "AutoAim", false, delegate ( bool value ) { AutoAim = value; } );
-    CreateBoolSetting( "ShowAimPath", false, delegate ( bool value ) { ShowAimPath = value; } );
+    CreateBoolSetting( "UseCameraVertical", true, delegate( bool value ) { CameraController.UseVerticalRange = value; } );
+    CreateBoolSetting( "CursorInfluence", false, delegate( bool value )
+    {
+      if( CameraController != null ) 
+        CameraController.CursorInfluence = value;
+    } );
+    CreateBoolSetting( "AimSnap", false, delegate( bool value ) { AimSnap = value; } );
+    CreateBoolSetting( "AutoAim", false, delegate( bool value ) { AutoAim = value; } );
+    CreateBoolSetting( "ShowAimPath", false, delegate( bool value ) { ShowAimPath = value; } );
 
-    CreateFloatSetting( "CursorOuter", 1, 0, 1, 20, delegate ( float value ) { CursorOuter = value; } );
-    CreateFloatSetting( "CursorSensitivity", 0.1f, 0.001f, 1, 1000, delegate ( float value ) { CursorSensitivity = value; } );
-    CreateFloatSetting( "CameraLerpAlpha", 10, 1, 10, 100, delegate ( float value ) { CameraController.lerpAlpha = value; } );
-    CreateFloatSetting( "Zoom", 3, 1, 5, 20, delegate ( float value ) { CameraController.orthoTarget = value; } );
+    CreateFloatSetting( "CursorOuter", 1, 0, 1, 20, delegate( float value ) { CursorOuter = value; } );
+    CreateFloatSetting( "CursorSensitivity", 1, 0.01f, 2, 100, delegate( float value ) { CursorSensitivity = value; } );
+    CreateFloatSetting( "CameraLerpAlpha", 10, 0, 10, 100, delegate( float value ) { CameraController.lerpAlpha = value; } );
+    CreateFloatSetting( "Zoom", 3, 1, 5, 20, delegate( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 10, delegate ( float value ) { deadZone = value; } );
-    CreateFloatSetting( "PlayerSpeedFactor", 0.3f, 0, 1, 10, delegate ( float value ) { if(PlayerController!= null ) PlayerController.HACKSetSpeed(value); } );
+    CreateFloatSetting( "PlayerSpeedFactor", 0.3f, 0, 1, 10, delegate( float value )
+    {
+      if( PlayerController != null ) PlayerController.HACKSetSpeed( value );
+    } );
 
     foreach( var scene in sceneRefs )
     {
@@ -1168,7 +1247,8 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
         continue;
       GameObject go = Instantiate( SceneListElementTemplate, SceneListElementTemplate.transform.parent );
       go.GetComponentInChildren<Text>().text = scene.GetSceneName();
-      go.GetComponentInChildren<Button>().onClick.AddListener( () => {
+      go.GetComponentInChildren<Button>().onClick.AddListener( () =>
+      {
         HidePauseMenu();
         LoadScene( scene.GetSceneName() );
       } );
@@ -1176,7 +1256,6 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
         SceneList.InitiallySelected = go;
     }
     Destroy( SceneListElementTemplate );
-
   }
 
   // explicit UI navigation
@@ -1299,7 +1378,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
     writer.WriteObjectEnd();
 
     writer.WriteObjectEnd(); // root end
-                             //print( settingsPath );
+    //print( settingsPath );
     File.WriteAllText( settingsPath, writer.ToString() );
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -1314,7 +1393,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
 
   public void ApplyScreenSettings()
   {
-    string[] tokens = StringSetting["Resolution"].Value.Split( new char[] { 'x' } );
+    string[] tokens = StringSetting["Resolution"].Value.Split( new char[] {'x'} );
     ResolutionWidth = int.Parse( tokens[0].Trim() );
     ResolutionHeight = int.Parse( tokens[1].Trim() );
 #if UNITY_WEBGL
@@ -1326,7 +1405,7 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
 #else
     Screen.SetResolution( ResolutionWidth, ResolutionHeight, BoolSetting["Fullscreen"].Value );
 #endif
-    //CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
+    CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
     ScreenSettingsCountdownTimer.Stop( false );
     ConfirmDialog.Unselect();
   }
@@ -1335,29 +1414,27 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
   {
     public bool Fullscreen;
     public string Resolution;
-    //public float UIScale;
+    public float UIScale;
   }
+
   ScreenSettings CachedScreenSettings = new ScreenSettings();
 
   public void ScreenChangePrompt()
   {
     CachedScreenSettings.Fullscreen = Screen.fullScreen;
     CachedScreenSettings.Resolution = Screen.width.ToString() + "x" + Screen.height.ToString();
-    //CachedScreenSettings.UIScale = CanvasScaler.scaleFactor;
+    CachedScreenSettings.UIScale = CanvasScaler.scaleFactor;
 
     ConfirmDialog.Select();
     Screen.SetResolution( ResolutionWidth, ResolutionHeight, BoolSetting["Fullscreen"].Value );
-    //CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
+    CanvasScaler.scaleFactor = FloatSetting["UIScale"].Value;
 
     TimerParams tp = new TimerParams
     {
       unscaledTime = true,
       repeat = false,
       duration = 10,
-      UpdateDelegate = delegate ( Timer obj )
-      {
-        ScreenSettingsCountdown.text = "Accept changes or revert in <color=orange>" + (10 - obj.ProgressSeconds).ToString( "0" ) + "</color> seconds";
-      },
+      UpdateDelegate = delegate( Timer obj ) { ScreenSettingsCountdown.text = "Accept changes or revert in <color=orange>" + (10 - obj.ProgressSeconds).ToString( "0" ) + "</color> seconds"; },
       CompleteDelegate = RevertScreenSettings
     };
     ScreenSettingsCountdownTimer.Start( tp );
@@ -1367,11 +1444,11 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
   {
     BoolSetting["Fullscreen"].Value = CachedScreenSettings.Fullscreen;
     StringSetting["Resolution"].Value = CachedScreenSettings.Resolution;
-    //FloatSetting["UIScale"].Value = CachedScreenSettings.UIScale;
+    FloatSetting["UIScale"].Value = CachedScreenSettings.UIScale;
     ApplyScreenSettings();
   }
 
-  #endregion
+#endregion
 
   public void StopMusic()
   {
@@ -1387,24 +1464,21 @@ Controls.GlobalActions.Quit.performed += (obj)=>{
   public void MusicTransition( AudioLoop loop )
   {
     Timer t = new Timer();
-    t.Start( MusicTransitionDuration,
-    delegate ( Timer obj )
+    t.Start( MusicTransitionDuration, delegate( Timer obj )
     {
       musicSource0.volume = 1 - obj.ProgressNormalized;
       musicSource1.volume = 1 - obj.ProgressNormalized;
-    },
-    delegate
+    }, delegate
     {
       loop.Play( musicSource0, musicSource1 );
-      t.Start( MusicTransitionDuration,
-      delegate ( Timer obj )
+      t.Start( MusicTransitionDuration, delegate( Timer obj )
       {
         musicSource0.volume = obj.ProgressNormalized;
         musicSource1.volume = obj.ProgressNormalized;
       }, null );
-    }
-    );
+    } );
   }
+
   /*
  public void CrossFadeToClip( AudioClip clip )
  {

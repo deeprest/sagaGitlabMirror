@@ -1,16 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 public class TriggerEvent : MonoBehaviour, ITrigger
 {
   public bool once;
   bool triggered;
-  public UnityEngine.Events.UnityEvent evt;
+  public UnityEvent evt;
 
   public void Trigger( Transform instigator )
   {
+    if( instigator.root != Global.instance.PlayerController.pawn.transform.root )
+      return;
     if( !once || (once &&!triggered) )
     {
       triggered = true;

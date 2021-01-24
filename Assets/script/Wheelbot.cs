@@ -12,8 +12,8 @@ public class Wheelbot : Entity, IDamage
   protected override void Start()
   {
     base.Start();
-    //UpdateHit = null;
-    UpdateCollision = BoxCollisionFour;
+    UpdateHit = CircleHit;
+    UpdateCollision = CircleCollisionVelocity;
     UpdateLogic = UpdateWheel;
     velocity.x = wheelVelocity;
   }

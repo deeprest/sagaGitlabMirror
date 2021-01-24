@@ -8,7 +8,10 @@ public class SceneHome : SceneScript
     base.StartScene();
     // for return from other level
     if( Global.instance.CurrentPlayer != null )
+    {
       Global.instance.CurrentPlayer.transform.position = Global.instance.FindSpawnPosition();
+      Global.instance.CurrentPlayer.velocity = Vector2.zero;
+    }
 
     Global.instance.CameraController.orthoTarget = 2;
   }

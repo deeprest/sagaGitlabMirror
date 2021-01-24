@@ -197,6 +197,7 @@ MonoBehaviour:
   Team: 2
   body: {fileID: 591998084805524476}
   box: {fileID: 993720593254393847}
+  circle: {fileID: 0}
   renderer: {fileID: 4083742519420547586}
   animator: {fileID: 416081150457209015}
   IgnoreCollideObjects: []
@@ -210,10 +211,11 @@ MonoBehaviour:
   friction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
+  DownOffset: 0
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  health: 5
+  Health: 3
   MaxHealth: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
@@ -225,17 +227,20 @@ MonoBehaviour:
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []
+  CharacterLayer: 0
+  CharacterParts: []
   cannon: {fileID: 3604313625396497800}
   sightRange: 6
   small: 0.1
   rotspeed: 100
   shotOrigin: {fileID: 4063886550480080537}
-  weapon: {fileID: 11400000, guid: a8ad658bd78184cb1b60f1ad0e4f28fe, type: 2}
+  weapon: {fileID: 11400000, guid: df66220642fe244b29120a56c2364504, type: 2}
   sightOrigin: {fileID: 3330343523650736551}
   sightStartRadius: 0.5
   min: -90
   max: 90
   maxShootAngle: 5
+  Target: {fileID: 0}
 --- !u!212 &4083742519420547586
 SpriteRenderer:
   m_ObjectHideFlags: 0

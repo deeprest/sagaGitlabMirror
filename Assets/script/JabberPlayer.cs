@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 #if UNITY_EDITOR
 using UnityEditor;
 
-[CustomEditor( typeof( JabberPlayer ) )]
+[CustomEditor( typeof(JabberPlayer) )]
 public class JabberPlayerEditor : Editor
 {
   public override void OnInspectorGUI()
@@ -47,7 +46,14 @@ public class JabberPlayer : MonoBehaviour
   float pitchsine;
 
 #if UNITY_EDITOR
-  float time { get { if( Application.isEditor && !Application.isPlaying ) return Time.realtimeSinceStartup; else return Time.time; } }
+  float time
+  {
+    get
+    {
+      if( Application.isEditor && !Application.isPlaying ) return Time.realtimeSinceStartup;
+      else return Time.time;
+    }
+  }
 #else
   float time { get { return Time.time; } }
 #endif
@@ -62,7 +68,8 @@ public class JabberPlayer : MonoBehaviour
 
   public void Stop()
   {
-    audioSource.pitch = 1;
+    if( jabber.EnablePitchVariation )
+      audioSource.pitch = 1;
     audioSource.Stop();
     isPlaying = false;
   }
@@ -129,19 +136,21 @@ public class JabberPlayer : MonoBehaviour
         audioSource.time = 0;
       }
 
-      if( jabber.PitchSine )
+      if( jabber.EnablePitchVariation )
       {
-        pitchsine += (time - stamp) * jabber.PitchSinSpeed;
-        audioSource.pitch = 1 + jabber.PitchRange * Mathf.Sin( pitchsine );
-      }
-      else
-      if( jabber.PitchRandom )
-      {
-        audioSource.pitch = 1 + jabber.PitchOffset + jabber.PitchRange * (Random.value * 2 - 1);
-      }
-      else
-      {
-        audioSource.pitch = 1 + jabber.PitchOffset;
+        if( jabber.PitchSine )
+        {
+          pitchsine += (time - stamp) * jabber.PitchSinSpeed;
+          audioSource.pitch = 1 + jabber.PitchRange * Mathf.Sin( pitchsine );
+        }
+        else if( jabber.PitchRandom )
+        {
+          audioSource.pitch = 1 + jabber.PitchOffset + jabber.PitchRange * (Random.value * 2 - 1);
+        }
+        else
+        {
+          audioSource.pitch = 1 + jabber.PitchOffset;
+        }
       }
 
       audioSource.Play();
@@ -152,7 +161,7 @@ public class JabberPlayer : MonoBehaviour
         wait = jabber.PhonemeLength;
 
       // exclude punctuation
-      int idx = pattern.IndexOfAny( new char[] { ' ', '.', ',', '!', '?' }, index );
+      int idx = pattern.IndexOfAny( new char[] {' ', '.', ',', '!', '?'}, index );
       if( idx == -1 || idx >= index + jabber.LettersPerPhoneme )
         index += jabber.LettersPerPhoneme;
       else
@@ -160,7 +169,6 @@ public class JabberPlayer : MonoBehaviour
     }
     stamp = time;
   }
-
 
 
   void Update()
