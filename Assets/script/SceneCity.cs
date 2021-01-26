@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine.Profiling;
-
+using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -78,9 +78,17 @@ public class SceneCity : SceneScript
     }
     
     Global.instance.CameraController.orthoTarget = 3;
+
+    if( inputSeed != null )
+      inputSeed.onEndEdit.AddListener( ( x ) =>
+      {
+        AssignSeed( x );
+      } );
   }
 
-  [Header( "Level Generation" )] public bool GenerateLevelOnStart = true;
+  [Header( "Level Generation" )] 
+  
+  public bool GenerateLevelOnStart = true;
   public bool RandomSeedOnStart = false;
   public int seed;
   public Vector2Int dimension = new Vector2Int( 20, 8 );
@@ -96,6 +104,7 @@ public class SceneCity : SceneScript
   public int MaxLinkPasses = 30;
 
   public GameObject spawnPointPrefab;
+  public InputField inputSeed;
 
   // marching square
   string StructurePath
@@ -171,6 +180,21 @@ public class SceneCity : SceneScript
     gens.Add( go );
   }
 
+  public void GenerateNext()
+  {
+    seed++;
+    if( inputSeed != null )
+      inputSeed.text = seed.ToString();
+    Generate();
+  }
+
+  public void AssignSeed( string input )
+  {
+    int value;
+    if( int.TryParse( input, out value ) )
+      seed = value;
+  }
+  
   public void Generate()
   {
     Profiler.BeginSample( "Level Generation" );
@@ -334,12 +358,21 @@ public class SceneCity : SceneScript
     newLinks.AddRange( go.GetComponentsInChildren<NodeLink>() );
   }
 
+  void Destroy( Object obj )
+  {
+    #if UNITY_EDITOR
+    DestroyImmediate( obj );
+    #else
+    Destroy( obj);
+    #endif
+  }
+  
   public void DestroyAll()
   {
     // node links
     debugSegments.Clear();
     for( int i = 0; i < gens.Count; i++ )
-      DestroyImmediate( gens[i] );
+      Destroy( gens[i] );
     gens.Clear();
 
     // marching square built
@@ -347,7 +380,7 @@ public class SceneCity : SceneScript
       if( built[pair.Key] != null && built[pair.Key].Count > 0 )
         for( int i = 0; i < built[pair.Key].Count; i++ )
         {
-          DestroyImmediate( built[pair.Key][i] );
+          Destroy( built[pair.Key][i] );
         }
     built.Clear();
   }
@@ -557,13 +590,19 @@ public class SceneCity : SceneScript
 #endif
       }
 
-      GenerationVariant[] vars = go.GetComponentsInChildren<GenerationVariant>();
-      foreach( var cmp in vars )
-        cmp.Generate();
-
       if( !built.ContainsKey( key ) )
         built[key] = new List<GameObject>();
       built[key].Add( go );
+      
+      // NOTE it's important to destroy generated objects when destroying/regenerating the city,
+      // but during regular play this may destroy enemies that have wandered.
+      GenerationVariant[] vars = go.GetComponentsInChildren<GenerationVariant>();
+      foreach( var cmp in vars )
+      {
+        GameObject asdf = cmp.Generate();
+        if( asdf != null )
+          built[key].Add( asdf );
+      }
     }
   }
 

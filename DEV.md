@@ -1,40 +1,57 @@
-# New Things
-remove trigger layer, add OnTriggerEnter, collider->trigger = true
-removed layers: flameprojectile, enemy
-
-- NEW propellar on back? dash in air to use prop
-- NEW shield on back? press down to use shield?
-- NEW playercontroller record/input, moveup/movedown
-- NEW stickybomb exploding interaction with shield:
-  1) do raycast to each IDamage within range
-  2) if raycast hits something else, do a projection of the collider onto a perpendicular vector of the normal
-  3) use the projected endpoints to do two more raycasts
-  4) if the raycast hits an IDamage collider, proceed
-- hide arm while not shooting
-- align shot with surface when aiming into floor/wall
-+ draw an aiming line
-- Use abilities gained from defeating enemies in the stage to defeat the boss. Can only use one ability per each MOUNT point. Abilities persist as long as they are installed. Replacing an ability drops it on the ground.
-- Weapons are acquired from bosses. You can switch to them anytime.
-- Bosses.  Big wrecking ball robot. Agile melee ninja.
-- confirm that Teams are set for all characters.
-- remove global references to CurrentPlayer where possible
-- cursorOuter is different based on control device
-- Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
-- trigger release shoots graphook
-- mech punch should break boxes
 
 ## Remember
 * script execution order is the reason liftbots are updated first in the entites list, because they are added the list on Awake().
 
 
+## Look At
+is background a no-show in enemy_lineup?
+confirm that Teams are set for all characters.
+
+# New Things
+NEW START A DEVLOG ON ITCH.
+NEW music selection on pause menu
+NEW health pickups dropped by enemies
+NEW cheats menu
+NEW damage when crushed by boxes
+NEW airbot propellar ability
+NEW propellar on back? dash in air to use prop
+
+remove trigger layer, add OnTriggerEnter, collider->trigger = true
+removed layers: flameprojectile, enemy
+
+NEW shield on back? press down to use shield?
+NEW stickybomb exploding interaction with shield:
+  1) do raycast to each IDamage within range
+  2) if raycast hits something else, do a projection of the collider onto a perpendicular vector of the normal
+  3) use the projected endpoints to do two more raycasts
+  4) if the raycast hits an IDamage collider, proceed
+NEW hide arm while not shooting
+NEW align shot with surface when aiming into floor/wall
+NEW Big wrecking ball robot.
+NEW Agile melee ninja.
+CODE remove global references to CurrentPlayer where possible
+CODE cursorOuter is different based on control device
+CODE Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
+NEW trigger release shoots graphook
+
+
+
+
+
+
 # Issues
 
 ### Needs Fix
-- wheelbot jitter
-- airbot attack, use attack speed until at last known target position
-- fix grap when using gamepad (double)
-- fix grap going through boxes
-- fix stickybomb going through vents
+FIX wheelbot jitter
+FIX airbot attack, use attack speed until at last known target position
+FIX grap when using gamepad (double)
+FIX grap going through boxes
+FIX stickybomb going through vents
+FIX slowmo: pushTimer
+FIX airbot pickup fall through vent covers?
+FIX hornet gets stuck
+FIX stickybomb stick to each other in midair
+FIX mech punch should break boxes
 
 ### Needs Improvement
 - Menu: design a better menu

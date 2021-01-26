@@ -1,12 +1,11 @@
 # Gameplay Elements
 
 ## Weapons
-+ buster (rapidfire)
-+ bouncy
-+ splitshot
-+ fire
-+ sticky
-+ laser
++ buster (variants: rapidfire, spread)
++ bouncy (charge for multi)
++ stickybombs
++ splitshot (charge for omnidirectional)
+
 
 ## Abilities
 + propellar
@@ -17,8 +16,10 @@
 ## Environment
 + chopdrop
 + wallslides
-+ liftbots
-+ boxes
++ liftbots (moving platforms)
++ boxes (simple destructibles)
++ vents
++ doors
 
 ## Enemies
 + turret, armored version
@@ -34,8 +35,8 @@
 + wrecking ball boss
 
 ## Interact
-+ switches (lights,lifts)
-+ diagetic menus
++ switches (lights, lifts)
++ diegetic menus
 + dr.cain (bystanders)
 
 
@@ -43,3 +44,6 @@
 - [Home Base]
 + Tutorial
 + City Highway + Generated Buildings
+
+## Other
++ camera zones

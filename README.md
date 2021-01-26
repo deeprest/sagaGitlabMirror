@@ -2,6 +2,7 @@
 # Saga 2020
 A game prototype. This is mostly a Mega Man X gameplay clone with many improvements. Made in Unity.
 
+
 ## Major changes to the Mega Man X formula
 1. Player can aim instead of only shooting forward.
 1. Arbitrary ground and wall angles
@@ -11,18 +12,19 @@ A game prototype. This is mostly a Mega Man X gameplay clone with many improveme
 1. Projectiles collide with walls.
 1. Avoid button-mashing with hold-to-fire. This is to save wear-and-tear on game controller triggers, and mouse buttons.
 
-### todo
-* explain use of git lfs
-* copyright acknowledgements
-* add image
-* add some idea of when this will be done
-
-## Unity version: 2019.4.12f1
 
 ## Requirements
-[Install Git LFS](https://help.github.com/en/github/managing-large-files/installing-git-large-file-storage)
 
-## Plugins
+**Unity version: 2019.4.12f1**
+
+[Install Git LFS](https://help.github.com/en/github/managing-large-files/installing-git-large-file-storage)
+After checkout, you must run the following to get all of the assets:
+
+    git lfs pull
+
+
+
+### Unity Plugins
 * [NavMeshComponents](https://github.com/Unity-Technologies/NavMeshComponents)
 * [untiy-scene-reference](https://github.com/starikcetin/unity-scene-reference) [(JohannesMP's original gist here)](https://gist.github.com/JohannesMP/ec7d3f0bcf167dab3d0d3bb480e0e07b)
 * [UnityLitJson](https://github.com/Mervill/UnityLitJson)
@@ -35,5 +37,5 @@ A game prototype. This is mostly a Mega Man X gameplay clone with many improveme
 * Aseprite
 
 ## Copyright Acknowledgements
-* CAPCOM copyrights and trademarks...
-* Music
+* [CAPCOM copyrights and trademarks...]
+* [Music]
