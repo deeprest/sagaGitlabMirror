@@ -138,24 +138,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ff685e897f414e28bdc49f953d2ec85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Team: 0
   body: {fileID: 0}
   box: {fileID: 4596207536373528512}
+  circle: {fileID: 0}
   renderer: {fileID: 4596207536373528513}
   animator: {fileID: 0}
   IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 0
   IsStatic: 1
+  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
-  pushVelocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
+  overrideVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
+  DownOffset: 0
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  health: 2
+  Health: 1
+  MaxHealth: 3
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
   spawnWhenDead: {fileID: 0}
@@ -166,3 +172,5 @@ MonoBehaviour:
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []
+  CharacterLayer: 0
+  CharacterParts: []

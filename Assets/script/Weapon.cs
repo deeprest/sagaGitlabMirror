@@ -20,7 +20,6 @@ public class Weapon : ScriptableObject
   public AudioClip StartSound;
   Projectile projectileInstance;
   public bool fullAuto;
-  public bool HasInterval = true;
   public float shootInterval = 0.1f;
   public float speedIncrease;
   public int projectileCount = 1;
@@ -28,6 +27,7 @@ public class Weapon : ScriptableObject
   public float AimDistanceMax = 2;
 
   [Header( "Charge Variant" )]
+  public bool HasChargeVariant;
   public Weapon ChargeVariant;
   public GameObject ChargeEffect;
   public AudioClip soundCharge;
@@ -65,12 +65,12 @@ public class Weapon : ScriptableObject
     }
     return points.ToArray();
   }
-
-  public void FireWeapon( Entity instigator, Vector2 pos, Vector2 shoot )
+  // PICKLE arg scale
+  public void FireWeapon( Entity instigator, Vector2 pos, Vector2 shoot, float scale = 1 )
   {
     if( projectileCount == 1 )
     {
-      FireWeaponProjectile( instigator, ProjectilePrefab, pos, shoot );
+      FireWeaponProjectile( instigator, ProjectilePrefab, pos, shoot, true, scale );
     }
     else if( projectileCount > 1 )
     {
@@ -80,7 +80,7 @@ public class Weapon : ScriptableObject
       bool anyFired = false;
       for( int i = 0; i < projectileCount; i++ )
       {
-        if( FireWeaponProjectile( instigator, ProjectilePrefab, pos, Quaternion.Euler( 0, 0, val ) * shoot, false ) )
+        if( FireWeaponProjectile( instigator, ProjectilePrefab, pos, Quaternion.Euler( 0, 0, val ) * shoot, false, scale ) )
           anyFired = true;
         val += inc;
       }
@@ -88,19 +88,21 @@ public class Weapon : ScriptableObject
         Global.instance.AudioOneShot( StartSound, pos );
     }
   }
-
-  bool FireWeaponProjectile( Entity instigator, Projectile projectilePrefab, Vector2 pos, Vector2 shoot, bool playSound = true )
+  // PICKLE arg scale
+  bool FireWeaponProjectile( Entity instigator, Projectile projectilePrefab, Vector2 pos, Vector2 shoot, bool playSound = true, float scale = 1 )
   {
     if( weaponType == WeaponType.Projectile )
     {
-      Collider2D col = Physics2D.OverlapCircle( pos, projectilePrefab.circle.radius, Global.ProjectileNoShootLayers );
+      Collider2D col = Physics2D.OverlapCircle( pos, projectilePrefab.circle.radius * scale, Global.ProjectileNoShootLayers );
       if( col == null )
       {
         GameObject go = Instantiate( projectilePrefab.gameObject, pos, Quaternion.identity );
+        go.transform.localScale = Vector3.one * scale;
         Projectile projectile = go.GetComponent<Projectile>();
         projectile.weapon = this;
         projectile.instigator = instigator;
         projectile.velocity = GetInitialVelocity( projectile, shoot );
+        projectile.Scale = scale;
 
         foreach( var c in instigator.IgnoreCollideObjects )
           Physics2D.IgnoreCollision( projectile.circle, c, true );
@@ -121,6 +123,7 @@ public class Weapon : ScriptableObject
       if( projectileInstance == null )
       {
         GameObject go = Instantiate( projectilePrefab.gameObject, pos, Quaternion.identity );
+        go.transform.localScale = Vector3.one * scale;
         projectileInstance = go.GetComponent<Projectile>();
         projectileInstance.weapon = this;
         projectileInstance.instigator = instigator;

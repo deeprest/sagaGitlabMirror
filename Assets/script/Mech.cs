@@ -5,6 +5,8 @@ using UnityEngine;
 // TODO dash smoke, dash sound
 public class Mech : Entity
 {
+  public float Scale = 1;
+  
   public AudioSource audio;
 
   public bool facingRight;
@@ -142,7 +144,7 @@ public class Mech : Entity
       }
     }
 
-    transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
+    transform.localScale = new Vector3( facingRight ? Scale : -Scale, Scale, 1 );
 
     bool oldGround = onGround;
     onGround = collideBottom || (collideLeft && collideRight);
@@ -151,7 +153,7 @@ public class Mech : Entity
       //landTimer.Start( landDuration, null, null )
     }
   }
-
+  
   void StartJump()
   {
     velocity.y = jumpSpeed;
@@ -200,6 +202,8 @@ public class Mech : Entity
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
+      if( hit.transform.root == transform.root )
+        return;
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
@@ -215,6 +219,8 @@ public class Mech : Entity
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
+      if( hit.transform.root == transform.root )
+        return;
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
@@ -231,6 +237,8 @@ public class Mech : Entity
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
+      if( hit.transform.root == transform.root )
+        return;
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
@@ -259,26 +267,29 @@ public class Mech : Entity
         switch( projectile.weapon.weaponType )
         {
           case Weapon.WeaponType.Projectile:
-          //projectile.transform.position = transform.position + Vector3.Project( (Vector3)d.point - transform.position, transform.right );
-          projectile.velocity = Vector3.Reflect( projectile.velocity, (d.instigator.transform.position - transform.position).normalized );
-          Physics2D.IgnoreCollision( projectile.circle, box, false );
-          Physics2D.IgnoreCollision( projectile.circle, torso, false );
-          Physics2D.IgnoreCollision( projectile.circle, fist, false );
-
-          foreach( var cldr in projectile.instigator.IgnoreCollideObjects )
-          {
-            if( cldr == null )
-              Debug.Log( "ignorecolideobjects null" );
+            if( d.instigator == null )
+              projectile.velocity = Vector3.Reflect( projectile.velocity,(d.point - (Vector2)transform.position).normalized ); 
             else
-              Physics2D.IgnoreCollision( projectile.circle, cldr, false );
-          }
+              projectile.velocity = Vector3.Reflect( projectile.velocity, (d.instigator.transform.position - transform.position).normalized ); 
+            
+            Physics2D.IgnoreCollision( projectile.circle, box, false );
+            Physics2D.IgnoreCollision( projectile.circle, torso, false );
+            Physics2D.IgnoreCollision( projectile.circle, fist, false );
 
-          projectile.instigator = this;
-          projectile.ignore.Add( transform );
-          break;
+            foreach( var cldr in projectile.instigator.IgnoreCollideObjects )
+            {
+              if( cldr == null )
+                Debug.Log( "ignorecolideobjects null" );
+              else
+                Physics2D.IgnoreCollision( projectile.circle, cldr, false );
+            }
 
-          case Weapon.WeaponType.Laser:
-          // create second beam
+            projectile.instigator = this;
+            projectile.ignore.Add( transform );
+            break;
+
+            case Weapon.WeaponType.Laser:
+            // create second beam
           break;
         }
       }

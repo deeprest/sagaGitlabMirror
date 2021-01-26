@@ -93,7 +93,7 @@ public class FloatValue
       if( slider != null )
         slider.value = valueToSlider( value );
       if( valueText != null )
-        valueText.text = value.ToString( "0.##" );
+        valueText.text = value.ToString( "0.###" );
     } );
 
     if( slider != null )

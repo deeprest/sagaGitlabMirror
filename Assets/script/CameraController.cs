@@ -7,6 +7,7 @@ public class CameraController : MonoBehaviour
   public Controller LookTarget;
   public LerpToTarget lerp;
   public bool UseVerticalRange = true;
+  public bool CursorInfluence;
   //public bool CursorInfluence = false;
   public float cursorAlpha = 0.5f;
   public float lerpAlpha = 50;
@@ -67,12 +68,12 @@ public class CameraController : MonoBehaviour
     float ortho = orthoTarget;
     pos.z = zOffset;
 
-    if( !lerp.enabled && LookTarget != null )
+    if( !lerp.enabled && LookTarget != null && LookTarget.pawn != null )
     {
       Vector3 lookTarget = LookTarget.pawn.transform.position;
 
       PlayerController pc = LookTarget as PlayerController;
-      if( pc != null &&  pc.CursorInfluence )
+      if( CursorInfluence )
       {
         lookTarget = Vector3.Lerp( LookTarget.pawn.transform.position, LookTarget.pawn.CursorWorldPosition, cursorAlpha );
         lookTarget.z = zOffset;

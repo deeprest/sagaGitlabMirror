@@ -158,7 +158,7 @@ public class CustomUtility : EditorWindow
 
     EditorGUILayout.Space();
     EditorGUI.ProgressBar( EditorGUILayout.GetControlRect( false, 30 ), progress, progressMessage );
-    EditorPrefs.SetBool( "CreateGlobalOnStart", EditorGUILayout.Toggle( "CreatGlobalOnStart", EditorPrefs.GetBool( "CreateGlobalOnStart") ) );
+    EditorPrefs.SetBool( "CreateGlobalOnStart", EditorGUILayout.Toggle( "CreatGlobalOnStart", EditorPrefs.GetBool( "CreateGlobalOnStart", true ) ) );
 
     EditorGUILayout.Space();
     foldTodo = EditorGUILayout.Foldout( foldTodo, "Todo" );

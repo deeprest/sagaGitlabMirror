@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-
 
 public struct ActionData
 {
@@ -44,4 +42,5 @@ public interface IWorldSelectable
   void Unhighlight();
   void Select();
   void Unselect();
+  Vector2 GetPosition();
 }

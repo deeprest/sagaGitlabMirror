@@ -7,7 +7,7 @@ https://gist.github.com/JohannesMP for SceneReference and others!
 https://www.youtube.com/channel/UCGVJF2RcWjORfbZtlWvh93w Thank you Lotte!
 https://seansleblanc.itch.io/better-minimal-webgl-template for webgl template
 
-# Other Fan Games
+# Other X Fan Games
 ["Mega Man X: Corrupted"](http://www.megamanxcorrupted.com/)
 ["Megaman X: Isolation"](https://www.youtube.com/channel/UC2CSkCJMni7CuRLLmEGpKSw)
 ["Cancelled/Dead Mega Man X Fangames"](https://www.youtube.com/watch?v=PB8pMBSK8AU)
@@ -15,13 +15,17 @@ https://seansleblanc.itch.io/better-minimal-webgl-template for webgl template
 ["Mega Man X++"](https://www.youtube.com/watch?v=twI3res-obs)
 ["Apsel Haven Mega Man X fangame"](https://www.youtube.com/watch?v=CwW_cziXs4U)
 ["Mega Man X AD"](https://reploidsoft.blogspot.com/)
+["Mega Man: Assimilation"](https://www.youtube.com/watch?v=y_18Gljz_ec)
 
-# Similar Derived Games
+# Other Games
 ["20XX"](https://store.steampowered.com/app/322110/20XX/)
-gunvolt
+["gunvolt"]()
 
 
 # where to release/announce demo
+When you have a good build, tell these folks:
+https://nathanielhoover.weebly.com/  (Flashman85, made the list [here](https://sprites-inc.co.uk/thread-1505-page-8.html))
+https://dennisengelhard.com/
 gamejolt
 sprites.co.uk forums
 send to Stone McKnuckle
