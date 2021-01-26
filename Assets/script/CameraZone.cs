@@ -5,8 +5,7 @@ using UnityEngine;
 public class CameraZone : MonoBehaviour
 {
   public static List<CameraZone> All = new List<CameraZone>();
-
-  public int priority;
+  
   [Tooltip("The camera will increase its size to view all colliders. Useful for rooms.")]
   public bool EncompassBounds;
   [Tooltip( "The camera will stay within the shapes of these colliders when the zone is active." )]

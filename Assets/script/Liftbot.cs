@@ -3,6 +3,7 @@
 #if UNITY_EDITOR
 using UnityEditor;
 [CustomEditor( typeof( Liftbot ) )]
+[CanEditMultipleObjects]
 public class LiftbotEdtitor : Editor
 {
   public override void OnInspectorGUI()
@@ -25,10 +26,11 @@ public class LiftbotEdtitor : Editor
         Vector2 segment = points[next] - points[i];
         length += segment.magnitude;
       }
+
+      EditorGUILayout.LabelField( "path length", length.ToString() );
+      float duration = (length / bot.flySpeed) + (bot.pingpong ? bot.path.Length * 2 - 2 : bot.path.Length) * bot.waitDuration;
+      EditorGUILayout.LabelField( "return time", duration.ToString() );
     }
-    EditorGUILayout.LabelField( "path length", length.ToString() );
-    float duration = (length / bot.flySpeed) + (bot.pingpong ? bot.path.Length * 2 - 2 : bot.path.Length) * bot.waitDuration;
-    EditorGUILayout.LabelField( "return time", duration.ToString() );
   }
 
   void OnSceneGUI()

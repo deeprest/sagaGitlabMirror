@@ -169,6 +169,7 @@ public class PlayerBiped : Pawn
   public AudioClip soundJump;
   public AudioClip soundDash;
   public AudioClip soundDamage;
+  public AudioClip soundPickup;
   public AudioClip soundDenied;
   public AudioClip soundWeaponFail;
 
@@ -381,6 +382,22 @@ public class PlayerBiped : Pawn
           dmg.damageSource = transform;
           dmg.point = hit.point;
           dam.TakeDamage( dmg );
+        }
+      }
+      Pickup pickup = hit.transform.GetComponent<Pickup>();
+      if( pickup != null && pickup.SelectOnContact )
+      {
+        pickup.Select();
+        if( pickup.unique != UniquePickupType.None )
+        {
+          audio.PlayOneShot( soundPickup );
+          switch( pickup.unique )
+          {
+            case UniquePickupType.SpeedFactorNormalized:
+              speedFactorNormalized += pickup.uniqueFloat0;
+              break;
+          }
+          Destroy( pickup.gameObject );
         }
       }
     }
@@ -783,7 +800,6 @@ public class PlayerBiped : Pawn
       landTimer.Start( landDuration, null, delegate { landing = false; } );
     }
     
-    // must be after collision
     if( wallsliding )
     {
       float angle = Vector2.Angle( previousWallSlideTargetNormal, wallSlideTargetNormal );
@@ -796,7 +812,7 @@ public class PlayerBiped : Pawn
     previousWallSlideTargetNormal = wallSlideTargetNormal; 
     wallsliding = false;
 
-    // must have input (or push) to move horizontally, so allow no persistent horizontal velocity (without push)
+    // must have input (or inertia) to move horizontally, so allow no persistent horizontal velocity (without inertia)
     if( grapPulling )
       velocity = Vector3.zero;
     else if( !(input.MoveRight || input.MoveLeft) )
@@ -1052,7 +1068,7 @@ public class PlayerBiped : Pawn
     
     transform.position = pos;
 
-    // carry momentum when jumping from moving platforms
+    // preserve inertia when jumping from moving platforms
     if( previousCarry != null && carryCharacter == null )
       inertia = previousCarry.Velocity;
 

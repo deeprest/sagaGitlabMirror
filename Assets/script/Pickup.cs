@@ -1,5 +1,11 @@
 ﻿using UnityEngine;
 
+public enum UniquePickupType
+{
+  None,
+  SpeedFactorNormalized,
+  DashDuration
+}
 public enum PickupPart
 {
   None,
@@ -14,6 +20,11 @@ public class Pickup : WorldSelectable
   [SerializeField] Animator animator;
   public Weapon weapon;
   public Ability ability;
+  public bool SelectOnContact;
+  
+  public UniquePickupType unique;
+  public float uniqueFloat0;
+  
   public PickupPart PickupPart;
 
   Vector2 velocity;
