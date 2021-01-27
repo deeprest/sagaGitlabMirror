@@ -270,6 +270,9 @@ public class SceneCity : SceneScript
       }
     }
 
+    if( Application.isPlaying )
+      Global.instance.MinimapRender( bounds.center );
+
     Profiler.EndSample();
   }
 

@@ -78,10 +78,10 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Quit",
+                    "name": "Minimap",
                     "type": "Button",
-                    "id": "6db28ffd-3f92-4618-a63f-309690f24c81",
-                    "expectedControlType": "Button",
+                    "id": "342939eb-b668-4681-9361-6f8fc5c9ac1a",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
                 }
@@ -297,37 +297,15 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Button With One Modifier",
-                    "id": "9bab7c38-78e7-4113-b3ad-46e297791436",
-                    "path": "ButtonWithOneModifier",
+                    "name": "",
+                    "id": "d9f5a648-b68f-4c16-ae88-a27713822cf8",
+                    "path": "<Keyboard>/m",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Quit",
-                    "isComposite": true,
+                    "groups": "Mouse+Keyboard",
+                    "action": "Minimap",
+                    "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "7befbd56-aa26-4535-a5df-37824afeb2de",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse+Keyboard",
-                    "action": "Quit",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "button",
-                    "id": "b9208a1f-2fde-48ed-9713-d4d9d2f12197",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse+Keyboard",
-                    "action": "Quit",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 }
             ]
         },
@@ -662,14 +640,6 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
-                },
-                {
-                    "name": "Minimap",
-                    "type": "Button",
-                    "id": "0f90ef74-ed44-45eb-9e8f-c77310b2ce21",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -934,17 +904,6 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f10ebd40-e9a9-4762-a6d2-5059ab26337f",
-                    "path": "<Keyboard>/m",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse+Keyboard",
-                    "action": "Minimap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

@@ -25,8 +25,7 @@ public class CameraController : MonoBehaviour
   public float pixelSnap;
   public float presnap;
   public float snapped;
-
-  public bool AutoSwitchZone;
+  
   public CameraZone ActiveCameraZone;
 
   /*
@@ -91,7 +90,8 @@ public class CameraController : MonoBehaviour
         pos.y = lookTarget.y;
       }
 
-      if( AutoSwitchZone )
+      // auto-switch to zone the player enters (respects the ignore flag on the zone)
+      if( ActiveCameraZone == null )
       {
         CameraZone zone = null;
         CameraZone.DoesOverlapAnyZone( LookTarget.pawn.transform.position, ref zone );

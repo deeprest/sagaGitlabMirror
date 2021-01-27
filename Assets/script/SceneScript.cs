@@ -6,7 +6,7 @@ using UnityEngine.Experimental.Rendering.Universal;
 public class SceneScript : MonoBehaviour
 {
   public AudioLoop music;
-  public CameraZone CameraZone;
+  /*public CameraZone CameraZone;*/
   public BoxCollider NavmeshBox;
   public Light2D ambientLight;
 
@@ -22,8 +22,8 @@ public class SceneScript : MonoBehaviour
         Global.instance.CurrentPlayer.velocity = Vector2.zero;
       }
     }
-
-    Global.instance.AssignCameraZone( CameraZone );
+    // CameraController auto-switch should make this unnecessary
+    /*Global.instance.AssignCameraZone( CameraZone );*/
 
     if( music != null )
       Global.instance.PlayMusic( music );

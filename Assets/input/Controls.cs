@@ -91,10 +91,10 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Quit"",
+                    ""name"": ""Minimap"",
                     ""type"": ""Button"",
-                    ""id"": ""6db28ffd-3f92-4618-a63f-309690f24c81"",
-                    ""expectedControlType"": ""Button"",
+                    ""id"": ""342939eb-b668-4681-9361-6f8fc5c9ac1a"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -310,37 +310,15 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""Button With One Modifier"",
-                    ""id"": ""9bab7c38-78e7-4113-b3ad-46e297791436"",
-                    ""path"": ""ButtonWithOneModifier"",
+                    ""name"": """",
+                    ""id"": ""d9f5a648-b68f-4c16-ae88-a27713822cf8"",
+                    ""path"": ""<Keyboard>/m"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Quit"",
-                    ""isComposite"": true,
+                    ""groups"": ""Mouse+Keyboard"",
+                    ""action"": ""Minimap"",
+                    ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""modifier"",
-                    ""id"": ""7befbd56-aa26-4535-a5df-37824afeb2de"",
-                    ""path"": ""<Keyboard>/ctrl"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse+Keyboard"",
-                    ""action"": ""Quit"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""button"",
-                    ""id"": ""b9208a1f-2fde-48ed-9713-d4d9d2f12197"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse+Keyboard"",
-                    ""action"": ""Quit"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -675,14 +653,6 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
-                },
-                {
-                    ""name"": ""Minimap"",
-                    ""type"": ""Button"",
-                    ""id"": ""0f90ef74-ed44-45eb-9e8f-c77310b2ce21"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -952,17 +922,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""f10ebd40-e9a9-4762-a6d2-5059ab26337f"",
-                    ""path"": ""<Keyboard>/m"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse+Keyboard"",
-                    ""action"": ""Minimap"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""4c5cd233-8222-45f3-8779-3e3705c9c346"",
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
@@ -1142,7 +1101,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_GlobalActions_RecordToggle = m_GlobalActions.FindAction("RecordToggle", throwIfNotFound: true);
         m_GlobalActions_RecordPlayback = m_GlobalActions.FindAction("RecordPlayback", throwIfNotFound: true);
         m_GlobalActions_DevSlowmo = m_GlobalActions.FindAction("Dev-Slowmo", throwIfNotFound: true);
-        m_GlobalActions_Quit = m_GlobalActions.FindAction("Quit", throwIfNotFound: true);
+        m_GlobalActions_Minimap = m_GlobalActions.FindAction("Minimap", throwIfNotFound: true);
         // MenuActions
         m_MenuActions = asset.FindActionMap("MenuActions", throwIfNotFound: true);
         m_MenuActions_Move = m_MenuActions.FindAction("Move", throwIfNotFound: true);
@@ -1165,7 +1124,6 @@ public class @Controls : IInputActionCollection, IDisposable
         m_BipedActions_NextAbility = m_BipedActions.FindAction("NextAbility", throwIfNotFound: true);
         m_BipedActions_Charge = m_BipedActions.FindAction("Charge", throwIfNotFound: true);
         m_BipedActions_Down = m_BipedActions.FindAction("Down", throwIfNotFound: true);
-        m_BipedActions_Minimap = m_BipedActions.FindAction("Minimap", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1224,7 +1182,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_GlobalActions_RecordToggle;
     private readonly InputAction m_GlobalActions_RecordPlayback;
     private readonly InputAction m_GlobalActions_DevSlowmo;
-    private readonly InputAction m_GlobalActions_Quit;
+    private readonly InputAction m_GlobalActions_Minimap;
     public struct GlobalActionsActions
     {
         private @Controls m_Wrapper;
@@ -1238,7 +1196,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @RecordToggle => m_Wrapper.m_GlobalActions_RecordToggle;
         public InputAction @RecordPlayback => m_Wrapper.m_GlobalActions_RecordPlayback;
         public InputAction @DevSlowmo => m_Wrapper.m_GlobalActions_DevSlowmo;
-        public InputAction @Quit => m_Wrapper.m_GlobalActions_Quit;
+        public InputAction @Minimap => m_Wrapper.m_GlobalActions_Minimap;
         public InputActionMap Get() { return m_Wrapper.m_GlobalActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1275,9 +1233,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @DevSlowmo.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDevSlowmo;
                 @DevSlowmo.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDevSlowmo;
                 @DevSlowmo.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDevSlowmo;
-                @Quit.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnQuit;
-                @Quit.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnQuit;
-                @Quit.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnQuit;
+                @Minimap.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMinimap;
+                @Minimap.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMinimap;
+                @Minimap.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMinimap;
             }
             m_Wrapper.m_GlobalActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -1309,9 +1267,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @DevSlowmo.started += instance.OnDevSlowmo;
                 @DevSlowmo.performed += instance.OnDevSlowmo;
                 @DevSlowmo.canceled += instance.OnDevSlowmo;
-                @Quit.started += instance.OnQuit;
-                @Quit.performed += instance.OnQuit;
-                @Quit.canceled += instance.OnQuit;
+                @Minimap.started += instance.OnMinimap;
+                @Minimap.performed += instance.OnMinimap;
+                @Minimap.canceled += instance.OnMinimap;
             }
         }
     }
@@ -1398,7 +1356,6 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_BipedActions_NextAbility;
     private readonly InputAction m_BipedActions_Charge;
     private readonly InputAction m_BipedActions_Down;
-    private readonly InputAction m_BipedActions_Minimap;
     public struct BipedActionsActions
     {
         private @Controls m_Wrapper;
@@ -1416,7 +1373,6 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @NextAbility => m_Wrapper.m_BipedActions_NextAbility;
         public InputAction @Charge => m_Wrapper.m_BipedActions_Charge;
         public InputAction @Down => m_Wrapper.m_BipedActions_Down;
-        public InputAction @Minimap => m_Wrapper.m_BipedActions_Minimap;
         public InputActionMap Get() { return m_Wrapper.m_BipedActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1465,9 +1421,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Down.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDown;
                 @Down.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDown;
                 @Down.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDown;
-                @Minimap.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMinimap;
-                @Minimap.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMinimap;
-                @Minimap.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMinimap;
             }
             m_Wrapper.m_BipedActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -1511,9 +1464,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Down.started += instance.OnDown;
                 @Down.performed += instance.OnDown;
                 @Down.canceled += instance.OnDown;
-                @Minimap.started += instance.OnMinimap;
-                @Minimap.performed += instance.OnMinimap;
-                @Minimap.canceled += instance.OnMinimap;
             }
         }
     }
@@ -1547,7 +1497,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnRecordToggle(InputAction.CallbackContext context);
         void OnRecordPlayback(InputAction.CallbackContext context);
         void OnDevSlowmo(InputAction.CallbackContext context);
-        void OnQuit(InputAction.CallbackContext context);
+        void OnMinimap(InputAction.CallbackContext context);
     }
     public interface IMenuActionsActions
     {
@@ -1572,6 +1522,5 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnNextAbility(InputAction.CallbackContext context);
         void OnCharge(InputAction.CallbackContext context);
         void OnDown(InputAction.CallbackContext context);
-        void OnMinimap(InputAction.CallbackContext context);
     }
 }

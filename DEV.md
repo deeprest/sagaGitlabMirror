@@ -2,11 +2,6 @@
 ## Remember
 * script execution order is the reason liftbots are updated first in the entites list, because they are added the list on Awake().
 
-
-## Look At
-is background a no-show in enemy_lineup?
-confirm that Teams are set for all characters.
-
 # New Things
 NEW START A DEVLOG ON ITCH.
 NEW music selection on pause menu
@@ -15,10 +10,6 @@ NEW cheats menu
 NEW damage when crushed by boxes
 NEW airbot propellar ability
 NEW propellar on back? dash in air to use prop
-
-remove trigger layer, add OnTriggerEnter, collider->trigger = true
-removed layers: flameprojectile, enemy
-
 NEW shield on back? press down to use shield?
 NEW stickybomb exploding interaction with shield:
   1) do raycast to each IDamage within range
@@ -32,14 +23,12 @@ NEW Agile melee ninja.
 CODE remove global references to CurrentPlayer where possible
 CODE cursorOuter is different based on control device
 CODE Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
-NEW trigger release shoots graphook
-
-
-
-
-
+VERIFY confirm that Teams are set for all characters.
 
 # Issues
+
+- generation does not destroy entities spawned at runtime. Should it? Showing off generation in a build is nice, but if it means implementing features never seen in the game, is it worth it?
+- is background a no-show in enemy_lineup?
 
 ### Needs Fix
 FIX wheelbot jitter
@@ -52,6 +41,7 @@ FIX airbot pickup fall through vent covers?
 FIX hornet gets stuck
 FIX stickybomb stick to each other in midair
 FIX mech punch should break boxes
+FIX trigger release shoots graphook
 
 ### Needs Improvement
 - Menu: design a better menu
