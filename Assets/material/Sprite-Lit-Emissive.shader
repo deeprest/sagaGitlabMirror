@@ -8,6 +8,8 @@ Shader "Custom/2D/Sprite-Lit-Emissive"
 
         _FlashColor ("Flash Color", Color) = (1,1,1,1)
 _FlashAmount("Flash", Range(0.0, 1.0)) = 0
+_Minimap("Minimap Toggle", int) = 0
+_MinimapColor("Minimap Color", Color) = (1,0,0,1)
     }
 
     HLSLINCLUDE
@@ -61,6 +63,8 @@ _FlashAmount("Flash", Range(0.0, 1.0)) = 0
             SAMPLER(sampler_EmissiveTex);
 
             half4 _FlashColor;
+            half4 _MinimapColor;
+            int _Minimap;
 half _FlashAmount;
 
             #if USE_SHAPE_LIGHT_TYPE_0
@@ -95,9 +99,16 @@ half _FlashAmount;
 
             half4 CombinedShapeLightFragment(Varyings i) : SV_Target
             {
+                if( _Minimap > 0 )
+                {
+                    return _MinimapColor;
+                }
+                else
+                {
                 half4 main = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
                 half4 emissive = ((main + _FlashColor * 0.7) * _FlashAmount + SAMPLE_TEXTURE2D(_EmissiveTex, sampler_EmissiveTex, i.uv));           
                 return (CombinedShapeLightShared(main, main, i.lightingUV) + emissive) * main.a;
+                }
             }
             ENDHLSL
         }

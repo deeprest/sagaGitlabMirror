@@ -106,9 +106,7 @@ public class PlayerBiped : Pawn
   public float wallJumpPushDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
   public float wallSlideRotateSpeed = 1;
-  [FormerlySerializedAs( "wallSlideDownSpeedSide" )]
   public float wallSlideDownX = 1;
-  [FormerlySerializedAs( "wallSlideDownSpeedDown" )]
   public float wallSlideDownY = 1;
   public float wallSlideHardAngleThreshold = 25;
   public float landDuration = 0.1f;
@@ -238,7 +236,6 @@ public class PlayerBiped : Pawn
   {
     // settings are read before player is created, so set player settings here.
     speedFactorNormalized = Global.instance.FloatSetting["PlayerSpeedFactor"].Value;
-    //CameraController.CursorInfluence = Global.instance.BoolSetting["CursorInfluence"].Value;
   }
 
   public override void PreSceneTransition()
@@ -418,7 +415,7 @@ public class PlayerBiped : Pawn
         }*/
       }
     }
-    //WorldSelectable closest = (WorldSelectable)FindClosest( transform.position, pups.ToArray() );
+
     IWorldSelectable closest = (IWorldSelectable) Util.FindSmallestAngle( transform.position, shoot, pups.ToArray() );
     if( closest == null )
     {
@@ -426,7 +423,7 @@ public class PlayerBiped : Pawn
       {
         closestISelect.Unhighlight();
         closestISelect = null;
-        InteractIndicator.SetActive( false );
+        /*InteractIndicator.SetActive( false );*/
       }
       if( WorldSelection != null )
       {
@@ -439,12 +436,13 @@ public class PlayerBiped : Pawn
       if( closestISelect != null )
       {
         closestISelect.Unhighlight();
-        InteractIndicator.SetActive( false );
+        /*InteractIndicator.SetActive( false );*/
       }
       closestISelect = closest;
       closestISelect.Highlight();
-      InteractIndicator.SetActive( true );
-      InteractIndicator.transform.position = closestISelect.GetPosition();
+      // Not everything is indicated the same way
+      /*InteractIndicator.SetActive( true );
+      InteractIndicator.transform.position = closestISelect.GetPosition();*/
     }
     else
     {

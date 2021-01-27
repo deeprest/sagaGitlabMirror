@@ -8,6 +8,8 @@ public class CameraZone : MonoBehaviour
   
   [Tooltip("The camera will increase its size to view all colliders. Useful for rooms.")]
   public bool EncompassBounds;
+  [Tooltip("Ignore setting to set active camera zone when player enters zone.")]
+  public bool IgnoreAutoSwitch;
   [Tooltip( "The camera will stay within the shapes of these colliders when the zone is active." )]
   public Collider2D[] colliders;
 
@@ -49,7 +51,7 @@ public class CameraZone : MonoBehaviour
     {
       for( int i = 0; i < All[z].colliders.Length; i++ )
       {
-        if( All[z].colliders[i].OverlapPoint( point ) )
+        if( All[z].colliders[i].OverlapPoint( point ) && !All[z].IgnoreAutoSwitch )
         {
           active = All[z];
           return true;

@@ -89,14 +89,14 @@ public class Door : MonoBehaviour, ITrigger
             if( Entering )
             {
               if( CameraIn != null ) Global.instance.AssignCameraZone( CameraIn );
-              else Global.instance.AssignCameraZone( sceneScript.CameraZone );
+              else Global.instance.AssignCameraZone( null );
               if( Music != null )
                 Global.instance.MusicTransition( Music );
             }
             else
             {
               if( CameraOut != null ) Global.instance.AssignCameraZone( CameraOut );
-              else Global.instance.AssignCameraZone( sceneScript.CameraZone );
+              else Global.instance.AssignCameraZone( null );
               if( Music != null )
                 Global.instance.MusicTransition( sceneScript.music );
             }
@@ -138,7 +138,7 @@ public class Door : MonoBehaviour, ITrigger
             {
               SceneScript sceneScript = FindObjectOfType<SceneScript>();
               if( sceneScript != null )
-                Global.instance.AssignCameraZone( sceneScript.CameraZone );
+                Global.instance.AssignCameraZone( null );
             }
           }
           else
@@ -161,7 +161,7 @@ public class Door : MonoBehaviour, ITrigger
             {
               SceneScript sceneScript = FindObjectOfType<SceneScript>();
               if( sceneScript != null )
-                Global.instance.AssignCameraZone( sceneScript.CameraZone );
+                Global.instance.AssignCameraZone( null );
             }
           }
         }, null );

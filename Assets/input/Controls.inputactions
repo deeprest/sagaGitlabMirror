@@ -76,6 +76,14 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Minimap",
+                    "type": "Button",
+                    "id": "342939eb-b668-4681-9361-6f8fc5c9ac1a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -285,6 +293,17 @@
                     "processors": "",
                     "groups": "Mouse+Keyboard",
                     "action": "Dev-Slowmo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d9f5a648-b68f-4c16-ae88-a27713822cf8",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse+Keyboard",
+                    "action": "Minimap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -621,14 +640,6 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
-                },
-                {
-                    "name": "Minimap",
-                    "type": "Button",
-                    "id": "0f90ef74-ed44-45eb-9e8f-c77310b2ce21",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -893,17 +904,6 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f10ebd40-e9a9-4762-a6d2-5059ab26337f",
-                    "path": "<Keyboard>/m",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse+Keyboard",
-                    "action": "Minimap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
