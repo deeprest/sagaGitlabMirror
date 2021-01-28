@@ -1,6 +1,13 @@
 
 ## Remember
 * script execution order is the reason liftbots are updated first in the entites list, because they are added the list on Awake().
++ FIXED Linux: glitchy/wrong sprite shader for entities. This is because of texture compression settings on each individual texture.
+
+#### Remember: Composite Sprite Problems
++ composite sprite render layers. Create a layer for each composite, or how to keep entire composites from interlacing with one another? SOLUTION: Animate a *struct* int for each piece, and update the sortingOrder of the SpriteRenderers from LateUpdate().
++ pixel-perfect animations must be done in Unity for each piece. Snap to pixel density, use constant anim curves.
++ 2d skeleton rigs, avatars, and IK can not be used with composites. Skeletons use rotations, and these anims are not rotation-based.
+
 
 # New Things
 NEW START A DEVLOG ON ITCH.
@@ -27,7 +34,7 @@ VERIFY confirm that Teams are set for all characters.
 
 # Issues
 
-- generation does not destroy entities spawned at runtime. Should it? Showing off generation in a build is nice, but if it means implementing features never seen in the game, is it worth it?
+- camera zone soft lock when using door on dr cain chamber
 - is background a no-show in enemy_lineup?
 
 ### Needs Fix
@@ -38,7 +45,6 @@ FIX grap going through boxes
 FIX stickybomb going through vents
 FIX slowmo: pushTimer
 FIX airbot pickup fall through vent covers?
-FIX hornet gets stuck
 FIX stickybomb stick to each other in midair
 FIX mech punch should break boxes
 FIX trigger release shoots graphook
@@ -50,19 +56,9 @@ FIX trigger release shoots graphook
 #### Janky
 - landing snaps. possible anim frame adjustment will fix
 - adjust jump anim frame. it pops at the jump arc apex
-- high offset off angled floor
-- FIX long slide clipping. collision should reduce velocity, not only position.
-+ mushy on lift. consider the velocity of the object being collided-with. [CarryObject]
-- jumping and sliding up and over a ledge only **sometimes** snaps to ground
-+ FIX: spline culling. Use line renderer instead.
+- VERIFY jumping and sliding up and over a ledge only **sometimes** snaps to ground
 mech scaling when flip... looks bad. no flipping.
 "danger ball and chain" needs destruction anims; explosions, and particles?
-
-
-#### Composite Sprite Problems
-+ composite sprite render layers. Create a layer for each composite, or how to keep entire composites from interlacing with one another? SOLUTION: Animate a *struct* int for each piece, and update the sortingOrder of the SpriteRenderers from LateUpdate().
-- pixel-perfect animations must be done in Unity for each piece. Snap to pixel density, use constant anim curves.
-- 2d skeleton rigs, avatars, and IK can not be used with composites. Skeletons use rotations, and these anims are not rotation-based.
 
 
 #### Easy / Cosmetic
@@ -74,6 +70,7 @@ mech scaling when flip... looks bad. no flipping.
 - door should indicate when it refuses to open because of team affiliation.
 
 #### Hornet
+FIX hornet gets stuck
 - hornet friendly fire
 - hornet avoid friendlies
 - hornet proximity raycast
@@ -85,12 +82,6 @@ mech scaling when flip... looks bad. no flipping.
 
 
 ### Linux Issues
-- mouse sensitivity is too high even on lowest setting (0.05)
-- scroll wheel sensitivity is too low
-- support Ctrl-Q to quit
-- no per-pixel lights (check OpenGL/Vulcan support)
-- control names are not converted in diagetics (but okay in menu)
-+ glitchy/wrong sprite shader for mech on linux. [SOLVED. This is because of texture compression settings on each individual texture.]
 
 
 ## Unity Bugs
