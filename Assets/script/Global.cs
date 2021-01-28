@@ -736,6 +736,7 @@ public class Global : MonoBehaviour
     if( Minimap.activeInHierarchy )
     {
       MinimapScroller.transform.position += (Vector3) (-Controls.MenuActions.Move.ReadValue<Vector2>() * mmScrollSpeed * Time.unscaledDeltaTime);
+      mmPlayer.anchoredPosition = 2 * MinimapCamera.worldToCameraMatrix.MultiplyPoint( PlayerController.pawn.transform.position );
     }
   }
 
@@ -940,7 +941,7 @@ public class Global : MonoBehaviour
     Controls.MenuActions.Disable();
     Controls.BipedActions.Enable();
     UIInputModule.enabled = false;
-    AssignCameraZone( cachedCameraZone );
+    AssignCameraZone( null );
     Cursor.lockState = CursorLockMode.Locked;
     Cursor.visible = false;
   }
@@ -950,6 +951,9 @@ public class Global : MonoBehaviour
     Minimap.SetActive( true );
     Controls.BipedActions.Disable();
     Controls.MenuActions.Enable();
+    
+    mmPlayer.anchoredPosition = 2 * MinimapCamera.worldToCameraMatrix.MultiplyPoint( PlayerController.pawn.transform.position );
+    MinimapScroller.transform.localPosition = -mmPlayer.anchoredPosition * MinimapScroller.transform.localScale.x;
   }
 
   public void HideMinimap()
@@ -961,17 +965,16 @@ public class Global : MonoBehaviour
 
   [SerializeField] Shader grey;
   [SerializeField] Shader grey2;
+  [SerializeField] RectTransform mmPlayer;
   
   public void MinimapRender( Vector2 position )
   {
     MinimapCamera.transform.position = position;
-    //bigsheet.SetInt( "_Minimap", 1 );
     Shader cached = bigsheetMaterial.shader;
     Shader cached2 = backgroundMaterial.shader;
     bigsheetMaterial.shader = grey;
     backgroundMaterial.shader = grey2;
     MinimapCamera.Render();
-    //bigsheet.SetInt( "_Minimap", 0 );
     bigsheetMaterial.shader = cached;
     backgroundMaterial.shader = cached2;
   }
