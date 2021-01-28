@@ -802,7 +802,7 @@ MonoBehaviour:
   snapNormal: {fileID: 24500006, guid: 1c39f8c58cb83400089739cd8e4d9c58, type: 2}
   snapMusicSilence: {fileID: 6922524139796702442, guid: 1c39f8c58cb83400089739cd8e4d9c58,
     type: 2}
-  MusicTransitionDuration: 1
+  MusicTransitionDuration: 3
   AudioFadeDuration: 0.1
   musicSource0: {fileID: 681935436}
   musicSource1: {fileID: 583537875}
@@ -7246,6 +7246,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -7261,6 +7266,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: -0
       objectReference: {fileID: 0}
@@ -7273,16 +7283,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4182039790881745492, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
         type: 3}

@@ -329,6 +329,8 @@ public class Global : MonoBehaviour
     HidePauseMenu();
     HideLoadingScreen();
     SpeechBubble.SetActive( false );
+    // musicSource1 is used as the loop source
+    activeMusicSource = musicSource1;
 
     if( Application.isEditor && !SimulatePlayer )
     {
@@ -1471,10 +1473,12 @@ public class Global : MonoBehaviour
   public void PlayMusic( AudioLoop audioLoop )
   {
     audioLoop.Play( musicSource0, musicSource1 );
+    activeMusicSource = musicSource1;
   }
 
   public void MusicTransition( AudioLoop loop )
   {
+    // This will fade out entirely before fading into the given intro loop
     Timer t = new Timer();
     t.Start( MusicTransitionDuration, delegate( Timer obj )
     {
@@ -1483,6 +1487,7 @@ public class Global : MonoBehaviour
     }, delegate
     {
       loop.Play( musicSource0, musicSource1 );
+      activeMusicSource = musicSource1;
       t.Start( MusicTransitionDuration, delegate( Timer obj )
       {
         musicSource0.volume = obj.ProgressNormalized;
@@ -1491,6 +1496,34 @@ public class Global : MonoBehaviour
     } );
   }
 
+  
+  public void CrossFadeTo( AudioLoop loop )
+  {
+    AudioSource otherSource;
+    if( activeMusicSource == musicSource0 )
+    {
+      activeMusicSource = musicSource1;
+      otherSource = musicSource0;
+    }
+    else
+    {
+      activeMusicSource = musicSource0;
+      otherSource = musicSource1;
+    }
+
+    activeMusicSource.clip = loop==null? null : loop.loop;
+    activeMusicSource.loop = true;
+    activeMusicSource.Play();
+
+    Timer t = new Timer();
+    t.unscaledTime = true;
+    t.Start( MusicTransitionDuration, delegate( Timer obj )
+    {
+      activeMusicSource.volume = obj.ProgressNormalized;
+      otherSource.volume = 1 - obj.ProgressNormalized;
+    },null );
+  }
+  
   /*
  public void CrossFadeToClip( AudioClip clip )
  {

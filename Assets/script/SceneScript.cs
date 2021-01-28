@@ -23,7 +23,7 @@ public class SceneScript : MonoBehaviour
       }
     }
     // CameraController auto-switch should make this unnecessary
-    /*Global.instance.AssignCameraZone( CameraZone );*/
+    //Global.instance.AssignCameraZone( CameraZone );
 
     if( music != null )
       Global.instance.PlayMusic( music );
