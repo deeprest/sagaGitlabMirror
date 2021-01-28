@@ -47,7 +47,7 @@ public class SceneScript : MonoBehaviour
 
   public void AssignCameraZone( CameraZone  zone )
   {
-    Global.instance.AssignCameraZone( zone );
+    Global.instance.OverrideCameraZone( zone );
   }
 
   /*Timer runTimer = new Timer();

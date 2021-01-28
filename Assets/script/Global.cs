@@ -134,7 +134,6 @@ public class Global : MonoBehaviour
   public PlayerController PlayerController;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
   NavMeshSurface[] meshSurfaces;
-  CameraZone cachedCameraZone;
 
   [Header( "UI" )]
   public GameObject UI;
@@ -929,8 +928,7 @@ public class Global : MonoBehaviour
     Controls.BipedActions.Disable();
     Controls.MenuActions.Enable();
     UIInputModule.enabled = true;
-    cachedCameraZone = CameraController.ActiveCameraZone;
-    AssignCameraZone( dui.CameraZone );
+    OverrideCameraZone( dui.CameraZone );
     Cursor.lockState = CursorLockMode.None;
     Cursor.visible = true;
   }
@@ -941,7 +939,7 @@ public class Global : MonoBehaviour
     Controls.MenuActions.Disable();
     Controls.BipedActions.Enable();
     UIInputModule.enabled = false;
-    AssignCameraZone( null );
+    OverrideCameraZone( null );
     Cursor.lockState = CursorLockMode.Locked;
     Cursor.visible = false;
   }
@@ -1150,9 +1148,9 @@ public class Global : MonoBehaviour
     SpeechAnimator.Play( "talk" );
   }
 
-  public void AssignCameraZone( CameraZone zone )
+  public void OverrideCameraZone( CameraZone zone )
   {
-    CameraController.ActiveCameraZone = zone;
+    CameraController.AssignOverrideCameraZone(zone);
   }
 
   void VerifyPersistentData()

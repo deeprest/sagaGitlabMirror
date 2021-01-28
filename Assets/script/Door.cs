@@ -88,15 +88,15 @@ public class Door : MonoBehaviour, ITrigger
             bool Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
             if( Entering )
             {
-              if( CameraIn != null ) Global.instance.AssignCameraZone( CameraIn );
-              else Global.instance.AssignCameraZone( null );
+              if( CameraIn != null ) Global.instance.OverrideCameraZone( CameraIn );
+              else Global.instance.OverrideCameraZone( null );
               if( Music != null )
                 Global.instance.MusicTransition( Music );
             }
             else
             {
-              if( CameraOut != null ) Global.instance.AssignCameraZone( CameraOut );
-              else Global.instance.AssignCameraZone( null );
+              if( CameraOut != null ) Global.instance.OverrideCameraZone( CameraOut );
+              else Global.instance.OverrideCameraZone( null );
               if( Music != null )
                 Global.instance.MusicTransition( sceneScript.music );
             }
@@ -122,7 +122,7 @@ public class Door : MonoBehaviour, ITrigger
           {
             if( CameraIn != null )
             {
-              Global.instance.AssignCameraZone( CameraIn );
+              Global.instance.OverrideCameraZone( CameraIn );
               runTimer.Start( runDuration, delegate
               {
                 if( right )
@@ -138,14 +138,14 @@ public class Door : MonoBehaviour, ITrigger
             {
               SceneScript sceneScript = FindObjectOfType<SceneScript>();
               if( sceneScript != null )
-                Global.instance.AssignCameraZone( null );
+                Global.instance.OverrideCameraZone( null );
             }
           }
           else
           {
             if( CameraOut != null )
             {
-              Global.instance.AssignCameraZone( CameraOut );
+              Global.instance.OverrideCameraZone( CameraOut );
               runTimer.Start( runDuration, delegate
               {
                 if( right )
@@ -161,7 +161,7 @@ public class Door : MonoBehaviour, ITrigger
             {
               SceneScript sceneScript = FindObjectOfType<SceneScript>();
               if( sceneScript != null )
-                Global.instance.AssignCameraZone( null );
+                Global.instance.OverrideCameraZone( null );
             }
           }
         }, null );
