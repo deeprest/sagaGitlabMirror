@@ -941,7 +941,7 @@ public class Global : MonoBehaviour
     Controls.MenuActions.Disable();
     Controls.BipedActions.Enable();
     UIInputModule.enabled = false;
-    AssignCameraZone( cachedCameraZone );
+    AssignCameraZone( null );
     Cursor.lockState = CursorLockMode.Locked;
     Cursor.visible = false;
   }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine.Profiling;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -105,6 +106,7 @@ public class SceneCity : SceneScript
 
   public GameObject spawnPointPrefab;
   public InputField inputSeed;
+  [SerializeField] BoxCollider2D safeZone;
 
   // marching square
   string StructurePath
@@ -194,7 +196,7 @@ public class SceneCity : SceneScript
     if( int.TryParse( input, out value ) )
       seed = value;
   }
-  
+
   public void Generate()
   {
     Profiler.BeginSample( "Level Generation" );
@@ -387,7 +389,16 @@ public class SceneCity : SceneScript
         }
     built.Clear();
   }
-
+  
+  public void DestroyEverythingOutsideSafeZone()
+  {
+    if( safeZone == null )
+      return;
+    GameObject[] gos = gameObject.scene.GetRootGameObjects();
+    for( int i = 0; i < gos.Length; i++ )
+      if( gos[i].transform.root != transform.root && !safeZone.bounds.Contains( gos[i].transform.position ) )
+        Destroy( gos[i] );
+  }
 
   public void InitializeStructure()
   {
