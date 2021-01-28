@@ -78,7 +78,7 @@ public class PlayerController : Controller
     //BA.Charge.started += ( obj ) => input.Charge = true;
     BA.Down.performed += ( obj ) => input.MoveDown = true;
     BA.Interact.performed += ( obj ) => { input.Interact = true; };
-    //BA.Aim.performed += ( obj ) => { aimDeltaSinceLastFrame += obj.ReadValue<Vector2>(); };
+    BA.Aim.performed += ( obj ) => { aimDeltaSinceLastFrame += obj.ReadValue<Vector2>(); };
   }
 
   // apply input to pawn
@@ -105,7 +105,7 @@ public class PlayerController : Controller
         }
         else
         {
-          aimDeltaSinceLastFrame = BA.Aim.ReadValue<Vector2>();
+          // aimDeltaSinceLastFrame = BA.Aim.ReadValue<Vector2>();
           aimPosition += aimDeltaSinceLastFrame * Global.instance.CursorSensitivity * Time.unscaledDeltaTime;
           aimDeltaSinceLastFrame = Vector2.zero;
           aimPosition = aimPosition.normalized * Mathf.Max( Mathf.Min( aimPosition.magnitude, Camera.main.orthographicSize * Camera.main.aspect * Global.instance.CursorOuter ), 0.01f );

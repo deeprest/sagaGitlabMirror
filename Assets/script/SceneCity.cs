@@ -363,13 +363,12 @@ public class SceneCity : SceneScript
     newLinks.AddRange( go.GetComponentsInChildren<NodeLink>() );
   }
 
-  void Destroy( Object obj )
+  void DestroyObject( Object obj )
   {
-    #if UNITY_EDITOR
-    DestroyImmediate( obj );
-    #else
-    Destroy( obj);
-    #endif
+    if( Application.isEditor && !Application.isPlaying )
+      DestroyImmediate( obj );
+    else
+      Destroy( obj );
   }
   
   public void DestroyAll()
@@ -377,7 +376,7 @@ public class SceneCity : SceneScript
     // node links
     debugSegments.Clear();
     for( int i = 0; i < gens.Count; i++ )
-      Destroy( gens[i] );
+      DestroyObject( gens[i] );
     gens.Clear();
 
     // marching square built
@@ -385,7 +384,7 @@ public class SceneCity : SceneScript
       if( built[pair.Key] != null && built[pair.Key].Count > 0 )
         for( int i = 0; i < built[pair.Key].Count; i++ )
         {
-          Destroy( built[pair.Key][i] );
+          DestroyObject( built[pair.Key][i] );
         }
     built.Clear();
   }
@@ -397,7 +396,7 @@ public class SceneCity : SceneScript
     GameObject[] gos = gameObject.scene.GetRootGameObjects();
     for( int i = 0; i < gos.Length; i++ )
       if( gos[i].transform.root != transform.root && !safeZone.bounds.Contains( gos[i].transform.position ) )
-        Destroy( gos[i] );
+        DestroyObject( gos[i] );
   }
 
   public void InitializeStructure()

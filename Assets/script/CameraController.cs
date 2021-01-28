@@ -26,7 +26,14 @@ public class CameraController : MonoBehaviour
   public float presnap;
   public float snapped;
   
-  public CameraZone ActiveCameraZone;
+  [SerializeField] CameraZone ActiveCameraZone;
+  bool CameraZoneOverride;
+
+  public void AssignOverrideCameraZone(CameraZone zone)
+  {
+    ActiveCameraZone = zone;
+    CameraZoneOverride = zone!=null;
+  }
 
   /*
   public void LerpTo( GameObject go )
@@ -91,7 +98,7 @@ public class CameraController : MonoBehaviour
       }
 
       // auto-switch to zone the player enters (respects the ignore flag on the zone)
-      if( ActiveCameraZone == null )
+      if( !CameraZoneOverride )
       {
         CameraZone zone = null;
         CameraZone.DoesOverlapAnyZone( LookTarget.pawn.transform.position, ref zone );
