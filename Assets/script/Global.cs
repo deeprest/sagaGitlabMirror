@@ -15,6 +15,7 @@ using Ionic.Zip;
 using UnityEngine.Profiling;
 
 using deeprest;
+using UnityEngine.Serialization;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -133,7 +134,6 @@ public class Global : MonoBehaviour
   public PlayerController PlayerController;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
   NavMeshSurface[] meshSurfaces;
-  CameraZone cachedCameraZone;
 
   [Header( "UI" )]
   public GameObject UI;
@@ -142,7 +142,7 @@ public class Global : MonoBehaviour
   [SerializeField] UIScreen SceneList;
   public GameObject SceneListElementTemplate;
   [SerializeField] GameObject HUD;
-  DiageticUI ActiveDiegetic;
+  DiegeticUI ActiveDiegetic;
 
   bool MenuShowing
   {
@@ -229,8 +229,10 @@ public class Global : MonoBehaviour
   [Header( "Minimap" )]
   [SerializeField] Camera MinimapCamera;
   [SerializeField] GameObject Minimap;
-  [SerializeField] float mmScrollSpeed = 10;
-  [SerializeField] float mmOrthoSize = 1;
+  [FormerlySerializedAs( "bigsheet" ),SerializeField] Material bigsheetMaterial;
+  [SerializeField] Material backgroundMaterial;
+  [SerializeField] GameObject MinimapScroller;
+  [SerializeField] float mmScrollSpeed = 800;
 
   // This will make sure there is always a GLOBAL object when playing a scene in the editor
   [RuntimeInitializeOnLoadMethod]
@@ -474,8 +476,8 @@ public class Global : MonoBehaviour
       {
         PlayerController.pawn.transform.position = FindRandomSpawnPosition();
         PlayerController.pawn.velocity = Vector2.zero;
-        if( sceneScript != null )
-          sceneScript.AssignCameraZone( sceneScript.CameraZone );
+        /*if( sceneScript != null )
+          sceneScript.AssignCameraZone( sceneScript.CameraZone );*/
       }
     };
 
@@ -514,10 +516,10 @@ public class Global : MonoBehaviour
     };
 
     // DEVELOPMENT
-    Controls.BipedActions.DEVZoom.started += ( obj ) => { zoomDelta += obj.ReadValue<float>(); };
-    //Controls.BipedActions.Minimap.performed += ( obj ) => { ToggleMinimap(); };
-    Controls.BipedActions.DEVBig.performed += context => ((PlayerBiped) PlayerController.pawn).ScaleChange( 2 );
-    Controls.BipedActions.DEVSmall.performed += context => ((PlayerBiped) PlayerController.pawn).ScaleChange( 0.5f );
+    // Controls.BipedActions.DEVZoom.started += ( obj ) => { zoomDelta += obj.ReadValue<float>(); };
+    Controls.GlobalActions.Minimap.performed += ( obj ) => { ToggleMinimap(); };
+    // Controls.BipedActions.DEVBig.performed += context => ((PlayerBiped) PlayerController.pawn).ScaleChange( 2 );
+    // Controls.BipedActions.DEVSmall.performed += context => ((PlayerBiped) PlayerController.pawn).ScaleChange( 0.5f );
 
     if( Application.isEditor )
     {
@@ -651,6 +653,8 @@ public class Global : MonoBehaviour
       foreach( var mesh in meshSurfaces )
         mesh.BuildNavMesh();
       Destroy( generatedMeshCollider );
+      
+      Global.instance.MinimapRender( meshSurfaces[0].center );
     }
     else
     {
@@ -680,10 +684,7 @@ public class Global : MonoBehaviour
 
     if( !Updating )
       return;
-
     
-    
-    //Profiler.BeginSample( "EntityUpdate" );
     for( int i = 0; i < Entity.Limit.All.Count; i++ )
       Entity.Limit.All[ i ].EntityUpdate();
 
@@ -694,7 +695,6 @@ public class Global : MonoBehaviour
     for( int i = 0; i < Controller.All.Count; i++ )
       if( Controller.All[i].pawn != null )
         Controller.All[i].pawn.EntityUpdate();
-    //Profiler.EndSample();
 
     if( loadingScene )
     {
@@ -732,11 +732,10 @@ public class Global : MonoBehaviour
     zoomDelta = 0;
     */
 
-    if( MinimapCamera.enabled )
+    if( Minimap.activeInHierarchy )
     {
-      if( Controls.MenuActions.Move.enabled )
-        MinimapCamera.transform.position += (Vector3) (Controls.MenuActions.Move.ReadValue<Vector2>() * mmScrollSpeed * Time.unscaledDeltaTime);
-      MinimapCamera.orthographicSize = mmOrthoSize;
+      MinimapScroller.transform.position += (Vector3) (-Controls.MenuActions.Move.ReadValue<Vector2>() * mmScrollSpeed * Time.unscaledDeltaTime);
+      mmPlayer.anchoredPosition = 2 * MinimapCamera.worldToCameraMatrix.MultiplyPoint( PlayerController.pawn.transform.position );
     }
   }
 
@@ -923,17 +922,15 @@ public class Global : MonoBehaviour
       ShowPauseMenu();
   }
 
-  public void DiegeticMenuOn( DiageticUI dui )
+  public void DiegeticMenuOn( DiegeticUI dui )
   {
     ActiveDiegetic = dui;
     Controls.BipedActions.Disable();
     Controls.MenuActions.Enable();
     UIInputModule.enabled = true;
-    cachedCameraZone = CameraController.ActiveCameraZone;
-    AssignCameraZone( dui.CameraZone );
-    UnityEngine.Cursor.lockState = CursorLockMode.None;
+    OverrideCameraZone( dui.CameraZone );
+    Cursor.lockState = CursorLockMode.None;
     Cursor.visible = true;
-    //Cursor.gameObject.SetActive( false );
   }
 
   public void DiegeticMenuOff()
@@ -942,27 +939,42 @@ public class Global : MonoBehaviour
     Controls.MenuActions.Disable();
     Controls.BipedActions.Enable();
     UIInputModule.enabled = false;
-    AssignCameraZone( cachedCameraZone );
-    UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+    OverrideCameraZone( null );
+    Cursor.lockState = CursorLockMode.Locked;
     Cursor.visible = false;
-    //Cursor.gameObject.SetActive( true );
   }
 
   public void ShowMinimap()
   {
     Minimap.SetActive( true );
-    MinimapCamera.enabled = true;
-    MinimapCamera.transform.position = CameraController.transform.position;
-    //Controls.MenuActions.Enable();
-    //Controls.BipedActions.Disable();
+    Controls.BipedActions.Disable();
+    Controls.MenuActions.Enable();
+    
+    mmPlayer.anchoredPosition = 2 * MinimapCamera.worldToCameraMatrix.MultiplyPoint( PlayerController.pawn.transform.position );
+    MinimapScroller.transform.localPosition = -mmPlayer.anchoredPosition * MinimapScroller.transform.localScale.x;
   }
 
   public void HideMinimap()
   {
     Minimap.SetActive( false );
-    MinimapCamera.enabled = false;
-    //Controls.MenuActions.Disable();
-    //Controls.BipedActions.Enable();
+    Controls.BipedActions.Enable();
+    Controls.MenuActions.Disable();
+  }
+
+  [SerializeField] Shader grey;
+  [SerializeField] Shader grey2;
+  [SerializeField] RectTransform mmPlayer;
+  
+  public void MinimapRender( Vector2 position )
+  {
+    MinimapCamera.transform.position = position;
+    Shader cached = bigsheetMaterial.shader;
+    Shader cached2 = backgroundMaterial.shader;
+    bigsheetMaterial.shader = grey;
+    backgroundMaterial.shader = grey2;
+    MinimapCamera.Render();
+    bigsheetMaterial.shader = cached;
+    backgroundMaterial.shader = cached2;
   }
 
   public void ToggleMinimap()
@@ -1136,9 +1148,9 @@ public class Global : MonoBehaviour
     SpeechAnimator.Play( "talk" );
   }
 
-  public void AssignCameraZone( CameraZone zone )
+  public void OverrideCameraZone( CameraZone zone )
   {
-    CameraController.ActiveCameraZone = zone;
+    CameraController.AssignOverrideCameraZone(zone);
   }
 
   void VerifyPersistentData()

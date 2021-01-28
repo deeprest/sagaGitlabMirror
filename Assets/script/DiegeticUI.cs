@@ -1,12 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 
-
-public class DiageticUI : WorldSelectable
+public class DiegeticUI : WorldSelectable
 {
   [SerializeField] GraphicRaycaster raycaster;
   [SerializeField] Animator animator;

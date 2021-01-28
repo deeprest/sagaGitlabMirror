@@ -26,8 +26,8 @@ public class PlayerBiped : Pawn
   const float downslopefudge = 0.2f;
   //private const float corner = 0.707106769f;
   const float collisionCornerTop = 0f;
-  const float collisionCornerBottom = 0.7f;
-  const float collisionCornerSide = 0.8f;
+  public float collisionCornerBottom = 0.658504546f;
+  public float collisionCornerSide = 0.752576649f;
   
   Vector2 shoot;
 
@@ -106,9 +106,7 @@ public class PlayerBiped : Pawn
   public float wallJumpPushDuration = 0.1f;
   public float wallSlideFactor = 0.5f;
   public float wallSlideRotateSpeed = 1;
-  [FormerlySerializedAs( "wallSlideDownSpeedSide" )]
   public float wallSlideDownX = 1;
-  [FormerlySerializedAs( "wallSlideDownSpeedDown" )]
   public float wallSlideDownY = 1;
   public float wallSlideHardAngleThreshold = 25;
   public float landDuration = 0.1f;
@@ -169,6 +167,7 @@ public class PlayerBiped : Pawn
   public AudioClip soundJump;
   public AudioClip soundDash;
   public AudioClip soundDamage;
+  public AudioClip soundPickup;
   public AudioClip soundDenied;
   public AudioClip soundWeaponFail;
 
@@ -237,7 +236,6 @@ public class PlayerBiped : Pawn
   {
     // settings are read before player is created, so set player settings here.
     speedFactorNormalized = Global.instance.FloatSetting["PlayerSpeedFactor"].Value;
-    //CameraController.CursorInfluence = Global.instance.BoolSetting["CursorInfluence"].Value;
   }
 
   public override void PreSceneTransition()
@@ -383,6 +381,22 @@ public class PlayerBiped : Pawn
           dam.TakeDamage( dmg );
         }
       }
+      Pickup pickup = hit.transform.GetComponent<Pickup>();
+      if( pickup != null && pickup.SelectOnContact )
+      {
+        pickup.Select();
+        if( pickup.unique != UniquePickupType.None )
+        {
+          audio.PlayOneShot( soundPickup );
+          switch( pickup.unique )
+          {
+            case UniquePickupType.SpeedFactorNormalized:
+              speedFactorNormalized += pickup.uniqueFloat0;
+              break;
+          }
+          Destroy( pickup.gameObject );
+        }
+      }
     }
 
     pups.Clear();
@@ -401,7 +415,7 @@ public class PlayerBiped : Pawn
         }*/
       }
     }
-    //WorldSelectable closest = (WorldSelectable)FindClosest( transform.position, pups.ToArray() );
+
     IWorldSelectable closest = (IWorldSelectable) Util.FindSmallestAngle( transform.position, shoot, pups.ToArray() );
     if( closest == null )
     {
@@ -409,7 +423,7 @@ public class PlayerBiped : Pawn
       {
         closestISelect.Unhighlight();
         closestISelect = null;
-        InteractIndicator.SetActive( false );
+        /*InteractIndicator.SetActive( false );*/
       }
       if( WorldSelection != null )
       {
@@ -422,12 +436,13 @@ public class PlayerBiped : Pawn
       if( closestISelect != null )
       {
         closestISelect.Unhighlight();
-        InteractIndicator.SetActive( false );
+        /*InteractIndicator.SetActive( false );*/
       }
       closestISelect = closest;
       closestISelect.Highlight();
-      InteractIndicator.SetActive( true );
-      InteractIndicator.transform.position = closestISelect.GetPosition();
+      // Not everything is indicated the same way
+      /*InteractIndicator.SetActive( true );
+      InteractIndicator.transform.position = closestISelect.GetPosition();*/
     }
     else
     {
@@ -783,7 +798,6 @@ public class PlayerBiped : Pawn
       landTimer.Start( landDuration, null, delegate { landing = false; } );
     }
     
-    // must be after collision
     if( wallsliding )
     {
       float angle = Vector2.Angle( previousWallSlideTargetNormal, wallSlideTargetNormal );
@@ -796,7 +810,7 @@ public class PlayerBiped : Pawn
     previousWallSlideTargetNormal = wallSlideTargetNormal; 
     wallsliding = false;
 
-    // must have input (or push) to move horizontally, so allow no persistent horizontal velocity (without push)
+    // must have input (or inertia) to move horizontally, so allow no persistent horizontal velocity (without inertia)
     if( grapPulling )
       velocity = Vector3.zero;
     else if( !(input.MoveRight || input.MoveLeft) )
@@ -1052,7 +1066,7 @@ public class PlayerBiped : Pawn
     
     transform.position = pos;
 
-    // carry momentum when jumping from moving platforms
+    // preserve inertia when jumping from moving platforms
     if( previousCarry != null && carryCharacter == null )
       inertia = previousCarry.Velocity;
 

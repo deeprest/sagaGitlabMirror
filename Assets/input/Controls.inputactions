@@ -78,10 +78,10 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Quit",
+                    "name": "Minimap",
                     "type": "Button",
-                    "id": "6db28ffd-3f92-4618-a63f-309690f24c81",
-                    "expectedControlType": "Button",
+                    "id": "342939eb-b668-4681-9361-6f8fc5c9ac1a",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
                 }
@@ -297,37 +297,15 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Button With One Modifier",
-                    "id": "9bab7c38-78e7-4113-b3ad-46e297791436",
-                    "path": "ButtonWithOneModifier",
+                    "name": "",
+                    "id": "d9f5a648-b68f-4c16-ae88-a27713822cf8",
+                    "path": "<Keyboard>/m",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Quit",
-                    "isComposite": true,
+                    "groups": "Mouse+Keyboard",
+                    "action": "Minimap",
+                    "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "7befbd56-aa26-4535-a5df-37824afeb2de",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse+Keyboard",
-                    "action": "Quit",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "button",
-                    "id": "b9208a1f-2fde-48ed-9713-d4d9d2f12197",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse+Keyboard",
-                    "action": "Quit",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 }
             ]
         },
@@ -662,38 +640,6 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
-                },
-                {
-                    "name": "Minimap",
-                    "type": "Button",
-                    "id": "0f90ef74-ed44-45eb-9e8f-c77310b2ce21",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "DEV-Zoom",
-                    "type": "Value",
-                    "id": "daad5be2-bb09-4201-939d-730f35d6594c",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "DEV-Big",
-                    "type": "Button",
-                    "id": "5dbb8ef0-995e-4241-8ff7-36c21aff5edd",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "DEV-Small",
-                    "type": "Button",
-                    "id": "9a62a876-af59-45a1-81a3-fd4085bd20af",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -963,17 +909,6 @@
                 },
                 {
                     "name": "",
-                    "id": "f10ebd40-e9a9-4762-a6d2-5059ab26337f",
-                    "path": "<Keyboard>/m",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse+Keyboard",
-                    "action": "Minimap",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "4c5cd233-8222-45f3-8779-3e3705c9c346",
                     "path": "<Keyboard>/f",
                     "interactions": "",
@@ -1103,50 +1038,6 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "0696d703-2cb9-420e-bf32-8409870ca4d2",
-                    "path": "<Mouse>/scroll/y",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse+Keyboard",
-                    "action": "DEV-Zoom",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "bd7888e5-dec7-4c73-8ea1-e6a6b38577b2",
-                    "path": "<Gamepad>/leftStick/y",
-                    "interactions": "",
-                    "processors": "AxisDeadzone(min=0.3,max=1)",
-                    "groups": "Gamepad",
-                    "action": "DEV-Zoom",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "630865f1-1736-4b93-b151-8d5b50222055",
-                    "path": "<Keyboard>/n",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse+Keyboard",
-                    "action": "DEV-Big",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "5f5b1b16-d1ed-4049-b4e3-9541d8042e51",
-                    "path": "<Keyboard>/m",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse+Keyboard",
-                    "action": "DEV-Small",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         }

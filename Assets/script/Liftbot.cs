@@ -3,6 +3,7 @@
 #if UNITY_EDITOR
 using UnityEditor;
 [CustomEditor( typeof( Liftbot ) )]
+[CanEditMultipleObjects]
 public class LiftbotEdtitor : Editor
 {
   public override void OnInspectorGUI()
@@ -25,10 +26,11 @@ public class LiftbotEdtitor : Editor
         Vector2 segment = points[next] - points[i];
         length += segment.magnitude;
       }
+
+      EditorGUILayout.LabelField( "path length", length.ToString() );
+      float duration = (length / bot.flySpeed) + (bot.pingpong ? bot.path.Length * 2 - 2 : bot.path.Length) * bot.waitDuration;
+      EditorGUILayout.LabelField( "return time", duration.ToString() );
     }
-    EditorGUILayout.LabelField( "path length", length.ToString() );
-    float duration = (length / bot.flySpeed) + (bot.pingpong ? bot.path.Length * 2 - 2 : bot.path.Length) * bot.waitDuration;
-    EditorGUILayout.LabelField( "return time", duration.ToString() );
   }
 
   void OnSceneGUI()
@@ -55,19 +57,18 @@ public class LiftbotEdtitor : Editor
 
 public class Liftbot : Entity, IWorldSelectable
 {
+  public bool UseWaitDuration = true;
+  public bool IsTriggeredByPlayer;
   public float flySpeed = 2;
   const float slowSpeed = 200;
   public float waitDuration = 1;
   const float closeEnough = 0.25f;
-  //protected float closeEnough { get { return flySpeed * Application.targetFrameRate * Time.timeScale; } }
   int pathIndex = 0;
   public Vector2 origin;
   public Vector2[] path;
   Timer timeout = new Timer();
   public bool pingpong;
   int indexIncrement = 1;
-  public bool UseWaitDuration = true;
-  public bool IsTriggeredByPlayer;
 
   protected override void Start()
   {
@@ -95,7 +96,7 @@ public class Liftbot : Entity, IWorldSelectable
     if( pingpong && (next >= path.Length || next < 0) )
       indexIncrement = -indexIncrement;
     pathIndex = (pathIndex + indexIncrement) % path.Length;
-    //if( flySpeed > 0 )
+    // Might need a timeout if the liftbot collides with anything.
     //  timeout.Start( DistanceToWaypoint() / flySpeed, null, NextWaypoint );
   }
   
