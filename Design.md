@@ -2,69 +2,47 @@
 
 # DESIGN pillars (from gdu.io)
 1. Mantra:  "You are a robotic ninja, fighting large robots and pirating their parts."
-1. Design pillars, describing *feel* (three phrases):  Nimbly pimbly. Upgrades! Irreverent Distractions.
-2. Summary. Destroy bad robots and use their parts to improve yourself to save the city!
-3. Features: aiming, /*modify oneself with exchangeable parts,*/ generated city
-4. Target platform: MacOS, Linux, etc
-5. Target Audience: Any fans of MMX that want to see evolved gameplay.
+1. Design pillars, describing *feel* (three phrases):  Nimbly pimbly. Upgrade! Irreverent Distractions.
+2. Summary. Destroy bad robots and use their parts to improve yourself to save the city.
+3. Features: aiming, generated city
+4. Target platforms: MacOS, Linux, etc
+5. Target Audience: Any fans of MMX that want to see the gameplay evolve.
 6. Game Details (see below)
 7. Interface, Controls: m+k, gamepads
 8. Artstyle: cyberpunk pixelart hq3x. Composite sprites with lighting, normal+emissive maps.
 9. Sound / Music: rock soundtrack + instrument foley
-10. Development plan.....
+10. [Development plan]
 
 
 # Project Goals
 
-## accessibly
+## Accessibility
 - Must run smoothly on lower-spec machines [define min spec]
 - Single player. No internet connection required to play.
 - Control Rebinding
-## is not commercialized
+
+## Is not commercialized
 - no ads. You pay with your soul. (fake ads?)
 - no microtransactions.
 - no in-game currency to compulsively accumulate. (or make it useless)
-## does not use addiction mechanics
+
+## Does not use addiction mechanics
 - no achievements to leave you feeling underachieved.
 - no trophies. your ego is big enough already.
-## not too complex. you have a life.
+
+## Not too complex. you have a life.
 - no tedious narrative to ignore (dialogue and presentation, but no narrative)
 - no complicated technology/skill tree
 
+
 # Influences
-- dash, walljump, charged shot. Mega Man X (1993)
-- open map / explore. Super Metroid (1994)
-- cursor aiming any direction while running. Abuse (1995?)
-- wall cling from Ninja Gaiden?;
-- Contra style powerups?
-run
-jump (with air control)
-aim
-duck?
-dash
-walljump
-wallslide
-
-
-
-
-
-
-
-
-
-
-# Mechanics
-movement
-aim / look
-weapon use
-no death: transform from biped to tentacle bot (two forms: biped and tentacle bot)
+Mega Man X (1993) dash, walljump, wallside, charged shot.
+Super Metroid (1994) open map / explore.
+Abuse (1995?) cursor aiming any direction while running.
+wall cling from Ninja Gaiden?;
+Contra style powerups?
 
 ---
-
-
-
-
 
 ## Major changes to the Mega Man X formula
 1. Player can aim in any direction instead of only shooting forward.
@@ -101,8 +79,7 @@ bosses
 
 # Cycles
 - combat cycle. aware of enemy, visual contact, observe, attack, evade => death or success
-- death cycle. transformation: ninja => spider
-
+- death cycle. transformation; respawn; instant replay.
 - stage cycle. HQ to generated level. boss, weapon.
 - system upgrades: sensory (blobs on perif), targeting (projectile path, highlight enemies), weakness scan (show weak spots on large enemies)
 
@@ -110,9 +87,9 @@ bosses
 ## player perspective (what does the player need to remember)
 1. primary weapon. xbuster, grenade, flame
 1. primary weapon can charge. charged blast
-1. secondary weapon. graphook, shield, slowmo
+1. secondary "ability". graphook, shield, slowmo, airbot propeller
 1. ? Weapon limit. infinite, multiple, single(Contra).
-1. ? maybe the current pickup modifies current weapon?
+1. ? maybe the current ability modifies current weapon?
 1. ? Abilities: persistent, temporary, limited. Ex: persistent shields, temporary powerup, limited ammo.
 
 
@@ -132,7 +109,11 @@ bosses
 - Instant Replay: Playback system, use for death cycle:  go back in time to last grace period, play a couple seconds, and have a countdown, then let the player resume where they were at that point. If they die within 3 seconds, rewind even further to grace period before that.
 5. Tiny
 
-## design graveyard
+
+Use abilities gained from defeating enemies in the stage to defeat the boss.
+Can only use one ability per each MOUNT point. Abilities persist as long as they are installed. Replacing an ability drops it on the ground.
+
+# design graveyard
 #### spiderbot
 collect parts: legs, arms, head
 biped body assembly. Get to safety to rebuild?

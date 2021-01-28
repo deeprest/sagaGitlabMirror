@@ -5066,6 +5066,8 @@ MonoBehaviour:
   Scale: 1
   headbox: {x: 0.01, y: 0.1}
   headboxy: 0
+  collisionCornerBottom: 0.65850455
+  collisionCornerSide: 0.75257665
   facingRight: 0
   jumping: 0
   walljumping: 0
@@ -5163,8 +5165,9 @@ MonoBehaviour:
   soundJump: {fileID: 8300000, guid: 3634bba7cfee0409cb0ba088753bc669, type: 3}
   soundDash: {fileID: 8300000, guid: fa292f5f0979c4ce49e47c2a103a585b, type: 3}
   soundDamage: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
+  soundPickup: {fileID: 8300000, guid: b92e60c4c52ca434f8dc5ba7bcd588cc, type: 3}
   soundDenied: {fileID: 8300000, guid: 33fa2607814e34283a6a7e5d17964fab, type: 3}
-  soundWeaponFail: {fileID: 0}
+  soundWeaponFail: {fileID: 8300000, guid: 33fa2607814e34283a6a7e5d17964fab, type: 3}
   damageDuration: 0.5
   damagePulseColor: {r: 1, g: 1, b: 1, a: 1}
   damagePulseInterval: 0.0167

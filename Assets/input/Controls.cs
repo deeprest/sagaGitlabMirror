@@ -89,6 +89,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Minimap"",
+                    ""type"": ""Button"",
+                    ""id"": ""342939eb-b668-4681-9361-6f8fc5c9ac1a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -298,6 +306,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Mouse+Keyboard"",
                     ""action"": ""Dev-Slowmo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d9f5a648-b68f-4c16-ae88-a27713822cf8"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard"",
+                    ""action"": ""Minimap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -634,38 +653,6 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
-                },
-                {
-                    ""name"": ""Minimap"",
-                    ""type"": ""Button"",
-                    ""id"": ""0f90ef74-ed44-45eb-9e8f-c77310b2ce21"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""DEV-Zoom"",
-                    ""type"": ""Value"",
-                    ""id"": ""daad5be2-bb09-4201-939d-730f35d6594c"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""DEV-Big"",
-                    ""type"": ""Button"",
-                    ""id"": ""5dbb8ef0-995e-4241-8ff7-36c21aff5edd"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""DEV-Small"",
-                    ""type"": ""Button"",
-                    ""id"": ""9a62a876-af59-45a1-81a3-fd4085bd20af"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -935,17 +922,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""f10ebd40-e9a9-4762-a6d2-5059ab26337f"",
-                    ""path"": ""<Keyboard>/m"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse+Keyboard"",
-                    ""action"": ""Minimap"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""4c5cd233-8222-45f3-8779-3e3705c9c346"",
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
@@ -1075,50 +1051,6 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0696d703-2cb9-420e-bf32-8409870ca4d2"",
-                    ""path"": ""<Mouse>/scroll/y"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse+Keyboard"",
-                    ""action"": ""DEV-Zoom"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""bd7888e5-dec7-4c73-8ea1-e6a6b38577b2"",
-                    ""path"": ""<Gamepad>/leftStick/y"",
-                    ""interactions"": """",
-                    ""processors"": ""AxisDeadzone(min=0.3,max=1)"",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""DEV-Zoom"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""630865f1-1736-4b93-b151-8d5b50222055"",
-                    ""path"": ""<Keyboard>/n"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse+Keyboard"",
-                    ""action"": ""DEV-Big"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""5f5b1b16-d1ed-4049-b4e3-9541d8042e51"",
-                    ""path"": ""<Keyboard>/m"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse+Keyboard"",
-                    ""action"": ""DEV-Small"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1169,6 +1101,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_GlobalActions_RecordToggle = m_GlobalActions.FindAction("RecordToggle", throwIfNotFound: true);
         m_GlobalActions_RecordPlayback = m_GlobalActions.FindAction("RecordPlayback", throwIfNotFound: true);
         m_GlobalActions_DevSlowmo = m_GlobalActions.FindAction("Dev-Slowmo", throwIfNotFound: true);
+        m_GlobalActions_Minimap = m_GlobalActions.FindAction("Minimap", throwIfNotFound: true);
         // MenuActions
         m_MenuActions = asset.FindActionMap("MenuActions", throwIfNotFound: true);
         m_MenuActions_Move = m_MenuActions.FindAction("Move", throwIfNotFound: true);
@@ -1191,10 +1124,6 @@ public class @Controls : IInputActionCollection, IDisposable
         m_BipedActions_NextAbility = m_BipedActions.FindAction("NextAbility", throwIfNotFound: true);
         m_BipedActions_Charge = m_BipedActions.FindAction("Charge", throwIfNotFound: true);
         m_BipedActions_Down = m_BipedActions.FindAction("Down", throwIfNotFound: true);
-        m_BipedActions_Minimap = m_BipedActions.FindAction("Minimap", throwIfNotFound: true);
-        m_BipedActions_DEVZoom = m_BipedActions.FindAction("DEV-Zoom", throwIfNotFound: true);
-        m_BipedActions_DEVBig = m_BipedActions.FindAction("DEV-Big", throwIfNotFound: true);
-        m_BipedActions_DEVSmall = m_BipedActions.FindAction("DEV-Small", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1253,6 +1182,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_GlobalActions_RecordToggle;
     private readonly InputAction m_GlobalActions_RecordPlayback;
     private readonly InputAction m_GlobalActions_DevSlowmo;
+    private readonly InputAction m_GlobalActions_Minimap;
     public struct GlobalActionsActions
     {
         private @Controls m_Wrapper;
@@ -1266,6 +1196,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @RecordToggle => m_Wrapper.m_GlobalActions_RecordToggle;
         public InputAction @RecordPlayback => m_Wrapper.m_GlobalActions_RecordPlayback;
         public InputAction @DevSlowmo => m_Wrapper.m_GlobalActions_DevSlowmo;
+        public InputAction @Minimap => m_Wrapper.m_GlobalActions_Minimap;
         public InputActionMap Get() { return m_Wrapper.m_GlobalActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1302,6 +1233,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @DevSlowmo.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDevSlowmo;
                 @DevSlowmo.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDevSlowmo;
                 @DevSlowmo.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDevSlowmo;
+                @Minimap.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMinimap;
+                @Minimap.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMinimap;
+                @Minimap.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMinimap;
             }
             m_Wrapper.m_GlobalActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -1333,6 +1267,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @DevSlowmo.started += instance.OnDevSlowmo;
                 @DevSlowmo.performed += instance.OnDevSlowmo;
                 @DevSlowmo.canceled += instance.OnDevSlowmo;
+                @Minimap.started += instance.OnMinimap;
+                @Minimap.performed += instance.OnMinimap;
+                @Minimap.canceled += instance.OnMinimap;
             }
         }
     }
@@ -1419,10 +1356,6 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_BipedActions_NextAbility;
     private readonly InputAction m_BipedActions_Charge;
     private readonly InputAction m_BipedActions_Down;
-    private readonly InputAction m_BipedActions_Minimap;
-    private readonly InputAction m_BipedActions_DEVZoom;
-    private readonly InputAction m_BipedActions_DEVBig;
-    private readonly InputAction m_BipedActions_DEVSmall;
     public struct BipedActionsActions
     {
         private @Controls m_Wrapper;
@@ -1440,10 +1373,6 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @NextAbility => m_Wrapper.m_BipedActions_NextAbility;
         public InputAction @Charge => m_Wrapper.m_BipedActions_Charge;
         public InputAction @Down => m_Wrapper.m_BipedActions_Down;
-        public InputAction @Minimap => m_Wrapper.m_BipedActions_Minimap;
-        public InputAction @DEVZoom => m_Wrapper.m_BipedActions_DEVZoom;
-        public InputAction @DEVBig => m_Wrapper.m_BipedActions_DEVBig;
-        public InputAction @DEVSmall => m_Wrapper.m_BipedActions_DEVSmall;
         public InputActionMap Get() { return m_Wrapper.m_BipedActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1492,18 +1421,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Down.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDown;
                 @Down.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDown;
                 @Down.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDown;
-                @Minimap.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMinimap;
-                @Minimap.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMinimap;
-                @Minimap.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnMinimap;
-                @DEVZoom.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDEVZoom;
-                @DEVZoom.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDEVZoom;
-                @DEVZoom.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDEVZoom;
-                @DEVBig.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDEVBig;
-                @DEVBig.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDEVBig;
-                @DEVBig.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDEVBig;
-                @DEVSmall.started -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDEVSmall;
-                @DEVSmall.performed -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDEVSmall;
-                @DEVSmall.canceled -= m_Wrapper.m_BipedActionsActionsCallbackInterface.OnDEVSmall;
             }
             m_Wrapper.m_BipedActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -1547,18 +1464,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Down.started += instance.OnDown;
                 @Down.performed += instance.OnDown;
                 @Down.canceled += instance.OnDown;
-                @Minimap.started += instance.OnMinimap;
-                @Minimap.performed += instance.OnMinimap;
-                @Minimap.canceled += instance.OnMinimap;
-                @DEVZoom.started += instance.OnDEVZoom;
-                @DEVZoom.performed += instance.OnDEVZoom;
-                @DEVZoom.canceled += instance.OnDEVZoom;
-                @DEVBig.started += instance.OnDEVBig;
-                @DEVBig.performed += instance.OnDEVBig;
-                @DEVBig.canceled += instance.OnDEVBig;
-                @DEVSmall.started += instance.OnDEVSmall;
-                @DEVSmall.performed += instance.OnDEVSmall;
-                @DEVSmall.canceled += instance.OnDEVSmall;
             }
         }
     }
@@ -1592,6 +1497,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnRecordToggle(InputAction.CallbackContext context);
         void OnRecordPlayback(InputAction.CallbackContext context);
         void OnDevSlowmo(InputAction.CallbackContext context);
+        void OnMinimap(InputAction.CallbackContext context);
     }
     public interface IMenuActionsActions
     {
@@ -1616,9 +1522,5 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnNextAbility(InputAction.CallbackContext context);
         void OnCharge(InputAction.CallbackContext context);
         void OnDown(InputAction.CallbackContext context);
-        void OnMinimap(InputAction.CallbackContext context);
-        void OnDEVZoom(InputAction.CallbackContext context);
-        void OnDEVBig(InputAction.CallbackContext context);
-        void OnDEVSmall(InputAction.CallbackContext context);
     }
 }

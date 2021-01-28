@@ -8,7 +8,6 @@ public class CameraController : MonoBehaviour
   public LerpToTarget lerp;
   public bool UseVerticalRange = true;
   public bool CursorInfluence;
-  //public bool CursorInfluence = false;
   public float cursorAlpha = 0.5f;
   public float lerpAlpha = 50;
   public float SmoothSpeed = 1;
@@ -26,8 +25,15 @@ public class CameraController : MonoBehaviour
   public float pixelSnap;
   public float presnap;
   public float snapped;
+  
+  [SerializeField] CameraZone ActiveCameraZone;
+  bool CameraZoneOverride;
 
-  public CameraZone ActiveCameraZone;
+  public void AssignOverrideCameraZone(CameraZone zone)
+  {
+    ActiveCameraZone = zone;
+    CameraZoneOverride = zone!=null;
+  }
 
   /*
   public void LerpTo( GameObject go )
@@ -71,8 +77,7 @@ public class CameraController : MonoBehaviour
     if( !lerp.enabled && LookTarget != null && LookTarget.pawn != null )
     {
       Vector3 lookTarget = LookTarget.pawn.transform.position;
-
-      PlayerController pc = LookTarget as PlayerController;
+      
       if( CursorInfluence )
       {
         lookTarget = Vector3.Lerp( LookTarget.pawn.transform.position, LookTarget.pawn.CursorWorldPosition, cursorAlpha );
@@ -90,6 +95,14 @@ public class CameraController : MonoBehaviour
       else
       {
         pos.y = lookTarget.y;
+      }
+
+      // auto-switch to zone the player enters (respects the ignore flag on the zone)
+      if( !CameraZoneOverride )
+      {
+        CameraZone zone = null;
+        CameraZone.DoesOverlapAnyZone( LookTarget.pawn.transform.position, ref zone );
+        ActiveCameraZone = zone;
       }
 
       if( ActiveCameraZone != null )

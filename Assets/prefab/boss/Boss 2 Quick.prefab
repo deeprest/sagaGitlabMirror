@@ -679,7 +679,8 @@ MonoBehaviour:
   IsStatic: 0
   BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
-  pushVelocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
+  overrideVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 0.05
   raylength: 0.01
