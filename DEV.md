@@ -11,12 +11,11 @@
 
 # New Things
 NEW START A DEVLOG ON ITCH.
-NEW music selection on pause menu
+NEW airbot propellar ability. propellar on back? dash in air to use prop
 NEW health pickups dropped by enemies
+NEW music selection on pause menu
 NEW cheats menu
 NEW damage when crushed by boxes
-NEW airbot propellar ability
-NEW propellar on back? dash in air to use prop
 NEW shield on back? press down to use shield?
 NEW stickybomb exploding interaction with shield:
   1) do raycast to each IDamage within range
@@ -25,17 +24,15 @@ NEW stickybomb exploding interaction with shield:
   4) if the raycast hits an IDamage collider, proceed
 NEW hide arm while not shooting
 NEW align shot with surface when aiming into floor/wall
-NEW Big wrecking ball robot.
-NEW Agile melee ninja.
+NEW Big wrecking ball bot.
+NEW Agile boss bot.
 CODE remove global references to CurrentPlayer where possible
-CODE cursorOuter is different based on control device
+CODE change cursorOuter based on control device
 CODE Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
-VERIFY confirm that Teams are set for all characters.
+
 
 # Issues
-
-- camera zone soft lock when using door on dr cain chamber
-- is background a no-show in enemy_lineup?
+VERIFY confirm that Teams are set for all characters.
 
 ### Needs Fix
 FIX wheelbot jitter
@@ -58,8 +55,6 @@ FIX trigger release shoots graphook
 - adjust jump anim frame. it pops at the jump arc apex
 - VERIFY jumping and sliding up and over a ledge only **sometimes** snaps to ground
 mech scaling when flip... looks bad. no flipping.
-"danger ball and chain" needs destruction anims; explosions, and particles?
-
 
 #### Easy / Cosmetic
 - city camera bounds
@@ -77,8 +72,8 @@ FIX hornet gets stuck
 - hornet particles should not rotate, and should disappear
 
 #### Minimap
-- minimap. Needs shader/coloring. Should follow player position, not camera
-- minimap render static once. render only characters on second render texture
+NEW Minimap shows static parts of environment.
+NEW Minimap renders once. Player position is shown with an icon.
 
 
 ### Linux Issues

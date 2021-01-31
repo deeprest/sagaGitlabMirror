@@ -16,33 +16,31 @@
 
 # Project Goals
 
-## Accessibility
-- Must run smoothly on lower-spec machines [define min spec]
-- Single player. No internet connection required to play.
-- Control Rebinding
+**Accessibility**
+Must run smoothly on lower-spec machines [define min spec]
+Single player. No internet connection required to play.
+Control Rebinding
 
-## Is not commercialized
-- no ads. You pay with your soul. (fake ads?)
-- no microtransactions.
-- no in-game currency to compulsively accumulate. (or make it useless)
+**Is not commercialized**
+no ads. You pay with your soul. (fake ads?)
+no microtransactions.
+no in-game currency to compulsively accumulate. (or make it useless)
 
-## Does not use addiction mechanics
-- no achievements to leave you feeling underachieved.
-- no trophies. your ego is big enough already.
+**Does not use addiction mechanics**
+no achievements to leave you feeling underachieved.
+no trophies. your ego is big enough already.
 
-## Not too complex. you have a life.
-- no tedious narrative to ignore (dialogue and presentation, but no narrative)
-- no complicated technology/skill tree
-
+**Not too complex. you have a life**
+no tedious narrative to ignore (dialogue and presentation, but no narrative)
+no complicated technology/skill tree
 
 # Influences
-Mega Man X (1993) dash, walljump, wallside, charged shot.
-Super Metroid (1994) open map / explore.
-Abuse (1995?) cursor aiming any direction while running.
-wall cling from Ninja Gaiden?;
-Contra style powerups?
+* Mega Man X (1993) dash, walljump, wallside, charged shot.
+* Super Metroid (1994) open map / explore.
+* Abuse (1995) cursor aiming any direction while running.
+* *wall cling from Ninja Gaiden?*
+* *Contra style powerups?*
 
----
 
 ## Major changes to the Mega Man X formula
 1. Player can aim in any direction instead of only shooting forward.
@@ -72,16 +70,16 @@ speed upgrades
 bosses
 
 ## Additions
-1. lighting, normal mapped sprites, emissive
-1. AI, navigation mesh
-1. level generation
+lighting, normal mapped sprites, emissive
+AI, navigation mesh
+level generation
 
 
 # Cycles
-- combat cycle. aware of enemy, visual contact, observe, attack, evade => death or success
-- death cycle. transformation; respawn; instant replay.
-- stage cycle. HQ to generated level. boss, weapon.
-- system upgrades: sensory (blobs on perif), targeting (projectile path, highlight enemies), weakness scan (show weak spots on large enemies)
+combat cycle. aware of enemy, visual contact, observe, attack, evade => death or success
+death cycle. transformation; respawn; instant replay.
+stage cycle. HQ to generated level. boss, weapon.
+system upgrades: sensory (blobs on perif), targeting (projectile path, highlight enemies), weakness scan (show weak spots on large enemies)
 
 
 ## player perspective (what does the player need to remember)
@@ -94,11 +92,11 @@ bosses
 
 
 ## aesthetics
-1. Sounds are complimentary with instruments in the music.
-1. Music has energy. melody.
-1. Music zones, possibly centered around major enemies. ( In MMX, stages take roughly 3x music loops to avoid letting the music get stale. )
-1. Camera. Screen shake. Camera smooth lerp.
-1. Atmosphere. Environment animations.
+Sounds are complimentary with instruments in the music.
+Music has energy. melody.
+Music zones, possibly centered around major enemies. ( In MMX, stages take roughly 3x music loops to avoid letting the music get stale. )
+Camera. Screen shake. Camera smooth lerp.
+Atmosphere. Environment animations.
 
 
 ## Death possibilities

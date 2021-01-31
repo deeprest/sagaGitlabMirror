@@ -1,9 +1,9 @@
-+ FIXED [use gen safe zone] generation does not destroy entities spawned at runtime. Should it? Showing off generation in a build is nice, but if it means implementing features never seen in the game, is it worth it?
 
-+ FIXED mushy on lift. consider the velocity of the object being collided-with. [CarryObject]
 
-+ NOFIX: high offset off angled floor. This is a known cosmetic problem, addressed with the "multi_sample" code in UpdateCollision(), not in use.
-
+FIXED camera zone soft lock when using door on dr cain chamber
+FIXED [use gen safe zone] generation does not destroy entities spawned at runtime. Should it? Showing off generation in a build is nice, but if it means implementing features never seen in the game, is it worth it?
+FIXED mushy on lift. consider the velocity of the object being collided-with. [CarryObject]
+NOFIX: high offset off angled floor. This is a known cosmetic problem, addressed with the "multi_sample" code in UpdateCollision(), not in use.
 FIXED long slide clipping. collision should reduce velocity, not only position.
 
 Chose to use no 2d physics (except for bouncygrenade).
