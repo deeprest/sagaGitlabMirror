@@ -21,6 +21,8 @@ public class PlayerBiped : Pawn
 
   public float Scale = 1;
   // smaller head box allows for easier jump out and up onto an overhead wall when standing on a ledge.
+  const float raydown = 0.2f;
+  const float downOffset = 0.12f;
   public Vector2 headbox = new Vector2( .1f, .1f );
   public float headboxy = -0.1f;
   const float downslopefudge = 0.2f;
@@ -357,7 +359,7 @@ public class PlayerBiped : Pawn
   new void UpdateHit( float dT )
   {
     pups.Clear();
-    hitCount = Physics2D.BoxCastNonAlloc( pos, box.size, 0, velocity, RaycastHits, Mathf.Max( raylength, velocity.magnitude * dT ), HitLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( pos, box.size + Vector2.up * DownOffset*2, 0, velocity, RaycastHits, Mathf.Max( raylength, velocity.magnitude * dT ), HitLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -511,8 +513,7 @@ public class PlayerBiped : Pawn
     // slidingOffsetTarget = 1;
     string temp = "";
 
-    const float raydown = 0.2f;
-    const float downOffset = 0.12f;
+    
     float down = jumping ? raydown - downOffset : raydown;
     float prefer;
    
@@ -1051,6 +1052,13 @@ public class PlayerBiped : Pawn
     if( collideTop )
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
+    }
+
+    if (collideTop && collideBottom)
+    {
+//      Die();
+      if( !takingDamage )
+      TakeDamage(new Damage() {amount = 5, type = DamageType.Crush });
     }
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
