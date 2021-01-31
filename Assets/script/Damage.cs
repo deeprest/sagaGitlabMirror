@@ -4,7 +4,8 @@ using System.Collections;
 public enum DamageType
 {
   Generic,
-  Fire
+  Fire,
+  Crush
 }
 
 [CreateAssetMenu]
