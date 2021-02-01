@@ -252,25 +252,25 @@ public class Mech : Entity
   }
 
 
-  public override bool TakeDamage( Damage d )
+  public override bool TakeDamage( Damage damage )
   {
-    if( d.instigator != null && !IsEnemyTeam( d.instigator.Team ) )
+    if( damage.instigator != null && !IsEnemyTeam( damage.instigator.Team ) )
       return false;
-    if( d.amount < DamageThreshold )
+    if( damage.amount < DamageThreshold )
     {
       if( soundReflect != null )
         audio.PlayOneShot( soundReflect );
 
-      Projectile projectile = d.damageSource.GetComponent<Projectile>();
+      Projectile projectile = damage.damageSource.GetComponent<Projectile>();
       if( projectile != null )
       {
         switch( projectile.weapon.weaponType )
         {
           case Weapon.WeaponType.Projectile:
-            if( d.instigator == null )
-              projectile.velocity = Vector3.Reflect( projectile.velocity,(d.point - (Vector2)transform.position).normalized ); 
+            if( damage.instigator == null )
+              projectile.velocity = Vector3.Reflect( projectile.velocity,(damage.point - (Vector2)transform.position).normalized ); 
             else
-              projectile.velocity = Vector3.Reflect( projectile.velocity, (d.instigator.transform.position - transform.position).normalized ); 
+              projectile.velocity = Vector3.Reflect( projectile.velocity, (damage.instigator.transform.position - transform.position).normalized ); 
             
             Physics2D.IgnoreCollision( projectile.circle, box, false );
             Physics2D.IgnoreCollision( projectile.circle, torso, false );
@@ -295,6 +295,6 @@ public class Mech : Entity
       }
       return false;
     }
-    return base.TakeDamage( d );
+    return base.TakeDamage( damage );
   }
 }

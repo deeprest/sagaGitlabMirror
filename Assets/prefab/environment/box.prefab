@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6580741545624801248}
+  - component: {fileID: 7918758139510543549}
   - component: {fileID: 4076200707986567607}
   - component: {fileID: 4630663335477681187}
   - component: {fileID: 4981129489408865915}
-  - component: {fileID: 7918758139510543549}
   m_Layer: 17
   m_Name: box
   m_TagString: Untagged
@@ -34,6 +34,53 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7918758139510543549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6675930426900349286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ff685e897f414e28bdc49f953d2ec85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Team: 0
+  body: {fileID: 0}
+  box: {fileID: 4076200707986567607}
+  circle: {fileID: 0}
+  renderer: {fileID: 4630663335477681187}
+  animator: {fileID: 0}
+  IgnoreCollideObjects: []
+  spriteRenderers: []
+  UseGravity: 1
+  IsStatic: 0
+  velocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
+  overrideVelocity: {x: 0, y: 0}
+  carryCharacter: {fileID: 0}
+  friction: 0.05
+  raylength: 0.01
+  contactSeparation: 0.01
+  DownOffset: 0
+  EnablePathing: 0
+  AgentTypeName: Small
+  CanTakeDamage: 1
+  Health: 3
+  MaxHealth: 5
+  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
+  soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
+  spawnWhenDead: {fileID: 0}
+  spawnChance: 1
+  flashInterval: 0.05
+  flashCount: 5
+  ContactDamage: {fileID: 0}
+  EventDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  CharacterLayer: 0
+  CharacterParts: []
 --- !u!61 &4076200707986567607
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -127,49 +174,3 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
---- !u!114 &7918758139510543549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6675930426900349286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ff685e897f414e28bdc49f953d2ec85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Team: 0
-  body: {fileID: 0}
-  box: {fileID: 4076200707986567607}
-  circle: {fileID: 0}
-  renderer: {fileID: 4630663335477681187}
-  animator: {fileID: 0}
-  IgnoreCollideObjects: []
-  spriteRenderers: []
-  UseGravity: 1
-  IsStatic: 0
-  BoxCollisionOne: 0
-  velocity: {x: 0, y: 0}
-  pushVelocity: {x: 0, y: 0}
-  carryCharacter: {fileID: 0}
-  friction: 0.05
-  raylength: 0.01
-  contactSeparation: 0.01
-  EnablePathing: 0
-  AgentTypeName: Small
-  CanTakeDamage: 1
-  Health: 3
-  MaxHealth: 5
-  explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
-  soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  spawnWhenDead: {fileID: 0}
-  spawnChance: 1
-  flashInterval: 0.05
-  flashCount: 5
-  ContactDamage: {fileID: 0}
-  EventDestroyed:
-    m_PersistentCalls:
-      m_Calls: []
-  CharacterLayer: 0
-  CharacterParts: []

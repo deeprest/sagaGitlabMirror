@@ -135,7 +135,7 @@ public class Liftbot : Entity, IWorldSelectable
     }
   }
 
-  public override bool TakeDamage( Damage d )
+  public override bool TakeDamage( Damage damage )
   {
     // absorb hits, but do not take damage
     return true;

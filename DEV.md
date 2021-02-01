@@ -8,14 +8,17 @@
 + pixel-perfect animations must be done in Unity for each piece. Snap to pixel density, use constant anim curves.
 + 2d skeleton rigs, avatars, and IK can not be used with composites. Skeletons use rotations, and these anims are not rotation-based.
 
+# Decide
+walljumping while auto-wallsliding
 
 # New Things
+NEW crush damage
 NEW START A DEVLOG ON ITCH.
 NEW airbot propellar ability. propellar on back? dash in air to use prop
 NEW health pickups dropped by enemies
+NEW player death effect/anim
 NEW music selection on pause menu
 NEW cheats menu
-NEW damage when crushed by boxes
 NEW shield on back? press down to use shield?
 NEW stickybomb exploding interaction with shield:
   1) do raycast to each IDamage within range
@@ -25,7 +28,7 @@ NEW stickybomb exploding interaction with shield:
 NEW hide arm while not shooting
 NEW align shot with surface when aiming into floor/wall
 NEW Big wrecking ball bot.
-NEW Agile boss bot.
+NEW Agile boss bot. quickboss needs destruction sequence
 CODE remove global references to CurrentPlayer where possible
 CODE change cursorOuter based on control device
 CODE Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
@@ -35,6 +38,8 @@ CODE Character agentType: remove need for Global.instance.AgentType lookup. Just
 VERIFY confirm that Teams are set for all characters.
 
 ### Needs Fix
+FIX gamepad: when not aiming, default aim direction.
+FIX gamepad: graphook-trigger behaviour
 FIX wheelbot jitter
 FIX airbot attack, use attack speed until at last known target position
 FIX grap when using gamepad (double)

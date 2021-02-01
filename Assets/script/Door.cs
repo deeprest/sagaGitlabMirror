@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 public class Door : MonoBehaviour, ITrigger
 {
@@ -32,7 +33,8 @@ public class Door : MonoBehaviour, ITrigger
   [SerializeField] float doorRunDistance = 1;
   [SerializeField] float runDuration = 0.5f;
 
-  public Team[] OpenForTeams;
+  [FormerlySerializedAs( "OpenForTeams" )]
+  public Team[] OpenOnlyForTeams;
 
   void OnDestroy()
   {
@@ -50,12 +52,12 @@ public class Door : MonoBehaviour, ITrigger
       return;
 
     Entity check = instigator.GetComponent<Entity>();
-    if( check != null )
+    if( check != null && OpenOnlyForTeams.Length > 0 )
     {
       bool OpenForThisCharacter = false;
-      for( int i = 0; i < OpenForTeams.Length; i++ )
+      for( int i = 0; i < OpenOnlyForTeams.Length; i++ )
       {
-        if( OpenForTeams[i] == check.Team )
+        if( OpenOnlyForTeams[i] == check.Team )
         {
           OpenForThisCharacter = true;
           break;

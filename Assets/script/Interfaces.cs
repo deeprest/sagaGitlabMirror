@@ -16,7 +16,7 @@ public interface IAction
 
 public interface IDamage
 {
-  bool TakeDamage( Damage d );
+  bool TakeDamage( Damage damage );
 }
 
 /*public interface ITeam

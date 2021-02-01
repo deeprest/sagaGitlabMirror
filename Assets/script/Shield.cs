@@ -37,7 +37,7 @@ public class Shield : MonoBehaviour, IDamage
     sr.flipX = transform.up.x < 0;
   }
 
-  public bool TakeDamage( Damage d )
+  public bool TakeDamage( Damage damage )
   {
     if( soundHit != null )
     {
@@ -58,23 +58,23 @@ public class Shield : MonoBehaviour, IDamage
       light.intensity = 0;
     } );
 
-    Entity chr = d.damageSource.GetComponent<Entity>();
+    Entity chr = damage.damageSource.GetComponent<Entity>();
     if( chr != null )
     {
-      if( damage != null )
-        chr.TakeDamage( damage );
-      chr.OverrideVelocity( hitPushSpeed * ((Vector2)(d.damageSource.transform.position - transform.position)).normalized, hitPushDuration );
+      if( this.damage != null )
+        chr.TakeDamage( this.damage );
+      chr.OverrideVelocity( hitPushSpeed * ((Vector2)(damage.damageSource.transform.position - transform.position)).normalized, hitPushDuration );
     }
 
-    if( d.amount <= MaximumDamage )
+    if( damage.amount <= MaximumDamage )
     {
-      Projectile projectile = d.damageSource.GetComponent<Projectile>();
+      Projectile projectile = damage.damageSource.GetComponent<Projectile>();
       if( projectile != null )
       {
         switch( projectile.weapon.weaponType )
         {
           case Weapon.WeaponType.Projectile:
-            projectile.transform.position = transform.position + Vector3.Project( (Vector3) d.point - transform.position, transform.right );
+            projectile.transform.position = transform.position + Vector3.Project( (Vector3) damage.point - transform.position, transform.right );
             projectile.velocity = Vector3.Reflect( projectile.velocity, transform.up );
             Physics2D.IgnoreCollision( projectile.circle, collider, false );
             foreach( var cldr in projectile.instigator.IgnoreCollideObjects )
