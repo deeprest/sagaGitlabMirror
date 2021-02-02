@@ -10,7 +10,7 @@ using UnityEngine.Events;
   BadDudes,
   Hostile
 }
-
+[SelectionBase]
 public class Entity : MonoBehaviour, IDamage
 {
   public static Limit<Entity> Limit = new Limit<Entity>();
@@ -354,15 +354,17 @@ public class Entity : MonoBehaviour, IDamage
     collideLeft = false;
     collideTop = false;
     collideBottom = false;
-    string temp = "";
     bottomHitCount=0;
     topHitCount=0;
     rightHitCount=0;
     leftHitCount=0;
     
-    float offset = Mathf.Max( DownOffset, -velocity.y * dT ) * 0.5f;
-    Vector2 debugOrigin = adjust + offset * Vector2.down;
-    Vector2 debugBox = box.size + Vector2.up * Mathf.Max( DownOffset, -velocity.y * dT ) + Vector2.right *  Mathf.Max( 0, Mathf.Abs(velocity.x * dT) );
+    boxOffset.x = box.offset.x * Mathf.Sign( transform.localScale.x );
+    boxOffset.y = box.offset.y;
+
+    float downOffset = Mathf.Max( DownOffset, -velocity.y * dT );
+    Vector2 debugOrigin = adjust + boxOffset + Vector2.down * downOffset * 0.5f;
+    Vector2 debugBox = box.size + Vector2.up * downOffset; // + Vector2.right *  Mathf.Max( 0, Mathf.Abs(velocity.x * dT) );
     
     Bounds bounds = new Bounds( debugOrigin, debugBox );
     Debug.DrawLine( new Vector3( bounds.min.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.max.y ), Color.red );
@@ -370,8 +372,7 @@ public class Entity : MonoBehaviour, IDamage
     Debug.DrawLine( new Vector3( bounds.max.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.min.y ), Color.red );
     Debug.DrawLine( new Vector3( bounds.max.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.min.y ), Color.red );
     
-    hitCount = Physics2D.BoxCastNonAlloc( debugOrigin, debugBox, transform.rotation.eulerAngles.z, Vector2.zero, RaycastHits, 0, Global.CharacterCollideLayers );
-    //Debug.Log("hitCount: " + hitCount);
+    hitCount = Physics2D.BoxCastNonAlloc( debugOrigin, debugBox, transform.rotation.eulerAngles.z, Vector2.down, RaycastHits, downOffset, Global.CharacterCollideLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -382,10 +383,9 @@ public class Entity : MonoBehaviour, IDamage
       {
         collideBottom = true;
         bottomHits[bottomHitCount++] = hit;
-        //hitBottom = hit;
         velocity.y = Mathf.Max( velocity.y, 0 );
         inertia.x = 0;
-        adjust.y = hit.point.y + debugBox.y * 0.5f + offset;
+        adjust.y = hit.point.y + debugBox.y * 0.5f + DownOffset;
 
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
@@ -406,7 +406,6 @@ public class Entity : MonoBehaviour, IDamage
       {
         collideTop = true;
         topHits[topHitCount++] = hit;
-        //hitTop = hit;
         velocity.y = Mathf.Min( velocity.y, 0 );
         adjust.y = hit.point.y - debugBox.y * 0.5f - contactSeparation;
       }
@@ -415,7 +414,6 @@ public class Entity : MonoBehaviour, IDamage
       {
         collideLeft = true;
         leftHits[leftHitCount++] = hit;
-        //hitLeft = hit;
         velocity.x = Mathf.Max( velocity.x, 0 );
         inertia.x = Mathf.Max( inertia.x, 0 );
         adjust.x = hit.point.x + debugBox.x * 0.5f + contactSeparation;
@@ -427,7 +425,6 @@ public class Entity : MonoBehaviour, IDamage
       {
         collideRight = true;
         rightHits[rightHitCount++] = hit;
-        //hitRight = hit;
         velocity.x = Mathf.Min( velocity.x, 0 );
         inertia.x = Mathf.Min( inertia.x, 0 );
         adjust.x = hit.point.x - debugBox.x * 0.5f - contactSeparation;
@@ -435,7 +432,7 @@ public class Entity : MonoBehaviour, IDamage
         velocity.y -= Util.Project2D( velocity, hit.normal ).y;
       }
     }
-    transform.position = adjust;
+    adjust -= boxOffset;
   }
   
   protected virtual void Die()

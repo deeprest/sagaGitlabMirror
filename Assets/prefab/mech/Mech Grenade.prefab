@@ -19,6 +19,16 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 14
       objectReference: {fileID: 0}
+    - target: {fileID: 1654668584601712558, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1654668584601712558, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_Offset.y
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 2811019918733132173, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
       propertyPath: m_Layer
@@ -46,18 +56,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4045851430560821422, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4045851430560821422, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.5265684
+      value: -13
       objectReference: {fileID: 0}
     - target: {fileID: 4045851430560821422, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -18.939917
+      value: -1.5
       objectReference: {fileID: 0}
     - target: {fileID: 4045851430560821422, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4045851430560821422, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4045851430560821422, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
@@ -72,16 +92,6 @@ PrefabInstance:
     - target: {fileID: 4045851430560821422, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4045851430560821422, guid: 2347122d03bc54cd8aae519c83ae52ba,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4045851430560821422, guid: 2347122d03bc54cd8aae519c83ae52ba,
-        type: 3}
-      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4045851430560821422, guid: 2347122d03bc54cd8aae519c83ae52ba,
@@ -106,13 +116,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
-      propertyPath: shootInterval
-      value: 1
+      propertyPath: Team
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
-      propertyPath: shootUp
-      value: 2
+      propertyPath: Health
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: health
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
@@ -122,19 +137,18 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
-      propertyPath: shotOrigin
-      value: 
-      objectReference: {fileID: 2867757829137858661}
+      propertyPath: shootUp
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
-      propertyPath: ContactDamage
-      value: 
-      objectReference: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c,
-        type: 2}
+      propertyPath: MaxHealth
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
-      propertyPath: health
-      value: 30
+      propertyPath: dashSpeed
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
@@ -143,9 +157,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
-      propertyPath: dashSpeed
-      value: 3
+      propertyPath: DownOffset
+      value: 0.165
       objectReference: {fileID: 0}
+    - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: shotOrigin
+      value: 
+      objectReference: {fileID: 2867757829137858661}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
       propertyPath: dashDuration
@@ -158,33 +177,14 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 74baea719e21e419cbf02dfd10d88643, type: 3}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
-      propertyPath: Team
-      value: 2
-      objectReference: {fileID: 0}
+      propertyPath: ContactDamage
+      value: 
+      objectReference: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c,
+        type: 2}
     - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
-      propertyPath: Health
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 5736656210831704170, guid: 2347122d03bc54cd8aae519c83ae52ba,
-        type: 3}
-      propertyPath: MaxHealth
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
-        type: 3}
-      propertyPath: m_FalloffIntensity
-      value: 0.73
-      objectReference: {fileID: 0}
-    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 0.9430667
-      objectReference: {fileID: 0}
-    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 0.57299995
+      propertyPath: shootInterval
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
@@ -193,8 +193,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
+      propertyPath: m_Color.g
+      value: 0.57299995
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.9430667
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
       propertyPath: m_UseNormalMap
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
+        type: 3}
+      propertyPath: m_FalloffIntensity
+      value: 0.73
       objectReference: {fileID: 0}
     - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
@@ -203,13 +218,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
-      propertyPath: m_ShapeLightParametricSides
-      value: 24
+      propertyPath: m_ShapeLightFalloffSize
+      value: 2.41
       objectReference: {fileID: 0}
     - target: {fileID: 6097095160928651433, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
-      propertyPath: m_ShapeLightFalloffSize
-      value: 2.41
+      propertyPath: m_ShapeLightParametricSides
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 6648614578685787312, guid: 2347122d03bc54cd8aae519c83ae52ba,
         type: 3}
