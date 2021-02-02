@@ -21,18 +21,19 @@ public class TalkerEditor : Editor
 #endif
 
 [RequireComponent( typeof(JabberPlayer), typeof(Animator) )]
-[SelectionBase]
 public class Talker : WorldSelectable
 {
   public CharacterIdentity identity;
   public JabberPlayer jabber;
   public Animator animator;
   Timer talkTimer = new Timer();
-
+  Transform headTransform;
   JsonData json;
   
   void Start()
   {
+    headTransform = transform.Find( "head" );
+    
     if( identity == null )
     {
       Debug.LogWarning( "null identity for " + name, gameObject );
@@ -58,12 +59,19 @@ public class Talker : WorldSelectable
 
   public override void Highlight()
   {
+    base.Highlight();
     animator.Play( "highlight" );
   }
 
   public override void Unhighlight()
   {
+    base.Unhighlight();
     animator.Play( "idle" );
+  }
+
+  public override Vector2 GetPosition()
+  {
+    return headTransform.GetComponent<SpriteRenderer>().bounds.center;
   }
 
   public override void Select()
@@ -82,7 +90,7 @@ public class Talker : WorldSelectable
   {
     animator.Play( "talk" );
     talkTimer.Start( 4, null, delegate { animator.Play( "idle" ); } );
-    Global.instance.Speak( identity, say, 4 );
+    Global.instance.Speak( headTransform, identity, say, 4 );
     jabber.Play( say );
   }
 }

@@ -219,8 +219,9 @@ public class Global : MonoBehaviour
   [Header( "Speech" )]
   public GameObject SpeechBubble;
   public Text SpeechText;
-  public Image SpeechIcon;
+  public SpriteRenderer SpeechIcon;
   public Animator SpeechAnimator;
+  [SerializeField] Camera SpeechIconCamera;
   CharacterIdentity SpeechCharacter;
   int SpeechPriority = 0;
   public float SpeechRange = 8;
@@ -1111,7 +1112,7 @@ public class Global : MonoBehaviour
     fadeTimer.Start( tp );
   }
 
-  public void Speak( CharacterIdentity character, string text, float timeout, int priority = 0 )
+  public void Speak( Transform headTransform, CharacterIdentity character, string text, float timeout, int priority = 0 )
   {
     // priority 0 = offhand remarks
     // priority 1 = unsolicted chat
@@ -1128,8 +1129,9 @@ public class Global : MonoBehaviour
 
     SpeechCharacter = character;
     SpeechPriority = priority;
-
-    SpeechIcon.sprite = SpeechCharacter.Icon;
+  
+    //SpeechIcon.sprite = SpeechCharacter.Icon;
+    
     /*string colorString = "#ffffff",
     Color color = Color.white;
     ColorUtility.TryParseHtmlString( colorString, out color );
@@ -1140,7 +1142,10 @@ public class Global : MonoBehaviour
     //SpeechText.rectTransform.localScale = Vector3.one * (1f - 0.5f * Mathf.Clamp( Mathf.Sqrt( DistanceSqr ) / SpeechRange, 0, 1 ));
 
     SpeechTimer.Stop( false );
-    SpeechTimer.Start( timeout, null, delegate()
+    SpeechTimer.Start( timeout, delegate( Timer timer )
+    {
+      SpeechIconCamera.transform.position = headTransform.GetComponent<SpriteRenderer>().bounds.center;
+    }, delegate()
     {
       SpeechBubble.SetActive( false );
       SpeechCharacter = null;
@@ -1149,7 +1154,7 @@ public class Global : MonoBehaviour
     SpeechAnimator.runtimeAnimatorController = character.animationController;
     SpeechAnimator.Play( "talk" );
   }
-
+  
   public void OverrideCameraZone( CameraZone zone )
   {
     CameraController.AssignOverrideCameraZone(zone);
