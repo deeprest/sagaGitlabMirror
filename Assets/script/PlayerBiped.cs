@@ -703,6 +703,9 @@ public class PlayerBiped : Pawn
 
   void UpdateCursor()
   {
+    // AimPosition is where the projectile is going.
+    // CursorWorldPosition is where the cursor is. 
+    // When auto-aim or aim-snapping is on, these positions differ.
     Vector2 AimPosition = Vector2.zero;
     Vector2 cursorOrigin = transform.position;
     Vector2 inputAim = input.Aim;
@@ -730,12 +733,6 @@ public class PlayerBiped : Pawn
       }
     }
     else
-    {
-      CursorSnapped.gameObject.SetActive( false );
-      AimPosition = cursorOrigin + inputAim;
-      CursorWorldPosition = AimPosition;
-    }
-
     if( Global.instance.AutoAim )
     {
       CursorWorldPosition = cursorOrigin + inputAim;
@@ -767,12 +764,15 @@ public class PlayerBiped : Pawn
     else
     {
       CursorAutoAim.gameObject.SetActive( false );
+      CursorSnapped.gameObject.SetActive( false );
+      AimPosition = cursorOrigin + inputAim;
+      CursorWorldPosition = AimPosition;
     }
 
-    shoot = AimPosition - (Vector2) arm.position;
-    // if no inputs override, then default to facing the aim direction
-    if( shoot.sqrMagnitude < 0.0001f )
+    if( inputAim.sqrMagnitude < 0.005f )
       shoot = facingRight ? Vector2.right : Vector2.left;
+    else
+      shoot = AimPosition - (Vector2) arm.position;
   }
 
   private bool previousWallsliding;
@@ -1100,7 +1100,9 @@ public class PlayerBiped : Pawn
       {
         anim = "idle";
         // when idling, always face aim direction
-        facingRight = CursorWorldPosition.x >= transform.position.x;
+        float face = CursorWorldPosition.x - transform.position.x;
+        if( Mathf.Abs( face ) > 0.005f )
+          facingRight = face > 0 ? true : false;
       }
     }
     else if( !jumping )
