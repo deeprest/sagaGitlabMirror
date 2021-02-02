@@ -10,12 +10,15 @@
 
 # Decide
 walljumping while auto-wallsliding
+when entities land, want a crisp landing like playerbiped. find out how they're different. 
 
 # New Things
-NEW crush damage
++ NEW crush damage
 NEW START A DEVLOG ON ITCH.
 NEW airbot propellar ability. propellar on back? dash in air to use prop
 NEW health pickups dropped by enemies
+NEW Big wrecking ball bot.
+NEW Agile boss bot. quickboss needs destruction sequence
 NEW player death effect/anim
 NEW music selection on pause menu
 NEW cheats menu
@@ -27,8 +30,7 @@ NEW stickybomb exploding interaction with shield:
   4) if the raycast hits an IDamage collider, proceed
 NEW hide arm while not shooting
 NEW align shot with surface when aiming into floor/wall
-NEW Big wrecking ball bot.
-NEW Agile boss bot. quickboss needs destruction sequence
+
 CODE remove global references to CurrentPlayer where possible
 CODE change cursorOuter based on control device
 CODE Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.

@@ -469,16 +469,7 @@ public class PlayerBiped : Pawn
     */
   }
   
-  // RaycastHit2D[] bottomHits;
-  // RaycastHit2D[] topHits;
-  // RaycastHit2D[] leftHits;
-  // RaycastHit2D[] rightHits;
-  // int bottomHitCount = 0;
-  // int topHitCount = 0;
-  // int leftHitCount = 0;
-  // int rightHitCount = 0;
 
-  public float downdown;
 #if optimized_collision
 
   new void UpdateCollision( float dT )
