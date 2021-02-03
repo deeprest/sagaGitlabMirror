@@ -759,7 +759,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""c431a4e6-c214-4e6c-b089-ad979431500b"",
                     ""path"": ""<Gamepad>/leftTrigger"",
-                    ""interactions"": """",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Ability"",
