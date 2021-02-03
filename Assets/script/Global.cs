@@ -686,18 +686,21 @@ public class Global : MonoBehaviour
 
     if( !Updating )
       return;
-    
-    for( int i = 0; i < Entity.Limit.All.Count; i++ )
-      Entity.Limit.All[ i ].EntityUpdate();
 
-    for( int i = 0; i < Controller.All.Count; i++ )
-      Controller.All[i].Update();
-    
-    // pawns are not added to Limit
-    for( int i = 0; i < Controller.All.Count; i++ )
-      if( Controller.All[i].pawn != null )
-        Controller.All[i].pawn.EntityUpdate();
+    if( !Paused )
+    {
+      for( int i = 0; i < Entity.Limit.All.Count; i++ )
+        Entity.Limit.All[i].EntityUpdate();
 
+      for( int i = 0; i < Controller.All.Count; i++ )
+        Controller.All[i].Update();
+
+      // pawns are not added to Limit
+      for( int i = 0; i < Controller.All.Count; i++ )
+        if( Controller.All[i].pawn != null )
+          Controller.All[i].pawn.EntityUpdate();
+    }
+    
     if( loadingScene )
     {
       //prog = Mathf.MoveTowards( prog, progTarget, Time.unscaledDeltaTime * progressSpeed );
@@ -1246,7 +1249,7 @@ public class Global : MonoBehaviour
     CreateBoolSetting( "ShowAimPath", false, delegate( bool value ) { ShowAimPath = value; } );
 
     CreateFloatSetting( "CursorOuter", 1, 0, 1, 20, delegate( float value ) { CursorOuter = value; } );
-    CreateFloatSetting( "CursorSensitivity", 1, 0.01f, 2, 100, delegate( float value ) { CursorSensitivity = value; } );
+    CreateFloatSetting( "CursorSensitivity", 1, 0.001f, 2, 1999, delegate( float value ) { CursorSensitivity = value; } );
     CreateFloatSetting( "CameraLerpAlpha", 10, 0, 10, 100, delegate( float value ) { CameraController.lerpAlpha = value; } );
     CreateFloatSetting( "Zoom", 3, 1, 5, 20, delegate( float value ) { CameraController.orthoTarget = value; } );
     //CreateFloatSetting( "ThumbstickDeadzone", .3f, 0, .5f, 10, delegate ( float value ) { deadZone = value; } );
