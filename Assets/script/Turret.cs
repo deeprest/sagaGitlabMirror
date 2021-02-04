@@ -42,7 +42,6 @@ public class Turret : Entity
   {
     base.Start();
     UpdateLogic = UpdateTurret;
-    UpdatePosition = null;
     UpdateCollision = null;
 
     LayerMaskCharacter = LayerMask.GetMask( new string[] { "character" } );

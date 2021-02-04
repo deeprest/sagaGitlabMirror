@@ -42,7 +42,6 @@ public class DangerBall : Entity
     UpdateLogic = null;
     UpdateHit = LocalHit;
     UpdateCollision = BoxCollisionSingle;
-    UpdatePosition = BasicPosition;
   }
 
   void LocalHit()

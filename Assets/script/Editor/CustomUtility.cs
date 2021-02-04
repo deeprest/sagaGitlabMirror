@@ -685,6 +685,85 @@ public class CustomUtility : EditorWindow
   }
 }
 
+
+
+
+[CustomEditor( typeof(SpriteRenderer) )]
+[CanEditMultipleObjects]
+public class SpriteRendererEditor : Editor
+{
+  // cached sprite renderer 
+  SpriteRenderer cSpr;
+  BoxCollider2D BoxCollider2D;
+  NavMeshObstacle NavMeshObstacle;
+
+  const float snap = 0.25f;
+
+  public float desiredWidth;
+  [HideInInspector]
+  public float height;
+  float cWidth;
+  public float desiredHeight;
+  [HideInInspector]
+  public float width;
+  float cHeight;
+  public bool SnapIncrements = true;
+  bool cSnap;
+  Sprite cSprite;
+  bool cAutoTile;
+  
+  public override void OnInspectorGUI()
+  {
+    SpriteRenderer spr = target as SpriteRenderer;
+
+    if( spr != cSpr )
+    {
+      cSpr = spr;
+      desiredWidth = spr.size.x;
+      desiredHeight = spr.size.y;
+    }
+
+    desiredWidth = EditorGUILayout.FloatField( "WIDTH", desiredWidth );
+    desiredHeight = EditorGUILayout.FloatField( "HEIGHT", desiredHeight );
+    SnapIncrements = EditorGUILayout.Toggle( "Snap", SnapIncrements );
+    
+    if( BoxCollider2D == null )
+      BoxCollider2D = spr.GetComponent<BoxCollider2D>();
+    if( NavMeshObstacle==null )
+      NavMeshObstacle = spr.GetComponent<NavMeshObstacle>();
+
+    if( desiredHeight != cHeight || desiredWidth != cWidth || SnapIncrements != cSnap || cSprite != spr.sprite || (BoxCollider2D != null && cAutoTile != BoxCollider2D.autoTiling) )
+    {
+      cHeight = desiredHeight;
+      cWidth = desiredWidth;
+      cSnap = SnapIncrements;
+      cSprite = spr.sprite;
+
+      width = SnapIncrements ? Mathf.Max( snap, Mathf.Round( desiredWidth / snap ) * snap ) : desiredWidth;
+      height = SnapIncrements ? Mathf.Max( snap, Mathf.Round( desiredHeight / snap ) * snap ) : desiredHeight;
+
+      spr.size = new Vector2( width, height );
+      Vector2 pivot = new Vector2( spr.sprite.pivot.x / spr.sprite.textureRect.width, spr.sprite.pivot.y / spr.sprite.textureRect.height );
+
+      if( BoxCollider2D != null )
+      {
+        cAutoTile = BoxCollider2D.autoTiling;
+        Vector2 autoTileSize = new Vector2( spr.sprite.textureRect.width / spr.sprite.pixelsPerUnit, spr.sprite.textureRect.height / spr.sprite.pixelsPerUnit );
+        BoxCollider2D.size = BoxCollider2D.autoTiling ? autoTileSize : new Vector2( width, height );
+        BoxCollider2D.offset = new Vector2( (0.5f - pivot.x) * BoxCollider2D.size.x, (0.5f - pivot.y) * BoxCollider2D.size.y );
+      }
+
+      if( NavMeshObstacle != null )
+      {
+        NavMeshObstacle.size = spr.size;
+        NavMeshObstacle.center = new Vector2( (0.5f - pivot.x) * NavMeshObstacle.size.x, (0.5f - pivot.y) * NavMeshObstacle.size.y );
+      }
+    }
+    
+    DrawDefaultInspector();
+  }
+}
+
 #if false
 void ClearGroundImages()
 {

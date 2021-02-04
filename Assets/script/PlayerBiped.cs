@@ -920,7 +920,7 @@ public class PlayerBiped : Pawn
 
   public override void EntityUpdate( )
   {
-    if( Global.Paused )
+    if( Global.Paused || Health <= 0 )
       return;
 
     string anim = "idle";
@@ -1230,7 +1230,6 @@ public class PlayerBiped : Pawn
     // preserve inertia when jumping from moving platforms
     if( previousCarry != null && carryCharacter == null )
       inertia = previousCarry.Velocity;
-
     
     bool crushed = false;
     const float crushMinSpeed = 0.005f;

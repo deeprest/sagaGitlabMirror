@@ -76,7 +76,6 @@ public class Liftbot : Entity, IWorldSelectable
     UpdateLogic = UpdateLiftbot;
     UpdateHit = null;
     UpdateCollision = null;
-    UpdatePosition = BasicPosition;
     origin = transform.position;
     if( !IsTriggeredByPlayer )
       timeout.Start( waitDuration, null, NextWaypoint );

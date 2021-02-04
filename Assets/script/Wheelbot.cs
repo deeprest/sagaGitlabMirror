@@ -13,7 +13,7 @@ public class Wheelbot : Entity, IDamage
   {
     base.Start();
     UpdateHit = CircleHit;
-    UpdateCollision = CircleCollisionVelocity;
+    UpdateCollision = BoxCollisionSingle;
     UpdateLogic = UpdateWheel;
     velocity.x = wheelVelocity;
   }

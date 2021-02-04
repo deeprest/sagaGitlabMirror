@@ -36,7 +36,7 @@ public class Airbot : Entity
     base.Start();
     UpdateLogic = AirbotLogic;
     UpdateHit = AirbotHit;
-    UpdateCollision = CircleCollisionVelocity;
+    UpdateCollision = BoxCollisionSingle;
 
     SightPulseTimer.Start( int.MaxValue, 1, ( x ) => { SightPulse(); }, null );
   }

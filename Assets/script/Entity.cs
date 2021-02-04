@@ -1,15 +1,19 @@
-﻿using System.Collections.Generic;
+﻿#define DEBUG_CHECKS
+
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+
 //using Random = UnityEngine.Random;
 
- public enum Team
+public enum Team
 {
   None,
   GoodGuys,
   BadDudes,
   Hostile
 }
+
 [SelectionBase]
 public class Entity : MonoBehaviour, IDamage
 {
@@ -32,6 +36,7 @@ public class Entity : MonoBehaviour, IDamage
   public bool UseGravity = true;
   public bool IsStatic = false;
   public Vector2 velocity;
+
   public Vector2 Velocity
   {
     get
@@ -49,20 +54,17 @@ public class Entity : MonoBehaviour, IDamage
   // moving platforms / stacking characters
   public Entity carryCharacter;
   public float friction = 0.05f;
-  
+
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
   public float DownOffset = 0;
 
-  public float Raydown 
+  public float Raydown
   {
-    get
-    {
-      return DownOffset + contactSeparation;
-    }
+    get { return DownOffset + contactSeparation; }
   }
 
-  
+
   // collision flags
   protected bool collideRight = false;
   protected bool collideLeft = false;
@@ -107,12 +109,11 @@ public class Entity : MonoBehaviour, IDamage
   public Damage ContactDamage;
   public UnityEvent EventDestroyed;
 
-  // "collision" impedes this object's movement
+  // "collision" impedes *this* object's movement
+  // Only things that move need collision.
   protected System.Action UpdateCollision;
   // "hit" inflicts damage on others
   protected System.Action UpdateHit;
-  // integrate forces into position
-  protected System.Action UpdatePosition;
   // brains!!
   protected System.Action UpdateLogic;
 
@@ -121,12 +122,11 @@ public class Entity : MonoBehaviour, IDamage
 
   protected virtual void Awake()
   {
-
     if( !Limit.OnCreate( this ) )
       return;
     EntityAwake();
   }
-  
+
   public void EntityAwake()
   {
     RaycastHits = new RaycastHit2D[8];
@@ -154,7 +154,6 @@ public class Entity : MonoBehaviour, IDamage
     if( !IsStatic )
     {
       UpdateCollision = BoxCollisionSingle;
-      UpdatePosition = BasicPosition;
     }
     if( EnablePathing )
     {
@@ -164,7 +163,7 @@ public class Entity : MonoBehaviour, IDamage
       pathAgent.AgentTypeID = Global.instance.AgentType[AgentTypeName];
     }
     InitializeParts();
-    
+
     bottomHits = new RaycastHit2D[RaycastHits.Length];
     topHits = new RaycastHit2D[RaycastHits.Length];
     leftHits = new RaycastHit2D[RaycastHits.Length];
@@ -182,18 +181,38 @@ public class Entity : MonoBehaviour, IDamage
     if( UpdateHit != null )
       UpdateHit();
 
-    adjust = transform.position;
-      
-    if( UpdatePosition != null )
-      UpdatePosition();
+    if( overrideVelocityTimer.IsActive )
+      velocity = overrideVelocity;
+
+    if( UseGravity )
+      velocity.y += -Global.Gravity * Time.deltaTime;
+    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
+    if( collideTop )
+    {
+      velocity.y = Mathf.Min( velocity.y, 0 );
+    }
+    if( collideBottom )
+    {
+      velocity.x -= (velocity.x * friction) * Time.deltaTime;
+      velocity.y = Mathf.Max( velocity.y, 0 );
+    }
+    if( collideRight )
+    {
+      velocity.x = Mathf.Min( velocity.x, 0 );
+    }
+    if( collideLeft )
+    {
+      velocity.x = Mathf.Max( velocity.x, 0 );
+    }
+
+    transform.position += (Vector3) Velocity * Time.deltaTime;
+
+    carryCharacter = null;
 
     if( UpdateCollision != null )
       UpdateCollision();
-
-    transform.position = adjust;
-    //body.MovePosition( transform.position );
   }
-  
+
   public void EntityLateUpdate()
   {
     if( !Global.instance.Updating )
@@ -242,7 +261,6 @@ public class Entity : MonoBehaviour, IDamage
           dmg.point = hit.point;
           dam.TakeDamage( dmg );
         }
-
       }
     }
   }
@@ -250,103 +268,9 @@ public class Entity : MonoBehaviour, IDamage
   public void OverrideVelocity( Vector2 pVelocity, float duration )
   {
     overrideVelocityTimer.Stop( false );
-    overrideVelocityTimer.Start( duration, delegate( Timer timer )
-    {
-      overrideVelocity = pVelocity;
-    }, delegate
-    {
-      overrideVelocity = Vector2.zero;
-    });
+    overrideVelocityTimer.Start( duration, delegate( Timer timer ) { overrideVelocity = pVelocity; }, delegate { overrideVelocity = Vector2.zero; } );
   }
 
-  protected void BasicPosition()
-  {
-
-    if( overrideVelocityTimer.IsActive )
-      velocity = overrideVelocity;
-
-    if( UseGravity )
-      velocity.y += -Global.Gravity * Time.deltaTime;
-
-    if( collideTop )
-    {
-      velocity.y = Mathf.Min( velocity.y, 0 );
-    }
-    if( collideBottom )
-    {
-      velocity.x -= (velocity.x * friction) * Time.deltaTime;
-      velocity.y = Mathf.Max( velocity.y, 0 );
-    }
-    if( collideRight )
-    {
-      velocity.x = Mathf.Min( velocity.x, 0 );
-    }
-    if( collideLeft )
-    {
-      velocity.x = Mathf.Max( velocity.x, 0 );
-    }
-    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    
-    adjust = transform.position + (Vector3) Velocity * Time.deltaTime;
-    carryCharacter = null;
-  }
-
-  protected void CircleCollisionVelocity()
-  {
-    // Do a single circle cast in the direction of velocity
-    collideRight = false;
-    collideLeft = false;
-    collideTop = false;
-    collideBottom = false;
-    const float corner = 0.707f;
-
-    hitCount = Physics2D.CircleCastNonAlloc( adjust, circle.radius, velocity, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
-      if( hit.normal.y > corner )
-      {
-        collideBottom = true;
-        adjust.y = hit.point.y + circle.radius + contactSeparation + DownOffset;
-        // moving platforms
-        Entity cha = hit.transform.GetComponent<Entity>();
-        if( cha != null )
-        {
-#if UNITY_EDITOR
-          if( cha.GetInstanceID() == GetInstanceID() )
-          {
-            Debug.LogError( "character set itself as carry character", gameObject );
-            Debug.Break();
-          }
-#endif
-          carryCharacter = cha;
-        }
-        break;
-      }
-      if( hit.normal.y < -corner )
-      {
-        collideTop = true;
-        adjust.y = hit.point.y - circle.radius - contactSeparation;
-        break;
-      }
-      if( hit.normal.x > corner )
-      {
-        collideLeft = true;
-        adjust.x = hit.point.x + circle.radius + contactSeparation;
-        break;
-      }
-      if( hit.normal.x < -corner )
-      {
-        collideRight = true;
-        adjust.x = hit.point.x - circle.radius - contactSeparation;
-        break;
-      }
-    }
-    transform.position = adjust;
-  }
-  
   protected void BoxCollisionSingle()
   {
     float dT = Time.deltaTime;
@@ -354,25 +278,26 @@ public class Entity : MonoBehaviour, IDamage
     collideLeft = false;
     collideTop = false;
     collideBottom = false;
-    bottomHitCount=0;
-    topHitCount=0;
-    rightHitCount=0;
-    leftHitCount=0;
-    
+    bottomHitCount = 0;
+    topHitCount = 0;
+    rightHitCount = 0;
+    leftHitCount = 0;
+
     boxOffset.x = box.offset.x * Mathf.Sign( transform.localScale.x );
     boxOffset.y = box.offset.y;
+    adjust = (Vector2) transform.position + boxOffset;
 
     float downOffset = Mathf.Max( DownOffset, -velocity.y * dT );
-    Vector2 debugOrigin = adjust + boxOffset + Vector2.down * downOffset * 0.5f;
-    Vector2 debugBox = box.size + Vector2.up * downOffset; // + Vector2.right *  Mathf.Max( 0, Mathf.Abs(velocity.x * dT) );
-    
+    Vector2 debugOrigin = adjust; // + Vector2.down * downOffset * 0.5f;
+    Vector2 debugBox = box.size; // + Vector2.up * downOffset; // + Vector2.right *  Mathf.Max( 0, Mathf.Abs(velocity.x * dT) );
+
     Bounds bounds = new Bounds( debugOrigin, debugBox );
     Debug.DrawLine( new Vector3( bounds.min.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.max.y ), Color.red );
     Debug.DrawLine( new Vector3( bounds.min.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.max.y ), Color.red );
     Debug.DrawLine( new Vector3( bounds.max.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.min.y ), Color.red );
     Debug.DrawLine( new Vector3( bounds.max.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.min.y ), Color.red );
-    
-    hitCount = Physics2D.BoxCastNonAlloc( debugOrigin, debugBox, transform.rotation.eulerAngles.z, Vector2.down, RaycastHits, downOffset, Global.CharacterCollideLayers );
+
+    hitCount = Physics2D.BoxCastNonAlloc( debugOrigin, debugBox, 0 /*transform.rotation.eulerAngles.z*/, Vector2.down, RaycastHits, Mathf.Max( Raydown, -velocity.y * dT ), Global.CharacterCollideLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -385,13 +310,13 @@ public class Entity : MonoBehaviour, IDamage
         bottomHits[bottomHitCount++] = hit;
         velocity.y = Mathf.Max( velocity.y, 0 );
         inertia.x = 0;
-        adjust.y = hit.point.y + debugBox.y * 0.5f + DownOffset;
+        adjust.y = hit.point.y + debugBox.y * 0.5f + Raydown;
 
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
         {
-#if UNITY_EDITOR
+#if DEBUG_CHECKS
           if( cha.GetInstanceID() == GetInstanceID() )
           {
             Debug.LogError( "character set itself as carry character", gameObject );
@@ -409,7 +334,7 @@ public class Entity : MonoBehaviour, IDamage
         velocity.y = Mathf.Min( velocity.y, 0 );
         adjust.y = hit.point.y - debugBox.y * 0.5f - contactSeparation;
       }
-      
+
       if( hit.normal.x > corner )
       {
         collideLeft = true;
@@ -418,9 +343,9 @@ public class Entity : MonoBehaviour, IDamage
         inertia.x = Mathf.Max( inertia.x, 0 );
         adjust.x = hit.point.x + debugBox.x * 0.5f + contactSeparation;
         // prevent clipping through angled walls when falling fast.
-        velocity.y -= Util.Project2D( velocity, hit.normal ).y;
+        /*velocity.y -= Util.Project2D( velocity, hit.normal ).y;*/
       }
-      
+
       if( hit.normal.x < -corner )
       {
         collideRight = true;
@@ -429,12 +354,12 @@ public class Entity : MonoBehaviour, IDamage
         inertia.x = Mathf.Min( inertia.x, 0 );
         adjust.x = hit.point.x - debugBox.x * 0.5f - contactSeparation;
         // prevent clipping through angled walls when falling fast.
-        velocity.y -= Util.Project2D( velocity, hit.normal ).y;
+        /*velocity.y -= Util.Project2D( velocity, hit.normal ).y;*/
       }
     }
-    adjust -= boxOffset;
+    transform.position = adjust - boxOffset;
   }
-  
+
   protected virtual void Die()
   {
     Instantiate( explosion, transform.position, Quaternion.identity );
@@ -463,14 +388,14 @@ public class Entity : MonoBehaviour, IDamage
         Global.instance.AudioOneShot( soundHit, transform.position );
       // color pulse
       flip = false;
-      
+
       foreach( var sr in spriteRenderers )
         sr.material.SetFloat( "_FlashAmount", flashOn );
-      flashTimer.Start( flashCount * 2, flashInterval, delegate ( Timer t )
+      flashTimer.Start( flashCount * 2, flashInterval, delegate( Timer t )
       {
         flip = !flip;
         foreach( var sr in spriteRenderers )
-          sr.material.SetFloat( "_FlashAmount", flip? flashOn : 0 );
+          sr.material.SetFloat( "_FlashAmount", flip ? flashOn : 0 );
       }, delegate
       {
         foreach( var sr in spriteRenderers )
@@ -506,7 +431,7 @@ public class Entity : MonoBehaviour, IDamage
       }
     }
   }
-  
+
   // for EventDestroyed unity events
   public void DestroyGameObject( GameObject go )
   {
@@ -517,8 +442,8 @@ public class Entity : MonoBehaviour, IDamage
   {
     return Team != Team.None && other != Team.None && other != Team;
   }
-  
-  
+
+
   [Header( "Character Parts" )]
   public int CharacterLayer;
 
@@ -531,7 +456,7 @@ public class Entity : MonoBehaviour, IDamage
     public Renderer renderer;
     public int layerAnimated;
   }
-  
+
   public List<CharacterPart> CharacterParts;
 
   // Call from Awake()

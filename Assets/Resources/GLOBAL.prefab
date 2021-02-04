@@ -720,18 +720,12 @@ MonoBehaviour:
     scenePath: Assets/scene/city-highway.unity
   - sceneAsset: {fileID: 102900000, guid: 56e93a81d13cb4b16b412eddef1070e2, type: 3}
     scenePath: Assets/scene/tutorial.unity
-  - sceneAsset: {fileID: 102900000, guid: 3fdde71a3ca2e43efa5d107418e4f6d2, type: 3}
-    scenePath: Assets/scene/chamber.unity
-  - sceneAsset: {fileID: 102900000, guid: 2a67ae7a625f240b4bf8c06b72d43e72, type: 3}
-    scenePath: Assets/scene/liftbot_test.unity
-  - sceneAsset: {fileID: 102900000, guid: e25ec4c772e0542ea9a954f39750785a, type: 3}
-    scenePath: Assets/scene/shadows.unity
-  - sceneAsset: {fileID: 102900000, guid: 3bd2ea2daf4aa468fbd22b4c6c6c8392, type: 3}
-    scenePath: Assets/scene/fall_test.unity
-  - sceneAsset: {fileID: 102900000, guid: 7740e845f94dd4d8691a96ec6667e611, type: 3}
-    scenePath: Assets/scene/enemy_lineup.unity
+  - sceneAsset: {fileID: 102900000, guid: c5ae70adb9faa417a9d9fe1ba9a20a95, type: 3}
+    scenePath: Assets/scene/testing_area.unity
   - sceneAsset: {fileID: 102900000, guid: 2b52838fbf4db4d5d86d276826f529eb, type: 3}
     scenePath: Assets/scene/gen.unity
+  - sceneAsset: {fileID: 102900000, guid: f80b83ab4bf8540d0951fc8896f57d2d, type: 3}
+    scenePath: Assets/scene/jabber.unity
   RandomSeedOnStart: 0
   SimulatePlayer: 0
   InitialScene:
@@ -815,6 +809,7 @@ MonoBehaviour:
   SpeechText: {fileID: 7212866214475871008}
   SpeechIcon: {fileID: 0}
   SpeechAnimator: {fileID: 1174961107706272585}
+  SpeechIconCamera: {fileID: 1022703318148130390}
   SpeechRange: 8
   MinimapCamera: {fileID: 2033272843829194013}
   Minimap: {fileID: 6481818813790531676}
@@ -825,7 +820,6 @@ MonoBehaviour:
   grey: {fileID: 4800000, guid: c8eeacc3f7f1d4315a293d55ca2d9321, type: 3}
   grey2: {fileID: 4800000, guid: e1a1eab74c39d428787f9f7f6f3a3900, type: 3}
   mmPlayer: {fileID: 1778563693}
-  SpeechIconCamera: {fileID: 1022703318148130390}
 --- !u!82 &681935436
 AudioSource:
   m_ObjectHideFlags: 0
