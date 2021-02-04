@@ -958,7 +958,7 @@ public class PlayerBiped : Pawn
 
         if( onGround && jumpStart )
           StartJump();
-        else if( jumpStop )
+        else if( (jumping||walljumping) && jumpStop )
           StopJump();
         else if( collideRight && /*input.MoveRight &&*/ hitRight.normal.y >= 0 )
         {
