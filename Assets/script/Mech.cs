@@ -39,6 +39,7 @@ public class Mech : Entity
 
   // ignore damage below this value
   [SerializeField] float DamageThreshold = 2;
+  int FistDamageLayers;
 
   // sight, target
   Collider2D[] results = new Collider2D[8];
@@ -55,6 +56,7 @@ public class Mech : Entity
     Physics2D.IgnoreCollision( box, torso );
     Physics2D.IgnoreCollision( torso, fist );
     LayerMaskCharacter = LayerMask.GetMask( new string[] { "character" } );
+    FistDamageLayers = LayerMask.GetMask( new string[] {"character", "destructible"} );
     SightPulseTimer.Start( int.MaxValue, 3, ( x ) => {
       // reaffirm target
       Target = null;
@@ -201,7 +203,7 @@ public class Mech : Entity
     {
       hit = RaycastHits[i];
       if( hit.transform.root == transform.root )
-        return;
+        continue;
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
@@ -218,7 +220,7 @@ public class Mech : Entity
     {
       hit = RaycastHits[i];
       if( hit.transform.root == transform.root )
-        return;
+        continue;
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {
@@ -231,12 +233,12 @@ public class Mech : Entity
     }
 
     // fist hit
-    hitCount = Physics2D.BoxCastNonAlloc( fist.transform.position, fist.size, 0, Vector2.zero, RaycastHits, raylength, Global.CharacterDamageLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( fist.transform.position, fist.size, 0, Vector2.zero, RaycastHits, raylength, FistDamageLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
       if( hit.transform.root == transform.root )
-        return;
+        continue;
       IDamage dam = hit.transform.GetComponent<IDamage>();
       if( dam != null )
       {

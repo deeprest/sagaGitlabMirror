@@ -772,7 +772,7 @@ public class Global : MonoBehaviour
     Pawn pawn = go.GetComponent<Pawn>();
     CurrentPlayer = pawn;
     PlayerController.AssignPawn( pawn );
-    Global.instance.CameraController.orthoTarget = 3;
+    //Global.instance.CameraController.orthoTarget = 3;
   }
 
   public Vector3 FindSpawnPosition()

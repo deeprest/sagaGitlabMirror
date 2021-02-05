@@ -10,11 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8185397359472694013}
   - component: {fileID: 8185397359472694014}
-  - component: {fileID: 8185397359472694015}
   - component: {fileID: 8185397359472694016}
   - component: {fileID: 5643395028136895801}
   m_Layer: 17
-  m_Name: spawner airbots
+  m_Name: spawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,32 +84,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &8185397359472694015
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8185397359472694017}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0.265625, y: 0.28125, z: 0.265625, w: 0.28125}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5625, y: 0.59375}
-    newSize: {x: 0.5, y: 0.5}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 1
-  serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.5}
-  m_EdgeRadius: 0
 --- !u!208 &8185397359472694016
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -152,6 +125,5 @@ MonoBehaviour:
   UnderRepeatRate: 1
   MaxedRepeatRate: 5
   ChooseRandomPrefab: 0
-  SpawnPrefab:
-  - {fileID: 1268720782321642, guid: 25ca8cd457e7b4750976577e72ea3dfa, type: 3}
+  SpawnPrefab: []
   SpawnedCharacters: []

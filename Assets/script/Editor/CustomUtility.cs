@@ -755,7 +755,7 @@ public class SpriteRendererEditor : Editor
 
       if( NavMeshObstacle != null )
       {
-        NavMeshObstacle.size = spr.size;
+        NavMeshObstacle.size = new Vector3( spr.size.x, spr.size.y, 0.3f );
         NavMeshObstacle.center = new Vector2( (0.5f - pivot.x) * NavMeshObstacle.size.x, (0.5f - pivot.y) * NavMeshObstacle.size.y );
       }
     }

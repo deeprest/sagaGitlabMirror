@@ -1705,7 +1705,7 @@ public class PlayerBiped : Pawn
 #endif
       part.transform.GetComponent<BoxCollider2D>().size = new Vector2( 0.2f, 0.3f );
       part.renderer.enabled = true;
-      Global.instance.CameraController.orthoTarget = 3;
+      //Global.instance.CameraController.orthoTarget = 3;
       Global.instance.CameraController.UseVerticalRange = true;
       CanTakeDamage = true;
       Health = MaxHealth;
@@ -1729,7 +1729,7 @@ public class PlayerBiped : Pawn
 #endif
       part.transform.GetComponent<BoxCollider2D>().size = new Vector2( 0.15f, 0.15f );
       part.renderer.enabled = false;
-      Global.instance.CameraController.orthoTarget = 1;
+      //Global.instance.CameraController.orthoTarget = 1;
       Global.instance.CameraController.UseVerticalRange = false;
       CanTakeDamage = false;
     }

@@ -13,7 +13,7 @@ public class SceneHome : SceneScript
       Global.instance.CurrentPlayer.velocity = Vector2.zero;
     }
 
-    Global.instance.CameraController.orthoTarget = 2;
+    //Global.instance.CameraController.orthoTarget = 2;
   }
 
   #region Skins
