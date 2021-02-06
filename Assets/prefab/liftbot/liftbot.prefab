@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 4874249801477483448}
   - component: {fileID: 9109282300699132467}
   - component: {fileID: 3047422316451110554}
-  - component: {fileID: 1928618165654571599}
   m_Layer: 0
   m_Name: liftbot
   m_TagString: Untagged
@@ -50,18 +49,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.07}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 1}
     oldSize: {x: 0.625, y: 0.203125}
-    newSize: {x: 0.25, y: 0.375}
+    newSize: {x: 0.62, y: 0.14}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.6, y: 0.2}
+  m_Size: {x: 0.62, y: 0.14}
   m_EdgeRadius: 0
 --- !u!212 &212979940915122146
 SpriteRenderer:
@@ -107,7 +106,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.25, y: 0.375}
+  m_Size: {x: 0.62, y: 0.14}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -168,23 +167,25 @@ MonoBehaviour:
   Team: 0
   body: {fileID: 9109282300699132467}
   box: {fileID: 61733048714469916}
+  circle: {fileID: 0}
   renderer: {fileID: 212979940915122146}
   animator: {fileID: 4874249801477483448}
   IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 0
   IsStatic: 0
-  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
-  pushVelocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
+  overrideVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
+  DownOffset: 0
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 0
-  health: 1
+  Health: 3
   MaxHealth: 5
   explosion: {fileID: 0}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
@@ -196,6 +197,10 @@ MonoBehaviour:
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []
+  CharacterLayer: 0
+  CharacterParts: []
+  UseWaitDuration: 1
+  IsTriggeredByPlayer: 0
   flySpeed: 3
   waitDuration: 2
   origin: {x: 0, y: 0}
@@ -203,24 +208,6 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 3}
   pingpong: 0
-  UseWaitDuration: 1
-  IsTriggeredByPlayer: 0
---- !u!208 &1928618165654571599
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1268720782321642}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.125, y: 0.1875, z: 0.15}
-  m_MoveThreshold: 0.1
-  m_Carve: 1
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!1 &9209941920657911778
 GameObject:
   m_ObjectHideFlags: 0

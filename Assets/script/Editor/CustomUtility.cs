@@ -78,15 +78,24 @@ public class CustomUtility : EditorWindow
   int layer;
 
   string replaceName;
-  GameObject replacePrefab;
+  GameObject replacementPrefab;
   bool replaceInScene;
   bool replaceSelected;
   bool fixInScene;
-  bool fixSpriteInScene;
-  string fixSpriteName;
-  string fixSpriteSubobjectName;
-  Sprite sprite;
-  Material material;
+
+  enum OperationContext
+  {
+    SELECTED=0,
+    SCENE,
+    PREFABS
+  }
+
+  OperationContext operationContext;
+    
+  string findObjectName;
+  string findSubobjectName;
+  Sprite replacementSprite;
+  Material replacementMaterial;
   string subobjectName;
   string[] guids;
   float fudgeFactor;
@@ -499,7 +508,7 @@ public class CustomUtility : EditorWindow
       }*/
 
     }
-
+#if deleteme
     EditorGUILayout.Space( 10 );
     foldReplace = EditorGUILayout.Foldout( foldReplace, "Replace" );
     if( foldReplace )
@@ -509,7 +518,9 @@ public class CustomUtility : EditorWindow
       replaceSelected = EditorGUILayout.Toggle( "Replace Selected", replaceSelected );
       replaceName = EditorGUILayout.TextField( "Find Assets/Objects (leave blank for all scene objects)", replaceName );
       subobjectName = EditorGUILayout.TextField( "SubobjectName", subobjectName );
-      replacePrefab = (GameObject)EditorGUILayout.ObjectField( "Replace Prefab", replacePrefab, typeof( GameObject ), false, GUILayout.MinWidth( 50 ) );
+      
+      replacementPrefab = (GameObject)EditorGUILayout.ObjectField( "Replacement Prefab", replacementPrefab, typeof( GameObject ), false, GUILayout.MinWidth( 50 ) );
+      
       if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Replace GameObjects with Prefabs" ) )
       {
         int count = 0;
@@ -543,7 +554,7 @@ public class CustomUtility : EditorWindow
             {
               go = gos[index];
               if( go.name.StartsWith( replaceName ) )
-                ReplaceObjectWithPrefabInstance( go, replacePrefab );
+                ReplaceObjectWithPrefabInstance( go, replacementPrefab );
             }
             else
             {
@@ -553,7 +564,7 @@ public class CustomUtility : EditorWindow
                 Transform tf = go.transform.GetChild( i );
                 if( tf.name.StartsWith( subobjectName ) )
                 {
-                  ReplaceObjectWithPrefabInstance( tf.gameObject, replacePrefab );
+                  ReplaceObjectWithPrefabInstance( tf.gameObject, replacementPrefab );
                 }
               }
               PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
@@ -564,51 +575,83 @@ public class CustomUtility : EditorWindow
         }
       }
     }
-
+#endif
     EditorGUILayout.Space( 10 );
-    foldSprite = EditorGUILayout.Foldout( foldSprite, "Fix Sprite" );
+    foldSprite = EditorGUILayout.Foldout( foldSprite, "Replace" );
     if( foldSprite )
     {
       GUILayout.Label( "Fix Sprite", EditorStyles.boldLabel );
-      fixSpriteInScene = EditorGUILayout.Toggle( "In Scene", fixSpriteInScene );
-      fixSpriteName = EditorGUILayout.TextField( "Find Prefabs/Scene Objects", fixSpriteName );
-      fixSpriteSubobjectName = EditorGUILayout.TextField( "SubobjectName", fixSpriteSubobjectName );
-      sprite = (Sprite)EditorGUILayout.ObjectField( "Replace Sprite", sprite, typeof( Sprite ), false );
-      material = (Material)EditorGUILayout.ObjectField( "Replace Material", material, typeof( Material ), false );
+      operationContext = (OperationContext)EditorGUILayout.EnumPopup("Context", operationContext );
+
+      findObjectName = EditorGUILayout.TextField( "Find Prefabs/Scene Objects", findObjectName );
+      findSubobjectName = EditorGUILayout.TextField( "SubobjectName", findSubobjectName );
+      
+      replacementPrefab = (GameObject)EditorGUILayout.ObjectField( "Replacement Prefab", replacementPrefab, typeof( GameObject ), false, GUILayout.MinWidth( 50 ) );
+      replacementSprite = (Sprite)EditorGUILayout.ObjectField( "Replacement Sprite", replacementSprite, typeof( Sprite ), false );
+      replacementMaterial = (Material)EditorGUILayout.ObjectField( "Replacement Material", replacementMaterial, typeof( Material ), false );
 
       if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Fix Sprites" ) )
       {
-        int count;
-        if( fixSpriteInScene )
+        int count=0;
+        switch( operationContext ) 
         {
-          gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
-          count = gos.Count;
-        }
-        else
-        {
-          assetPaths = new List<string>();
-          guids = AssetDatabase.FindAssets( fixSpriteName + " t:prefab" );
-          foreach( string guid in guids )
-            assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
-          count = assetPaths.Count;
+          case OperationContext.SELECTED:
+            gos = new List<GameObject>( Selection.gameObjects );
+            count = gos.Count;
+            break;
+          case OperationContext.SCENE:
+            gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
+            count = gos.Count;
+            break;
+          case OperationContext.PREFABS:
+            assetPaths = new List<string>();
+            guids = AssetDatabase.FindAssets( findObjectName + " t:prefab" );
+            foreach( string guid in guids )
+              assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
+            count = assetPaths.Count;
+            break;
         }
         StartJob( "Searching...", count, delegate ()
-        {
-          GameObject go;
-          if( replaceInScene )
-            go = gos[index];
-          else
-            go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
+          {
+            GameObject go = null;
+          switch( operationContext ) 
+          {
+            case OperationContext.SELECTED:
+            case OperationContext.SCENE:
+              go = gos[index];
+              if( replacementPrefab != null && go.name.StartsWith( findObjectName ) )
+                  ReplaceObjectWithPrefabInstance( go, replacementPrefab );
+              break;
+            case OperationContext.PREFABS:
+              go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
+              if( replacementPrefab != null )
+              {
+                for( int i = 0; i < go.transform.childCount; i++ )
+                {
+                  Transform tf = go.transform.GetChild( i );
+                  if( tf.name.StartsWith( subobjectName ) )
+                  {
+                    ReplaceObjectWithPrefabInstance( tf.gameObject, replacementPrefab );
+                  }
+                }
+                PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
+                PrefabUtility.UnloadPrefabContents( go );
+              }
+              break;
+          }
+ 
           Transform[] tfs = go.GetComponentsInChildren<Transform>();
           foreach( var tf in tfs )
           {
-            if( fixSpriteSubobjectName.Length == 0 || tf.name.StartsWith( fixSpriteSubobjectName ) )
+            if( findSubobjectName.Length == 0 || tf.name.StartsWith( findSubobjectName ) )
             {
               SpriteRenderer sr = tf.GetComponent<SpriteRenderer>();
               if( sr != null )
               {
-                sr.sprite = sprite;
-                sr.material = material;
+                if( replacementSprite != null )
+                  sr.sprite = replacementSprite;
+                if( replacementMaterial != null )
+                  sr.material = replacementMaterial;
               }
             }
           }
@@ -686,7 +729,7 @@ public class CustomUtility : EditorWindow
 }
 
 
-
+#if false
 
 [CustomEditor( typeof(SpriteRenderer) )]
 [CanEditMultipleObjects]
@@ -699,6 +742,7 @@ public class SpriteRendererEditor : Editor
 
   const float snap = 0.25f;
 
+  public static bool AutoSize = false;
   public float desiredWidth;
   [HideInInspector]
   public float height;
@@ -707,62 +751,68 @@ public class SpriteRendererEditor : Editor
   [HideInInspector]
   public float width;
   float cHeight;
-  public bool SnapIncrements = true;
+  public static bool SnapIncrements;
   bool cSnap;
   Sprite cSprite;
   bool cAutoTile;
   
   public override void OnInspectorGUI()
   {
-    SpriteRenderer spr = target as SpriteRenderer;
-
-    if( spr != cSpr )
+    SpriteRenderer spr = (target as Transform).GetComponent<SpriteRenderer>();
+    if( spr.gameObject.CompareTag( "AutoSizeSprite" ) )
     {
-      cSpr = spr;
-      desiredWidth = spr.size.x;
-      desiredHeight = spr.size.y;
-    }
 
-    desiredWidth = EditorGUILayout.FloatField( "WIDTH", desiredWidth );
-    desiredHeight = EditorGUILayout.FloatField( "HEIGHT", desiredHeight );
-    SnapIncrements = EditorGUILayout.Toggle( "Snap", SnapIncrements );
-    
-    if( BoxCollider2D == null )
-      BoxCollider2D = spr.GetComponent<BoxCollider2D>();
-    if( NavMeshObstacle==null )
-      NavMeshObstacle = spr.GetComponent<NavMeshObstacle>();
-
-    if( desiredHeight != cHeight || desiredWidth != cWidth || SnapIncrements != cSnap || cSprite != spr.sprite || (BoxCollider2D != null && cAutoTile != BoxCollider2D.autoTiling) )
-    {
-      cHeight = desiredHeight;
-      cWidth = desiredWidth;
-      cSnap = SnapIncrements;
-      cSprite = spr.sprite;
-
-      width = SnapIncrements ? Mathf.Max( snap, Mathf.Round( desiredWidth / snap ) * snap ) : desiredWidth;
-      height = SnapIncrements ? Mathf.Max( snap, Mathf.Round( desiredHeight / snap ) * snap ) : desiredHeight;
-
-      spr.size = new Vector2( width, height );
-      Vector2 pivot = new Vector2( spr.sprite.pivot.x / spr.sprite.textureRect.width, spr.sprite.pivot.y / spr.sprite.textureRect.height );
-
-      if( BoxCollider2D != null )
+      if( spr != cSpr )
       {
-        cAutoTile = BoxCollider2D.autoTiling;
-        Vector2 autoTileSize = new Vector2( spr.sprite.textureRect.width / spr.sprite.pixelsPerUnit, spr.sprite.textureRect.height / spr.sprite.pixelsPerUnit );
-        BoxCollider2D.size = BoxCollider2D.autoTiling ? autoTileSize : new Vector2( width, height );
-        BoxCollider2D.offset = new Vector2( (0.5f - pivot.x) * BoxCollider2D.size.x, (0.5f - pivot.y) * BoxCollider2D.size.y );
+        cSpr = spr;
+        desiredWidth = spr.size.x;
+        desiredHeight = spr.size.y;
+        // avoid unintentionally snapping values that are not on the grid already 
+        SnapIncrements = Mathf.Repeat( desiredWidth, snap ) < 0.0001f && Mathf.Repeat( desiredHeight, snap ) < 0.0001f;
       }
 
-      if( NavMeshObstacle != null )
+      desiredWidth = EditorGUILayout.FloatField( "WIDTH", desiredWidth );
+      desiredHeight = EditorGUILayout.FloatField( "HEIGHT", desiredHeight );
+      SnapIncrements = EditorGUILayout.Toggle( "Snap", SnapIncrements );
+
+      if( BoxCollider2D == null )
+        BoxCollider2D = spr.GetComponent<BoxCollider2D>();
+      if( NavMeshObstacle == null )
+        NavMeshObstacle = spr.GetComponent<NavMeshObstacle>();
+
+      if( desiredHeight != cHeight || desiredWidth != cWidth || SnapIncrements != cSnap || cSprite != spr.sprite || (BoxCollider2D != null && cAutoTile != BoxCollider2D.autoTiling) )
       {
-        NavMeshObstacle.size = new Vector3( spr.size.x, spr.size.y, 0.3f );
-        NavMeshObstacle.center = new Vector2( (0.5f - pivot.x) * NavMeshObstacle.size.x, (0.5f - pivot.y) * NavMeshObstacle.size.y );
+        cHeight = desiredHeight;
+        cWidth = desiredWidth;
+        cSnap = SnapIncrements;
+        cSprite = spr.sprite;
+
+        width = SnapIncrements ? Mathf.Max( snap, Mathf.Round( desiredWidth / snap ) * snap ) : desiredWidth;
+        height = SnapIncrements ? Mathf.Max( snap, Mathf.Round( desiredHeight / snap ) * snap ) : desiredHeight;
+
+        spr.size = new Vector2( width, height );
+        Vector2 pivot = new Vector2( spr.sprite.pivot.x / spr.sprite.rect.width, spr.sprite.pivot.y / spr.sprite.rect.height );
+
+        if( BoxCollider2D != null )
+        {
+          cAutoTile = BoxCollider2D.autoTiling;
+          Vector2 autoTileSize = new Vector2( spr.sprite.textureRect.width / spr.sprite.pixelsPerUnit, spr.sprite.textureRect.height / spr.sprite.pixelsPerUnit );
+          BoxCollider2D.size = BoxCollider2D.autoTiling ? autoTileSize : new Vector2( width, height );
+          BoxCollider2D.offset = new Vector2( (0.5f - pivot.x) * BoxCollider2D.size.x, (0.5f - pivot.y) * BoxCollider2D.size.y );
+        }
+
+        if( NavMeshObstacle != null )
+        {
+          NavMeshObstacle.size = new Vector3( spr.size.x, spr.size.y, 0.3f );
+          NavMeshObstacle.center = new Vector2( (0.5f - pivot.x) * NavMeshObstacle.size.x, (0.5f - pivot.y) * NavMeshObstacle.size.y );
+        }
       }
     }
-    
+
     DrawDefaultInspector();
   }
 }
+#endif
 
 #if false
 void ClearGroundImages()

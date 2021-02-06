@@ -541,7 +541,7 @@ public class Global : MonoBehaviour
           Cursor.visible = false;
         }
       };
-      Controls.GlobalActions.Menu.AddBinding( "<Keyboard>/leftShift" );
+      Controls.GlobalActions.Menu.AddBinding( "<Keyboard>/tab" );
     }
     else
     {

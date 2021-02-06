@@ -120,10 +120,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 3966323970981597266}
+  box: {fileID: 5932741712758824715}
+  soundPickup: {fileID: 8300000, guid: 3c44a54d4dd494488a130ab13913709b, type: 3}
   weapon: {fileID: 0}
   ability: {fileID: 0}
+  SelectOnContact: 0
+  unique: 0
+  uniqueFloat0: 0
   PickupPart: 0
-  box: {fileID: 5932741712758824715}
   friction: 0.05
   raylength: 0.01
   contactSeparation: 0.01

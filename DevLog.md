@@ -6,10 +6,14 @@ FIXED mushy on lift. consider the velocity of the object being collided-with. [C
 NOFIX: high offset off angled floor. This is a known cosmetic problem, addressed with the "multi_sample" code in UpdateCollision(), not in use.
 FIXED long slide clipping. collision should reduce velocity, not only position.
 
-Chose to use no 2d physics (except for bouncygrenade).
+Limited use of 2d rigidbodies (bouncygrenade, pickups).
+
 + sprite animations: using state machine.
+
 + multi-part sprite characters.
+
 + normal maps, so cannot use sprite atlas.
+
 + 2D lighting
 + deployment
 
@@ -45,8 +49,9 @@ Chose to use no 2d physics (except for bouncygrenade).
 + marching square nodes
 
 + camera zones
+
 + removed cursor min snap
-+ parallax optimization in editor
++ parallax in editor
 + add spark effect to wall jump
 + replace old sprite anims with unity animators
 

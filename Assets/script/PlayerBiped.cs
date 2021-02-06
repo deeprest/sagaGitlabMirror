@@ -26,7 +26,7 @@ public class PlayerBiped : Pawn
   public float headboxy = -0.1f;
   const float downslopefudge = 0.2f;
   //private const float corner = 0.707106769f;
-  const float collisionCornerTop = 0f;
+  const float collisionCornerTop = -0.658504546f;
   const float collisionCornerBottom = 0.658504546f;
   const float collisionCornerSide = 0.752576649f;
   
@@ -168,6 +168,7 @@ public class PlayerBiped : Pawn
   public AudioClip soundJump;
   public AudioClip soundDash;
   public AudioClip soundDamage;
+  public AudioClip soundDeath;
   public AudioClip soundPickup;
   public AudioClip soundDenied;
   public AudioClip soundWeaponFail;
@@ -393,18 +394,20 @@ public class PlayerBiped : Pawn
       Pickup pickup = hit.transform.GetComponent<Pickup>();
       if( pickup != null && pickup.SelectOnContact )
       {
-        pickup.Select();
         if( pickup.unique != UniquePickupType.None )
         {
-          audio.PlayOneShot( soundPickup );
           switch( pickup.unique )
           {
-            case UniquePickupType.SpeedFactorNormalized:
-              speedFactorNormalized += pickup.uniqueFloat0;
+            case UniquePickupType.Health: 
+              AddHealth( pickup.uniqueInt0 ); 
+              break;
+            case UniquePickupType.SpeedFactorNormalized:  
+              speedFactorNormalized += pickup.uniqueFloat0; 
               break;
           }
-          Destroy( pickup.gameObject );
         }
+        // this should destroy the pickup
+        pickup.Select();
       }
     }
 
@@ -654,6 +657,7 @@ public class PlayerBiped : Pawn
 #if true
     // BOTTOM
     prefer = float.MinValue;
+    // todo fix exception that occurs after death
     bottomHitCount = Physics2D.BoxCastNonAlloc( adjust, box.size * Scale, transform.rotation.eulerAngles.z, -(Vector2)transform.up, bottomHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
     temp += "down: " + bottomHitCount + " ";
     for( int i = 0; i < bottomHitCount; i++ )
@@ -736,13 +740,11 @@ public class PlayerBiped : Pawn
         hitLeft = hit;
         
         velocity.x = Mathf.Max( velocity.x, 0 );
-        inertia.x = Mathf.Max( inertia.x, 0 );
-        
+
         adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
         wallSlideTargetNormal = hit.normal;
         // prevent clipping through angled walls when falling fast.
         velocity.y -= Util.Project2D( velocity, hit.normal ).y;
-        //break;
       }
     }
 
@@ -762,8 +764,7 @@ public class PlayerBiped : Pawn
         hitRight = hit;
         
         velocity.x = Mathf.Min( velocity.x, 0 );
-        inertia.x = Mathf.Min( inertia.x, 0 );
-        
+
         adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
         wallSlideTargetNormal = hit.normal;
         // prevent clipping through angled walls when falling fast.
@@ -991,12 +992,12 @@ public class PlayerBiped : Pawn
           if( pickup.weapon != null )
           {
             if( AddWeapon( pickup.weapon ) )
-              Destroy( pickup.gameObject );
+              pickup.Select();
           }
           else if( pickup.ability != null )
           {
             if( AddAbility( pickup.ability ) )
-              Destroy( pickup.gameObject );
+              pickup.Select();
           }
           else if( pickup.PickupPart != PickupPart.None )
           {
@@ -1186,33 +1187,6 @@ public class PlayerBiped : Pawn
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
     }
-    
-    /*
-    bool crushed = false;
-    const float crushMinSpeed = 0.005f;
-    if( collideRight && hitRight.normal.y <= 0 && collideLeft && hitLeft.normal.y <= 0 )
-    {
-      Entity entity;
-      if( hitLeft.transform.TryGetComponent( out entity ) && entity.Velocity.x > crushMinSpeed )
-        crushed = true;
-      if( hitRight.transform.TryGetComponent( out entity ) && entity.Velocity.x < -crushMinSpeed )
-        crushed = true;
-    }
-    if( collideTop && collideBottom )
-    {
-      Entity entity;
-      if( hitTop.transform.TryGetComponent( out entity ) && entity.Velocity.y < -crushMinSpeed )
-        crushed = true;
-      if( hitBottom.transform.TryGetComponent( out entity ) && entity.Velocity.y > crushMinSpeed )
-        crushed = true;
-    }
-    if( crushed )
-    {
-      //Die();
-      if( !takingDamage )
-        TakeDamage( CrushDamage );
-    }
-    */
 
     velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     // value is adjusted later by collision
@@ -1259,7 +1233,7 @@ public class PlayerBiped : Pawn
       if( !takingDamage )
         TakeDamage( CrushDamage );
     }
-    
+
     UpdateCursor();
 
     if( takingDamage )
@@ -1486,8 +1460,10 @@ public class PlayerBiped : Pawn
   
   protected override void Die()
   {
-    Instantiate( spawnWhenDead, transform.position, Quaternion.identity );
-    // todo death sound
+    if( SpawnWhenDead.Length > 0 )
+      Instantiate( SpawnWhenDead[Random.Range( 0, SpawnWhenDead.Length )], transform.position, Quaternion.identity );
+    
+    audio.PlayOneShot( soundDeath );
     
     /*
     if( spider == null )
@@ -1523,25 +1499,43 @@ public class PlayerBiped : Pawn
 
   }
 
+  public override void AddHealth( int amount )
+  {
+    Health = Mathf.Clamp( Health + amount, 0, MaxHealth );
+    
+    if( Health >= MaxHealth ) 
+    {
+      damageSmoke.Stop();
+    }
+    else
+    {
+      damageSmoke.Play();
+      ParticleSystem.EmissionModule damageSmokeEmission = damageSmoke.emission;
+      ParticleSystem.MinMaxCurve rateCurve = damageSmokeEmission.rateOverTime;
+      rateCurve.constant = 20.0f - 20.0f * ((float)Health / (float)MaxHealth);
+      damageSmokeEmission.rateOverTime = rateCurve;
+    }
+  }
+  
   public override bool TakeDamage( Damage damage )
   {
     if( !CanTakeDamage || damageGracePeriod || Health <= 0 )
       return false;
     if( damage.instigator != null && !IsEnemyTeam( damage.instigator.Team ) )
       return false;
-    Health -= damage.amount;
+    AddHealth( -damage.amount );
     if( Health <= 0 )
     {
       flashTimer.Stop( false );
       Die();
       return true;
     }
-    damageSmoke.Play();
     
-    ParticleSystem.EmissionModule damageSmokeEmission = damageSmoke.emission;
-    ParticleSystem.MinMaxCurve rateCurve = damageSmokeEmission.rateOverTime;
-    rateCurve.constant = 20.0f - 20.0f * ((float)Health / (float)MaxHealth);
-    damageSmokeEmission.rateOverTime = rateCurve;
+    // damageSmoke.Play();
+    // ParticleSystem.EmissionModule damageSmokeEmission = damageSmoke.emission;
+    // ParticleSystem.MinMaxCurve rateCurve = damageSmokeEmission.rateOverTime;
+    // rateCurve.constant = 20.0f - 20.0f * ((float)Health / (float)MaxHealth);
+    // damageSmokeEmission.rateOverTime = rateCurve;
     
     StopCharge();
     //partHead.transform.localScale = Vector3.one * (1 + (Health / MaxHealth) * 10);
@@ -1564,10 +1558,7 @@ public class PlayerBiped : Pawn
     damageGracePeriod = true;
     if( ability != null )
       ability.Deactivate();
-    damageTimer.Start( damageDuration, delegate( Timer t )
-    {
-      //push.x = -sign * damagePushAmount;
-    }, delegate()
+    damageTimer.Start( damageDuration, null, delegate()
     {
       takingDamage = false;
       arm.gameObject.SetActive( true );

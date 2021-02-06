@@ -41,6 +41,13 @@ public class Entity : MonoBehaviour, IDamage
   {
     get
     {
+  #if DEBUG_CHECKS
+      if( carryCharacter!=null && carryCharacter.GetInstanceID() == GetInstanceID() ) 
+      {
+        Debug.LogError("recursive Velocity", gameObject );
+        return velocity;
+      }
+  #endif
       if( carryCharacter == null )
         return velocity;
       else
@@ -97,7 +104,7 @@ public class Entity : MonoBehaviour, IDamage
   public int MaxHealth = 5;
   public GameObject explosion;
   public AudioClip soundHit;
-  public GameObject spawnWhenDead;
+  public GameObject[] SpawnWhenDead;
   public int spawnChance = 1;
   // FLASH
   protected Timer flashTimer = new Timer();
@@ -181,33 +188,7 @@ public class Entity : MonoBehaviour, IDamage
     if( UpdateHit != null )
       UpdateHit();
 
-    if( overrideVelocityTimer.IsActive )
-      velocity = overrideVelocity;
-
-    if( UseGravity )
-      velocity.y += -Global.Gravity * Time.deltaTime;
-    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-    if( collideTop )
-    {
-      velocity.y = Mathf.Min( velocity.y, 0 );
-    }
-    if( collideBottom )
-    {
-      velocity.x -= (velocity.x * friction) * Time.deltaTime;
-      velocity.y = Mathf.Max( velocity.y, 0 );
-    }
-    if( collideRight )
-    {
-      velocity.x = Mathf.Min( velocity.x, 0 );
-    }
-    if( collideLeft )
-    {
-      velocity.x = Mathf.Max( velocity.x, 0 );
-    }
-
-    transform.position += (Vector3) Velocity * Time.deltaTime;
-
-    carryCharacter = null;
+    UpdatePosition();
 
     if( UpdateCollision != null )
       UpdateCollision();
@@ -271,8 +252,39 @@ public class Entity : MonoBehaviour, IDamage
     overrideVelocityTimer.Start( duration, delegate( Timer timer ) { overrideVelocity = pVelocity; }, delegate { overrideVelocity = Vector2.zero; } );
   }
 
+  void UpdatePosition() 
+  {
+    if( overrideVelocityTimer.IsActive )
+      velocity = overrideVelocity;
+
+    if( UseGravity )
+      velocity.y += -Global.Gravity * Time.deltaTime;
+    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
+    if( collideTop )
+    {
+      velocity.y = Mathf.Min( velocity.y, 0 );
+    }
+    if( collideBottom )
+    {
+      velocity.x -= (velocity.x * friction) * Time.deltaTime;
+      velocity.y = Mathf.Max( velocity.y, 0 );
+    }
+    if( collideRight )
+    {
+      velocity.x = Mathf.Min( velocity.x, 0 );
+    }
+    if( collideLeft )
+    {
+      velocity.x = Mathf.Max( velocity.x, 0 );
+    }
+
+    transform.position += (Vector3) Velocity * Time.deltaTime;
+  }
+
   protected void BoxCollisionSingle()
   {
+    carryCharacter = null;
+    
     float dT = Time.deltaTime;
     collideRight = false;
     collideLeft = false;
@@ -327,7 +339,7 @@ public class Entity : MonoBehaviour, IDamage
         }
       }
 
-      if( hit.normal.y < corner )
+      if( hit.normal.y < -corner )
       {
         collideTop = true;
         topHits[topHitCount++] = hit;
@@ -363,10 +375,15 @@ public class Entity : MonoBehaviour, IDamage
   protected virtual void Die()
   {
     Instantiate( explosion, transform.position, Quaternion.identity );
-    if( spawnWhenDead != null && Random.Range( 0, spawnChance ) == 0 )
-      Instantiate( spawnWhenDead, transform.position, Quaternion.identity );
+    if( SpawnWhenDead.Length > 0 )
+      Instantiate( SpawnWhenDead[Random.Range( 0, SpawnWhenDead.Length )], transform.position, Quaternion.identity );
     Destroy( gameObject );
     EventDestroyed?.Invoke();
+  }
+
+  public virtual void AddHealth( int amount )
+  {
+    Health += amount;
   }
 
   public virtual bool TakeDamage( Damage damage )
@@ -376,7 +393,7 @@ public class Entity : MonoBehaviour, IDamage
       return false;
     if( damage.instigator != null && damage.instigator.Team == Team )
       return false;
-    Health -= damage.amount;
+    AddHealth( -damage.amount );
     if( Health <= 0 )
     {
       flashTimer.Stop( false );

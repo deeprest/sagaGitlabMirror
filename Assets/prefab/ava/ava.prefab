@@ -4997,7 +4997,6 @@ MonoBehaviour:
   spriteRenderers: []
   UseGravity: 1
   IsStatic: 0
-  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
   inertia: {x: 0, y: 0}
   overrideVelocity: {x: 0, y: 0}
@@ -5013,8 +5012,8 @@ MonoBehaviour:
   MaxHealth: 50
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
-  spawnWhenDead: {fileID: 1678155047526447402, guid: 0b441ca38fb9146debe1d70a64193693,
-    type: 3}
+  spawnWhenDead:
+  - {fileID: 1678155047526447402, guid: 0b441ca38fb9146debe1d70a64193693, type: 3}
   spawnChance: 1
   flashInterval: 0.05
   flashCount: 5
@@ -5066,8 +5065,6 @@ MonoBehaviour:
   Scale: 1
   headbox: {x: 0.01, y: 0.1}
   headboxy: 0
-  collisionCornerBottom: 0.65850455
-  collisionCornerSide: 0.75257665
   facingRight: 0
   jumping: 0
   walljumping: 0
@@ -5165,6 +5162,7 @@ MonoBehaviour:
   soundJump: {fileID: 8300000, guid: 3634bba7cfee0409cb0ba088753bc669, type: 3}
   soundDash: {fileID: 8300000, guid: fa292f5f0979c4ce49e47c2a103a585b, type: 3}
   soundDamage: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
+  soundDeath: {fileID: 8300000, guid: c5964d5bb5873436991454117aee7806, type: 3}
   soundPickup: {fileID: 8300000, guid: b92e60c4c52ca434f8dc5ba7bcd588cc, type: 3}
   soundDenied: {fileID: 8300000, guid: 33fa2607814e34283a6a7e5d17964fab, type: 3}
   soundWeaponFail: {fileID: 8300000, guid: 33fa2607814e34283a6a7e5d17964fab, type: 3}
@@ -5218,7 +5216,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   damageSmoke: {fileID: 3827073479069855659}
   selectRange: 0.5
-  downdown: 0.12
   partLegs:
     enabled: 1
     transform: {fileID: 4857518412556878}
@@ -5294,7 +5291,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.78125, y: 0.78125}
+  m_Size: {x: 0.2, y: 0.3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -5313,12 +5310,12 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.05699693, y: -0.12884021}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 0.78125, y: 0.78125}
-    newSize: {x: 0.78125, y: 0.78125}
+    newSize: {x: 0.2, y: 0.3}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
