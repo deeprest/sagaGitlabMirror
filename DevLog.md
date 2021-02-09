@@ -1,4 +1,6 @@
 
+NEW Minimap shows static parts of environment.
+NEW Minimap renders once. Player position is shown with an icon.
 
 FIXED camera zone soft lock when using door on dr cain chamber
 FIXED [use gen safe zone] generation does not destroy entities spawned at runtime. Should it? Showing off generation in a build is nice, but if it means implementing features never seen in the game, is it worth it?

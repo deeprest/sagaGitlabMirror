@@ -18,14 +18,13 @@ public class CameraController : MonoBehaviour
 
   public float orthoTarget = 1;
   public float orthoSpeed = 1;
-
+  /*
   public bool snapToPixel = true;
-  const float pixelDensity = 64;
   public float snapDivide = 1;
   public float pixelSnap;
   public float presnap;
   public float snapped;
-  
+  */
   [SerializeField] CameraZone ActiveCameraZone;
   bool CameraZoneOverride;
 
@@ -34,29 +33,7 @@ public class CameraController : MonoBehaviour
     ActiveCameraZone = zone;
     CameraZoneOverride = zone!=null;
   }
-
-  /*
-  public void LerpTo( GameObject go )
-  {
-    LookTarget = go;
-    lerp.targetTransform = go.transform;
-    lerp.duration = 3;
-    lerp.Continuous = false;
-    lerp.enabled = true;
-  }
-
-  public void LockOn( GameObject go )
-  {
-    lerp.targetTransform = go.transform;
-    lerp.duration = 1;
-    lerp.Continuous = true;
-    lerp.enabled = true;
-    lerp.OnLerpEnd = delegate
-    {
-      //LookTarget = go;
-    };
-  }
-  */
+  
 #if CLIP_POINT_ATTEMPT
   public class ClipPoint
   {
@@ -107,6 +84,9 @@ public class CameraController : MonoBehaviour
 
       if( ActiveCameraZone != null )
       {
+        if( ActiveCameraZone.SetOrtho )
+          ortho = ActiveCameraZone.orthoTarget;
+        
         float hh, hw, xangle = 0, yangle = 0;
         if( Camera.main.orthographic )
         {

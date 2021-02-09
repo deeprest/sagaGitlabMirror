@@ -1,12 +1,11 @@
 
-## Remember
-* script execution order is the reason liftbots are updated first in the entites list, because they are added the list on Awake().
-+ FIXED Linux: glitchy/wrong sprite shader for entities. This is because of texture compression settings on each individual texture.
+# Remember
+* script execution order is the reason liftbots are updated first in the entites list, because they are added to the list on Awake().
+* FIXED Linux: glitchy/wrong sprite shader for entities. This is because of texture compression settings on each individual texture.
+* composite sprite render layers. Create a layer for each composite, or how to keep entire composites from interlacing with one another? SOLUTION: Animate a *struct* int for each piece, and update the sortingOrder of the SpriteRenderers from LateUpdate().
+* pixel-perfect animations must be done in Unity for each piece. Snap to pixel density, use constant anim curves.
+* 2d skeleton rigs, avatars, and IK can not be used with composites. Skeletons use rotations, and these anims are not rotation-based.
 
-#### Remember: Composite Sprite Problems
-+ composite sprite render layers. Create a layer for each composite, or how to keep entire composites from interlacing with one another? SOLUTION: Animate a *struct* int for each piece, and update the sortingOrder of the SpriteRenderers from LateUpdate().
-+ pixel-perfect animations must be done in Unity for each piece. Snap to pixel density, use constant anim curves.
-+ 2d skeleton rigs, avatars, and IK can not be used with composites. Skeletons use rotations, and these anims are not rotation-based.
 
 # Decide
 walljumping while auto-wallsliding
@@ -37,7 +36,7 @@ CODE Character agentType: remove need for Global.instance.AgentType lookup. Just
 
 
 # Issues
-VERIFY confirm that Teams are set for all characters.
+VERIFY confirm that Teams are set for all relevent entities.
 
 ### Needs Fix
 FIX gamepad: when not aiming, default aim direction.
@@ -79,8 +78,7 @@ FIX hornet gets stuck
 - hornet particles should not rotate, and should disappear
 
 #### Minimap
-NEW Minimap shows static parts of environment.
-NEW Minimap renders once. Player position is shown with an icon.
+
 
 
 ### Linux Issues
