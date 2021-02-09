@@ -1,12 +1,14 @@
 ﻿#if UNITY_EDITOR
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 using UnityEngine.AI;
 using UnityEditor.Build.Reporting;
+using Debug = UnityEngine.Debug;
 
 public static class StaticUtility
 {
@@ -30,7 +32,7 @@ public class CustomUtility : EditorWindow
   [RuntimeInitializeOnLoadMethod]
   static void OnLoadMethod()
   {
-    if( EditorPrefs.GetBool( "CreateGlobalOnStart") )
+    if( EditorPrefs.GetBool( "CreateGlobalOnStart" ) )
     {
       for( int i = 0; i < SceneManager.sceneCount; i++ )
       {
@@ -48,7 +50,7 @@ public class CustomUtility : EditorWindow
   static void Init()
   {
     // Get existing open window or if none, make a new one:
-    CustomUtility window = (CustomUtility)EditorWindow.GetWindow( typeof( CustomUtility ) );
+    CustomUtility window = (CustomUtility) EditorWindow.GetWindow( typeof(CustomUtility) );
     window.Show();
   }
 
@@ -77,26 +79,29 @@ public class CustomUtility : EditorWindow
   List<string> assetPaths;
   int layer;
 
-  string replaceName;
   GameObject replacementPrefab;
-  bool replaceInScene;
-  bool replaceSelected;
+  bool ProcessSubObjects;
+  bool FixNavObstacles;
+  bool ReplacePrefab;
+  bool ReplaceSprite;
+  bool ReplaceMaterial;
+  bool AutoFixSprite;
+
   bool fixInScene;
 
   enum OperationContext
   {
-    SELECTED=0,
+    SELECTED = 0,
     SCENE,
     PREFABS
   }
 
   OperationContext operationContext;
-    
-  string findObjectName;
-  string findSubobjectName;
+
+  string FilterObjectName;
+  string FilterSubObjectName;
   Sprite replacementSprite;
   Material replacementMaterial;
-  string subobjectName;
   string[] guids;
   float fudgeFactor;
 
@@ -106,7 +111,6 @@ public class CustomUtility : EditorWindow
   bool foldTodo = true;
   bool foldBuild;
   bool foldGeneric;
-  bool foldReplace;
   bool foldSprite;
   bool foldFont;
 
@@ -137,7 +141,7 @@ public class CustomUtility : EditorWindow
       else
       {
         ProgressUpdate();
-        progress = (float)index++ / (float)length;
+        progress = (float) index++ / (float) length;
       }
       // this call forces OnGUI to be called repeatedly instead of on-demand
       Repaint();
@@ -164,7 +168,6 @@ public class CustomUtility : EditorWindow
     }
     */
 
-
     EditorGUILayout.Space();
     EditorGUI.ProgressBar( EditorGUILayout.GetControlRect( false, 30 ), progress, progressMessage );
     EditorPrefs.SetBool( "CreateGlobalOnStart", EditorGUILayout.Toggle( "CreatGlobalOnStart", EditorPrefs.GetBool( "CreateGlobalOnStart", true ) ) );
@@ -173,7 +176,7 @@ public class CustomUtility : EditorWindow
     foldTodo = EditorGUILayout.Foldout( foldTodo, "Todo" );
     if( foldTodo )
     {
-      string td = EditorGUILayout.TextArea( todo, new GUILayoutOption[] { GUILayout.Height( 200 ) } );
+      string td = EditorGUILayout.TextArea( todo, new GUILayoutOption[] {GUILayout.Height( 200 )} );
       if( td != todo )
       {
         todo = td;
@@ -300,81 +303,31 @@ public class CustomUtility : EditorWindow
         //      }
       }
 
-      layer = (LayerMask)EditorGUILayout.IntField( "layer", layer );
+      layer = (LayerMask) EditorGUILayout.IntField( "layer", layer );
       if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Find GameObjects by Layer" ) )
       {
         gos = new List<GameObject>( Resources.FindObjectsOfTypeAll<GameObject>() );
         List<GameObject> found = new List<GameObject>();
-        StartJob( "Searching...", gos.Count, delegate ()
+        StartJob( "Searching...", gos.Count, delegate()
         {
           GameObject go = gos[index];
           if( go.layer == layer )
             found.Add( go );
-        },
-          delegate ()
+        }, delegate()
+        {
+          foreach( var go in found )
           {
-            foreach( var go in found )
-            {
-              Debug.Log( "Found: " + go.name, go );
-            }
-          } );
+            Debug.Log( "Found: " + go.name, go );
+          }
+        } );
       }
-
 
       if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Show GUID of selected assets" ) )
       {
         for( int i = 0; i < Selection.assetGUIDs.Length; i++ )
           Debug.Log( Selection.objects[i].GetType().ToString() + " " + Selection.objects[i].name + " " + Selection.assetGUIDs[i] );
       }
-
-      fixInScene = EditorGUILayout.Toggle( "Fix in Scene", fixInScene );
-      if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Fix all Nav Obstacles" ) )
-      {
-        int count;
-        if( fixInScene )
-        {
-          gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
-          count = gos.Count;
-        }
-        else
-        {
-          assetPaths = new List<string>();
-          guids = AssetDatabase.FindAssets( replaceName + " t:prefab", new string[] { "Assets" } );
-          foreach( string guid in guids )
-            assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
-          count = assetPaths.Count;
-        }
-        StartJob( "Searching...", count, delegate ()
-        {
-          GameObject go;
-          if( fixInScene )
-          {
-            go = gos[index];
-          }
-          else
-          {
-            go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
-          }
-          NavMeshObstacle[] navs = go.GetComponentsInChildren<NavMeshObstacle>();
-          foreach( var nav in navs )
-          {
-            SpriteRenderer rdr = nav.gameObject.GetComponent<SpriteRenderer>();
-            if( rdr != null )
-            {
-              nav.carving = true;
-              nav.center = rdr.transform.worldToLocalMatrix.MultiplyPoint( rdr.bounds.center );
-              nav.size = new Vector3( rdr.size.x, rdr.size.y, 0.3f );
-            }
-          }
-          if( !fixInScene )
-          {
-            PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
-            PrefabUtility.UnloadPrefabContents( go );
-          }
-        },
-        null );
-      }
-
+     
       fudgeFactor = EditorGUILayout.FloatField( "fudge", fudgeFactor );
 
       if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Generate Edge Collider Nav Obstacles" ) )
@@ -438,7 +391,6 @@ public class CustomUtility : EditorWindow
         mc.sharedMesh = mesh;
         //mf.sharedMesh = mesh;
       }
-
 
 #if false
     if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Zip Data" ) )
@@ -506,157 +458,98 @@ public class CustomUtility : EditorWindow
           ass.dopplerLevel = audioDoppler;
         }, null );
       }*/
+    }
 
-    }
-#if deleteme
     EditorGUILayout.Space( 10 );
-    foldReplace = EditorGUILayout.Foldout( foldReplace, "Replace" );
-    if( foldReplace )
-    {
-      //GUILayout.Label( "Replace Common Settings", EditorStyles.boldLabel );
-      replaceInScene = EditorGUILayout.Toggle( "Replace in Scene", replaceInScene );
-      replaceSelected = EditorGUILayout.Toggle( "Replace Selected", replaceSelected );
-      replaceName = EditorGUILayout.TextField( "Find Assets/Objects (leave blank for all scene objects)", replaceName );
-      subobjectName = EditorGUILayout.TextField( "SubobjectName", subobjectName );
-      
-      replacementPrefab = (GameObject)EditorGUILayout.ObjectField( "Replacement Prefab", replacementPrefab, typeof( GameObject ), false, GUILayout.MinWidth( 50 ) );
-      
-      if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Replace GameObjects with Prefabs" ) )
-      {
-        int count = 0;
-        if( replaceSelected )
-        {
-          if( Selection.gameObjects.Length > 0 )
-          {
-            gos = new List<GameObject>( Selection.gameObjects );
-            count = gos.Count;
-          }
-        }
-        else if( replaceInScene )
-        {
-          gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
-          count = gos.Count;
-        }
-        else
-        {
-          assetPaths = new List<string>();
-          guids = AssetDatabase.FindAssets( replaceName + " t:prefab" );
-          foreach( string guid in guids )
-            assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
-          count = assetPaths.Count;
-        }
-        if( count > 0 )
-        {
-          StartJob( "Searching...", count, delegate ()
-          {
-            GameObject go;
-            if( replaceInScene || replaceSelected )
-            {
-              go = gos[index];
-              if( go.name.StartsWith( replaceName ) )
-                ReplaceObjectWithPrefabInstance( go, replacementPrefab );
-            }
-            else
-            {
-              go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
-              for( int i = 0; i < go.transform.childCount; i++ )
-              {
-                Transform tf = go.transform.GetChild( i );
-                if( tf.name.StartsWith( subobjectName ) )
-                {
-                  ReplaceObjectWithPrefabInstance( tf.gameObject, replacementPrefab );
-                }
-              }
-              PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
-              PrefabUtility.UnloadPrefabContents( go );
-            }
-          },
-          null );
-        }
-      }
-    }
-#endif
-    EditorGUILayout.Space( 10 );
-    foldSprite = EditorGUILayout.Foldout( foldSprite, "Replace" );
+    foldSprite = EditorGUILayout.Foldout( foldSprite, "Multi Tool" );
     if( foldSprite )
     {
-      GUILayout.Label( "Fix Sprite", EditorStyles.boldLabel );
-      operationContext = (OperationContext)EditorGUILayout.EnumPopup("Context", operationContext );
+      operationContext = (OperationContext) EditorGUILayout.EnumPopup( "Context", operationContext );
 
-      findObjectName = EditorGUILayout.TextField( "Find Prefabs/Scene Objects", findObjectName );
-      findSubobjectName = EditorGUILayout.TextField( "SubobjectName", findSubobjectName );
+      FilterObjectName = EditorGUILayout.TextField( "Filter by Name", FilterObjectName );
+
+      ProcessSubObjects = EditorGUILayout.Toggle( "Process SubObjects", ProcessSubObjects );
+      FilterSubObjectName = EditorGUILayout.TextField( "SubobjectName", FilterSubObjectName );
+
+      ReplacePrefab = EditorGUILayout.Toggle( "ReplacePrefab", ReplacePrefab );
+      replacementPrefab = (GameObject) EditorGUILayout.ObjectField( "Replacement Prefab", replacementPrefab, typeof(GameObject), false, GUILayout.MinWidth( 50 ) );
       
-      replacementPrefab = (GameObject)EditorGUILayout.ObjectField( "Replacement Prefab", replacementPrefab, typeof( GameObject ), false, GUILayout.MinWidth( 50 ) );
-      replacementSprite = (Sprite)EditorGUILayout.ObjectField( "Replacement Sprite", replacementSprite, typeof( Sprite ), false );
-      replacementMaterial = (Material)EditorGUILayout.ObjectField( "Replacement Material", replacementMaterial, typeof( Material ), false );
+      ReplaceSprite = EditorGUILayout.Toggle( "ReplaceSprite", ReplaceSprite );
+      replacementSprite = (Sprite) EditorGUILayout.ObjectField( "Replacement Sprite", replacementSprite, typeof(Sprite), false );
+      
+      ReplaceMaterial = EditorGUILayout.Toggle( "Replace Material", ReplaceMaterial );
+      replacementMaterial = (Material) EditorGUILayout.ObjectField( "Replacement Material", replacementMaterial, typeof(Material), false );
 
-      if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Fix Sprites" ) )
+      FixNavObstacles = EditorGUILayout.Toggle( "Fix Nav Obstacles", FixNavObstacles );
+      
+      AutoFixSprite = EditorGUILayout.Toggle( "Auto Fix Sprite", AutoFixSprite );
+
+
+      if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Process Objects" ) )
       {
-        int count=0;
-        switch( operationContext ) 
+        int count = 0;
+        switch( operationContext )
         {
           case OperationContext.SELECTED:
             gos = new List<GameObject>( Selection.gameObjects );
+            for( int i = 0; i < gos.Count; i++ )
+              if( !gos[i].name.StartsWith( FilterObjectName ) )
+                gos.RemoveAt( i-- );
             count = gos.Count;
             break;
           case OperationContext.SCENE:
             gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
+            for( int i = 0; i < gos.Count; i++ )
+              if( !gos[i].name.StartsWith( FilterObjectName ) )
+                gos.RemoveAt( i-- );
             count = gos.Count;
             break;
           case OperationContext.PREFABS:
             assetPaths = new List<string>();
-            guids = AssetDatabase.FindAssets( findObjectName + " t:prefab" );
+            guids = AssetDatabase.FindAssets( FilterObjectName + " t:prefab" );
             foreach( string guid in guids )
               assetPaths.Add( AssetDatabase.GUIDToAssetPath( guid ) );
             count = assetPaths.Count;
             break;
         }
-        StartJob( "Searching...", count, delegate ()
-          {
-            GameObject go = null;
-          switch( operationContext ) 
+        StartJob( "Processing...", count, delegate()
+        {
+          GameObject go = null;
+
+          switch( operationContext )
           {
             case OperationContext.SELECTED:
             case OperationContext.SCENE:
               go = gos[index];
-              if( replacementPrefab != null && go.name.StartsWith( findObjectName ) )
-                  ReplaceObjectWithPrefabInstance( go, replacementPrefab );
               break;
             case OperationContext.PREFABS:
               go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
-              if( replacementPrefab != null )
-              {
-                for( int i = 0; i < go.transform.childCount; i++ )
-                {
-                  Transform tf = go.transform.GetChild( i );
-                  if( tf.name.StartsWith( subobjectName ) )
-                  {
-                    ReplaceObjectWithPrefabInstance( tf.gameObject, replacementPrefab );
-                  }
-                }
-                PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
-                PrefabUtility.UnloadPrefabContents( go );
-              }
+              // NOTE do not allow replacing prefabs with other prefab instances
+              ReplacePrefab = false;
               break;
           }
- 
-          Transform[] tfs = go.GetComponentsInChildren<Transform>();
-          foreach( var tf in tfs )
+
+          if( ProcessSubObjects )
           {
-            if( findSubobjectName.Length == 0 || tf.name.StartsWith( findSubobjectName ) )
+            Transform[] tfs = go.GetComponentsInChildren<Transform>();
+            for( int i = 0; i < tfs.Length; i++ )
             {
-              SpriteRenderer sr = tf.GetComponent<SpriteRenderer>();
-              if( sr != null )
-              {
-                if( replacementSprite != null )
-                  sr.sprite = replacementSprite;
-                if( replacementMaterial != null )
-                  sr.material = replacementMaterial;
-              }
+              Transform tf = tfs[i];
+              if( FilterSubObjectName.Length == 0 || tf.name.StartsWith( FilterSubObjectName ) )
+                ProcessSingle( tf.gameObject );
             }
           }
-        },
-        AssetDatabase.SaveAssets );
+          else
+          {
+            ProcessSingle( go );
+          }
+
+          if( operationContext == OperationContext.PREFABS )
+          {
+            PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
+            PrefabUtility.UnloadPrefabContents( go );
+          }
+        }, AssetDatabase.SaveAssets );
       }
     }
 
@@ -665,16 +558,14 @@ public class CustomUtility : EditorWindow
     if( foldFont )
     {
       // tested on Unity 2019.2.6f1
-      fontImage = (Texture2D)EditorGUILayout.ObjectField( "Pixel Font Image", fontImage, typeof( Texture2D ), false );
+      fontImage = (Texture2D) EditorGUILayout.ObjectField( "Pixel Font Image", fontImage, typeof(Texture2D), false );
       if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Create Pixel Font" ) )
       {
         string letter = " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
         const int imageSize = 256;
         const int cols = 16;
         const int charWith = imageSize / cols;
-        string output = "info font=\"Base 5\" size=32 bold=0 italic=0 charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=2,2\n" +
-          "common lineHeight=10 base=12 scaleW=" + imageSize + " scaleH=" + imageSize + " pages=1 packed=0\n" +
-          "page id=0 file=\"" + fontImage.name + ".png\"\nchars count=" + letter.Length + "\n";
+        string output = "info font=\"Base 5\" size=32 bold=0 italic=0 charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=2,2\n" + "common lineHeight=10 base=12 scaleW=" + imageSize + " scaleH=" + imageSize + " pages=1 packed=0\n" + "page id=0 file=\"" + fontImage.name + ".png\"\nchars count=" + letter.Length + "\n";
         for( int i = 0; i < letter.Length; i++ )
           output += "char id=" + i + " x=" + (i % cols) * charWith + " y=" + (i / cols) * charWith + " width=14 height=14 xoffset=1 yoffset=1 xadvance=16 page=0 chnl=0 letter=\"" + letter[i] + "\"\n";
         output += "kernings count=0";
@@ -699,14 +590,12 @@ public class CustomUtility : EditorWindow
         so.SetIsDifferentCacheDirty();
       }
     }
-
-
   }
 
 
   void ReplaceObjectWithPrefabInstance( GameObject replaceThis, GameObject prefab )
   {
-    GameObject go = (GameObject)PrefabUtility.InstantiatePrefab( prefab, replaceThis.transform.parent );
+    GameObject go = (GameObject) PrefabUtility.InstantiatePrefab( prefab, replaceThis.transform.parent );
     go.transform.position = replaceThis.transform.position;
     go.transform.rotation = replaceThis.transform.rotation;
     SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
@@ -726,15 +615,11 @@ public class CustomUtility : EditorWindow
     PrefabUtility.RecordPrefabInstancePropertyModifications( go.transform );
     DestroyImmediate( replaceThis.gameObject );
   }
-}
 
-
+  
+  
+  
 #if false
-
-[CustomEditor( typeof(SpriteRenderer) )]
-[CanEditMultipleObjects]
-public class SpriteRendererEditor : Editor
-{
   // cached sprite renderer 
   SpriteRenderer cSpr;
   BoxCollider2D BoxCollider2D;
@@ -756,11 +641,9 @@ public class SpriteRendererEditor : Editor
   Sprite cSprite;
   bool cAutoTile;
   
-  public override void OnInspectorGUI()
+  void FixSprite( SpriteRenderer spr ) 
   {
-    SpriteRenderer spr = (target as Transform).GetComponent<SpriteRenderer>();
-    if( spr.gameObject.CompareTag( "AutoSizeSprite" ) )
-    {
+    
 
       if( spr != cSpr )
       {
@@ -790,6 +673,8 @@ public class SpriteRendererEditor : Editor
         width = SnapIncrements ? Mathf.Max( snap, Mathf.Round( desiredWidth / snap ) * snap ) : desiredWidth;
         height = SnapIncrements ? Mathf.Max( snap, Mathf.Round( desiredHeight / snap ) * snap ) : desiredHeight;
 
+        
+        
         spr.size = new Vector2( width, height );
         Vector2 pivot = new Vector2( spr.sprite.pivot.x / spr.sprite.rect.width, spr.sprite.pivot.y / spr.sprite.rect.height );
 
@@ -806,13 +691,70 @@ public class SpriteRendererEditor : Editor
           NavMeshObstacle.size = new Vector3( spr.size.x, spr.size.y, 0.3f );
           NavMeshObstacle.center = new Vector2( (0.5f - pivot.x) * NavMeshObstacle.size.x, (0.5f - pivot.y) * NavMeshObstacle.size.y );
         }
-      }
-    }
-
-    DrawDefaultInspector();
+      
+    
+    
   }
 }
 #endif
+
+  void ProcessSingle( GameObject go )
+  {
+    if( ReplacePrefab && replacementPrefab != null )
+      ReplaceObjectWithPrefabInstance( go, replacementPrefab );
+    
+    SpriteRenderer spr = go.GetComponent<SpriteRenderer>();
+    if( spr != null )
+    {
+      if( ReplaceSprite && replacementSprite != null )
+        spr.sprite = replacementSprite;
+      if( replacementMaterial && replacementMaterial != null )
+        spr.material = replacementMaterial;
+      if( AutoFixSprite )
+      {
+        BoxCollider2D BoxCollider2D = spr.GetComponent<BoxCollider2D>();
+        NavMeshObstacle NavMeshObstacle = spr.GetComponent<NavMeshObstacle>();
+        float width = spr.size.x;
+        float height = spr.size.y;
+        spr.size = new Vector2( width, height );
+        Vector2 pivot = new Vector2( spr.sprite.pivot.x / spr.sprite.rect.width, spr.sprite.pivot.y / spr.sprite.rect.height );
+
+        if( BoxCollider2D != null )
+        {
+          Vector2 autoTileSize = new Vector2( spr.sprite.textureRect.width / spr.sprite.pixelsPerUnit, spr.sprite.textureRect.height / spr.sprite.pixelsPerUnit );
+          BoxCollider2D.size = BoxCollider2D.autoTiling ? autoTileSize : new Vector2( width, height );
+          BoxCollider2D.offset = new Vector2( (0.5f - pivot.x) * BoxCollider2D.size.x, (0.5f - pivot.y) * BoxCollider2D.size.y );
+        }
+
+        if( NavMeshObstacle != null )
+        {
+          //NavMeshObstacle.carving = true;
+          NavMeshObstacle.size = new Vector3( spr.size.x, spr.size.y, 0.3f );
+          NavMeshObstacle.center = new Vector2( (0.5f - pivot.x) * NavMeshObstacle.size.x, (0.5f - pivot.y) * NavMeshObstacle.size.y );
+        }
+      }
+    }
+
+    
+
+    /*if( FixNavObstacles )
+    {
+      NavMeshObstacle[] navs = go.GetComponentsInChildren<NavMeshObstacle>();
+      foreach( var nav in navs )
+      {
+        SpriteRenderer rdr = nav.gameObject.GetComponent<SpriteRenderer>();
+        if( rdr != null )
+        {
+          nav.carving = true;
+          nav.center = rdr.transform.worldToLocalMatrix.MultiplyPoint( rdr.bounds.center );
+          nav.size = new Vector3( rdr.size.x, rdr.size.y, 0.3f );
+        }
+      }
+    }*/
+  }
+}
+
+
 
 #if false
 void ClearGroundImages()
@@ -858,8 +800,8 @@ public class ProgressUpdateExample : EditorWindow
   System.Action ProgressUpdate;
   bool processing = false;
   float progress = 0;
-  int index=0;
-  int length=0;
+  int index = 0;
+  int length = 0;
 
   List<GameObject> gos = new List<GameObject>();
 
