@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1268720782321642}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.163, y: -0.738, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 9203506422267389143}
@@ -189,7 +189,7 @@ MonoBehaviour:
   MaxHealth: 5
   explosion: {fileID: 0}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
-  spawnWhenDead: {fileID: 0}
+  SpawnWhenDead: []
   spawnChance: 1
   flashInterval: 0.05
   flashCount: 5
@@ -233,7 +233,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9209941920657911778}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.085, z: 0}
+  m_LocalPosition: {x: 0, y: -0.185, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4739618571392748}

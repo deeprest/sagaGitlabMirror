@@ -5,7 +5,7 @@
 1. Design pillars, describing *feel* (three phrases):  Nimbly pimbly. Upgrade! Irreverent Distractions.
 2. Summary. Destroy bad robots and use their parts to improve yourself to save the city.
 3. Features: aiming, generated city
-4. Target platforms: MacOS, Linux, etc
+4. Target platforms: Linux, MacOS, etc
 5. Target Audience: Any fans of MMX that want to see the gameplay evolve.
 6. Game Details (see below)
 7. Interface, Controls: m+k, gamepads
@@ -19,7 +19,7 @@
 **Accessibility**
 Must run smoothly on lower-spec machines [define min spec]
 Single player. No internet connection required to play.
-Control Rebinding
+Control Rebinding, m+k or gamepad
 
 **Is not commercialized**
 no ads. You pay with your soul. (fake ads?)
@@ -104,8 +104,25 @@ Atmosphere. Environment animations.
 2. Parts. reclaim parts
 3. Gears. Health can be reclaimed from dropped "gears" ala Sonic. Respawn if empty.
 4. Instant Replay. Go back before death and replay with a few seconds leeway.
-- Instant Replay: Playback system, use for death cycle:  go back in time to last grace period, play a couple seconds, and have a countdown, then let the player resume where they were at that point. If they die within 3 seconds, rewind even further to grace period before that.
+- Instant Replay: Playback system, use for death cycle:  go back in time to last grace period, play a couple seconds, and have a countdown, 
+	then let the player resume where they were at that point. If they die within 3 seconds, rewind even further to grace period before that.
 5. Tiny
+
+
+## Boss (quickboss)
+when boss has low health
+has line of sight to player
+distance to player
+is in specific areas of chamber
+if player:
+	has shield up
+	has recently shot
+	is charging shot
+	is dashing
+	is running
+	is jumping
+	is on wall
+
 
 
 Use abilities gained from defeating enemies in the stage to defeat the boss.

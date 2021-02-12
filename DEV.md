@@ -2,14 +2,15 @@
 # Remember
 * script execution order is the reason liftbots are updated first in the entites list, because they are added to the list on Awake().
 * FIXED Linux: glitchy/wrong sprite shader for entities. This is because of texture compression settings on each individual texture.
-* composite sprite render layers. Create a layer for each composite, or how to keep entire composites from interlacing with one another? SOLUTION: Animate a *struct* int for each piece, and update the sortingOrder of the SpriteRenderers from LateUpdate().
+* composite sprite render layers. Create a layer for each composite, or how to keep entire composites from interlacing with one another? 
+	SOLUTION: Animate a *struct* int for each piece, and update the sortingOrder of the SpriteRenderers from LateUpdate().
 * pixel-perfect animations must be done in Unity for each piece. Snap to pixel density, use constant anim curves.
 * 2d skeleton rigs, avatars, and IK can not be used with composites. Skeletons use rotations, and these anims are not rotation-based.
 
 
 # Decide
 walljumping while auto-wallsliding
-when entities land, want a crisp landing like playerbiped. find out how they're different. 
+
 
 # New Things
 + NEW crush damage
@@ -17,7 +18,7 @@ NEW START A DEVLOG ON ITCH.
 NEW airbot propellar ability. propellar on back? dash in air to use prop
 NEW health pickups dropped by enemies
 NEW Big wrecking ball bot.
-NEW Agile boss bot. quickboss needs destruction sequence
+NEW Agile boss bot.
 NEW player death effect/anim
 NEW music selection on pause menu
 NEW cheats menu
@@ -37,6 +38,7 @@ CODE Character agentType: remove need for Global.instance.AgentType lookup. Just
 
 # Issues
 VERIFY confirm that Teams are set for all relevent entities.
+VERIFY when entities land, want a crisp landing like playerbiped. find out how they're different. 
 
 ### Needs Fix
 FIX gamepad: when not aiming, default aim direction.

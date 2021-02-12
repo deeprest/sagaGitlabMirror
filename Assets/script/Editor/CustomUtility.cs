@@ -492,19 +492,23 @@ public class CustomUtility : EditorWindow
         {
           case OperationContext.SELECTED:
             gos = new List<GameObject>( Selection.gameObjects );
-            for( int i = 0; i < gos.Count; i++ )
-              if( !gos[i].name.StartsWith( FilterObjectName ) )
-                gos.RemoveAt( i-- );
+            if( FilterObjectName.Length > 0 )
+              for( int i = 0; i < gos.Count; i++ )
+                if( !gos[i].name.StartsWith( FilterObjectName ) )
+                  gos.RemoveAt( i-- );
             count = gos.Count;
             break;
           case OperationContext.SCENE:
             gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
-            for( int i = 0; i < gos.Count; i++ )
-              if( !gos[i].name.StartsWith( FilterObjectName ) )
-                gos.RemoveAt( i-- );
+            if( FilterObjectName.Length > 0 )
+              for( int i = 0; i < gos.Count; i++ )
+                if( !gos[i].name.StartsWith( FilterObjectName ) )
+                  gos.RemoveAt( i-- );
             count = gos.Count;
             break;
           case OperationContext.PREFABS:
+            // NOTE do not allow replacing prefabs with other prefab instances
+            ReplacePrefab = false;
             assetPaths = new List<string>();
             guids = AssetDatabase.FindAssets( FilterObjectName + " t:prefab" );
             foreach( string guid in guids )
@@ -524,8 +528,6 @@ public class CustomUtility : EditorWindow
               break;
             case OperationContext.PREFABS:
               go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
-              // NOTE do not allow replacing prefabs with other prefab instances
-              ReplacePrefab = false;
               break;
           }
 

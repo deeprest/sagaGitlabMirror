@@ -267,7 +267,7 @@ public class Global : MonoBehaviour
     // note: allowing characters to collide introduces risk of being forced into a corner
     CharacterCollideLayers = LayerMask.GetMask( new string[] {"Default", "destructible", "triggerAndCollision"} );
     CharacterSidestepLayers = LayerMask.GetMask( new string[] {"character"} );
-    CharacterDamageLayers = LayerMask.GetMask( new string[] {"character"} );
+    CharacterDamageLayers = LayerMask.GetMask( new string[] {"character", "destructible"} );
     TriggerLayers = LayerMask.GetMask( new string[] {"trigger", "triggerAndCollision"} );
     WorldSelectableLayers = LayerMask.GetMask( new string[] {"worldselect"} );
     ProjectileNoShootLayers = LayerMask.GetMask( new string[] {"Default"} );

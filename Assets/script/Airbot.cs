@@ -28,7 +28,6 @@ public class Airbot : Entity
   [SerializeField] Transform sightOrigin;
   public float sightRange = 6;
   Collider2D[] results = new Collider2D[32];
-
   Timer SightPulseTimer = new Timer();
 
   protected override void Start()

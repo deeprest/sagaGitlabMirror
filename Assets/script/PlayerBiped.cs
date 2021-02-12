@@ -21,7 +21,6 @@ public class PlayerBiped : Pawn
   public float Scale = 1;
   // smaller head box allows for easier jump out and up onto an overhead wall when standing on a ledge.
   const float raydown = 0.2f;
-  const float downOffset = 0.12f;
   public Vector2 headbox = new Vector2( .1f, .1f );
   public float headboxy = -0.1f;
   const float downslopefudge = 0.2f;
@@ -645,7 +644,7 @@ public class PlayerBiped : Pawn
     
     // slidingOffsetTarget = 1;
     string temp = "";
-    float down = jumping ? raydown - downOffset : raydown;
+    float down = jumping ? raydown - DownOffset : raydown;
     float prefer;
    
     Bounds bounds = new Bounds( adjust + Vector2.down * Mathf.Max( down, -velocity.y * dT ) * 0.5f, box.size + Vector2.up * Mathf.Max( down, -velocity.y * dT ) );
@@ -686,7 +685,7 @@ public class PlayerBiped : Pawn
         }
         adjust.y = hit.point.y + box.size.y * 0.5f + slidingOffset * downOffset;
 #endif
-        adjust.y = hit.point.y + box.size.y * 0.5f * Scale + downOffset;
+        adjust.y = hit.point.y + box.size.y * 0.5f * Scale + DownOffset;
         
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();

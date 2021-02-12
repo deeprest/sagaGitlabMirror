@@ -726,6 +726,8 @@ MonoBehaviour:
     scenePath: Assets/scene/gen.unity
   - sceneAsset: {fileID: 102900000, guid: f80b83ab4bf8540d0951fc8896f57d2d, type: 3}
     scenePath: Assets/scene/jabber.unity
+  - sceneAsset: {fileID: 102900000, guid: 3fdde71a3ca2e43efa5d107418e4f6d2, type: 3}
+    scenePath: Assets/scene/chamber.unity
   RandomSeedOnStart: 0
   SimulatePlayer: 0
   InitialScene:
@@ -1073,11 +1075,6 @@ MonoBehaviour:
   yHalfWidth: 0.5
   orthoTarget: 2
   orthoSpeed: 10
-  snapToPixel: 0
-  snapDivide: 1
-  pixelSnap: 1
-  presnap: 0
-  snapped: 0
   ActiveCameraZone: {fileID: 0}
 --- !u!114 &114891334979047146
 MonoBehaviour:
@@ -2562,7 +2559,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 66560
+    m_Bits: 67330
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 0cc55d87cbbe9421fa2a44708759c9af, type: 2}
   m_TargetDisplay: 0
@@ -5698,7 +5695,7 @@ MonoBehaviour:
   m_AssetsPPU: 2
   m_RefResolutionX: 2048
   m_RefResolutionY: 512
-  m_UpscaleRT: 1
+  m_UpscaleRT: 0
   m_PixelSnapping: 0
   m_CropFrameX: 0
   m_CropFrameY: 0

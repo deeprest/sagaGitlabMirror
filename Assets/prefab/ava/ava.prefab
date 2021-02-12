@@ -5004,7 +5004,7 @@ MonoBehaviour:
   friction: 8
   raylength: 0.03
   contactSeparation: 0.02
-  DownOffset: 0.23
+  DownOffset: 0.114
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
@@ -5012,8 +5012,7 @@ MonoBehaviour:
   MaxHealth: 50
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
-  spawnWhenDead:
-  - {fileID: 1678155047526447402, guid: 0b441ca38fb9146debe1d70a64193693, type: 3}
+  SpawnWhenDead: []
   spawnChance: 1
   flashInterval: 0.05
   flashCount: 5
@@ -5310,7 +5309,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.05699693, y: -0.12884021}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
