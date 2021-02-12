@@ -54,6 +54,8 @@ public class SceneCity : SceneScript
   [SerializeField] Chopper chopper;
   [SerializeField] float runRightDuration = 3;
 
+  [SerializeField] RainMaker rainMaker;
+
   public override void StartScene()
   {
     base.StartScene();
@@ -275,6 +277,16 @@ public class SceneCity : SceneScript
     if( Application.isPlaying )
       Global.instance.MinimapRender( bounds.center );
 
+    if( rainMaker != null )
+    {
+      const float cellSize = 10;
+      const float upwardOffset = 40;
+      rainMaker.transform.position = new Vector2( dimension.x * cellSize * 0.5f, dimension.y * cellSize + upwardOffset );
+      rainMaker.width = dimension.x * cellSize;
+      rainMaker.maxDistance = dimension.y * cellSize + upwardOffset;
+      //rainMaker.direction = Vector2.down;
+      rainMaker.Generate( );
+    }
     Profiler.EndSample();
   }
 
