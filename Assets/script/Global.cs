@@ -219,8 +219,9 @@ public class Global : MonoBehaviour
   [Header( "Speech" )]
   public GameObject SpeechBubble;
   public Text SpeechText;
-  public Image SpeechIcon;
+  public SpriteRenderer SpeechIcon;
   public Animator SpeechAnimator;
+  [SerializeField] Camera SpeechIconCamera;
   CharacterIdentity SpeechCharacter;
   int SpeechPriority = 0;
   public float SpeechRange = 8;
@@ -266,7 +267,7 @@ public class Global : MonoBehaviour
     // note: allowing characters to collide introduces risk of being forced into a corner
     CharacterCollideLayers = LayerMask.GetMask( new string[] {"Default", "destructible", "triggerAndCollision"} );
     CharacterSidestepLayers = LayerMask.GetMask( new string[] {"character"} );
-    CharacterDamageLayers = LayerMask.GetMask( new string[] {"character"} );
+    CharacterDamageLayers = LayerMask.GetMask( new string[] {"character", "destructible"} );
     TriggerLayers = LayerMask.GetMask( new string[] {"trigger", "triggerAndCollision"} );
     WorldSelectableLayers = LayerMask.GetMask( new string[] {"worldselect"} );
     ProjectileNoShootLayers = LayerMask.GetMask( new string[] {"Default"} );
@@ -540,7 +541,7 @@ public class Global : MonoBehaviour
           Cursor.visible = false;
         }
       };
-      Controls.GlobalActions.Menu.AddBinding( "<Keyboard>/leftShift" );
+      Controls.GlobalActions.Menu.AddBinding( "<Keyboard>/tab" );
     }
     else
     {
@@ -774,7 +775,7 @@ public class Global : MonoBehaviour
     Pawn pawn = go.GetComponent<Pawn>();
     CurrentPlayer = pawn;
     PlayerController.AssignPawn( pawn );
-    Global.instance.CameraController.orthoTarget = 3;
+    //Global.instance.CameraController.orthoTarget = 3;
   }
 
   public Vector3 FindSpawnPosition()
@@ -1114,7 +1115,7 @@ public class Global : MonoBehaviour
     fadeTimer.Start( tp );
   }
 
-  public void Speak( CharacterIdentity character, string text, float timeout, int priority = 0 )
+  public void Speak( Transform headTransform, CharacterIdentity character, string text, float timeout, int priority = 0 )
   {
     // priority 0 = offhand remarks
     // priority 1 = unsolicted chat
@@ -1131,8 +1132,9 @@ public class Global : MonoBehaviour
 
     SpeechCharacter = character;
     SpeechPriority = priority;
-
-    SpeechIcon.sprite = SpeechCharacter.Icon;
+  
+    //SpeechIcon.sprite = SpeechCharacter.Icon;
+    
     /*string colorString = "#ffffff",
     Color color = Color.white;
     ColorUtility.TryParseHtmlString( colorString, out color );
@@ -1143,7 +1145,10 @@ public class Global : MonoBehaviour
     //SpeechText.rectTransform.localScale = Vector3.one * (1f - 0.5f * Mathf.Clamp( Mathf.Sqrt( DistanceSqr ) / SpeechRange, 0, 1 ));
 
     SpeechTimer.Stop( false );
-    SpeechTimer.Start( timeout, null, delegate()
+    SpeechTimer.Start( timeout, delegate( Timer timer )
+    {
+      SpeechIconCamera.transform.position = headTransform.GetComponent<SpriteRenderer>().bounds.center;
+    }, delegate()
     {
       SpeechBubble.SetActive( false );
       SpeechCharacter = null;
@@ -1152,7 +1157,7 @@ public class Global : MonoBehaviour
     SpeechAnimator.runtimeAnimatorController = character.animationController;
     SpeechAnimator.Play( "talk" );
   }
-
+  
   public void OverrideCameraZone( CameraZone zone )
   {
     CameraController.AssignOverrideCameraZone(zone);

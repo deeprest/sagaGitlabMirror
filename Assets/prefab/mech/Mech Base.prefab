@@ -82,7 +82,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2811019918733132173}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.161, y: 0.17, z: 0}
+  m_LocalPosition: {x: 0.161, y: 0.219, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4045851430560821422}
@@ -245,7 +245,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3891050234502034460}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.07, y: 0.171, z: 0}
+  m_LocalPosition: {x: -0.07, y: 0.219, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4045851430560821422}
@@ -310,8 +310,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4045851430560821422}
-  - component: {fileID: 5397825192010816886}
   - component: {fileID: 5736656210831704170}
+  - component: {fileID: 5397825192010816886}
   - component: {fileID: 1654668584601712558}
   - component: {fileID: 8324022198147396173}
   - component: {fileID: 2269174923454845371}
@@ -339,25 +339,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &5397825192010816886
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4045851430560821419}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ba506c911bb514ee8bf85c567e4eaabf, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &5736656210831704170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -380,7 +361,6 @@ MonoBehaviour:
   spriteRenderers: []
   UseGravity: 1
   IsStatic: 0
-  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
   inertia: {x: 0, y: 0}
   overrideVelocity: {x: 0, y: 0}
@@ -392,11 +372,11 @@ MonoBehaviour:
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  Health: 15
-  MaxHealth: 15
+  Health: 20
+  MaxHealth: 20
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
-  spawnWhenDead: {fileID: 0}
+  SpawnWhenDead: []
   spawnChance: 1
   flashInterval: 0.05
   flashCount: 5
@@ -459,6 +439,25 @@ MonoBehaviour:
   shotOrigin: {fileID: 810516725}
   DamageThreshold: 2
   Target: {fileID: 0}
+--- !u!95 &5397825192010816886
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4045851430560821419}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ba506c911bb514ee8bf85c567e4eaabf, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!61 &1654668584601712558
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -700,7 +699,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6648614578685787312}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.013, y: 0.336, z: 0}
+  m_LocalPosition: {x: -0.013, y: 0.415, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7588081617019825000}

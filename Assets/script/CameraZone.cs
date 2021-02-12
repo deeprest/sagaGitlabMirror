@@ -10,6 +10,10 @@ public class CameraZone : MonoBehaviour
   public bool EncompassBounds;
   [Tooltip("Ignore setting to set active camera zone when player enters zone.")]
   public bool IgnoreAutoSwitch;
+  [Tooltip("Set the camera zoom when this zone is the active zone.")]
+  public bool SetOrtho;
+  [Tooltip("If SetOrtho is true, this is the camera zoom value.")]
+  public float orthoTarget;
   [Tooltip( "The camera will stay within the shapes of these colliders when the zone is active." )]
   public Collider2D[] colliders;
 

@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4032389116732274}
   - component: {fileID: 212949075796312028}
-  - component: {fileID: 565244711017747629}
   - component: {fileID: 8402770076920746544}
   - component: {fileID: 88018454292964798}
+  - component: {fileID: 2006958740502359862}
+  - component: {fileID: 8788170251356996855}
   m_Layer: 10
   m_Name: wheelbot
   m_TagString: Untagged
@@ -85,22 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &565244711017747629
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1094346900350558}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.23
 --- !u!114 &8402770076920746544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,29 +100,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Team: 2
   body: {fileID: 88018454292964798}
-  box: {fileID: 0}
-  circle: {fileID: 565244711017747629}
+  box: {fileID: 2006958740502359862}
+  circle: {fileID: 8788170251356996855}
   renderer: {fileID: 212949075796312028}
   animator: {fileID: 0}
   IgnoreCollideObjects: []
   spriteRenderers: []
   UseGravity: 1
   IsStatic: 0
-  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
-  pushVelocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
+  overrideVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 0
   raylength: 0.2
   contactSeparation: 0.08
+  DownOffset: 0
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  health: 3
+  Health: 3
   MaxHealth: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  spawnWhenDead: {fileID: 0}
+  SpawnWhenDead: []
   spawnChance: 1
   flashInterval: 0.05
   flashCount: 1
@@ -171,6 +157,48 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!61 &2006958740502359862
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1094346900350558}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.328125, y: 0.328125}
+    newSize: {x: 0.25, y: 0.375}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.328125, y: 0.328125}
+  m_EdgeRadius: 0
+--- !u!58 &8788170251356996855
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1094346900350558}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.1640625
 --- !u!1 &5490519860742726923
 GameObject:
   m_ObjectHideFlags: 0

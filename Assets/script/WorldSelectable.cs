@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[SelectionBase]
 public class WorldSelectable : MonoBehaviour, IWorldSelectable
 {
   public virtual void Highlight()
@@ -7,7 +8,7 @@ public class WorldSelectable : MonoBehaviour, IWorldSelectable
     if( Global.instance.CurrentPlayer != null )
     {
       Global.instance.CurrentPlayer.InteractIndicator.SetActive( true );
-      Global.instance.CurrentPlayer.InteractIndicator.transform.position = transform.position;
+      Global.instance.CurrentPlayer.InteractIndicator.transform.position = GetPosition();
     }
   }
   public virtual void Unhighlight()

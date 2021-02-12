@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a370af930822f4d6fb0a3c1d0e703af1, type: 3}
+  m_Name: captain smirk jabber
+  m_EditorClassIdentifier: 
+  LettersPerPhoneme: 2
+  PhonemeLength: 0.09
+  SilenceLength: 0.21
+  EnablePitchVariation: 1
+  PitchOffset: -0.2
+  PitchSine: 0
+  PitchRange: 0.06
+  PitchSinSpeed: 1
+  PitchRandom: 1
+  RandomPhoneme: 0
+  Phonemes:
+  - PatternLetters: e
+    isDefault: 1
+    phoclips:
+    - UseClipLength: 0
+      UseOffset: 0
+      Offset: 0
+      clip: {fileID: 8300000, guid: 3ecbe4b5e7a414042b59536d192f6393, type: 3}

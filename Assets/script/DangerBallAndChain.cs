@@ -33,7 +33,6 @@ public class DangerBallAndChain : Entity
     UpdateLogic = LocalUpdate;
     UpdateHit = null;
     UpdateCollision = null;
-    UpdatePosition = null;
     Physics2D.IgnoreCollision( circle, fist.box );
     fist.OnHit = WaitToRetract;
     // sight pulse

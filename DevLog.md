@@ -1,14 +1,27 @@
 
-Chose to use no 2d physics (except for bouncygrenade). 
-+ sprite animations: using state machine. 
+NEW Minimap shows static parts of environment.
+NEW Minimap renders once. Player position is shown with an icon.
+
+FIXED camera zone soft lock when using door on dr cain chamber
+FIXED [use gen safe zone] generation does not destroy entities spawned at runtime. Should it? Showing off generation in a build is nice, but if it means implementing features never seen in the game, is it worth it?
+FIXED mushy on lift. consider the velocity of the object being collided-with. [CarryObject]
+NOFIX: high offset off angled floor. This is a known cosmetic problem, addressed with the "multi_sample" code in UpdateCollision(), not in use.
+FIXED long slide clipping. collision should reduce velocity, not only position.
+
+Limited use of 2d rigidbodies (bouncygrenade, pickups).
+
++ sprite animations: using state machine.
+
 + multi-part sprite characters.
-+ normal maps, so cannot use sprite atlas. 
+
++ normal maps, so cannot use sprite atlas.
+
 + 2D lighting
 + deployment
 
 + new input system. gamepad, linux. Keys: O, P
 + customutility build buttons: macos and linux
-+ menu elements navigate to diagetic in world
++ menu elements navigate to diegetic in world
 + gamepad shoot hold does not charge
 + menu navigation
 + cursor sensitivity setting
@@ -33,13 +46,14 @@ Chose to use no 2d physics (except for bouncygrenade).
 
 + dialogue box
 + shield turret settings adjustment. lower shields. shoot angle range. on ceiling.
-+ fix diagetic text in front
++ fix diegetic text in front
 + respawn using cyclic index
 + marching square nodes
 
 + camera zones
+
 + removed cursor min snap
-+ parallax optimization in editor
++ parallax in editor
 + add spark effect to wall jump
 + replace old sprite anims with unity animators
 

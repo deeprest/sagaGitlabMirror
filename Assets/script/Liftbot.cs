@@ -76,7 +76,6 @@ public class Liftbot : Entity, IWorldSelectable
     UpdateLogic = UpdateLiftbot;
     UpdateHit = null;
     UpdateCollision = null;
-    UpdatePosition = BasicPosition;
     origin = transform.position;
     if( !IsTriggeredByPlayer )
       timeout.Start( waitDuration, null, NextWaypoint );
@@ -135,7 +134,7 @@ public class Liftbot : Entity, IWorldSelectable
     }
   }
 
-  public override bool TakeDamage( Damage d )
+  public override bool TakeDamage( Damage damage )
   {
     // absorb hits, but do not take damage
     return true;

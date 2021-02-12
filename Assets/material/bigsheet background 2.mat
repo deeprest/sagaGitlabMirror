@@ -20,6 +20,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: 18ba25556d0fb47b790986e99ee0e9a5, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -45,14 +49,17 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - PixelSnap: 0
     - _BlendAmount: 0
     - _Cutoff: 0.001
     - _EmissiveAmount: 0
-    - _FadeAmount: 0.87
-    - _FlashAmount: 0.672
+    - _EnableExternalAlpha: 0
+    - _FadeAmount: 0.5
+    - _FlashAmount: 0
     - _FlipX: 0
     - _Glossiness: 0.2
     - _Metallic: 0
+    - _Minimap: 0
     - _NormalAmount: 0.45
     - _TintAmount: 0.69
     m_Colors:
@@ -60,6 +67,9 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _FadeColor: {r: 0.25, g: 0.25, b: 0.25, a: 1}
     - _FlashColor: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _IndexColor: {r: 1, g: 0, b: 0, a: 1}
     - _IndexColor2: {r: 1, g: 0, b: 0, a: 1}
+    - _MinimapColor: {r: 1, g: 0, b: 0, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _Tint: {r: 0.153, g: 0.153, b: 0.153, a: 1}

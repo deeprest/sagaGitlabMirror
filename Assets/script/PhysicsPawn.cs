@@ -67,7 +67,7 @@ public class PhysicsPawn : Pawn
     collideLeft = false;
     collideTop = false;
     collideBottom = false;
-    float down = DownOffset + contactSeparation;
+    float down = DownOffset;
     hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size * Scale, 0, Vector2.down, RaycastHits, Mathf.Max( down, -velocity.y * Time.fixedDeltaTime ), Global.CharacterCollideLayers );
     for( int i = 0; i < hitCount; i++ )
     {

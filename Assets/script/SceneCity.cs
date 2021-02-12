@@ -78,7 +78,7 @@ public class SceneCity : SceneScript
       } );
     }
     
-    Global.instance.CameraController.orthoTarget = 3;
+    //Global.instance.CameraController.orthoTarget = 3;
 
     if( inputSeed != null )
       inputSeed.onEndEdit.AddListener( ( x ) =>

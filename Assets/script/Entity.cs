@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿#define DEBUG_CHECKS
+
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+
 //using Random = UnityEngine.Random;
 
- public enum Team
+public enum Team
 {
   None,
   GoodGuys,
@@ -11,6 +14,7 @@ using UnityEngine.Events;
   Hostile
 }
 
+[SelectionBase]
 public class Entity : MonoBehaviour, IDamage
 {
   public static Limit<Entity> Limit = new Limit<Entity>();
@@ -31,12 +35,19 @@ public class Entity : MonoBehaviour, IDamage
 
   public bool UseGravity = true;
   public bool IsStatic = false;
-  public bool BoxCollisionOne = false;
   public Vector2 velocity;
+
   public Vector2 Velocity
   {
     get
     {
+  #if DEBUG_CHECKS
+      if( carryCharacter!=null && carryCharacter.GetInstanceID() == GetInstanceID() ) 
+      {
+        Debug.LogError("recursive Velocity", gameObject );
+        return velocity;
+      }
+  #endif
       if( carryCharacter == null )
         return velocity;
       else
@@ -50,27 +61,33 @@ public class Entity : MonoBehaviour, IDamage
   // moving platforms / stacking characters
   public Entity carryCharacter;
   public float friction = 0.05f;
-  
+
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
   public float DownOffset = 0;
 
-  public float Raydown 
+  public float Raydown
   {
-    get
-    {
-      return DownOffset + contactSeparation;
-    }
+    get { return DownOffset + contactSeparation; }
   }
 
-  
+
   // collision flags
   protected bool collideRight = false;
   protected bool collideLeft = false;
   protected bool collideTop = false;
   protected bool collideBottom = false;
+  const float corner = 0.707106769f;
   // cached for optimization - to avoid allocating every frame
   protected RaycastHit2D[] RaycastHits = new RaycastHit2D[4];
+  protected RaycastHit2D[] bottomHits;
+  protected RaycastHit2D[] topHits;
+  protected RaycastHit2D[] leftHits;
+  protected RaycastHit2D[] rightHits;
+  protected int bottomHitCount = 0;
+  protected int topHitCount = 0;
+  protected int leftHitCount = 0;
+  protected int rightHitCount = 0;
   // cached
   protected RaycastHit2D hit;
   protected int hitCount;
@@ -87,7 +104,7 @@ public class Entity : MonoBehaviour, IDamage
   public int MaxHealth = 5;
   public GameObject explosion;
   public AudioClip soundHit;
-  public GameObject spawnWhenDead;
+  public GameObject[] SpawnWhenDead;
   public int spawnChance = 1;
   // FLASH
   protected Timer flashTimer = new Timer();
@@ -99,12 +116,11 @@ public class Entity : MonoBehaviour, IDamage
   public Damage ContactDamage;
   public UnityEvent EventDestroyed;
 
-  // "collision" impedes this object's movement
+  // "collision" impedes *this* object's movement
+  // Only things that move need collision.
   protected System.Action UpdateCollision;
   // "hit" inflicts damage on others
   protected System.Action UpdateHit;
-  // integrate forces into position
-  protected System.Action UpdatePosition;
   // brains!!
   protected System.Action UpdateLogic;
 
@@ -113,12 +129,11 @@ public class Entity : MonoBehaviour, IDamage
 
   protected virtual void Awake()
   {
-
     if( !Limit.OnCreate( this ) )
       return;
     EntityAwake();
   }
-  
+
   public void EntityAwake()
   {
     RaycastHits = new RaycastHit2D[8];
@@ -145,11 +160,7 @@ public class Entity : MonoBehaviour, IDamage
     UpdateHit = BoxHit;
     if( !IsStatic )
     {
-      if( BoxCollisionOne )
-        UpdateCollision = BoxCollisionOneDown;
-      else
-        UpdateCollision = BoxCollisionFour;
-      UpdatePosition = BasicPosition;
+      UpdateCollision = BoxCollisionSingle;
     }
     if( EnablePathing )
     {
@@ -159,7 +170,11 @@ public class Entity : MonoBehaviour, IDamage
       pathAgent.AgentTypeID = Global.instance.AgentType[AgentTypeName];
     }
     InitializeParts();
-    
+
+    bottomHits = new RaycastHit2D[RaycastHits.Length];
+    topHits = new RaycastHit2D[RaycastHits.Length];
+    leftHits = new RaycastHit2D[RaycastHits.Length];
+    rightHits = new RaycastHit2D[RaycastHits.Length];
   }
 
   public virtual void EntityUpdate()
@@ -173,15 +188,12 @@ public class Entity : MonoBehaviour, IDamage
     if( UpdateHit != null )
       UpdateHit();
 
-    if( UpdatePosition != null )
-      UpdatePosition();
+    UpdatePosition();
 
     if( UpdateCollision != null )
       UpdateCollision();
-
-    //body.MovePosition( transform.position );
   }
-  
+
   public void EntityLateUpdate()
   {
     if( !Global.instance.Updating )
@@ -230,7 +242,6 @@ public class Entity : MonoBehaviour, IDamage
           dmg.point = hit.point;
           dam.TakeDamage( dmg );
         }
-
       }
     }
   }
@@ -238,24 +249,17 @@ public class Entity : MonoBehaviour, IDamage
   public void OverrideVelocity( Vector2 pVelocity, float duration )
   {
     overrideVelocityTimer.Stop( false );
-    overrideVelocityTimer.Start( duration, delegate( Timer timer )
-    {
-      overrideVelocity = pVelocity;
-    }, delegate
-    {
-      overrideVelocity = Vector2.zero;
-    });
+    overrideVelocityTimer.Start( duration, delegate( Timer timer ) { overrideVelocity = pVelocity; }, delegate { overrideVelocity = Vector2.zero; } );
   }
 
-  protected void BasicPosition()
+  void UpdatePosition() 
   {
-
     if( overrideVelocityTimer.IsActive )
       velocity = overrideVelocity;
 
     if( UseGravity )
       velocity.y += -Global.Gravity * Time.deltaTime;
-
+    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
     if( collideTop )
     {
       velocity.y = Mathf.Min( velocity.y, 0 );
@@ -273,41 +277,58 @@ public class Entity : MonoBehaviour, IDamage
     {
       velocity.x = Mathf.Max( velocity.x, 0 );
     }
-    velocity.y = Mathf.Max( velocity.y, -Global.MaxVelocity );
-
-    //velocity -= (velocity * airFriction) * Time.deltaTime;
 
     transform.position += (Vector3) Velocity * Time.deltaTime;
+  }
+
+  protected void BoxCollisionSingle()
+  {
     carryCharacter = null;
-  }
-
-  protected void BoxCollisionVelocity()
-  {
-    // Do a single box cast in the direction of velocity
+    
+    float dT = Time.deltaTime;
     collideRight = false;
     collideLeft = false;
     collideTop = false;
     collideBottom = false;
-    const float corner = 0.707f;
+    bottomHitCount = 0;
+    topHitCount = 0;
+    rightHitCount = 0;
+    leftHitCount = 0;
+
     boxOffset.x = box.offset.x * Mathf.Sign( transform.localScale.x );
     boxOffset.y = box.offset.y;
-    adjust = (Vector2)transform.position + boxOffset;
+    adjust = (Vector2) transform.position + boxOffset;
 
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, velocity, RaycastHits, Mathf.Max( Raydown, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
+    float downOffset = Mathf.Max( DownOffset, -velocity.y * dT );
+    Vector2 debugOrigin = adjust; // + Vector2.down * downOffset * 0.5f;
+    Vector2 debugBox = box.size; // + Vector2.up * downOffset; // + Vector2.right *  Mathf.Max( 0, Mathf.Abs(velocity.x * dT) );
+
+    Bounds bounds = new Bounds( debugOrigin, debugBox );
+    Debug.DrawLine( new Vector3( bounds.min.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.max.y ), Color.red );
+    Debug.DrawLine( new Vector3( bounds.min.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.max.y ), Color.red );
+    Debug.DrawLine( new Vector3( bounds.max.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.min.y ), Color.red );
+    Debug.DrawLine( new Vector3( bounds.max.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.min.y ), Color.red );
+
+    hitCount = Physics2D.BoxCastNonAlloc( debugOrigin, debugBox, 0 /*transform.rotation.eulerAngles.z*/, Vector2.down, RaycastHits, Mathf.Max( Raydown, -velocity.y * dT ), Global.CharacterCollideLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
+      if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
-      if( hit.normal.y > corner )
+
+      if( hit.normal.y > 0 && hit.normal.y > corner )
       {
         collideBottom = true;
-        adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation + DownOffset;
+        bottomHits[bottomHitCount++] = hit;
+        velocity.y = Mathf.Max( velocity.y, 0 );
+        inertia.x = 0;
+        adjust.y = hit.point.y + debugBox.y * 0.5f + Raydown;
+
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
         {
-#if UNITY_EDITOR
+#if DEBUG_CHECKS
           if( cha.GetInstanceID() == GetInstanceID() )
           {
             Debug.LogError( "character set itself as carry character", gameObject );
@@ -316,227 +337,63 @@ public class Entity : MonoBehaviour, IDamage
 #endif
           carryCharacter = cha;
         }
-        break;
       }
+
       if( hit.normal.y < -corner )
       {
         collideTop = true;
-        adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
-        break;
+        topHits[topHitCount++] = hit;
+        velocity.y = Mathf.Min( velocity.y, 0 );
+        adjust.y = hit.point.y - debugBox.y * 0.5f - contactSeparation;
       }
+
       if( hit.normal.x > corner )
       {
         collideLeft = true;
-        adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
-        break;
+        leftHits[leftHitCount++] = hit;
+        velocity.x = Mathf.Max( velocity.x, 0 );
+        inertia.x = Mathf.Max( inertia.x, 0 );
+        adjust.x = hit.point.x + debugBox.x * 0.5f + contactSeparation;
+        // prevent clipping through angled walls when falling fast.
+        /*velocity.y -= Util.Project2D( velocity, hit.normal ).y;*/
       }
+
       if( hit.normal.x < -corner )
       {
         collideRight = true;
-        adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
-        break;
+        rightHits[rightHitCount++] = hit;
+        velocity.x = Mathf.Min( velocity.x, 0 );
+        inertia.x = Mathf.Min( inertia.x, 0 );
+        adjust.x = hit.point.x - debugBox.x * 0.5f - contactSeparation;
+        // prevent clipping through angled walls when falling fast.
+        /*velocity.y -= Util.Project2D( velocity, hit.normal ).y;*/
       }
     }
-    transform.position = adjust - boxOffset;
-  }
-  
-  protected void CircleCollisionVelocity()
-  {
-    // Do a single circle cast in the direction of velocity
-    collideRight = false;
-    collideLeft = false;
-    collideTop = false;
-    collideBottom = false;
-    const float corner = 0.707f;
-    adjust = transform.position;
-
-    hitCount = Physics2D.CircleCastNonAlloc( adjust, circle.radius, velocity, RaycastHits, Mathf.Max( raylength, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
-        continue;
-      if( hit.normal.y > corner )
-      {
-        collideBottom = true;
-        adjust.y = hit.point.y + circle.radius + contactSeparation + DownOffset;
-        // moving platforms
-        Entity cha = hit.transform.GetComponent<Entity>();
-        if( cha != null )
-        {
-#if UNITY_EDITOR
-          if( cha.GetInstanceID() == GetInstanceID() )
-          {
-            Debug.LogError( "character set itself as carry character", gameObject );
-            Debug.Break();
-          }
-#endif
-          carryCharacter = cha;
-        }
-        break;
-      }
-      if( hit.normal.y < -corner )
-      {
-        collideTop = true;
-        adjust.y = hit.point.y - circle.radius - contactSeparation;
-        break;
-      }
-      if( hit.normal.x > corner )
-      {
-        collideLeft = true;
-        adjust.x = hit.point.x + circle.radius + contactSeparation;
-        break;
-      }
-      if( hit.normal.x < -corner )
-      {
-        collideRight = true;
-        adjust.x = hit.point.x - circle.radius - contactSeparation;
-        break;
-      }
-    }
-    transform.position = adjust;
-  }
-  
-  protected void BoxCollisionOneDown()
-  {
-    collideRight = false;
-    collideLeft = false;
-    collideTop = false;
-    collideBottom = false;
-    const float corner = 0.707f;
-    boxOffset.x = box.offset.x * Mathf.Sign( transform.localScale.x );
-    boxOffset.y = box.offset.y;
-    adjust = (Vector2)transform.position + boxOffset;
-
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( Raydown, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( hit.normal.y > corner )
-      {
-        if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
-          continue;
-        collideBottom = true;
-        adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation + DownOffset;
-        // moving platforms
-        Entity cha = hit.transform.GetComponent<Entity>();
-        if( cha != null )
-        {
-#if UNITY_EDITOR
-        if( cha.GetInstanceID() == GetInstanceID() )
-        {
-          Debug.LogError( "character set itself as carry character", gameObject );
-          Debug.Break();
-        }
-#endif
-          carryCharacter = cha;
-        }
-        break;
-      }
-    }
-    transform.position = adjust - boxOffset;
-  }
-
-  protected void BoxCollisionFour()
-  {
-    collideRight = false;
-    collideLeft = false;
-    collideTop = false;
-    collideBottom = false;
-    const float corner = 0.707f;
-    const float raydown = 0.2f;
-    boxOffset.x = box.offset.x * Mathf.Sign( transform.localScale.x );
-    boxOffset.y = box.offset.y;
-    adjust = (Vector2)transform.position + boxOffset;
-
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.down, RaycastHits, Mathf.Max( raydown, -velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( hit.normal.y > corner )
-      {
-        if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
-          continue;
-        collideBottom = true;
-
-        adjust.y = hit.point.y + box.size.y * 0.5f + contactSeparation + DownOffset;
-        // moving platforms
-        Entity cha = hit.transform.GetComponent<Entity>();
-        if( cha != null )
-        {
-#if UNITY_EDITOR
-          if( cha.GetInstanceID() == GetInstanceID() )
-          {
-            Debug.LogError( "character set itself as carry character", gameObject );
-            Debug.Break();
-          }
-#endif
-          carryCharacter = cha;
-        }
-        break;
-      }
-    }
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.up, RaycastHits, Mathf.Max( raylength, velocity.y * Time.deltaTime ), Global.CharacterCollideLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( hit.normal.y < -corner )
-      {
-        if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
-          continue;
-        collideTop = true;
-        adjust.y = hit.point.y - box.size.y * 0.5f - contactSeparation;
-        break;
-      }
-    }
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.left, RaycastHits, Mathf.Max( raylength, -velocity.x * Time.deltaTime ), Global.CharacterCollideLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( hit.normal.x > corner )
-      {
-        if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
-          continue;
-        collideLeft = true;
-        adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
-        break;
-      }
-    }
-
-    hitCount = Physics2D.BoxCastNonAlloc( adjust, box.size, 0, Vector2.right, RaycastHits, Mathf.Max( raylength, velocity.x * Time.deltaTime ), Global.CharacterCollideLayers );
-    for( int i = 0; i < hitCount; i++ )
-    {
-      hit = RaycastHits[i];
-      if( hit.normal.x < -corner )
-      {
-        if( IgnoreCollideObjects.Count > 0 && IgnoreCollideObjects.Contains( hit.collider ) )
-          continue;
-        collideRight = true;
-        adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
-        break;
-      }
-    }
-
     transform.position = adjust - boxOffset;
   }
 
   protected virtual void Die()
   {
     Instantiate( explosion, transform.position, Quaternion.identity );
-    if( spawnWhenDead != null && Random.Range( 0, spawnChance ) == 0 )
-      Instantiate( spawnWhenDead, transform.position, Quaternion.identity );
+    if( SpawnWhenDead.Length > 0 )
+      Instantiate( SpawnWhenDead[Random.Range( 0, SpawnWhenDead.Length )], transform.position, Quaternion.identity );
     Destroy( gameObject );
     EventDestroyed?.Invoke();
   }
 
-  public virtual bool TakeDamage( Damage d )
+  public virtual void AddHealth( int amount )
+  {
+    Health += amount;
+  }
+
+  public virtual bool TakeDamage( Damage damage )
   {
     // dead characters will not absorb projectiles
     if( !CanTakeDamage || Health <= 0 )
       return false;
-    if( d.instigator != null && d.instigator.Team == Team )
+    if( damage.instigator != null && damage.instigator.Team == Team )
       return false;
-    Health -= d.amount;
+    AddHealth( -damage.amount );
     if( Health <= 0 )
     {
       flashTimer.Stop( false );
@@ -548,14 +405,14 @@ public class Entity : MonoBehaviour, IDamage
         Global.instance.AudioOneShot( soundHit, transform.position );
       // color pulse
       flip = false;
-      
+
       foreach( var sr in spriteRenderers )
         sr.material.SetFloat( "_FlashAmount", flashOn );
-      flashTimer.Start( flashCount * 2, flashInterval, delegate ( Timer t )
+      flashTimer.Start( flashCount * 2, flashInterval, delegate( Timer t )
       {
         flip = !flip;
         foreach( var sr in spriteRenderers )
-          sr.material.SetFloat( "_FlashAmount", flip? flashOn : 0 );
+          sr.material.SetFloat( "_FlashAmount", flip ? flashOn : 0 );
       }, delegate
       {
         foreach( var sr in spriteRenderers )
@@ -591,7 +448,7 @@ public class Entity : MonoBehaviour, IDamage
       }
     }
   }
-  
+
   // for EventDestroyed unity events
   public void DestroyGameObject( GameObject go )
   {
@@ -602,8 +459,8 @@ public class Entity : MonoBehaviour, IDamage
   {
     return Team != Team.None && other != Team.None && other != Team;
   }
-  
-  
+
+
   [Header( "Character Parts" )]
   public int CharacterLayer;
 
@@ -616,7 +473,7 @@ public class Entity : MonoBehaviour, IDamage
     public Renderer renderer;
     public int layerAnimated;
   }
-  
+
   public List<CharacterPart> CharacterParts;
 
   // Call from Awake()

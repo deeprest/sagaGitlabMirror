@@ -5,6 +5,10 @@ using UnityEngine;
 public class Turret : Entity
 {
   [Header( "Turret" )]
+  public bool AutoFire;
+  bool cAutoFire;
+  public Vector2 AutoFireDirection;
+  [SerializeField] float InitialShotRepeatDelay;
   [SerializeField] Transform cannon;
   [SerializeField] float sightRange = 6;
   [SerializeField] float small = 0.1f;
@@ -38,9 +42,8 @@ public class Turret : Entity
   {
     base.Start();
     UpdateLogic = UpdateTurret;
-    UpdatePosition = null;
     UpdateCollision = null;
-    
+
     LayerMaskCharacter = LayerMask.GetMask( new string[] { "character" } );
     SightPulseTimer.Start( int.MaxValue, 3, ( x ) => {
       // reaffirm target
@@ -58,13 +61,37 @@ public class Turret : Entity
         }
       }
     }, null );
+    
+    shootRepeatTimer.Start( InitialShotRepeatDelay );
   }
 
   void UpdateTurret()
   {
+    if( cAutoFire != AutoFire )
+    {
+      cAutoFire = AutoFire;
+      if( AutoFire )
+        AutoFireOn( AutoFireDirection );
+      else
+        AutoFireOff();
+    }
+    
+    if( AutoFire )
+    {
+      Vector2 local = transform.worldToLocalMatrix.MultiplyVector( AutoFireDirection );
+      // prevent cannon from rotating outside of 180 degree range 
+      float angle = Mathf.Clamp( Util.NormalizeAngle( Mathf.Rad2Deg * Mathf.Atan2( local.y, local.x ) - 90 ), min, max );
+      cannon.localRotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(cannon.localRotation.eulerAngles.z, angle, rotspeed * Time.deltaTime) );
+      Vector2 aim = cannon.transform.up;
+      if( Vector2.Angle( AutoFireDirection, aim ) < maxShootAngle )
+        if( !shootRepeatTimer.IsActive )
+          Shoot( AutoFireDirection );
+    }
+    else
     if( Target == null )
     {
       animator.Play( "idle" );
+      cannon.localRotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(cannon.localRotation.eulerAngles.z, 0, rotspeed * Time.deltaTime) );
     }
     else
     {
@@ -80,8 +107,7 @@ public class Turret : Entity
         if( target == null )
         {
           animator.Play( "idle" );
-          //cannon.rotation = Quaternion.RotateTowards( cannon.rotation, transform.localToWorldMatrix.rotation, rotspeed * Time.deltaTime );
-          cannon.localRotation = Quaternion.RotateTowards( cannon.localRotation, Quaternion.identity, rotspeed * Time.deltaTime );
+          cannon.localRotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(cannon.localRotation.eulerAngles.z, 0, rotspeed * Time.deltaTime) );
         }
         else
         {
@@ -89,8 +115,7 @@ public class Turret : Entity
           Vector2 local = transform.worldToLocalMatrix.MultiplyVector( delta );
           // prevent cannon from rotating outside of 180 degree range 
           float angle = Mathf.Clamp( Util.NormalizeAngle( Mathf.Rad2Deg * Mathf.Atan2( local.y, local.x ) - 90 ), min, max );
-          cannon.localRotation = Quaternion.RotateTowards( cannon.localRotation, Quaternion.Euler( 0, 0, angle ), rotspeed * Time.deltaTime );
-          //cannon.rotation = Quaternion.RotateTowards( cannon.rotation, Quaternion.Euler( 0, 0, angle ) * transform.localToWorldMatrix.rotation, rotspeed * Time.deltaTime );
+          cannon.localRotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(cannon.localRotation.eulerAngles.z, angle, rotspeed * Time.deltaTime) );
           Vector2 aim = cannon.transform.up;
           if( target != null && target.IsChildOf( Target.transform ) )
           {
@@ -115,4 +140,18 @@ public class Turret : Entity
     //if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
     weapon.FireWeapon( this, pos, shoot );
   }
+
+  public void AutoFireOn( Vector2 direction )
+  {
+    AutoFire = true;
+    cAutoFire = true;
+    AutoFireDirection = direction;
+  }
+
+  public void AutoFireOff()
+  {
+    AutoFire = false;
+    cAutoFire = false;
+  }
+  
 }

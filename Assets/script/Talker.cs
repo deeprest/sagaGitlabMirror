@@ -21,42 +21,67 @@ public class TalkerEditor : Editor
 #endif
 
 [RequireComponent( typeof(JabberPlayer), typeof(Animator) )]
-[SelectionBase]
 public class Talker : WorldSelectable
 {
   public CharacterIdentity identity;
   public JabberPlayer jabber;
   public Animator animator;
-  Timer talk = new Timer();
-
+  Timer talkTimer = new Timer();
+  Transform headTransform;
+  JsonData json;
+  
+  void Start()
+  {
+    headTransform = transform.Find( "head" );
+    
+    if( identity == null )
+    {
+      Debug.LogWarning( "null identity for " + name, gameObject );
+      return;
+    }
+    if( identity.TextAsset == null )
+    {
+      Debug.LogWarning( "identity has no text asset " + name, gameObject );
+      return;
+    }
+    if( identity.TextAsset.text.Length == 0 )
+    {
+      Debug.LogWarning( "identity text asset is empty " + name, gameObject );
+      return;
+    }
+    json = JsonMapper.ToObject( new JsonReader( identity.TextAsset.text ) );
+  }
+  
   private void OnDestroy()
   {
-    talk.Stop( false );
+    talkTimer.Stop( false );
   }
 
   public override void Highlight()
   {
+    base.Highlight();
     animator.Play( "highlight" );
   }
 
   public override void Unhighlight()
   {
+    base.Unhighlight();
     animator.Play( "idle" );
+  }
+
+  public override Vector2 GetPosition()
+  {
+    return headTransform.GetComponent<SpriteRenderer>().bounds.center;
   }
 
   public override void Select()
   {
-    string say = "blah";
-    JsonData json = new JsonData();
-    string gameJson = identity.TextAsset.text;
-    if( gameJson.Length > 0 )
-    {
-      JsonReader reader = new JsonReader( gameJson );
-      json = JsonMapper.ToObject( reader );
-      int count = json["randomdrcain"].Count;
-      say = json["randomdrcain"][Random.Range( 0, count )].GetString();
-    }
+    int randomCount = json["random"].Count;
+    string say = json["random"][Random.Range( 0, randomCount )].GetString();
+    //
     Say( say );
+    // face the player when talking to them
+    transform.localScale = new Vector3( -Mathf.Sign( Global.instance.CurrentPlayer.transform.position.x - transform.position.x ), 1, 1);
   }
 
   public override void Unselect() { }
@@ -64,8 +89,8 @@ public class Talker : WorldSelectable
   public void Say( string say )
   {
     animator.Play( "talk" );
-    Global.instance.Speak( identity, say, 4 );
-    talk.Start( 4, null, delegate { animator.Play( "idle" ); } );
+    talkTimer.Start( 4, null, delegate { animator.Play( "idle" ); } );
+    Global.instance.Speak( headTransform, identity, say, 4 );
     jabber.Play( say );
   }
 }

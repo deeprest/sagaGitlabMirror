@@ -4,7 +4,8 @@ public enum UniquePickupType
 {
   None,
   SpeedFactorNormalized,
-  DashDuration
+  DashDuration,
+  Health
 }
 public enum PickupPart
 {
@@ -18,17 +19,21 @@ public enum PickupPart
 public class Pickup : WorldSelectable
 {
   [SerializeField] Animator animator;
+  [SerializeField] BoxCollider2D box;
+  [SerializeField] AudioClip soundPickup;
+  
   public Weapon weapon;
   public Ability ability;
   public bool SelectOnContact;
   
   public UniquePickupType unique;
   public float uniqueFloat0;
+  public int uniqueInt0;
   
   public PickupPart PickupPart;
 
   Vector2 velocity;
-  public BoxCollider2D box;
+  
   public float friction = 0.05f;
   public float raylength = 0.01f;
   public float contactSeparation = 0.01f;
@@ -42,6 +47,7 @@ public class Pickup : WorldSelectable
   public RaycastHit2D hit;
   protected Vector2 adjust;
   Vector2 boxOffset;
+  
 
   public override void Highlight()
   {
@@ -57,9 +63,8 @@ public class Pickup : WorldSelectable
   }
   public override void Select()
   {
-    //Destroy( gameObject );
-    /*if( animator != null )
-      animator.Play( "selected" );*/
+    Global.instance.AudioOneShot( soundPickup, transform.position );
+    Destroy( gameObject );
   }
   public override void Unselect()
   {
