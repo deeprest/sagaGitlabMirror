@@ -98,7 +98,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 1
+  m_Mass: 0.034179688
   m_LinearDrag: 0
   m_AngularDrag: 1
   m_GravityScale: 1
@@ -120,10 +120,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 4331431106160709461}
+  box: {fileID: 6431762732740050956}
+  soundPickup: {fileID: 8300000, guid: 3c44a54d4dd494488a130ab13913709b, type: 3}
   weapon: {fileID: 0}
   ability: {fileID: 0}
+  SelectOnContact: 0
+  unique: 0
+  uniqueFloat0: 0
+  uniqueInt0: 0
   PickupPart: 1
-  box: {fileID: 6431762732740050956}
   friction: 0.05
   raylength: 0.01
   contactSeparation: 0.01
