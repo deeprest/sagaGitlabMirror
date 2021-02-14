@@ -44,7 +44,7 @@ public class Airbot : Entity
   {
     // reaffirm target
     NearbyTarget = null;
-    int count = Physics2D.OverlapCircleNonAlloc( transform.position, sightRange, results, Global.EnemySightLayers );
+    int count = Physics2D.OverlapCircleNonAlloc( transform.position, sightRange, results, Global.EnemyInterestLayers );
     for( int i = 0; i < count; i++ )
     {
       Collider2D cld = results[i];
@@ -91,8 +91,17 @@ public class Airbot : Entity
       {
         Entity visibleTarget = null;
         // check line of sight to potential target
-        hitCount = Physics2D.LinecastNonAlloc( sightOrigin.position, playerpos, RaycastHits, Global.EnemySightLayers );
-        for( int a = 0; a < hitCount; a++ )
+        hitCount = Physics2D.LinecastNonAlloc( sightOrigin.position, playerpos, RaycastHits, Global.CharacterCollideLayers );
+        if( hitCount == 0 ) 
+        {
+          visibleTarget = NearbyTarget;
+          lastKnownTargetDirection = visibleTarget.velocity;
+          lastKnownTargetPosition = visibleTarget.transform.position;
+          animator.Play( "alert" );
+          speed = AttackSpeed;
+          pathAgent.SetPath( visibleTarget.transform.position + Vector3.up * targetOffset, null );
+        }
+        /*for( int a = 0; a < hitCount; a++ )
         {
           hit = RaycastHits[a];
           if( hit.transform == transform )
@@ -112,10 +121,11 @@ public class Airbot : Entity
               speed = AttackSpeed;
               pathAgent.SetPath( visibleTarget.transform.position + Vector3.up * targetOffset, null );
             }
+            break;
           }
           // early out on first visible thing
-          break;
-        }
+          //break;
+        }*/
         if( visibleTarget == null )
           Search();
       }

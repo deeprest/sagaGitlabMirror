@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.AI;
+using Gizmos = Popcron.Gizmos;
 
 public class Hornet : Entity
 {
@@ -30,8 +31,7 @@ public class Hornet : Entity
   [SerializeField] Transform shotOrigin;
 
   // sight, target
-  Collider2D[] results = new Collider2D[8];
-  int LayerMaskCharacter;
+  Collider2D[] results = new Collider2D[32];
   [SerializeField] Entity Target;
   Timer SightPulseTimer = new Timer();
 
@@ -39,24 +39,25 @@ public class Hornet : Entity
   {
     base.Start();
     UpdateLogic = UpdateHornet;
+    SightPulseTimer.Start( int.MaxValue, 3, ( x ) => { SightPulse(); }, null );
+  }
 
-    LayerMaskCharacter = LayerMask.GetMask( new string[] { "character" } );
-    SightPulseTimer.Start( int.MaxValue, 3, ( x ) => {
-      // reaffirm target
-      Target = null;
-      int count = Physics2D.OverlapCircleNonAlloc( transform.position, sightRange, results, LayerMaskCharacter );
-      for( int i = 0; i < count; i++ )
+  void SightPulse()
+  {
+    // reaffirm target
+    Target = null;
+    int count = Physics2D.OverlapCircleNonAlloc( transform.position, sightRange, results, Global.EnemyInterestLayers );
+    for( int i = 0; i < count; i++ )
+    {
+      Collider2D cld = results[i];
+      //Character character = results[i].transform.root.GetComponentInChildren<Character>();
+      Entity character = results[i].GetComponent<Entity>();
+      if( character != null && IsEnemyTeam( character.Team ) )
       {
-        Collider2D cld = results[i];
-        //Character character = results[i].transform.root.GetComponentInChildren<Character>();
-        Entity character = results[i].GetComponent<Entity>();
-        if( character != null && IsEnemyTeam( character.Team ) )
-        {
-          Target = character;
-          break;
-        }
+        Target = character;
+        break;
       }
-    }, null );
+    }
   }
 
   protected override void OnDestroy()
@@ -77,12 +78,7 @@ public class Hornet : Entity
       c.enabled = false;
     UpdateHit = null;
     //UpdateCollision = null;
-    explosionTimer.Start( 10, explosionInterval,
-    delegate
-    {
-      Instantiate( explosion, transform.position + (Vector3)Random.insideUnitCircle * explosionRange, Quaternion.identity );
-    },
-    delegate
+    explosionTimer.Start( 10, explosionInterval, delegate { Instantiate( explosion, transform.position + (Vector3) Random.insideUnitCircle * explosionRange, Quaternion.identity ); }, delegate
     {
       Destroy( gameObject );
       Instantiate( junk, transform.position, Quaternion.identity );
@@ -113,8 +109,10 @@ public class Hornet : Entity
       Vector2 pos = transform.position;
       Vector2 targetpos = Target.transform.position;
       Vector2 tpos = targetpos + Vector2.up * up + Vector2.right * over;
+
       // hover above surface
       Vector2 delta = tpos - pos;
+      // todo optimize by repathing only so often
       pathAgent.SetPath( tpos );
       // seek player
       if( delta.sqrMagnitude < small * small )
@@ -122,12 +120,28 @@ public class Hornet : Entity
       else
       {
         pathAgent.UpdatePath();
+        if( !pathAgent.HasPath )
+        {
+          NavMeshHit navhit;
+          if( NavMesh.SamplePosition( targetpos, out navhit, 1.0f, NavMesh.AllAreas ) )
+            tpos = navhit.position;
+          pathAgent.SetPath( tpos );
+        }
         velocity += (pathAgent.MoveDirection.normalized * flySpeed - velocity) * acc * Time.deltaTime;
       }
+      
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+      Gizmos.Line( tpos + Vector2.up, tpos + Vector2.down, Color.grey );
+      Gizmos.Line( tpos + Vector2.left, tpos + Vector2.right, Color.grey );
+#endif
+      
       // guns
-      RaycastHit2D hit = Physics2D.Linecast( shotOrigin.position, targetpos, Global.DefaultProjectileCollideLayers );
-      if( hit.transform != null && hit.transform.IsChildOf( Target.transform ) )
+      hitCount = Physics2D.LinecastNonAlloc( shotOrigin.position, targetpos, RaycastHits, Global.SightObstructionLayers );
+      if( hitCount == 0 )
       {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        Gizmos.Line( shotOrigin.position, targetpos, Color.green );
+#endif
         // drop wheels
         if( wheelDropsRemaining > 0 && velocity.x > 0 && !wheelDropTimer.IsActive )
         {
@@ -144,6 +158,13 @@ public class Hornet : Entity
             Shoot( new Vector3( -1, -1, 0 ) );
         }
       }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+      else
+      {
+        for( int i = 0; i < hitCount; i++ )
+          Gizmos.Line( shotOrigin.position, RaycastHits[i].point, Color.magenta );
+      }
+#endif
 
       transform.rotation = Quaternion.RotateTowards( transform.rotation, Quaternion.Euler( 0, 0, Mathf.Clamp( velocity.x, -topspeedrot, topspeedrot ) * -rot ), rotspeed * Time.deltaTime );
     }
@@ -156,4 +177,5 @@ public class Hornet : Entity
     if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
       weapon.FireWeapon( this, pos, shoot );
   }
+  
 }

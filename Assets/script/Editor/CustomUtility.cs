@@ -81,13 +81,10 @@ public class CustomUtility : EditorWindow
 
   GameObject replacementPrefab;
   bool ProcessSubObjects;
-  bool FixNavObstacles;
   bool ReplacePrefab;
   bool ReplaceSprite;
   bool ReplaceMaterial;
   bool AutoFixSprite;
-
-  bool fixInScene;
 
   enum OperationContext
   {
@@ -480,8 +477,6 @@ public class CustomUtility : EditorWindow
       ReplaceMaterial = EditorGUILayout.Toggle( "Replace Material", ReplaceMaterial );
       replacementMaterial = (Material) EditorGUILayout.ObjectField( "Replacement Material", replacementMaterial, typeof(Material), false );
 
-      FixNavObstacles = EditorGUILayout.Toggle( "Fix Nav Obstacles", FixNavObstacles );
-      
       AutoFixSprite = EditorGUILayout.Toggle( "Auto Fix Sprite", AutoFixSprite );
 
 

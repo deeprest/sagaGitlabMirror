@@ -16,6 +16,7 @@ using UnityEngine.Profiling;
 
 using deeprest;
 using UnityEngine.Serialization;
+using Gizmos = Popcron.Gizmos;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -98,8 +99,8 @@ public class Global : MonoBehaviour
   public static int FlameProjectileCollideLayers;
   public static int DamageCollideLayers;
   public static int StickyBombCollideLayers;
-  public static int TurretSightLayers;
-  public static int EnemySightLayers;
+  public static int EnemyInterestLayers;
+  public static int SightObstructionLayers;
 
   [Header( "Settings" )]
   public GameObject ToggleTemplate;
@@ -129,7 +130,7 @@ public class Global : MonoBehaviour
 
   [Header( "Transient (Assigned at runtime)" )]
   public bool Updating = false;
-  SceneScript sceneScript;
+  public SceneScript sceneScript;
   public Pawn CurrentPlayer;
   public PlayerController PlayerController;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
@@ -275,8 +276,8 @@ public class Global : MonoBehaviour
     FlameProjectileCollideLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "destructible", "bouncyGrenade"} );
     DamageCollideLayers = LayerMask.GetMask( new string[] {"character", "triggerAndCollision", "projectile", "destructible"} );
     StickyBombCollideLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "projectile", "destructible"} );
-    TurretSightLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "destructible"} );
-    EnemySightLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "destructible"} );
+    EnemyInterestLayers = LayerMask.GetMask( new string[] { "character" } );
+    SightObstructionLayers = LayerMask.GetMask( new string[] {"Default", "triggerAndCollision", "destructible"} );
 
     CanvasScaler = UI.GetComponent<CanvasScaler>();
     InitializeSettings();
@@ -519,6 +520,8 @@ public class Global : MonoBehaviour
     };
 
     // DEVELOPMENT
+
+    Controls.GlobalActions.DEVGizmos.performed += ( obj ) => { Gizmos.Enabled = !Gizmos.Enabled; };
     // Controls.BipedActions.DEVZoom.started += ( obj ) => { zoomDelta += obj.ReadValue<float>(); };
     Controls.GlobalActions.Minimap.performed += ( obj ) => { ToggleMinimap(); };
     // Controls.BipedActions.DEVBig.performed += context => ((PlayerBiped) PlayerController.pawn).ScaleChange( 2 );
@@ -975,7 +978,9 @@ public class Global : MonoBehaviour
     Shader cached2 = backgroundMaterial.shader;
     bigsheetMaterial.shader = grey;
     backgroundMaterial.shader = grey2;
+    MinimapCamera.enabled = true;
     MinimapCamera.Render();
+    MinimapCamera.enabled = false;
     bigsheetMaterial.shader = cached;
     backgroundMaterial.shader = cached2;
   }

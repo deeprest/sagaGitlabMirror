@@ -26,8 +26,7 @@ public class Turret : Entity
   
   // sight, target
   Collider2D[] results = new Collider2D[8];
-  int LayerMaskCharacter;
-  [SerializeField] Entity Target;
+  [SerializeField] Entity PotentialTarget;
   Timer SightPulseTimer = new Timer();
 
   protected override void OnDestroy()
@@ -43,12 +42,11 @@ public class Turret : Entity
     base.Start();
     UpdateLogic = UpdateTurret;
     UpdateCollision = null;
-
-    LayerMaskCharacter = LayerMask.GetMask( new string[] { "character" } );
+    
     SightPulseTimer.Start( int.MaxValue, 3, ( x ) => {
       // reaffirm target
-      Target = null;
-      int count = Physics2D.OverlapCircleNonAlloc( transform.position, sightRange, results, LayerMaskCharacter );
+      PotentialTarget = null;
+      int count = Physics2D.OverlapCircleNonAlloc( transform.position, sightRange, results, Global.EnemyInterestLayers );
       for( int i = 0; i < count; i++ )
       {
         Collider2D cld = results[i];
@@ -56,7 +54,7 @@ public class Turret : Entity
         Entity character = results[i].GetComponent<Entity>();
         if( character != null && IsEnemyTeam( character.Team ) )
         {
-          Target = character;
+          PotentialTarget = character;
           break;
         }
       }
@@ -88,7 +86,7 @@ public class Turret : Entity
           Shoot( AutoFireDirection );
     }
     else
-    if( Target == null )
+    if( PotentialTarget == null )
     {
       animator.Play( "idle" );
       cannon.localRotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(cannon.localRotation.eulerAngles.z, 0, rotspeed * Time.deltaTime) );
@@ -96,14 +94,18 @@ public class Turret : Entity
     else
     {
       Vector2 pos = cannon.position;
-      Vector2 player = Target.transform.position;
+      Vector2 player = PotentialTarget.transform.position;
       Vector2 delta = player - pos;
       if( delta.sqrMagnitude < sightRange * sightRange )
       {
         Transform target = null;
-        RaycastHit2D hit = Physics2D.Linecast( (Vector2)sightOrigin.position + delta.normalized * sightStartRadius, player, Global.TurretSightLayers );
-        if( hit.transform != null && hit.transform.root == Target.transform )
-          target = hit.transform;
+        hitCount = Physics2D.LinecastNonAlloc( (Vector2)sightOrigin.position + delta.normalized * sightStartRadius, player, RaycastHits, Global.SightObstructionLayers );
+        if( hitCount == 0 )
+        {
+          target = PotentialTarget.transform;
+        }
+        // if( hit.transform != null && hit.transform.root == PotentialTarget.transform )
+        //   target = hit.transform;
         if( target == null )
         {
           animator.Play( "idle" );
@@ -117,7 +119,7 @@ public class Turret : Entity
           float angle = Mathf.Clamp( Util.NormalizeAngle( Mathf.Rad2Deg * Mathf.Atan2( local.y, local.x ) - 90 ), min, max );
           cannon.localRotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(cannon.localRotation.eulerAngles.z, angle, rotspeed * Time.deltaTime) );
           Vector2 aim = cannon.transform.up;
-          if( target != null && target.IsChildOf( Target.transform ) )
+          if( target != null && target.IsChildOf( PotentialTarget.transform ) )
           {
             if( Vector2.Angle( delta, aim ) < maxShootAngle )
               if( !shootRepeatTimer.IsActive )

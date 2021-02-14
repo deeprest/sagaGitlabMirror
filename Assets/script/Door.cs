@@ -68,6 +68,7 @@ public class Door : MonoBehaviour, ITrigger
     }
     this.instigator = instigator;
 
+    SceneScript sceneScript = Global.instance.sceneScript;
     PlayerBiped player = instigator.GetComponentInParent<PlayerBiped>();
     if( player == null )
     {
@@ -82,7 +83,7 @@ public class Door : MonoBehaviour, ITrigger
         animator.updateMode = AnimatorUpdateMode.UnscaledTime;
         Global.Pause();
         Global.instance.Controls.BipedActions.Disable();
-        SceneScript sceneScript = FindObjectOfType<SceneScript>();
+        
 
         OpenAndClose( openDuration, delegate
         {
@@ -140,7 +141,6 @@ public class Door : MonoBehaviour, ITrigger
             }
             else
             {
-              SceneScript sceneScript = FindObjectOfType<SceneScript>();
               if( sceneScript != null )
                 Global.instance.OverrideCameraZone( null );
             }
@@ -163,7 +163,6 @@ public class Door : MonoBehaviour, ITrigger
             }
             else
             {
-              SceneScript sceneScript = FindObjectOfType<SceneScript>();
               if( sceneScript != null )
                 Global.instance.OverrideCameraZone( null );
             }

@@ -285,7 +285,9 @@ public class SceneCity : SceneScript
       rainMaker.width = dimension.x * cellSize;
       rainMaker.maxDistance = dimension.y * cellSize + upwardOffset;
       //rainMaker.direction = Vector2.down;
-      rainMaker.Generate( );
+      rainMaker.Generate();
+      // Generate() before setting to active, so the mesh exists beforehand.
+      rainMaker.gameObject.SetActive( true );
     }
     Profiler.EndSample();
   }

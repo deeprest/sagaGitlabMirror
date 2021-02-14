@@ -31,7 +31,7 @@ public class BossPrototype : Entity
   {
     // reaffirm target
     NearbyTarget = null;
-    int count = Physics2D.OverlapCircleNonAlloc( SightOrigin.position, sightRange, results, Global.EnemySightLayers );
+    int count = Physics2D.OverlapCircleNonAlloc( SightOrigin.position, sightRange, results, Global.EnemyInterestLayers );
     for( int i = 0; i < count; i++ )
     {
       //Entity potentialTarget = results[i].transform.root.GetComponentInChildren<Entity>();
@@ -66,20 +66,13 @@ public class BossPrototype : Entity
     {
       Vector2 targetpos = NearbyTarget.transform.position;
       Vector2 delta = targetpos - (Vector2) transform.position;
-      int hitCount = Physics2D.LinecastNonAlloc( transform.position, targetpos, RaycastHits, Global.DefaultProjectileCollideLayers );
-      for( int i = 0; i < hitCount; i++ )
+      hitCount = Physics2D.LinecastNonAlloc( transform.position, targetpos, RaycastHits, Global.SightObstructionLayers );
+      if( hitCount == 0 )
       {
-        hit = RaycastHits[i];
-        if( hit.transform == null || hit.transform.root == transform.root )
-          continue;
-        if( hit.transform.IsChildOf( NearbyTarget.transform ) )
+        if( delta.y < 2 )
         {
-          if( delta.y < 2 )
-          {
-            velocity = (delta.x > 0 ? Vector2.right : Vector2.left) * 3;
-          }
+          velocity = (delta.x > 0 ? Vector2.right : Vector2.left) * 3;
         }
-        break;
       }
     }
   }
