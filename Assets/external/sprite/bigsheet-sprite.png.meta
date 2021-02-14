@@ -674,6 +674,18 @@ TextureImporter:
   - first:
       213: 6498128438523421810
     second: box_big
+  - first:
+      213: 4836603841418514762
+    second: rain0
+  - first:
+      213: 1826828598298035975
+    second: rain1
+  - first:
+      213: 3419147709625955527
+    second: rain2
+  - first:
+      213: 3034379063907989871
+    second: rain3
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1667,10 +1679,10 @@ TextureImporter:
       name: shield
       rect:
         serializedVersion: 2
-        x: 152
+        x: 151
         y: 217
         width: 26
-        height: 11
+        height: 12
       alignment: 2
       pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -5149,6 +5161,90 @@ TextureImporter:
       bones: []
       spriteID: 2746d03e26dfd2a50800000000000000
       internalID: 6498128438523421810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rain0
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 235
+        width: 3
+        height: 1
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a415a0f71911f1340800000000000000
+      internalID: 4836603841418514762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rain1
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 235
+        width: 5
+        height: 2
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70744136ee23a5910800000000000000
+      internalID: 1826828598298035975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rain2
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 230
+        width: 7
+        height: 2
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c478daf9b0437f20800000000000000
+      internalID: 3419147709625955527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rain3
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 227
+        width: 9
+        height: 1
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f693e1a8ea74c1a20800000000000000
+      internalID: 3034379063907989871
       vertices: []
       indices: 
       edges: []
