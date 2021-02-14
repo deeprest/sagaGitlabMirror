@@ -7,12 +7,15 @@ public class RainMaker : MonoBehaviour
   [SerializeField] ParticleSystem ps;
   [SerializeField] Mesh mesh;
   
-  public float width;
+  public float width = 50;
   public float increment = 1;
-  public float maxDistance = 100;
+  public float maxDistance = 20;
   public Vector2 direction = Vector2.down;
 
   public float threshold = 1;
+  public float offset = 0.1f;
+
+  RaycastHit2D[] hits = new RaycastHit2D[8];
 
 #if UNITY_EDITOR
   public bool GenerateNow;
@@ -53,13 +56,24 @@ public class RainMaker : MonoBehaviour
     for( int i = 0; i < steps; i++ )
     {
       origin = min + Vector2.right * i * increment;
-      Vector2 point;
-      RaycastHit2D hit = Physics2D.Raycast( origin, direction, maxDistance, mask );
-      if( hit.transform != null )
-        point = hit.point;
-      else
+      Vector2 point = Vector2.zero;
+      int hitCount = Physics2D.RaycastNonAlloc( origin, direction, hits, maxDistance, mask );
+      bool hit = false;
+      for( int j = 0; j < hitCount; j++ )
+      {
+        if( hits[j].transform != null && hits[j].rigidbody == null )
+        {
+          hit = true;
+          point = hits[j].point;
+          break;
+        }
+      }
+      if( !hit )
         point = origin + direction.normalized * maxDistance;
 
+      // HACK 
+      origin = point + Vector2.up * offset;
+      
       if( i > 0 )
       {
         if( Mathf.Abs( point.y - prevPoint.y ) > threshold || i == steps-1)
@@ -79,6 +93,9 @@ public class RainMaker : MonoBehaviour
           prevPoint = point;
           a++;
           
+          // bridge the gaps
+          //if( Mathf.Abs( point.y - prevPoint.y ) < rampThreshold )
+          /*
           indices.Add( a * 2 - 1 );
           indices.Add( a * 2 - 2 );
           indices.Add( a * 2 );
@@ -86,11 +103,12 @@ public class RainMaker : MonoBehaviour
           indices.Add( a * 2 - 1 );
           indices.Add( a * 2 );
           indices.Add( a * 2 + 1 );
-          
+          */
           vert.Add( origin - pos );
           vert.Add( point - pos );
           
           a++;
+          
         }
         
         prevOrigin = origin;
@@ -114,7 +132,7 @@ public class RainMaker : MonoBehaviour
     ParticleSystem.ShapeModule sm = ps.shape;
     sm.mesh = mesh;
     ParticleSystem.MainModule main = ps.main;
-    main.startRotation = Mathf.Atan2( direction.x, direction.y );
+    /*main.startRotation = Mathf.Atan2( direction.x, -direction.y );*/
 
     
 #if UNITY_EDITOR
