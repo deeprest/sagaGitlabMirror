@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
 using UnityEngine.Experimental.Rendering.Universal;
 
 
@@ -9,8 +10,19 @@ public class SceneScript : MonoBehaviour
   //public CameraZone CameraZone;
   public BoxCollider NavmeshBox;
   public Light2D ambientLight;
+  [Header( "Optional" )]
+  public Bounds bounds;
+  public Rain rain;
 
   public virtual void StartScene()
+  {
+    StartSceneCommon();
+    // Optional
+    if( rain != null )
+      rain.Initialize( bounds );
+  }
+  
+  public void StartSceneCommon()
   {
     if( Application.isEditor && !Global.instance.SimulatePlayer )
     {

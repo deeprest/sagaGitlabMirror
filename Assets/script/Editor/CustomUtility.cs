@@ -609,7 +609,7 @@ public class CustomUtility : EditorWindow
   }
 
 
-  void ReplaceObjectWithPrefabInstance( GameObject replaceThis, GameObject prefab )
+  GameObject ReplaceObjectWithPrefabInstance( GameObject replaceThis, GameObject prefab )
   {
     GameObject go = (GameObject) PrefabUtility.InstantiatePrefab( prefab, replaceThis.transform.parent );
     go.transform.position = replaceThis.transform.position;
@@ -630,12 +630,13 @@ public class CustomUtility : EditorWindow
     }
     PrefabUtility.RecordPrefabInstancePropertyModifications( go.transform );
     DestroyImmediate( replaceThis.gameObject );
+    return go;
   }
 
   void ProcessSingle( GameObject go )
   {
     if( ReplacePrefab && replacementPrefab != null )
-      ReplaceObjectWithPrefabInstance( go, replacementPrefab );
+      go = ReplaceObjectWithPrefabInstance( go, replacementPrefab );
 
     SpriteRenderer spr = go.GetComponent<SpriteRenderer>();
     if( spr != null )

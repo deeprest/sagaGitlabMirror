@@ -333,7 +333,18 @@ public class Global : MonoBehaviour
     SpeechBubble.SetActive( false );
     // musicSource1 is used as the loop source
     activeMusicSource = musicSource1;
+    Gizmos.Enabled = false;
+  }
 
+  void Start()
+  {
+#if UNITY_EDITOR
+    // workaround for Unity Editor bug where AudioMixer.SetFloat() does not work in Awake()
+    mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( FloatSetting["MasterVolume"].Value ) );
+    mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value ) );
+    mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
+#endif
+    
     if( Application.isEditor && !SimulatePlayer )
     {
       LoadingScreen.SetActive( false );
@@ -353,16 +364,7 @@ public class Global : MonoBehaviour
     {
       LoadScene( InitialScene, true, true, true, false, null );
     }
-  }
-
-  void Start()
-  {
-#if UNITY_EDITOR
-    // workaround for Unity Editor bug where AudioMixer.SetFloat() does not work in Awake()
-    mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( FloatSetting["MasterVolume"].Value ) );
-    mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value ) );
-    mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
-#endif
+    
   }
 
   public string ReplaceWithControlNames( string source, bool colorize = true )
@@ -660,7 +662,7 @@ public class Global : MonoBehaviour
         mesh.BuildNavMesh();
       Destroy( generatedMeshCollider );
       
-      Global.instance.MinimapRender( meshSurfaces[0].center );
+      //Global.instance.MinimapRender( meshSurfaces[0].center );
     }
     else
     {

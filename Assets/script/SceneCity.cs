@@ -55,10 +55,6 @@ public class SceneCity : SceneScript
   [SerializeField] Chopper chopper;
   [SerializeField] float runRightDuration = 3;
 
-  [SerializeField] RainDropSplashMesh rainDropSplashMesh;
-  [SerializeField] GameObject rainFall;
-  [SerializeField] GameObject rainPops;
-
   public override void StartScene()
   {
     base.StartScene();
@@ -99,7 +95,6 @@ public class SceneCity : SceneScript
   public int seed;
   public Vector2Int dimension = new Vector2Int( 20, 8 );
   private Vector2Int cellsize = new Vector2Int( 10, 10 );
-  public Bounds bounds;
   public int GroundY = 2;
   public bool UseDensity;
   [Range( 0, 100 )] [SerializeField] int density = 60;
@@ -280,28 +275,7 @@ public class SceneCity : SceneScript
     if( Application.isPlaying )
     {
       Global.instance.MinimapRender( bounds.center );
-
-      if( rainDropSplashMesh != null )
-      {
-        const float horOffset = 40;
-        rainDropSplashMesh.transform.position = new Vector2( bounds.center.x, bounds.size.y );
-        rainDropSplashMesh.width = bounds.size.x + horOffset;
-        rainDropSplashMesh.maxDistance = bounds.size.y;
-        //rainMaker.direction = Vector2.down;
-        rainDropSplashMesh.Generate();
-        // Generate() before setting to active, so the mesh exists beforehand.
-        rainDropSplashMesh.gameObject.SetActive( true );
-      }
-      if( rainFall != null )
-      {
-        rainFall.transform.parent = Global.instance.CameraController.transform;
-        rainFall.transform.localPosition = Vector3.zero;
-      }
-      if( rainPops != null )
-      {
-        rainPops.transform.parent = Global.instance.CameraController.transform;
-        rainPops.transform.localPosition = Vector3.zero;
-      }
+      rain.Initialize( bounds );
     }
     Profiler.EndSample();
   }

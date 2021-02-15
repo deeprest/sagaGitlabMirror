@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -221,12 +221,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 95241994}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &95241996 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4182039790881745495, guid: 818c984cb06ae41bcbfb19c3f0434ff6,
-    type: 3}
-  m_PrefabInstance: {fileID: 95241994}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &103427560
 GameObject:
   m_ObjectHideFlags: 0
@@ -259,20 +253,17 @@ MonoBehaviour:
   music: {fileID: 0}
   NavmeshBox: {fileID: 1383487179}
   ambientLight: {fileID: 1481186929}
-  rainMesh: {fileID: 0}
+  bounds:
+    m_Center: {x: 96.625, y: 60, z: -2.5}
+    m_Extent: {x: 103.375, y: 60, z: 2.5}
+  rain: {fileID: 0}
   DoChopDrop: 0
   chopper: {fileID: 0}
   runRightDuration: 3
-  rainDropSplashMesh: {fileID: 1818538078}
-  rainFall: {fileID: 95241996}
-  rainPops: {fileID: 1235442724}
   GenerateLevelOnStart: 0
   RandomSeedOnStart: 0
   seed: 32
   dimension: {x: 20, y: 12}
-  bounds:
-    m_Center: {x: 96.625, y: 60, z: -2.5}
-    m_Extent: {x: 103.375, y: 60, z: 2.5}
   GroundY: 1
   UseDensity: 1
   density: 68
@@ -1169,12 +1160,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1235442722}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1235442724 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4182039790881745495, guid: 4e271a5bbf08e447291008379b3b5c81,
-    type: 3}
-  m_PrefabInstance: {fileID: 1235442722}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1383487177
 GameObject:
   m_ObjectHideFlags: 0
@@ -1248,8 +1233,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 95241995}
-  - {fileID: 1235442723}
   - {fileID: 1818538077}
+  - {fileID: 1235442723}
   m_Father: {fileID: 103427563}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1786,18 +1771,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1818538076}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1818538078 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 796833830665707320, guid: f3f83f93eafbe43abb3bed2aa3aafb3a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1818538076}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e814808aa3074fdab9787bea27a88dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1859999071
 GameObject:
   m_ObjectHideFlags: 0
