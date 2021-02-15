@@ -1,13 +1,14 @@
 ﻿#if UNITY_EDITOR
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.SceneManagement;
+using UnityEditor.Experimental.SceneManagement;
 using UnityEngine.AI;
 using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
 using Debug = UnityEngine.Debug;
 
 public static class StaticUtility
@@ -95,8 +96,8 @@ public class CustomUtility : EditorWindow
 
   OperationContext operationContext;
 
-  string FilterObjectName;
-  string FilterSubObjectName;
+  string FilterObjectName = "";
+  string FilterSubObjectName = "";
   Sprite replacementSprite;
   Material replacementMaterial;
   string[] guids;
@@ -324,7 +325,7 @@ public class CustomUtility : EditorWindow
         for( int i = 0; i < Selection.assetGUIDs.Length; i++ )
           Debug.Log( Selection.objects[i].GetType().ToString() + " " + Selection.objects[i].name + " " + Selection.assetGUIDs[i] );
       }
-     
+
       fudgeFactor = EditorGUILayout.FloatField( "fudge", fudgeFactor );
 
       if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Generate Edge Collider Nav Obstacles" ) )
@@ -470,16 +471,17 @@ public class CustomUtility : EditorWindow
 
       ReplacePrefab = EditorGUILayout.Toggle( "ReplacePrefab", ReplacePrefab );
       replacementPrefab = (GameObject) EditorGUILayout.ObjectField( "Replacement Prefab", replacementPrefab, typeof(GameObject), false, GUILayout.MinWidth( 50 ) );
-      
+
       ReplaceSprite = EditorGUILayout.Toggle( "ReplaceSprite", ReplaceSprite );
       replacementSprite = (Sprite) EditorGUILayout.ObjectField( "Replacement Sprite", replacementSprite, typeof(Sprite), false );
-      
+
       ReplaceMaterial = EditorGUILayout.Toggle( "Replace Material", ReplaceMaterial );
       replacementMaterial = (Material) EditorGUILayout.ObjectField( "Replacement Material", replacementMaterial, typeof(Material), false );
 
       AutoFixSprite = EditorGUILayout.Toggle( "Auto Fix Sprite", AutoFixSprite );
 
-
+      PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+      
       if( GUI.Button( EditorGUILayout.GetControlRect( false, 30 ), "Process Objects" ) )
       {
         int count = 0;
@@ -494,12 +496,28 @@ public class CustomUtility : EditorWindow
             count = gos.Count;
             break;
           case OperationContext.SCENE:
-            gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
-            if( FilterObjectName.Length > 0 )
-              for( int i = 0; i < gos.Count; i++ )
-                if( !gos[i].name.StartsWith( FilterObjectName ) )
-                  gos.RemoveAt( i-- );
-            count = gos.Count;
+            
+            if( prefabStage != null )
+            {
+              //EditorSceneManager.MarkSceneDirty( prefabStage.scene );
+              
+              gos = new List<GameObject>();
+              gos.Add( prefabStage.prefabContentsRoot );
+              
+              assetPaths = new List<string>();
+              assetPaths.Add( prefabStage.prefabAssetPath );
+              count = 1;
+              // operationContext = OperationContext.PREFABS;
+            }
+            else
+            {
+              gos = new List<GameObject>( FindObjectsOfType<GameObject>() );
+              if( FilterObjectName.Length > 0 )
+                for( int i = 0; i < gos.Count; i++ )
+                  if( !gos[i].name.StartsWith( FilterObjectName ) )
+                    gos.RemoveAt( i-- );
+              count = gos.Count;
+            }
             break;
           case OperationContext.PREFABS:
             // NOTE do not allow replacing prefabs with other prefab instances
@@ -546,6 +564,10 @@ public class CustomUtility : EditorWindow
             PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
             PrefabUtility.UnloadPrefabContents( go );
           }
+          
+          if( prefabStage != null )
+            EditorSceneManager.MarkSceneDirty( prefabStage.scene );
+          
         }, AssetDatabase.SaveAssets );
       }
     }
@@ -613,93 +635,11 @@ public class CustomUtility : EditorWindow
     DestroyImmediate( replaceThis.gameObject );
   }
 
-  
-  
-  
-#if false
-  // cached sprite renderer 
-  SpriteRenderer cSpr;
-  BoxCollider2D BoxCollider2D;
-  NavMeshObstacle NavMeshObstacle;
-
-  const float snap = 0.25f;
-
-  public static bool AutoSize = false;
-  public float desiredWidth;
-  [HideInInspector]
-  public float height;
-  float cWidth;
-  public float desiredHeight;
-  [HideInInspector]
-  public float width;
-  float cHeight;
-  public static bool SnapIncrements;
-  bool cSnap;
-  Sprite cSprite;
-  bool cAutoTile;
-  
-  void FixSprite( SpriteRenderer spr ) 
-  {
-    
-
-      if( spr != cSpr )
-      {
-        cSpr = spr;
-        desiredWidth = spr.size.x;
-        desiredHeight = spr.size.y;
-        // avoid unintentionally snapping values that are not on the grid already 
-        SnapIncrements = Mathf.Repeat( desiredWidth, snap ) < 0.0001f && Mathf.Repeat( desiredHeight, snap ) < 0.0001f;
-      }
-
-      desiredWidth = EditorGUILayout.FloatField( "WIDTH", desiredWidth );
-      desiredHeight = EditorGUILayout.FloatField( "HEIGHT", desiredHeight );
-      SnapIncrements = EditorGUILayout.Toggle( "Snap", SnapIncrements );
-
-      if( BoxCollider2D == null )
-        BoxCollider2D = spr.GetComponent<BoxCollider2D>();
-      if( NavMeshObstacle == null )
-        NavMeshObstacle = spr.GetComponent<NavMeshObstacle>();
-
-      if( desiredHeight != cHeight || desiredWidth != cWidth || SnapIncrements != cSnap || cSprite != spr.sprite || (BoxCollider2D != null && cAutoTile != BoxCollider2D.autoTiling) )
-      {
-        cHeight = desiredHeight;
-        cWidth = desiredWidth;
-        cSnap = SnapIncrements;
-        cSprite = spr.sprite;
-
-        width = SnapIncrements ? Mathf.Max( snap, Mathf.Round( desiredWidth / snap ) * snap ) : desiredWidth;
-        height = SnapIncrements ? Mathf.Max( snap, Mathf.Round( desiredHeight / snap ) * snap ) : desiredHeight;
-
-        
-        
-        spr.size = new Vector2( width, height );
-        Vector2 pivot = new Vector2( spr.sprite.pivot.x / spr.sprite.rect.width, spr.sprite.pivot.y / spr.sprite.rect.height );
-
-        if( BoxCollider2D != null )
-        {
-          cAutoTile = BoxCollider2D.autoTiling;
-          Vector2 autoTileSize = new Vector2( spr.sprite.textureRect.width / spr.sprite.pixelsPerUnit, spr.sprite.textureRect.height / spr.sprite.pixelsPerUnit );
-          BoxCollider2D.size = BoxCollider2D.autoTiling ? autoTileSize : new Vector2( width, height );
-          BoxCollider2D.offset = new Vector2( (0.5f - pivot.x) * BoxCollider2D.size.x, (0.5f - pivot.y) * BoxCollider2D.size.y );
-        }
-
-        if( NavMeshObstacle != null )
-        {
-          NavMeshObstacle.size = new Vector3( spr.size.x, spr.size.y, 0.3f );
-          NavMeshObstacle.center = new Vector2( (0.5f - pivot.x) * NavMeshObstacle.size.x, (0.5f - pivot.y) * NavMeshObstacle.size.y );
-        }
-      
-    
-    
-  }
-}
-#endif
-
   void ProcessSingle( GameObject go )
   {
     if( ReplacePrefab && replacementPrefab != null )
       ReplaceObjectWithPrefabInstance( go, replacementPrefab );
-    
+
     SpriteRenderer spr = go.GetComponent<SpriteRenderer>();
     if( spr != null )
     {
@@ -707,7 +647,7 @@ public class CustomUtility : EditorWindow
         spr.sprite = replacementSprite;
       if( replacementMaterial && replacementMaterial != null )
         spr.material = replacementMaterial;
-      if( AutoFixSprite )
+      if( AutoFixSprite && spr.sprite != null )
       {
         BoxCollider2D BoxCollider2D = spr.GetComponent<BoxCollider2D>();
         NavMeshObstacle NavMeshObstacle = spr.GetComponent<NavMeshObstacle>();
@@ -731,26 +671,8 @@ public class CustomUtility : EditorWindow
         }
       }
     }
-
-    
-
-    /*if( FixNavObstacles )
-    {
-      NavMeshObstacle[] navs = go.GetComponentsInChildren<NavMeshObstacle>();
-      foreach( var nav in navs )
-      {
-        SpriteRenderer rdr = nav.gameObject.GetComponent<SpriteRenderer>();
-        if( rdr != null )
-        {
-          nav.carving = true;
-          nav.center = rdr.transform.worldToLocalMatrix.MultiplyPoint( rdr.bounds.center );
-          nav.size = new Vector3( rdr.size.x, rdr.size.y, 0.3f );
-        }
-      }
-    }*/
   }
 }
-
 
 
 #if false

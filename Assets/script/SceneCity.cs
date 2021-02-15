@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -54,7 +55,9 @@ public class SceneCity : SceneScript
   [SerializeField] Chopper chopper;
   [SerializeField] float runRightDuration = 3;
 
-  [SerializeField] RainMaker rainMaker;
+  [SerializeField] RainDropSplashMesh rainDropSplashMesh;
+  [SerializeField] GameObject rainFall;
+  [SerializeField] GameObject rainPops;
 
   public override void StartScene()
   {
@@ -275,19 +278,30 @@ public class SceneCity : SceneScript
     }
 
     if( Application.isPlaying )
+    {
       Global.instance.MinimapRender( bounds.center );
 
-    if( rainMaker != null )
-    {
-      const float cellSize = 10;
-      const float upwardOffset = 40;
-      rainMaker.transform.position = new Vector2( dimension.x * cellSize * 0.5f, dimension.y * cellSize + upwardOffset );
-      rainMaker.width = dimension.x * cellSize;
-      rainMaker.maxDistance = dimension.y * cellSize + upwardOffset;
-      //rainMaker.direction = Vector2.down;
-      rainMaker.Generate();
-      // Generate() before setting to active, so the mesh exists beforehand.
-      rainMaker.gameObject.SetActive( true );
+      if( rainDropSplashMesh != null )
+      {
+        const float horOffset = 40;
+        rainDropSplashMesh.transform.position = new Vector2( bounds.center.x, bounds.size.y );
+        rainDropSplashMesh.width = bounds.size.x + horOffset;
+        rainDropSplashMesh.maxDistance = bounds.size.y;
+        //rainMaker.direction = Vector2.down;
+        rainDropSplashMesh.Generate();
+        // Generate() before setting to active, so the mesh exists beforehand.
+        rainDropSplashMesh.gameObject.SetActive( true );
+      }
+      if( rainFall != null )
+      {
+        rainFall.transform.parent = Global.instance.CameraController.transform;
+        rainFall.transform.localPosition = Vector3.zero;
+      }
+      if( rainPops != null )
+      {
+        rainPops.transform.parent = Global.instance.CameraController.transform;
+        rainPops.transform.localPosition = Vector3.zero;
+      }
     }
     Profiler.EndSample();
   }

@@ -328,14 +328,10 @@ public class Entity : MonoBehaviour, IDamage
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
         {
-#if DEBUG_CHECKS
           if( cha.GetInstanceID() == GetInstanceID() )
-          {
-            Debug.LogError( "character set itself as carry character", gameObject );
-            Debug.Break();
-          }
-#endif
-          carryCharacter = cha;
+            Debug.LogError( "character tried to set itself as carry character", gameObject );
+          else
+            carryCharacter = cha;
         }
       }
 
