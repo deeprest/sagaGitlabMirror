@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Unity.Collections;
 using UnityEditor;
 using UnityEngine.Experimental.Rendering.Universal;
 
@@ -11,6 +12,7 @@ public class SceneScript : MonoBehaviour
   public BoxCollider NavmeshBox;
   public Light2D ambientLight;
   [Header( "Optional" )]
+  [ReadOnly]
   public Bounds bounds;
   public Rain rain;
 

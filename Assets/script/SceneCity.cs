@@ -49,8 +49,7 @@ public static class PixelBit
 [ExecuteInEditMode]
 public class SceneCity : SceneScript
 {
-  [Header( "City" )]  
-  
+  [Header( "City" )]
   [SerializeField] private bool DoChopDrop = true;
   [SerializeField] Chopper chopper;
   [SerializeField] float runRightDuration = 3;
@@ -73,23 +72,16 @@ public class SceneCity : SceneScript
         // get the input state to *modify* instead of overwrite/assign
         ref InputState inputStateRef = ref Global.instance.PlayerController.GetInput();
         inputStateRef.MoveRight = true;
-      }, delegate
-      {
-        Global.instance.PlayerController.NormalInputMode();
-      } );
+      }, delegate { Global.instance.PlayerController.NormalInputMode(); } );
     }
-    
+
     //Global.instance.CameraController.orthoTarget = 3;
 
     if( inputSeed != null )
-      inputSeed.onEndEdit.AddListener( ( x ) =>
-      {
-        AssignSeed( x );
-      } );
+      inputSeed.onEndEdit.AddListener( ( x ) => { AssignSeed( x ); } );
   }
 
-  [Header( "Level Generation" )] 
-  
+  [Header( "Level Generation" )]
   public bool GenerateLevelOnStart = true;
   public bool RandomSeedOnStart = false;
   public int seed;
@@ -120,9 +112,10 @@ public class SceneCity : SceneScript
   public MarchingSquare.MarchingSquareData building;
   public MarchingSquare.MarchingSquareData buildingBG;
   public MarchingSquare.MarchingSquareData underground;
-
   List<MarchingSquare.MarchingSquareData> msd;
 
+  public GameObject[] HighwayLinks;
+  public GameObject[] HighwayLinksBG;
   // nodelinks
   List<GameObject> gens = new List<GameObject>();
 
@@ -257,32 +250,29 @@ public class SceneCity : SceneScript
     UpdateStructure( 0, 0, dimension.x, dimension.y );
 
     //AddObject( Instantiate( spawnPointPrefab, new Vector3( 2, (GroundY+1)*cellsize.y, 0 ), Quaternion.identity ) );
-    GenerateChain( "street bg", new Vector2( 0, highwayY ), false );
-    GenerateChain( "street", new Vector2( 0, highwayY ), true );
+    GenerateChain( HighwayLinksBG, new Vector2( 0, highwayY ), false );
+    GenerateChain( HighwayLinks, new Vector2( 0, highwayY ), true );
 
-    SceneScript ss = FindObjectOfType<SceneScript>();
-    if( ss != null )
+    if( NavmeshBox != null )
     {
-      if( ss.NavmeshBox != null )
-      {
-        ss.NavmeshBox.size = new Vector3( bounds.size.x, 0, bounds.size.y );
-        Vector3 boxpos = bounds.center;
-        boxpos.z = 0;
-        ss.NavmeshBox.transform.position = boxpos;
-      }
+      NavmeshBox.size = new Vector3( bounds.size.x, 0, bounds.size.y );
+      Vector3 boxpos = bounds.center;
+      boxpos.z = 0;
+      NavmeshBox.transform.position = boxpos;
     }
 
     if( Application.isPlaying )
     {
       Global.instance.MinimapRender( bounds.center );
-      rain.Initialize( bounds );
+      if( rain != null )
+        rain.Initialize( bounds );
     }
     Profiler.EndSample();
   }
 
-  void GenerateChain( string folder, Vector2 pos, bool overlapCheck = true )
+  void GenerateChain( GameObject[] gos, Vector2 pos, bool overlapCheck = true )
   {
-    List<GameObject> gos = new List<GameObject>( Resources.LoadAll<GameObject>( "LevelFreeNode/" + folder ) );
+    //List<GameObject> gos = new List<GameObject>( Resources.LoadAll<GameObject>( "LevelFreeNode/" + folder ) );
     List<NodeLink> links = new List<NodeLink>();
     // first link
     CreateChainLink( gos[0], pos, links );
@@ -372,7 +362,7 @@ public class SceneCity : SceneScript
     else
       Destroy( obj );
   }
-  
+
   public void DestroyAll()
   {
     // node links
@@ -390,7 +380,7 @@ public class SceneCity : SceneScript
         }
     built.Clear();
   }
-  
+
   public void DestroyEverythingOutsideSafeZone()
   {
     if( safeZone == null )
@@ -608,7 +598,7 @@ public class SceneCity : SceneScript
       if( !built.ContainsKey( key ) )
         built[key] = new List<GameObject>();
       built[key].Add( go );
-      
+
       // NOTE it's important to destroy generated objects when destroying/regenerating the city,
       // but during regular play this may destroy enemies that have wandered.
       GenerationVariant[] vars = go.GetComponentsInChildren<GenerationVariant>();
