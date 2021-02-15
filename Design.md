@@ -77,7 +77,7 @@ level generation
 
 # Cycles
 combat cycle. aware of enemy, visual contact, observe, attack, evade => death or success
-death cycle. transformation; respawn; instant replay.
+death cycle. possibly: transformation, or respawn, or instant replay.
 stage cycle. HQ to generated level. boss, weapon.
 system upgrades: sensory (blobs on perif), targeting (projectile path, highlight enemies), weakness scan (show weak spots on large enemies)
 
