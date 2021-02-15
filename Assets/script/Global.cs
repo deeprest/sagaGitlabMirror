@@ -978,9 +978,7 @@ public class Global : MonoBehaviour
     Shader cached2 = backgroundMaterial.shader;
     bigsheetMaterial.shader = grey;
     backgroundMaterial.shader = grey2;
-    MinimapCamera.enabled = true;
     MinimapCamera.Render();
-    MinimapCamera.enabled = false;
     bigsheetMaterial.shader = cached;
     backgroundMaterial.shader = cached2;
   }

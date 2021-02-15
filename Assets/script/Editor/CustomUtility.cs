@@ -91,7 +91,7 @@ public class CustomUtility : EditorWindow
   {
     SELECTED = 0,
     SCENE,
-    PREFABS
+    PROJECT
   }
 
   OperationContext operationContext;
@@ -495,19 +495,15 @@ public class CustomUtility : EditorWindow
                   gos.RemoveAt( i-- );
             count = gos.Count;
             break;
+          
           case OperationContext.SCENE:
-            
             if( prefabStage != null )
             {
-              //EditorSceneManager.MarkSceneDirty( prefabStage.scene );
-              
               gos = new List<GameObject>();
               gos.Add( prefabStage.prefabContentsRoot );
-              
               assetPaths = new List<string>();
               assetPaths.Add( prefabStage.prefabAssetPath );
               count = 1;
-              // operationContext = OperationContext.PREFABS;
             }
             else
             {
@@ -519,7 +515,8 @@ public class CustomUtility : EditorWindow
               count = gos.Count;
             }
             break;
-          case OperationContext.PREFABS:
+          
+          case OperationContext.PROJECT:
             // NOTE do not allow replacing prefabs with other prefab instances
             ReplacePrefab = false;
             assetPaths = new List<string>();
@@ -539,7 +536,7 @@ public class CustomUtility : EditorWindow
             case OperationContext.SCENE:
               go = gos[index];
               break;
-            case OperationContext.PREFABS:
+            case OperationContext.PROJECT:
               go = PrefabUtility.LoadPrefabContents( assetPaths[index] );
               break;
           }
@@ -559,7 +556,7 @@ public class CustomUtility : EditorWindow
             ProcessSingle( go );
           }
 
-          if( operationContext == OperationContext.PREFABS )
+          if( operationContext == OperationContext.PROJECT )
           {
             PrefabUtility.SaveAsPrefabAsset( go, assetPaths[index] );
             PrefabUtility.UnloadPrefabContents( go );
@@ -651,15 +648,12 @@ public class CustomUtility : EditorWindow
       {
         BoxCollider2D BoxCollider2D = spr.GetComponent<BoxCollider2D>();
         NavMeshObstacle NavMeshObstacle = spr.GetComponent<NavMeshObstacle>();
-        float width = spr.size.x;
-        float height = spr.size.y;
-        spr.size = new Vector2( width, height );
         Vector2 pivot = new Vector2( spr.sprite.pivot.x / spr.sprite.rect.width, spr.sprite.pivot.y / spr.sprite.rect.height );
 
         if( BoxCollider2D != null )
         {
           Vector2 autoTileSize = new Vector2( spr.sprite.textureRect.width / spr.sprite.pixelsPerUnit, spr.sprite.textureRect.height / spr.sprite.pixelsPerUnit );
-          BoxCollider2D.size = BoxCollider2D.autoTiling ? autoTileSize : new Vector2( width, height );
+          BoxCollider2D.size = BoxCollider2D.autoTiling ? autoTileSize : spr.size;
           BoxCollider2D.offset = new Vector2( (0.5f - pivot.x) * BoxCollider2D.size.x, (0.5f - pivot.y) * BoxCollider2D.size.y );
         }
 
