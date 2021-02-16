@@ -653,7 +653,6 @@ public class PlayerBiped : Pawn
     Debug.DrawLine( new Vector3( bounds.max.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.min.y ), Color.red );
     Debug.DrawLine( new Vector3( bounds.max.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.min.y ), Color.red );
     
-#if true
     // BOTTOM
     prefer = float.MinValue;
     // todo fix exception that occurs after death
@@ -702,8 +701,6 @@ public class PlayerBiped : Pawn
         }
       }
     }
-#endif
-
 
     // TOP
     topHitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.up * headboxy, headbox, 0, Vector2.up, topHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
