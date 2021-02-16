@@ -105,7 +105,6 @@ public class Entity : MonoBehaviour, IDamage
   public GameObject explosion;
   public AudioClip soundHit;
   public GameObject[] SpawnWhenDead;
-  public int spawnChance = 1;
   // FLASH
   protected Timer flashTimer = new Timer();
   public float flashInterval = 0.05f;
@@ -372,7 +371,11 @@ public class Entity : MonoBehaviour, IDamage
   {
     Instantiate( explosion, transform.position, Quaternion.identity );
     if( SpawnWhenDead.Length > 0 )
-      Instantiate( SpawnWhenDead[Random.Range( 0, SpawnWhenDead.Length )], transform.position, Quaternion.identity );
+    {
+      GameObject prefab = SpawnWhenDead[Random.Range( 0, SpawnWhenDead.Length )];
+      if( prefab != null )
+        Instantiate( prefab, transform.position, Quaternion.identity );
+    }
     Destroy( gameObject );
     EventDestroyed?.Invoke();
   }

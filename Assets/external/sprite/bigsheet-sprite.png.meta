@@ -508,7 +508,7 @@ TextureImporter:
     second: snap-cursor
   - first:
       213: -6707915615547073563
-    second: wall-1
+    second: wall panel
   - first:
       213: 8213676459231634764
     second: tower0
@@ -598,7 +598,7 @@ TextureImporter:
     second: bigsheet-sprite_10
   - first:
       213: -1712847750803191246
-    second: bigsheet-sprite_11
+    second: tower walkway 0
   - first:
       213: 8808801995165700771
     second: bigsheet-sprite_12
@@ -686,6 +686,12 @@ TextureImporter:
   - first:
       213: 3034379063907989871
     second: rain3
+  - first:
+      213: -7903705054433856526
+    second: tower pillar 0
+  - first:
+      213: 2055768182168175453
+    second: wall panel B
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -4200,16 +4206,16 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: wall-1
+      name: wall panel
       rect:
         serializedVersion: 2
-        x: 720
+        x: 783
         y: 288
-        width: 63
-        height: 88
+        width: 33
+        height: 92
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 8, y: 9, z: 8, w: 8}
+      border: {x: 9, y: 9, z: 8, w: 12}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -4620,7 +4626,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bigsheet-sprite_11
+      name: tower walkway 0
       rect:
         serializedVersion: 2
         x: 512
@@ -5245,6 +5251,27 @@ TextureImporter:
       bones: []
       spriteID: f693e1a8ea74c1a20800000000000000
       internalID: 3034379063907989871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tower pillar 0
+      rect:
+        serializedVersion: 2
+        x: 608
+        y: 288
+        width: 64
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f3b20de026605290800000000000000
+      internalID: -7903705054433856526
       vertices: []
       indices: 
       edges: []
