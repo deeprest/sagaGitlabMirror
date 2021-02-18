@@ -90,7 +90,7 @@ SpriteRenderer:
   m_SortingLayerID: 1445702261
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4289353735146823145, guid: 64314a0420c93471b9990c7b9f080a39,
+  m_Sprite: {fileID: 2055768182168175453, guid: 64314a0420c93471b9990c7b9f080a39,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -144,10 +144,13 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   ignore: []
   hitCount: 0
+  Scale: 0
   light: {fileID: 9191745444400861375}
   DieAfterHitCount: 1
   AlignRotationToVelocity: 1
   hitPrefab: {fileID: 1227316525270448, guid: 501808a31aa284cf4a2ffd0c05c1e0c9, type: 3}
+  colors:
+  - {r: 1, g: 0.6666667, b: 0.6666667, a: 1}
 --- !u!114 &9191745444400861375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,7 +166,7 @@ MonoBehaviour:
   m_LightType: 0
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
-  m_Color: {r: 0.972549, g: 0.706492, b: 0.4220863, a: 1}
+  m_Color: {r: 1, g: 0.6666667, b: 0.6666667, a: 1}
   m_Intensity: 3
   m_LightVolumeOpacity: 0
   m_ApplyToSortingLayers: 00000000ab08fa61d1f7da467f62816c75aa2b56155d55e2

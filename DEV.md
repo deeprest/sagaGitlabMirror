@@ -72,6 +72,7 @@ FIX airbot pickup fall through vent covers?
 
 
 #### Polish
+POLISH walljump spark effect is on wron
 POLISH landing snaps. possible anim frame adjustment will fix
 POLISH adjust jump anim frame. it pops at the jump arc apex
 POLISH city camera bounds

@@ -975,6 +975,8 @@ public class Global : MonoBehaviour
   
   public void MinimapRender( Vector2 position )
   {
+    MinimapCamera.targetTexture.DiscardContents( true, true );
+    
     MinimapCamera.transform.position = position;
     Shader cached = bigsheetMaterial.shader;
     Shader cached2 = backgroundMaterial.shader;

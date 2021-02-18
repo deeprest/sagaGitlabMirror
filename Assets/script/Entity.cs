@@ -369,7 +369,8 @@ public class Entity : MonoBehaviour, IDamage
 
   protected virtual void Die()
   {
-    Instantiate( explosion, transform.position, Quaternion.identity );
+    if( explosion != null )
+      Instantiate( explosion, transform.position, Quaternion.identity );
     if( SpawnWhenDead.Length > 0 )
     {
       GameObject prefab = SpawnWhenDead[Random.Range( 0, SpawnWhenDead.Length )];

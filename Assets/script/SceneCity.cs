@@ -270,7 +270,7 @@ public class SceneCity : SceneScript
     Profiler.EndSample();
   }
 
-  void GenerateChain( GameObject[] gos, Vector2 pos, bool overlapCheck = true )
+  void GenerateChain( GameObject[] gos, Vector2 pos, bool overlapCheck )
   {
     //List<GameObject> gos = new List<GameObject>( Resources.LoadAll<GameObject>( "LevelFreeNode/" + folder ) );
     List<NodeLink> links = new List<NodeLink>();

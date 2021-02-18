@@ -76,9 +76,7 @@ MonoBehaviour:
   MaxHealth: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  spawnWhenDead: {fileID: 7811567057660064751, guid: 24e917afab41844c4aecb42d78844d12,
-    type: 3}
-  spawnChance: 1
+  SpawnWhenDead: []
   flashInterval: 0.05
   flashCount: 1
   ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
@@ -231,7 +229,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.453125, y: 0.40625}
+  m_Size: {x: 0.39, y: 0.36}
   m_EdgeRadius: 0
 --- !u!1 &622820147057764020
 GameObject:

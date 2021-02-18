@@ -691,7 +691,10 @@ TextureImporter:
     second: tower pillar 0
   - first:
       213: 2055768182168175453
-    second: wall panel B
+    second: pewpew-indexed
+  - first:
+      213: 9125376458274667465
+    second: glass0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -724,9 +727,9 @@ TextureImporter:
     filterMode: 0
     aniso: -1
     mipBias: -100
-    wrapU: 0
-    wrapV: 0
-    wrapW: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -752,7 +755,7 @@ TextureImporter:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 1024
-    resizeAlgorithm: 1
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -764,7 +767,7 @@ TextureImporter:
   - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 1024
-    resizeAlgorithm: 1
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -5272,6 +5275,48 @@ TextureImporter:
       bones: []
       spriteID: 2f3b20de026605290800000000000000
       internalID: -7903705054433856526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pewpew-indexed
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 71
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d534fae054e878c10800000000000000
+      internalID: 2055768182168175453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass0
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9cb7c2d5a89d3ae70800000000000000
+      internalID: 9125376458274667465
       vertices: []
       indices: 
       edges: []

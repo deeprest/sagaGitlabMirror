@@ -4942,6 +4942,7 @@ GameObject:
   - component: {fileID: 82627251547920718}
   - component: {fileID: 1697597636064711849}
   - component: {fileID: 2111217764532811413}
+  - component: {fileID: 68762904955323351}
   m_Layer: 10
   m_Name: ava
   m_TagString: Untagged
@@ -4957,7 +4958,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1789244597324514}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 353093623}
@@ -5014,7 +5015,6 @@ MonoBehaviour:
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
   SpawnWhenDead:
   - {fileID: 1678155047526447402, guid: 0b441ca38fb9146debe1d70a64193693, type: 3}
-  spawnChance: 1
   flashInterval: 0.05
   flashCount: 5
   ContactDamage: {fileID: 0}
@@ -5557,6 +5557,26 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &68762904955323351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789244597324514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb40fc0c4299b48a293c1443c4695abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  srs:
+  - {fileID: 212107818795109166}
+  - {fileID: 212829855198719112}
+  - {fileID: 91856526698937445}
+  - {fileID: 353093624}
+  colors:
+  - {r: 0.275625, g: 0.31718746, b: 0.525, a: 1}
+  - {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &413554244267005606
 GameObject:
   m_ObjectHideFlags: 0
