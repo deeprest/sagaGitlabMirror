@@ -1,5 +1,6 @@
 // #pragma warning disable 414
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -495,7 +496,7 @@ public class Global : MonoBehaviour
 
     Controls.GlobalActions.RecordPlayback.performed += ( obj ) =>
     {
-      PlayerController.RecordPlayback();
+      PlayerController.PlaybackToggle();
       RecordingIndicator.gameObject.SetActive( PlayerController.IsRecording() );
     };
 

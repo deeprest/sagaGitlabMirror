@@ -7,6 +7,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 328583900502626638, guid: 2f46bfec6c1ef4b46bce5adb077dbe3f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6892710601954949703, guid: 2f46bfec6c1ef4b46bce5adb077dbe3f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -124,13 +129,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6948721772412102454, guid: 2f46bfec6c1ef4b46bce5adb077dbe3f,
         type: 3}
+      propertyPath: m_SortingLayer
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6948721772412102454, guid: 2f46bfec6c1ef4b46bce5adb077dbe3f,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6948721772412102454, guid: 2f46bfec6c1ef4b46bce5adb077dbe3f,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1188755409
+      objectReference: {fileID: 0}
+    - target: {fileID: 6948721772412102454, guid: 2f46bfec6c1ef4b46bce5adb077dbe3f,
+        type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: d905710c44976415991cc7aff39cfb39, type: 2}
     - target: {fileID: 6948721772412102455, guid: 2f46bfec6c1ef4b46bce5adb077dbe3f,
         type: 3}
       propertyPath: m_Name
-      value: crawlspace vertical
+      value: duct vertical 1
       objectReference: {fileID: 0}
     - target: {fileID: 6948721772412102457, guid: 2f46bfec6c1ef4b46bce5adb077dbe3f,
         type: 3}
