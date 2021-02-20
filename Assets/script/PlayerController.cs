@@ -117,35 +117,8 @@ public class PlayerController : Controller
         PlaybackEnd();
       else
       {
-        if( playbackIndex < evt.Count
-          /* && Time.unscaledTime - playbackStartTime > evt[playbackIndex].timestamp*/
-          )
-        {
-          /*float extra = Time.unscaledTime - playbackStartTime - evt[playbackIndex].timestamp;
-          float alpha = 0;
-          Vector2 deltaPos = Vector2.zero;
-          if( playbackIndex < evt.Count - 1 )
-          {
-            alpha = extra / (evt[playbackIndex + 1].timestamp - evt[playbackIndex].timestamp);
-            deltaPos = evt[playbackIndex + 1].position - evt[playbackIndex].position;
-
-            InputState input = evt[playbackIndex].input;
-            InputState inputNext = evt[playbackIndex + 1].input;
-            input.Aim = input.Aim + (inputNext.Aim - input.Aim) * alpha;
-          }*/
-
-          pawn.transform.position = evt[playbackIndex].position;// + deltaPos * alpha;
-          pawn.ApplyInput( evt[playbackIndex].input );
-          /*
-          // manual update here so we can provide a different deltatime
-          float deltatime = Time.deltaTime;
-          if( playbackIndex > 0 )
-            deltatime = evt[playbackIndex].timestamp - evt[playbackIndex - 1].timestamp;
-*/
-          pawn.EntityUpdate( );
-          playbackIndex++;
-        }
-        
+        pawn.transform.position = evt[playbackIndex].position;
+        pawn.ApplyInput( evt[playbackIndex++].input );
       }
     }  
     else
@@ -190,8 +163,7 @@ public class PlayerController : Controller
         evt.Add( new RecordFrame {
           input = input, 
           position = pawn.transform.position,
-          timestamp = Time.unscaledTime - recordStartTime,
-          deltaTime = Time.deltaTime
+          timestamp = Time.unscaledTime - recordStartTime
         } );
     }
 
@@ -246,14 +218,13 @@ public class PlayerController : Controller
   struct RecordFrame
   {
     public float timestamp;
-    public float deltaTime;
     public InputState input;
     public Vector2 position;
   }
   // timestamp (4)
   // frame size = input buttons (2) + input aim (8)
   // position (8)
-  const int FRAME_SIZE = 4 + 4 + (2 + 8) + 8;
+  const int FRAME_SIZE = 4 + (2 + 8) + 8;
   // todo is there a compile tile constant sizeof?
   //const int FRAME_SIZE = sizeof(RecordState);
 
@@ -376,13 +347,6 @@ public class PlayerController : Controller
       buffer[p + 2] = x[2];
       buffer[p + 3] = x[3];
       p += 4;
-      
-      x = System.BitConverter.GetBytes( frame.deltaTime );
-      buffer[p] = x[0];
-      buffer[p + 1] = x[1];
-      buffer[p + 2] = x[2];
-      buffer[p + 3] = x[3];
-      p += 4;
     }
 
     fs.Write( buffer, 0, buffer.Length );
@@ -438,9 +402,8 @@ public class PlayerController : Controller
 
       Vector2 pos = new Vector2( System.BitConverter.ToSingle( buffer, i + 10 ), System.BitConverter.ToSingle( buffer, i + 14 ) );
       float timestamp = System.BitConverter.ToSingle( buffer, i + 18 );
-      float deltaTime = System.BitConverter.ToSingle( buffer, i + 22 );
       
-      evt.Add( new RecordFrame {timestamp = timestamp, deltaTime= deltaTime,  input = state, position = pos} );
+      evt.Add( new RecordFrame {timestamp = timestamp, input = state, position = pos} );
     }
   }
 

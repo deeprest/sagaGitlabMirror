@@ -28,7 +28,7 @@ public class IndexedColors : MonoBehaviour
       if( srs!=null && srs.Length>0 )
         foreach( var sr in srs )
           if( sr!=null )
-          sr.sharedMaterial.SetColorArray( "_IndexColors", colors );
+            sr.sharedMaterial.SetColorArray( "_IndexColors", colors );
       #else
         for( int i=0; i<srs.Length; i++ )
           srs[i].material.SetColorArray( "_IndexColors", colors );

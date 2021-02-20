@@ -50,6 +50,7 @@ public class PlayerBiped : Pawn
   Timer landTimer = new Timer();
   Timer walljumpTimer = new Timer();
 
+  [SerializeField] IndexedColors indexedColors;
 
   [Header( "DEV" )]
   public float MoveScale = 0.5f;
@@ -304,11 +305,10 @@ public class PlayerBiped : Pawn
     Global.instance.weaponIcon.sprite = weapon.icon;
     Cursor.GetComponent<SpriteRenderer>().sprite = weapon.cursor;
     StopCharge();
-    foreach( var sr in spriteRenderers )
-    {
-      sr.material.SetColor( "_IndexColor", weapon.Color0 );
-      sr.material.SetColor( "_IndexColor2", weapon.Color1 );
-    }
+    
+    indexedColors.colors[0] = weapon.Color0;
+    indexedColors.colors[1] = weapon.Color1;
+    indexedColors.ExplicitUpdate();
   }
 
   void NextWeapon()
