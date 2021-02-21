@@ -33,4 +33,6 @@ public class TriggerEvent : MonoBehaviour, ITrigger
     Global.instance.LoadScene( arg.scene.GetSceneName() );
   }
 
+  public void DebugLog( string str ) { Debug.Log(str  );}
+
 }

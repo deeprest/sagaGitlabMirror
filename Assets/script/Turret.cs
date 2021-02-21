@@ -18,15 +18,16 @@ public class Turret : Entity
   [SerializeField] Weapon weapon;
   [SerializeField] Transform sightOrigin;
   [SerializeField] float sightStartRadius = 0.5f;
+  Timer returnToDefaultRotationTimer = new Timer();
 
   [SerializeField] float min = -90;
   [SerializeField] float max = 90;
   public float maxShootAngle = 5;
-
   
   // sight, target
   Collider2D[] results = new Collider2D[8];
   [SerializeField] Entity PotentialTarget;
+  Transform targetPrev;
   Timer SightPulseTimer = new Timer();
 
   protected override void OnDestroy()
@@ -89,7 +90,8 @@ public class Turret : Entity
     if( PotentialTarget == null )
     {
       animator.Play( "idle" );
-      cannon.localRotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(cannon.localRotation.eulerAngles.z, 0, rotspeed * Time.deltaTime) );
+      if( !returnToDefaultRotationTimer.IsActive )
+        cannon.localRotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(cannon.localRotation.eulerAngles.z, 0, rotspeed * Time.deltaTime) );
     }
     else
     {
@@ -101,15 +103,14 @@ public class Turret : Entity
         Transform target = null;
         hitCount = Physics2D.LinecastNonAlloc( (Vector2)sightOrigin.position + delta.normalized * sightStartRadius, player, RaycastHits, Global.SightObstructionLayers );
         if( hitCount == 0 )
-        {
           target = PotentialTarget.transform;
-        }
-        // if( hit.transform != null && hit.transform.root == PotentialTarget.transform )
-        //   target = hit.transform;
         if( target == null )
         {
           animator.Play( "idle" );
-          cannon.localRotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(cannon.localRotation.eulerAngles.z, 0, rotspeed * Time.deltaTime) );
+          if( targetPrev != null )
+            returnToDefaultRotationTimer.Start( 4, null, null );
+          if( !returnToDefaultRotationTimer.IsActive )
+            cannon.localRotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(cannon.localRotation.eulerAngles.z, 0, rotspeed * Time.deltaTime) );
         }
         else
         {
@@ -126,7 +127,7 @@ public class Turret : Entity
                 Shoot( aim );
           }
         }
-
+        targetPrev = target;
       }
       else
       {
