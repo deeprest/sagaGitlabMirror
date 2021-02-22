@@ -32,18 +32,21 @@ public class PlayerBiped : Pawn
   Vector2 shoot;
 
   [Header( "State" )]
-  [SerializeField] bool facingRight = true;
+  public bool facingRight = true;
 
   public bool onGround;
   bool previousGround;
-  public bool jumping;
-  [SerializeField] bool walljumping;
-  [SerializeField] bool wallsliding;
-  [SerializeField] bool landing;
-  [SerializeField] bool dashing;
+  bool jumping;
+  bool walljumping;
+  bool wallsliding;
+  bool landing;
+  bool dashing;
+  public bool rotating;
+  public float rotateTarget;
+  public float rotateSpeed;
   
   Vector2 wallSlideNormal;
-  private Vector2 wallSlideTargetNormal;
+  Vector2 wallSlideTargetNormal;
   Timer dashTimer = new Timer();
   Timer jumpTimer = new Timer();
   Timer jumpRepeatTimer = new Timer();
@@ -157,8 +160,9 @@ public class PlayerBiped : Pawn
 
   [Header( "Ability" )]
   [SerializeField] Ability ability;
-  [SerializeField] Transform armMount;
-  [SerializeField] Transform backMount;
+  public Transform armMount;
+  public Transform armMountFront;
+  public Transform backMount;
 
   [SerializeField] List<Ability> abilities;
   public int CurrentAbilityIndex;
@@ -178,7 +182,7 @@ public class PlayerBiped : Pawn
   [SerializeField] Damage CrushDamage;
   [SerializeField] float damageDuration = 0.5f;
   bool takingDamage;
-  bool damageGracePeriod;
+  public bool damageGracePeriod;
   Timer damageTimer = new Timer();
   public Color damagePulseColor = Color.white;
   bool damagePulseOn;
@@ -339,10 +343,9 @@ public class PlayerBiped : Pawn
     if( ability != null )
       ability.Unequip();
     ability = alt;
-    if( ability.mountType == Ability.MountType.ARM)
-      ability.Equip( armMount );
-    if( ability.mountType == Ability.MountType.BACK )
-      ability.Equip( backMount );
+    if( ability.mountType == Ability.MountType.ARM_BACK) ability.Equip( armMount );
+    if( ability.mountType == Ability.MountType.ARM_FRONT) ability.Equip( armMountFront );
+    if( ability.mountType == Ability.MountType.BACK ) ability.Equip( backMount );
     Global.instance.abilityIcon.sprite = ability.icon;
     if( ability.cursor != null )
       Cursor.GetComponent<SpriteRenderer>().sprite = ability.cursor;
@@ -1274,6 +1277,8 @@ public class PlayerBiped : Pawn
       transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( wallSlideNormal.y, -wallSlideNormal.x ) );
     else if( wallsliding && wallSlideNormal.x > 0 )
       transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( -wallSlideNormal.y, wallSlideNormal.x ) );
+    else if( rotating )
+      transform.rotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(transform.rotation.eulerAngles.z, rotateTarget, rotateSpeed * Time.deltaTime) );
     else
       transform.rotation = Quaternion.Euler( 0, 0, 0 );
 

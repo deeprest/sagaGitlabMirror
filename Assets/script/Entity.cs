@@ -73,10 +73,10 @@ public class Entity : MonoBehaviour, IDamage
 
 
   // collision flags
-  protected bool collideRight = false;
-  protected bool collideLeft = false;
-  protected bool collideTop = false;
-  protected bool collideBottom = false;
+  public bool collideRight = false;
+  public bool collideLeft = false;
+  public bool collideTop = false;
+  public bool collideBottom = false;
   const float corner = 0.707106769f;
   // cached for optimization - to avoid allocating every frame
   protected RaycastHit2D[] RaycastHits = new RaycastHit2D[4];

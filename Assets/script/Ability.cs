@@ -6,7 +6,8 @@ public class Ability : ScriptableObject
   public enum MountType
   {
     NONE,
-    ARM,
+    ARM_BACK,
+    ARM_FRONT,
     BACK
   }
   
@@ -18,7 +19,7 @@ public class Ability : ScriptableObject
   public MountType mountType;
 
   // transient
-  [SerializeField] GameObject go;
+  public GameObject go;
   Collider2D[] clds;
 
   public virtual void OnAcquire( Pawn pawn )

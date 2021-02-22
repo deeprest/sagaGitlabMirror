@@ -3,38 +3,69 @@
 //[CreateAssetMenu]
 public class AirbotAbility : Ability
 {
-  public float speed = 1;
+  public float accSpeed = 10; //20
+  public float maxAcc = 5; //10
+  public float rotateTarget = 50;
+  public float rotSpeed = 180f; //360
+  public float dec = 4; //10
+  PlayerBiped biped;
+  Animator animator;
 
-  public float accSpeed = 1;
-  Vector2 acc;
-  public float maxAcc = 10;
+  public override void Equip( Transform parentTransform )
+  {
+    base.Equip( parentTransform );
+    biped = pawn as PlayerBiped;
+    animator = go.GetComponent<Animator>();
+    animator.Play( "idle" );
+  }
+
+  Vector2 vel = Vector2.zero;
   
   public override void UpdateAbility()
   {
-    PlayerBiped playerBiped = pawn as PlayerBiped;
-    if( !playerBiped.onGround && playerBiped.dashStart )
+    if( !biped.onGround && biped.dashStart )
+    {
       IsActive = true;
+      vel = pawn.velocity;
+    }
 
-    if( !pawn.input.Dash || playerBiped.onGround )
+    if( !pawn.input.Dash || biped.onGround )
       IsActive = false;
 
     if( IsActive )
     {
-      /*Vector2 dir = Vector2.zero;
-      if( pawn.input.MoveUp ) dir += Vector2.up;
-      if( pawn.input.MoveRight ) dir += Vector2.right;
-      if( pawn.input.MoveLeft ) dir += Vector2.left;
-      if( pawn.input.MoveDown ) dir += Vector2.down;
-      pawn.velocity = dir * speed;*/
-
-      Vector2 vel = new Vector2( pawn.velocity.x, 0 );
-      if( pawn.input.MoveUp ) vel += Vector2.up * accSpeed * Time.deltaTime;
-      if( pawn.input.MoveRight ) vel += Vector2.right * accSpeed * Time.deltaTime;
-      if( pawn.input.MoveLeft ) vel += Vector2.left * accSpeed * Time.deltaTime;
-      if( pawn.input.MoveDown ) vel += Vector2.down * accSpeed * Time.deltaTime;
+      animator.Play( "spin" );
+      
+      if( !pawn.collideTop && pawn.input.MoveUp ) vel += Vector2.up * accSpeed * Time.deltaTime;
+      if( !pawn.collideRight && pawn.input.MoveRight ) vel += Vector2.right * accSpeed * Time.deltaTime;
+      if( !pawn.collideLeft && pawn.input.MoveLeft ) vel += Vector2.left * accSpeed * Time.deltaTime;
+      if( !pawn.collideBottom && pawn.input.MoveDown ) vel += Vector2.down * accSpeed * Time.deltaTime;
+      if( !(pawn.input.MoveUp || pawn.input.MoveDown || pawn.input.MoveRight || pawn.input.MoveLeft) )
+        vel = Vector2.MoveTowards( vel, Vector2.zero, dec * Time.deltaTime );
       vel.x = Mathf.Clamp( vel.x, -maxAcc, maxAcc );
       vel.y = Mathf.Clamp( vel.y, -maxAcc, maxAcc );
       pawn.velocity = vel;
+  
+      biped.rotating = true;
+      biped.rotateSpeed = rotSpeed;
+      biped.rotateTarget = Mathf.Clamp( (vel.x/maxAcc) * -rotateTarget, -rotateTarget, rotateTarget);
     }
+    else
+    {
+      animator.Play( "idle" );
+      biped.rotating = false;
+      vel = Vector2.zero;
+    }
+  }
+
+  public override void Deactivate()
+  {
+    IsActive = false;
+  }
+
+  public override void Unequip()
+  {
+    base.Unequip();
+    //playerBiped.backMount.localRotation = Quaternion.identity; 
   }
 }
