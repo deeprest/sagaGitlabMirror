@@ -98,12 +98,10 @@ public class PlayerController : Controller
   private void BindControls()
   {
     BA = Global.instance.Controls.BipedActions;
-
-    BA.Ability.performed += ( obj ) => input.Ability = true;
+    
     BA.NextAbility.performed += ( obj ) => input.NextAbility = true;
     BA.NextWeapon.performed += ( obj ) => input.NextWeapon = true;
     //BA.Charge.started += ( obj ) => input.Charge = true;
-    BA.Down.performed += ( obj ) => input.MoveDown = true;
     BA.Interact.performed += ( obj ) => { input.Interact = true; };
     BA.Aim.performed += ( obj ) => { aimDeltaSinceLastFrame += obj.ReadValue<Vector2>(); };
   }
@@ -141,10 +139,12 @@ public class PlayerController : Controller
       
       if( BA.MoveRight.ReadValue<float>() > 0.5f ) input.MoveRight = true;
       if( BA.MoveLeft.ReadValue<float>() > 0.5f ) input.MoveLeft = true;
+      input.MoveDown = BA.Down.phase == InputActionPhase.Started;
       input.Jump = BA.Jump.phase == InputActionPhase.Started;
       input.Dash = BA.Dash.phase == InputActionPhase.Started;
       input.Fire = BA.Fire.phase == InputActionPhase.Started;
       input.Charge = BA.Charge.phase == InputActionPhase.Started;
+      input.Ability = BA.Ability.phase == InputActionPhase.Started;
 
       Vector2 move = BA.Move.ReadValue<Vector2>();
       if( move.x > 0.5f ) input.MoveRight = true;

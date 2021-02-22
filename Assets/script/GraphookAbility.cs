@@ -33,11 +33,6 @@ public class GraphookAbility : Ability
   float grapDeltaMagnitudePrevious;
   Vector2 lastGoodDelta;
 
-  bool IsActive
-  {
-    get { return grapShooting || grapPulling; }
-  }
-
   public override void Equip( Transform parentTransform )
   {
     parent = parentTransform;
@@ -67,18 +62,9 @@ public class GraphookAbility : Ability
     else
       ShootGraphook( origin, aim );
   }
-  
-  public override void Deactivate()
-  {
-    base.Deactivate();
-    StopGrap( false );
-  }
 
   public override void UpdateAbility()
   {
-    if( !IsActive )
-      return;
-
     Vector3 armpos = pawn.GetShotOriginPosition();
     grapCableRenderer.transform.position = armpos;
     grapCableRenderer.transform.rotation = Quaternion.LookRotation( Vector3.forward, graphookTip.transform.position - armpos );
@@ -117,6 +103,7 @@ public class GraphookAbility : Ability
 
   void ShootGraphook( Vector2 origin, Vector2 direction )
   {
+    IsActive = true;
     Vector3 pos = origin;
     if( !Physics2D.Linecast( origin, pos, Global.ProjectileNoShootLayers ) )
     {
@@ -184,5 +171,6 @@ public class GraphookAbility : Ability
     {
       pawn.inertia = lastGoodDelta.normalized * grapPullSpeed * inertiaCarryOver;
     }
+    IsActive = false;
   }
 }

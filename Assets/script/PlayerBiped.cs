@@ -34,9 +34,9 @@ public class PlayerBiped : Pawn
   [Header( "State" )]
   [SerializeField] bool facingRight = true;
 
-  bool onGround;
+  public bool onGround;
   bool previousGround;
-  [SerializeField] bool jumping;
+  public bool jumping;
   [SerializeField] bool walljumping;
   [SerializeField] bool wallsliding;
   [SerializeField] bool landing;
@@ -152,12 +152,13 @@ public class PlayerBiped : Pawn
   public bool chargePulseOn = true;
   public float chargePulseInterval = 0.1f;
   public Color chargeColor = Color.white;
-  public Transform armMount;
   float chargeStartTime;
   GameObject chargeEffectGO;
 
   [Header( "Ability" )]
   [SerializeField] Ability ability;
+  [SerializeField] Transform armMount;
+  [SerializeField] Transform backMount;
 
   [SerializeField] List<Ability> abilities;
   public int CurrentAbilityIndex;
@@ -338,7 +339,10 @@ public class PlayerBiped : Pawn
     if( ability != null )
       ability.Unequip();
     ability = alt;
-    ability.Equip( armMount );
+    if( ability.mountType == Ability.MountType.ARM)
+      ability.Equip( armMount );
+    if( ability.mountType == Ability.MountType.BACK )
+      ability.Equip( backMount );
     Global.instance.abilityIcon.sprite = ability.icon;
     if( ability.cursor != null )
       Cursor.GetComponent<SpriteRenderer>().sprite = ability.cursor;
@@ -826,11 +830,6 @@ public class PlayerBiped : Pawn
     StopCharge();
   }
 
-  void UseAbility()
-  {
-    ability.Activate( GetShotOriginPosition(), shoot );
-  }
-
   void UpdateCursor()
   {
     Vector2 AimPosition = Vector2.zero;
@@ -908,12 +907,14 @@ public class PlayerBiped : Pawn
   private bool previousWallsliding;
   Vector2 previousWallSlideTargetNormal;
 
-  bool jumpStart { get { return input.Jump && !pinput.Jump;  } }
-  bool jumpStop { get { return !input.Jump && pinput.Jump;  } }
-  bool dashStart { get { return (input.Dash && !pinput.Dash); } }
-  bool dashStop { get { return (!input.Dash && pinput.Dash); } }
-  bool chargeStart { get { return input.Charge && !pinput.Charge;  } }
-  bool chargeStop { get { return !input.Charge && pinput.Charge;  } }
+  public bool jumpStart { get { return input.Jump && !pinput.Jump;  } }
+  public bool jumpStop { get { return !input.Jump && pinput.Jump;  } }
+  public bool dashStart { get { return (input.Dash && !pinput.Dash); } }
+  public bool dashStop { get { return (!input.Dash && pinput.Dash); } }
+  public bool chargeStart { get { return input.Charge && !pinput.Charge;  } }
+  public bool chargeStop { get { return !input.Charge && pinput.Charge;  } }
+  public bool abilityStart { get { return input.Ability && !pinput.Ability; } }
+  public bool abilityEnd { get { return !input.Ability && pinput.Ability; } }
 
   public override void EntityUpdate( )
   {
@@ -940,36 +941,6 @@ public class PlayerBiped : Pawn
     previousWallsliding = wallsliding;
     previousWallSlideTargetNormal = wallSlideTargetNormal; 
     wallsliding = false;
-
-    // must have input (or inertia) to move horizontally, so allow no persistent horizontal velocity (without inertia)
-    if( grapPulling )
-      velocity = Vector3.zero;
-    else if( !(input.MoveRight || input.MoveLeft) )
-      velocity.x = inertia.x;
-
-    // WEAPONS / ABILITIES
-    if( weapon != null )
-    {
-      if( input.Fire )
-        Shoot();
-
-      if( weapon.HasChargeVariant )
-      {
-        if( chargeStart )
-          StartCharge();
-        if( chargeStop )
-          ShootCharged();
-      }
-    }
-
-    if( ability != null && partArmFront.enabled && input.Ability )
-      UseAbility();
-
-    if( input.NextWeapon )
-      NextWeapon();
-
-    if( input.NextAbility )
-      NextAbility();
 
     if( input.MoveDown )
       hanging = false;
@@ -1057,6 +1028,11 @@ public class PlayerBiped : Pawn
           if( facingRight && onGround )
             StopDash();
         }
+        else
+        {
+          // must have input (or inertia) to move horizontally, so allow no persistent horizontal velocity (without inertia)
+          velocity.x = inertia.x;
+        }
 
         if( dashStart && (onGround || collideLeft || collideRight) )
           StartDash();
@@ -1095,8 +1071,8 @@ public class PlayerBiped : Pawn
           if( jumpStart && input.MoveRight )
           {
             walljumping = true;
-            velocity.y = jumpSpeed;
-            OverrideVelocity( Vector2.left * (input.Dash ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
+            //velocity.y = jumpSpeed;
+            OverrideVelocity( new Vector2(-(input.Dash ? dashSpeed : wallJumpPushVelocity), jumpSpeed), wallJumpPushDuration );
             jumpRepeatTimer.Start( jumpRepeatInterval );
             walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
             audio.PlayOneShot( soundJump );
@@ -1113,8 +1089,8 @@ public class PlayerBiped : Pawn
           if( jumpStart && input.MoveLeft )
           {
             walljumping = true;
-            velocity.y = jumpSpeed;
-            OverrideVelocity( Vector2.right * (input.Dash ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
+            // velocity.y = jumpSpeed;
+            OverrideVelocity( new Vector2( (input.Dash ? dashSpeed : wallJumpPushVelocity), jumpSpeed), wallJumpPushDuration );
             jumpRepeatTimer.Start( jumpRepeatInterval );
             walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
             audio.PlayOneShot( soundJump );
@@ -1147,19 +1123,49 @@ public class PlayerBiped : Pawn
       if( !((onGround && dashing) || wallsliding) )
         dashSmoke.Stop();
     }
-
-    if( ability != null )
-      ability.UpdateAbility( );
-
-    // // add gravity before velocity limits
+    
+    // add gravity before velocity limits
     if( UseGravity )
       velocity.y -= Global.Gravity * Time.deltaTime;
 
-    if( !grapPulling && overrideVelocityTimer.IsActive )
-      velocity.x = overrideVelocity.x;
+    if( overrideVelocityTimer.IsActive )
+      velocity = overrideVelocity;
 
     if( hanging )
       velocity = Vector3.zero;
+    
+    // WEAPONS / ABILITIES
+    if( weapon != null )
+    {
+      if( input.Fire )
+        Shoot();
+
+      if( weapon.HasChargeVariant )
+      {
+        if( chargeStart )
+          StartCharge();
+        if( chargeStop )
+          ShootCharged();
+      }
+    }
+
+    if( ability != null )
+    {
+      if( abilityStart )
+        ability.Activate( GetShotOriginPosition(), shoot );
+      
+      ability.UpdateAbility();
+      
+      if( abilityEnd )
+        ability.Deactivate();
+    }
+
+    if( input.NextWeapon )
+      NextWeapon();
+
+    if( input.NextAbility )
+      NextAbility();
+    
 
     // limit velocity before adding to position
     if( collideRight )
