@@ -724,10 +724,10 @@ MonoBehaviour:
     scenePath: Assets/scene/testing_area.unity
   - sceneAsset: {fileID: 102900000, guid: 2b52838fbf4db4d5d86d276826f529eb, type: 3}
     scenePath: Assets/scene/gen.unity
-  - sceneAsset: {fileID: 102900000, guid: f80b83ab4bf8540d0951fc8896f57d2d, type: 3}
-    scenePath: Assets/scene/jabber.unity
   - sceneAsset: {fileID: 102900000, guid: 3fdde71a3ca2e43efa5d107418e4f6d2, type: 3}
     scenePath: Assets/scene/chamber.unity
+  - sceneAsset: {fileID: 102900000, guid: effec0df60d164e45bf3d72e60a397c2, type: 3}
+    scenePath: Assets/chainsaw_mockup/Chainsaw_Mockup.unity
   RandomSeedOnStart: 0
   SimulatePlayer: 0
   InitialScene:
@@ -756,6 +756,7 @@ MonoBehaviour:
   AvatarPrefab: {fileID: 1789244597324514, guid: b9ab9fa9feaf64647b54a4f4a828b2d4,
     type: 3}
   Updating: 0
+  sceneScript: {fileID: 0}
   CurrentPlayer: {fileID: 0}
   PlayerController: {fileID: 0}
   UI: {fileID: 1243218848029664}
@@ -5637,7 +5638,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 140033
+    m_Bits: 139777
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: d5f243908dfd54fb78e21f294d27e58e, type: 2}
   m_TargetDisplay: 0
@@ -5693,7 +5694,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AssetsPPU: 2
-  m_RefResolutionX: 2048
+  m_RefResolutionX: 1024
   m_RefResolutionY: 512
   m_UpscaleRT: 0
   m_PixelSnapping: 0

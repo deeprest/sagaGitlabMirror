@@ -8,10 +8,11 @@ Shader "Custom/2D/Sprite-Lit-Emissive Indexed"
         _EmissiveTex ("Emissive", 2D) = "white" {}
 
 _EmissiveAmount ("Amount", Range(0,1)) = 0.0
-_IndexColor ("Index 1", Color) = (1,0,0,1)
-_IndexColor2 ("Index 2", Color) = (1,0,0,1)
+//_IndexColor ("Index 1", Color) = (1,0,0,1)
+//_IndexColor2 ("Index 2", Color) = (1,0,0,1)
 _FlashColor ("Flash Color", Color) = (1,1,1,1)
 _FlashAmount("Flash", Range(0.0, 1.0)) = 0
+
     }
     
     HLSLINCLUDE
@@ -87,6 +88,8 @@ half _FlashAmount;
             #if USE_SHAPE_LIGHT_TYPE_3
             SHAPE_LIGHT(3)
             #endif
+            
+            float4 _IndexColors[2];
 
             Varyings CombinedShapeLightVertex(Attributes v)
             {
@@ -106,15 +109,21 @@ half _FlashAmount;
             {
                 half4 c = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
                 int r = (int)(c.r * 255.0);
-                if( r==1 )
-                    c.rgb = lerp( _IndexColor.rgb * min(1.0,c.g*2.0), float4(1,1,1,1), (c.g-0.5)*2.0 );
-                if( r==2 )
-                    c.rgb = lerp( _IndexColor2.rgb * min(1.0,c.g*2.0), float4(1,1,1,1), (c.g-0.5)*2.0 );
+                if( r==1 ) c.rgb = lerp( _IndexColors[0].rgb * min(1.0,c.g*2.0), float3(1,1,1), (c.g-0.5)*2.0 );
+                if( r==2 ) c.rgb = lerp( _IndexColors[1].rgb * min(1.0,c.g*2.0), float3(1,1,1), (c.g-0.5)*2.0 );
                     
-                half4 emissive = (c + _FlashColor * 0.7) * _FlashAmount + SAMPLE_TEXTURE2D(_EmissiveTex, sampler_EmissiveTex, i.uv)  * _EmissiveAmount;
+                    
+                half4 etex = SAMPLE_TEXTURE2D(_EmissiveTex, sampler_EmissiveTex, i.uv);
+                int e = (int)(etex.r * 255.0);
+                if( e==1 ) etex.rgb = lerp( _IndexColors[0].rgb * min(1.0,etex.g*2.0), float3(1,1,1), (etex.g-0.5)*2.0 );
+                if( e==2 ) etex.rgb = lerp( _IndexColors[1].rgb * min(1.0,etex.g*2.0), float3(1,1,1), (etex.g-0.5)*2.0 );
+                
+                half4 flash = (c + _FlashColor * 0.7) * _FlashAmount; //lerp(light, light+_FlashColor*0.7, _FlashAmount);
+                half4 emissive = flash + etex  * _EmissiveAmount;
                 half4 main = c;
                 //half4 mask = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, i.uv);
-                return (CombinedShapeLightShared(main, main, i.lightingUV) + emissive) * main.a;
+                half4 light = CombinedShapeLightShared(main, main, i.lightingUV);
+                return (light + emissive) * main.a;
             }
             ENDHLSL
         }

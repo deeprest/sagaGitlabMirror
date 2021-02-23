@@ -1,16 +1,30 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Unity.Collections;
+using UnityEditor;
 using UnityEngine.Experimental.Rendering.Universal;
 
 
 public class SceneScript : MonoBehaviour
 {
   public AudioLoop music;
-  /*public CameraZone CameraZone;*/
+  //public CameraZone CameraZone;
   public BoxCollider NavmeshBox;
   public Light2D ambientLight;
+  [Header( "Optional" )]
+  [ReadOnly]
+  public Bounds bounds;
+  public Rain rain;
 
   public virtual void StartScene()
+  {
+    StartSceneCommon();
+    // Optional
+    if( rain != null )
+      rain.Initialize( bounds );
+  }
+  
+  public void StartSceneCommon()
   {
     if( Application.isEditor && !Global.instance.SimulatePlayer )
     {
@@ -33,6 +47,7 @@ public class SceneScript : MonoBehaviour
       float targetIntensity = ambientLight.intensity;
       new Timer( 3, delegate( Timer timer ) { ambientLight.intensity = timer.ProgressNormalized * targetIntensity; }, null );
     }
+    
   }
 
   public void PlayerInputOff()

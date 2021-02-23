@@ -65,7 +65,7 @@ _MinimapColor("Minimap Color", Color) = (1,0,0,1)
             half4 _FlashColor;
             half4 _MinimapColor;
             int _Minimap;
-half _FlashAmount;
+            half _FlashAmount;
 
             #if USE_SHAPE_LIGHT_TYPE_0
             SHAPE_LIGHT(0)
@@ -105,7 +105,7 @@ half _FlashAmount;
                 }
                 else
                 {
-                half4 main = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+                half4 main = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
                 half4 emissive = ((main + _FlashColor * 0.7) * _FlashAmount + SAMPLE_TEXTURE2D(_EmissiveTex, sampler_EmissiveTex, i.uv));           
                 return (CombinedShapeLightShared(main, main, i.lightingUV) + emissive) * main.a;
                 }
@@ -162,7 +162,7 @@ half _FlashAmount;
 
             float4 NormalsRenderingFragment(Varyings i) : SV_Target
             {
-                float4 mainTex = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+                float4 mainTex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
                 float3 normalTS = UnpackNormal(SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, i.uv));
                 return NormalsRenderingShared(mainTex, normalTS, i.tangentWS.xyz, i.bitangentWS.xyz, -i.normalWS.xyz);
             }
@@ -208,7 +208,7 @@ half _FlashAmount;
 
             float4 UnlitFragment(Varyings i) : SV_Target
             {
-                float4 mainTex = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+                float4 mainTex = float4(i.color.rgb,1) * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
                 return mainTex;
             }
             ENDHLSL

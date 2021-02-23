@@ -32,24 +32,28 @@ public class PlayerBiped : Pawn
   Vector2 shoot;
 
   [Header( "State" )]
-  [SerializeField] bool facingRight = true;
+  public bool facingRight = true;
 
-  bool onGround;
+  public bool onGround;
   bool previousGround;
-  [SerializeField] bool jumping;
-  [SerializeField] bool walljumping;
-  [SerializeField] bool wallsliding;
-  [SerializeField] bool landing;
-  [SerializeField] bool dashing;
+  bool jumping;
+  bool walljumping;
+  bool wallsliding;
+  bool landing;
+  bool dashing;
+  public bool rotating;
+  public float rotateTarget;
+  public float rotateSpeed;
   
   Vector2 wallSlideNormal;
-  private Vector2 wallSlideTargetNormal;
+  Vector2 wallSlideTargetNormal;
   Timer dashTimer = new Timer();
   Timer jumpTimer = new Timer();
   Timer jumpRepeatTimer = new Timer();
   Timer landTimer = new Timer();
   Timer walljumpTimer = new Timer();
 
+  [SerializeField] IndexedColors indexedColors;
 
   [Header( "DEV" )]
   public float MoveScale = 0.5f;
@@ -151,12 +155,14 @@ public class PlayerBiped : Pawn
   public bool chargePulseOn = true;
   public float chargePulseInterval = 0.1f;
   public Color chargeColor = Color.white;
-  public Transform armMount;
   float chargeStartTime;
   GameObject chargeEffectGO;
 
   [Header( "Ability" )]
   [SerializeField] Ability ability;
+  public Transform armMount;
+  public Transform armMountFront;
+  public Transform backMount;
 
   [SerializeField] List<Ability> abilities;
   public int CurrentAbilityIndex;
@@ -176,7 +182,7 @@ public class PlayerBiped : Pawn
   [SerializeField] Damage CrushDamage;
   [SerializeField] float damageDuration = 0.5f;
   bool takingDamage;
-  bool damageGracePeriod;
+  public bool damageGracePeriod;
   Timer damageTimer = new Timer();
   public Color damagePulseColor = Color.white;
   bool damagePulseOn;
@@ -304,11 +310,10 @@ public class PlayerBiped : Pawn
     Global.instance.weaponIcon.sprite = weapon.icon;
     Cursor.GetComponent<SpriteRenderer>().sprite = weapon.cursor;
     StopCharge();
-    foreach( var sr in spriteRenderers )
-    {
-      sr.material.SetColor( "_IndexColor", weapon.Color0 );
-      sr.material.SetColor( "_IndexColor2", weapon.Color1 );
-    }
+    
+    indexedColors.colors[0] = weapon.Color0;
+    indexedColors.colors[1] = weapon.Color1;
+    indexedColors.ExplicitUpdate();
   }
 
   void NextWeapon()
@@ -338,7 +343,9 @@ public class PlayerBiped : Pawn
     if( ability != null )
       ability.Unequip();
     ability = alt;
-    ability.Equip( armMount );
+    if( ability.mountType == Ability.MountType.ARM_BACK) ability.Equip( armMount );
+    if( ability.mountType == Ability.MountType.ARM_FRONT) ability.Equip( armMountFront );
+    if( ability.mountType == Ability.MountType.BACK ) ability.Equip( backMount );
     Global.instance.abilityIcon.sprite = ability.icon;
     if( ability.cursor != null )
       Cursor.GetComponent<SpriteRenderer>().sprite = ability.cursor;
@@ -366,7 +373,7 @@ public class PlayerBiped : Pawn
   new void UpdateHit( float dT )
   {
     pups.Clear();
-    hitCount = Physics2D.BoxCastNonAlloc( pos, box.size + Vector2.up * DownOffset*2, 0, velocity, RaycastHits, Mathf.Max( raylength, velocity.magnitude * dT ), HitLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( pos, box.size + Vector2.up * DownOffset*2 + Vector2.right*0.1f, 0, velocity, RaycastHits, Mathf.Max( raylength, velocity.magnitude * dT ), HitLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -653,7 +660,6 @@ public class PlayerBiped : Pawn
     Debug.DrawLine( new Vector3( bounds.max.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.min.y ), Color.red );
     Debug.DrawLine( new Vector3( bounds.max.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.min.y ), Color.red );
     
-#if true
     // BOTTOM
     prefer = float.MinValue;
     // todo fix exception that occurs after death
@@ -702,8 +708,6 @@ public class PlayerBiped : Pawn
         }
       }
     }
-#endif
-
 
     // TOP
     topHitCount = Physics2D.BoxCastNonAlloc( adjust + Vector2.up * headboxy, headbox, 0, Vector2.up, topHits, Mathf.Max( raylength, velocity.y * dT ), Global.CharacterCollideLayers );
@@ -829,11 +833,6 @@ public class PlayerBiped : Pawn
     StopCharge();
   }
 
-  void UseAbility()
-  {
-    ability.Activate( GetShotOriginPosition(), shoot );
-  }
-
   void UpdateCursor()
   {
     // AimPosition is where the projectile is going.
@@ -911,12 +910,14 @@ public class PlayerBiped : Pawn
   private bool previousWallsliding;
   Vector2 previousWallSlideTargetNormal;
 
-  bool jumpStart { get { return input.Jump && !pinput.Jump;  } }
-  bool jumpStop { get { return !input.Jump && pinput.Jump;  } }
-  bool dashStart { get { return (input.Dash && !pinput.Dash); } }
-  bool dashStop { get { return (!input.Dash && pinput.Dash); } }
-  bool chargeStart { get { return input.Charge && !pinput.Charge;  } }
-  bool chargeStop { get { return !input.Charge && pinput.Charge;  } }
+  public bool jumpStart { get { return input.Jump && !pinput.Jump;  } }
+  public bool jumpStop { get { return !input.Jump && pinput.Jump;  } }
+  public bool dashStart { get { return (input.Dash && !pinput.Dash); } }
+  public bool dashStop { get { return (!input.Dash && pinput.Dash); } }
+  public bool chargeStart { get { return input.Charge && !pinput.Charge;  } }
+  public bool chargeStop { get { return !input.Charge && pinput.Charge;  } }
+  public bool abilityStart { get { return input.Ability && !pinput.Ability; } }
+  public bool abilityEnd { get { return !input.Ability && pinput.Ability; } }
 
   public override void EntityUpdate( )
   {
@@ -943,36 +944,6 @@ public class PlayerBiped : Pawn
     previousWallsliding = wallsliding;
     previousWallSlideTargetNormal = wallSlideTargetNormal; 
     wallsliding = false;
-
-    // must have input (or inertia) to move horizontally, so allow no persistent horizontal velocity (without inertia)
-    if( grapPulling )
-      velocity = Vector3.zero;
-    else if( !(input.MoveRight || input.MoveLeft) )
-      velocity.x = inertia.x;
-
-    // WEAPONS / ABILITIES
-    if( weapon != null )
-    {
-      if( input.Fire )
-        Shoot();
-
-      if( weapon.HasChargeVariant )
-      {
-        if( chargeStart )
-          StartCharge();
-        if( chargeStop )
-          ShootCharged();
-      }
-    }
-
-    if( ability != null && partArmFront.enabled && input.Ability )
-      UseAbility();
-
-    if( input.NextWeapon )
-      NextWeapon();
-
-    if( input.NextAbility )
-      NextAbility();
 
     if( input.MoveDown )
       hanging = false;
@@ -1060,6 +1031,11 @@ public class PlayerBiped : Pawn
           if( facingRight && onGround )
             StopDash();
         }
+        else
+        {
+          // must have input (or inertia) to move horizontally, so allow no persistent horizontal velocity (without inertia)
+          velocity.x = inertia.x;
+        }
 
         if( dashStart && (onGround || collideLeft || collideRight) )
           StartDash();
@@ -1098,8 +1074,8 @@ public class PlayerBiped : Pawn
           if( jumpStart && input.MoveRight )
           {
             walljumping = true;
-            velocity.y = jumpSpeed;
-            OverrideVelocity( Vector2.left * (input.Dash ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
+            //velocity.y = jumpSpeed;
+            OverrideVelocity( new Vector2(-(input.Dash ? dashSpeed : wallJumpPushVelocity), jumpSpeed), wallJumpPushDuration );
             jumpRepeatTimer.Start( jumpRepeatInterval );
             walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
             audio.PlayOneShot( soundJump );
@@ -1116,8 +1092,8 @@ public class PlayerBiped : Pawn
           if( jumpStart && input.MoveLeft )
           {
             walljumping = true;
-            velocity.y = jumpSpeed;
-            OverrideVelocity( Vector2.right * (input.Dash ? dashSpeed : wallJumpPushVelocity), wallJumpPushDuration );
+            // velocity.y = jumpSpeed;
+            OverrideVelocity( new Vector2( (input.Dash ? dashSpeed : wallJumpPushVelocity), jumpSpeed), wallJumpPushDuration );
             jumpRepeatTimer.Start( jumpRepeatInterval );
             walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
             audio.PlayOneShot( soundJump );
@@ -1150,19 +1126,49 @@ public class PlayerBiped : Pawn
       if( !((onGround && dashing) || wallsliding) )
         dashSmoke.Stop();
     }
-
-    if( ability != null )
-      ability.UpdateAbility( );
-
-    // // add gravity before velocity limits
+    
+    // add gravity before velocity limits
     if( UseGravity )
       velocity.y -= Global.Gravity * Time.deltaTime;
 
-    if( !grapPulling && overrideVelocityTimer.IsActive )
-      velocity.x = overrideVelocity.x;
+    if( overrideVelocityTimer.IsActive )
+      velocity = overrideVelocity;
 
     if( hanging )
       velocity = Vector3.zero;
+    
+    // WEAPONS / ABILITIES
+    if( weapon != null )
+    {
+      if( input.Fire )
+        Shoot();
+
+      if( weapon.HasChargeVariant )
+      {
+        if( chargeStart )
+          StartCharge();
+        if( chargeStop )
+          ShootCharged();
+      }
+    }
+
+    if( ability != null )
+    {
+      if( abilityStart )
+        ability.Activate( GetShotOriginPosition(), shoot );
+      
+      ability.UpdateAbility();
+      
+      if( abilityEnd )
+        ability.Deactivate();
+    }
+
+    if( input.NextWeapon )
+      NextWeapon();
+
+    if( input.NextAbility )
+      NextAbility();
+    
 
     // limit velocity before adding to position
     if( collideRight )
@@ -1273,6 +1279,8 @@ public class PlayerBiped : Pawn
       transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( wallSlideNormal.y, -wallSlideNormal.x ) );
     else if( wallsliding && wallSlideNormal.x > 0 )
       transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( -wallSlideNormal.y, wallSlideNormal.x ) );
+    else if( rotating )
+      transform.rotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(transform.rotation.eulerAngles.z, rotateTarget, rotateSpeed * Time.deltaTime) );
     else
       transform.rotation = Quaternion.Euler( 0, 0, 0 );
 

@@ -17,10 +17,37 @@ public class PlayerControllerEditor : Editor
     if( GUI.Button( EditorGUILayout.GetControlRect(), "end" ) )
       pc.RecordEnd();
     if( GUI.Button( EditorGUILayout.GetControlRect(), "play recording" ) )
-      pc.RecordPlayback();
+      pc.PlaybackBegin();
   }
 }
 #endif
+
+
+[System.Serializable]
+public struct InputState
+{
+  // 1 byte
+  public bool MoveLeft;
+  public bool MoveRight;
+  public bool MoveUp;
+  public bool MoveDown;
+  public bool Jump;
+  public bool Dash;
+  public bool Fire;
+  public bool Charge;
+  // 1 byte
+  public bool Ability;
+  public bool Interact;
+  public bool NextWeapon;
+  public bool NextAbility;
+  public bool NOTUSED0;
+  public bool NOTUSED1;
+  public bool NOTUSED2;
+  public bool NOTUSED3;
+  // 8 byte
+  public Vector2 Aim;
+}
+
 
 public class PlayerController : Controller
 {
@@ -73,30 +100,27 @@ public class PlayerController : Controller
   private void BindControls()
   {
     BA = Global.instance.Controls.BipedActions;
-
-    BA.Ability.performed += ( obj ) => input.Ability = true;
+    
     BA.NextAbility.performed += ( obj ) => input.NextAbility = true;
     BA.NextWeapon.performed += ( obj ) => input.NextWeapon = true;
     //BA.Charge.started += ( obj ) => input.Charge = true;
-    BA.Down.performed += ( obj ) => input.MoveDown = true;
     BA.Interact.performed += ( obj ) => { input.Interact = true; };
     BA.Aim.performed += ( obj ) => { aimDeltaSinceLastFrame = obj.ReadValue<Vector2>(); };
   }
-
+  
   // apply input to pawn
   public override void Update()
   {
     if( playback )
     {
       if( pawn == null || playbackIndex >= evt.Count )
-        playback = false;
+        PlaybackEnd();
       else
       {
         pawn.transform.position = evt[playbackIndex].position;
-        pawn.ApplyInput( evt[playbackIndex].input );
-        playbackIndex++;
+        pawn.ApplyInput( evt[playbackIndex++].input );
       }
-    }
+    }  
     else
     {
       if( Cursor.lockState != CursorLockMode.None )
@@ -116,10 +140,12 @@ public class PlayerController : Controller
       
       if( BA.MoveRight.ReadValue<float>() > 0.5f ) input.MoveRight = true;
       if( BA.MoveLeft.ReadValue<float>() > 0.5f ) input.MoveLeft = true;
+      input.MoveDown = BA.Down.phase == InputActionPhase.Started;
       input.Jump = BA.Jump.phase == InputActionPhase.Started;
       input.Dash = BA.Dash.phase == InputActionPhase.Started;
       input.Fire = BA.Fire.phase == InputActionPhase.Started;
       input.Charge = BA.Charge.phase == InputActionPhase.Started;
+      input.Ability = BA.Ability.phase == InputActionPhase.Started;
 
       Vector2 move = BA.Move.ReadValue<Vector2>();
       if( move.x > 0.5f ) input.MoveRight = true;
@@ -135,7 +161,11 @@ public class PlayerController : Controller
         paw.ApplyInput( input );*/
 
       if( recording )
-        evt.Add( new RecordState {input = input, position = pawn.transform.position} );
+        evt.Add( new RecordFrame {
+          input = input, 
+          position = pawn.transform.position,
+          timestamp = Time.unscaledTime - recordStartTime
+        } );
     }
 
     input = default;
@@ -175,30 +205,37 @@ public class PlayerController : Controller
   // add chop drop event
   // store slo-motion begin/end events
   // store pause, menu active events (or ignore them during capture)
-
-  struct RecordState
-  {
-    public InputState input;
-    public Vector2 position;
-  }
-
-  // input state = 2 + 8 (position)
-  const int stateSize = (2 + 8) + 8;
-
+  
   struct RecordHeader
   {
     public Vector2 initialposition;
     // todo need all relevent pawn state
-    // current weapon index
+    
+    /// scene ref / name to load
+    /// load serialized scene state
   }
-
-  const int headerSize = 8;
+  const int HEADER_SIZE = 8;
+  
+  struct RecordFrame
+  {
+    public float timestamp;
+    public InputState input;
+    public Vector2 position;
+  }
+  // timestamp (4)
+  // frame size = input buttons (2) + input aim (8)
+  // position (8)
+  const int FRAME_SIZE = 4 + (2 + 8) + 8;
+  // todo is there a compile tile constant sizeof?
+  //const int FRAME_SIZE = sizeof(RecordState);
 
   bool recording;
   bool playback;
   int playbackIndex = 0;
+  float playbackStartTime;
   RecordHeader header;
-  List<RecordState> evt;
+  float recordStartTime;
+  List<RecordFrame> evt;
   string recordpath;
 
   public void RecordToggle()
@@ -217,11 +254,12 @@ public class PlayerController : Controller
   public void RecordBegin()
   {
     recording = true;
-    evt = new List<RecordState>();
+    evt = new List<RecordFrame>();
     header = new RecordHeader
     {
       initialposition = pawn.transform.position
     };
+    recordStartTime = Time.unscaledTime;
   }
 
   public void RecordEnd()
@@ -230,7 +268,7 @@ public class PlayerController : Controller
 
     byte[] x;
     int p = 0;
-    byte[] buffer = new byte[headerSize + evt.Count * stateSize];
+    byte[] buffer = new byte[HEADER_SIZE + evt.Count * FRAME_SIZE];
 
     FileStream fs = File.Open( recordpath, FileMode.Create );
     x = System.BitConverter.GetBytes( header.initialposition.x );
@@ -249,8 +287,8 @@ public class PlayerController : Controller
 
     for( int i = 0; i < evt.Count; i++ )
     {
-      RecordState state = evt[i];
-      InputState input = state.input;
+      RecordFrame frame = evt[i];
+      InputState input = frame.input;
       // 2 byte
       int value =
         (input.MoveLeft ? 0x1 : 0x0) << 0 |
@@ -261,14 +299,15 @@ public class PlayerController : Controller
         (input.Dash ? 0x1 : 0x0) << 5 |
         (input.Fire ? 0x1 : 0x0) << 6 |
         (input.Charge ? 0x1 : 0x0) << 7 |
-        (input.Ability ? 0x1 : 0x0) << 6 |
-        (input.Interact ? 0x1 : 0x0) << 8 |
-        (input.NextWeapon ? 0x1 : 0x0) << 9 |
-        (input.NextAbility ? 0x1 : 0x0) << 10 |
-        (input.NOTUSED0 ? 0x1 : 0x0) << 11 |
+        
+        (input.Ability ? 0x1 : 0x0) << 8 |
+        (input.Interact ? 0x1 : 0x0) << 9 |
+        (input.NextWeapon ? 0x1 : 0x0) << 10 |
+        (input.NextAbility ? 0x1 : 0x0) << 11 |
         (input.NOTUSED0 ? 0x1 : 0x0) << 12 |
         (input.NOTUSED0 ? 0x1 : 0x0) << 13 |
-        (input.NOTUSED0 ? 0x1 : 0x0) << 14;
+        (input.NOTUSED0 ? 0x1 : 0x0) << 14 |
+        (input.NOTUSED0 ? 0x1 : 0x0) << 15;
 
       buffer[p] = (byte) value;
       buffer[p + 1] = (byte) (value >> 8);
@@ -289,14 +328,21 @@ public class PlayerController : Controller
       p += 4;
 
       // position
-      x = System.BitConverter.GetBytes( state.position.x );
+      x = System.BitConverter.GetBytes( frame.position.x );
       buffer[p] = x[0];
       buffer[p + 1] = x[1];
       buffer[p + 2] = x[2];
       buffer[p + 3] = x[3];
       p += 4;
 
-      x = System.BitConverter.GetBytes( state.position.y );
+      x = System.BitConverter.GetBytes( frame.position.y );
+      buffer[p] = x[0];
+      buffer[p + 1] = x[1];
+      buffer[p + 2] = x[2];
+      buffer[p + 3] = x[3];
+      p += 4;
+      
+      x = System.BitConverter.GetBytes( frame.timestamp );
       buffer[p] = x[0];
       buffer[p + 1] = x[1];
       buffer[p + 2] = x[2];
@@ -309,16 +355,28 @@ public class PlayerController : Controller
     fs.Close();
   }
 
-  public void RecordPlayback()
+  public void PlaybackToggle()
   {
-    evt = new List<RecordState>();
+    playback = !playback;
+    if( playback )
+      PlaybackBegin();
+    else
+      PlaybackEnd();
+  }
+
+  public void PlaybackBegin()
+  {
+    playback = true;
+    playbackStartTime = Time.unscaledTime;
+
+    evt = new List<RecordFrame>();
     playbackIndex = 0;
 
     byte[] buffer = File.ReadAllBytes( recordpath );
     // header
     pawn.transform.position = new Vector3( System.BitConverter.ToSingle( buffer, 0 ), System.BitConverter.ToSingle( buffer, 4 ), 0 );
     // frames
-    for( int i = headerSize; i < buffer.Length; i += stateSize )
+    for( int i = HEADER_SIZE; i < buffer.Length; i += FRAME_SIZE )
     {
       InputState state = new InputState
       {
@@ -331,25 +389,31 @@ public class PlayerController : Controller
         Fire = ((buffer[i] >> 6) & 0x1) > 0,
         Charge = ((buffer[i] >> 7) & 0x1) > 0,
 
-        Ability = ((buffer[i] >> 0) & 0x1) > 0,
+        Ability = ((buffer[i + 1] >> 0) & 0x1) > 0,
         Interact = ((buffer[i + 1] >> 1) & 0x1) > 0,
         NextWeapon = ((buffer[i + 1] >> 2) & 0x1) > 0,
         NextAbility = ((buffer[i + 1] >> 3) & 0x1) > 0,
-        // NOTUSED0 = ((buffer[i + 1] >> 4) & 0x1) > 0,
-        // NOTUSED1 = ((buffer[i + 1] >> 5) & 0x1) > 0,
-        // NOTUSED2 = ((buffer[i + 1] >> 6) & 0x1) > 0,
-        // NOTUSED3 = ((buffer[i + 1] >> 7) & 0x1) > 0,
-        //
+        NOTUSED0 = ((buffer[i + 1] >> 4) & 0x1) > 0,
+        NOTUSED1 = ((buffer[i + 1] >> 5) & 0x1) > 0,
+        NOTUSED2 = ((buffer[i + 1] >> 6) & 0x1) > 0,
+        NOTUSED3 = ((buffer[i + 1] >> 7) & 0x1) > 0,
 
         Aim = new Vector2( System.BitConverter.ToSingle( buffer, i + 2 ), System.BitConverter.ToSingle( buffer, i + 6 ) )
       };
 
       Vector2 pos = new Vector2( System.BitConverter.ToSingle( buffer, i + 10 ), System.BitConverter.ToSingle( buffer, i + 14 ) );
-      evt.Add( new RecordState {input = state, position = pos} );
+      float timestamp = System.BitConverter.ToSingle( buffer, i + 18 );
+      
+      evt.Add( new RecordFrame {timestamp = timestamp, input = state, position = pos} );
     }
-
-    playback = true;
   }
 
-  #endregion
+  public void PlaybackEnd()
+  {
+    playback = false;
+  }
+
+#endregion
 }
+
+

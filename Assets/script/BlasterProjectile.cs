@@ -37,8 +37,15 @@ public class BlasterProjectile : Projectile, IDamage
     Destroy( gameObject );
 
     if( hitPrefab != null )
-      Instantiate( hitPrefab, transform.position, transform.rotation );
+    {
+      GameObject go = Instantiate( hitPrefab, transform.position, transform.rotation );
+      IndexedColors ic = go.GetComponent<IndexedColors>();
+      if( ic != null )
+        colors.CopyTo( ic.colors, 0 );
+    }
   }
+
+  [SerializeField] Color[] colors = new Color[1];
 
   void FixedUpdate()
   {

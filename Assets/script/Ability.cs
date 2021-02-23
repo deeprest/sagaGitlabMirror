@@ -3,27 +3,36 @@
 [CreateAssetMenu]
 public class Ability : ScriptableObject
 {
+  public enum MountType
+  {
+    NONE,
+    ARM_BACK,
+    ARM_FRONT,
+    BACK
+  }
+  
   public Pawn pawn;
   public bool IsActive;
   public Sprite icon;
   public Sprite cursor;
   public GameObject prefab;
+  public MountType mountType;
 
   // transient
-  [SerializeField] GameObject go;
+  public GameObject go;
   Collider2D[] clds;
 
   public virtual void OnAcquire( Pawn pawn )
   {
     this.pawn = pawn;
   }
-  // when the ability is equipped
+  
   public virtual void Equip( Transform parentTransform )
   {
     //Ability
     go = Instantiate( prefab, parentTransform.position, Quaternion.identity, parentTransform );
     go.transform.localRotation = Quaternion.identity;
-    
+
     clds = go.GetComponentsInChildren<Collider2D>();
     for( int i = 0; i < clds.Length; i++ )
     {
@@ -34,8 +43,7 @@ public class Ability : ScriptableObject
         Physics2D.IgnoreCollision( pawn.box, clds[i], true );
     }
   }
-
-  // unequipped
+  
   public virtual void Unequip()
   {
     for( int i = 0; i < clds.Length; i++ )
@@ -49,18 +57,9 @@ public class Ability : ScriptableObject
     Destroy( go );
   }
 
-  public virtual void Activate( Vector2 origin, Vector2 aim )
-  {
-    IsActive = true;
-  }
-
+  public virtual void Activate( Vector2 origin, Vector2 aim ) { }
   public virtual void UpdateAbility() { }
-
-  public virtual void Deactivate()
-  {
-    IsActive = false;
-  }
-
+  public virtual void Deactivate() { }
   public virtual void PreSceneTransition() { }
   public virtual void PostSceneTransition() { }
 }

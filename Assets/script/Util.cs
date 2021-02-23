@@ -9,6 +9,15 @@ using UnityEditor;
 
 public static class Util
 {
+  // useful when using [ExecuteInEditMode]
+  public static void Destroy( Object obj )
+  {
+    if( Application.isEditor && !Application.isPlaying )
+      Object.DestroyImmediate( obj );
+    else
+      Object.Destroy( obj );
+  }
+
   public static float HermiteAlpha( float s1, float s2, float alpha )
   {
     const float n1 = 0.0f;

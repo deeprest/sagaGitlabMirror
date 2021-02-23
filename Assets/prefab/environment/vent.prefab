@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300084, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -148,7 +148,6 @@ MonoBehaviour:
   spriteRenderers: []
   UseGravity: 0
   IsStatic: 1
-  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
   inertia: {x: 0, y: 0}
   overrideVelocity: {x: 0, y: 0}
@@ -164,7 +163,7 @@ MonoBehaviour:
   MaxHealth: 3
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  spawnWhenDead: {fileID: 0}
+  SpawnWhenDead: []
   spawnChance: 1
   flashInterval: 0.05
   flashCount: 5

@@ -1,4 +1,4 @@
-**Establish the design before resuming work**
+
 
 # DESIGN pillars (from gdu.io)
 1. Mantra:  "You are a robotic ninja, fighting large robots and pirating their parts."
@@ -9,7 +9,7 @@
 5. Target Audience: Any fans of MMX that want to see the gameplay evolve.
 6. Game Details (see below)
 7. Interface, Controls: m+k, gamepads
-8. Artstyle: cyberpunk pixelart hq3x. Composite sprites with lighting, normal+emissive maps.
+8. Artstyle: cyberpunk pixelart hq4x. Composite sprites with lighting, normal+emissive maps.
 9. Sound / Music: rock soundtrack + instrument foley
 10. [Development plan]
 
@@ -24,15 +24,18 @@ Control Rebinding, m+k or gamepad
 **Is not commercialized**
 no ads. You pay with your soul. (fake ads?)
 no microtransactions.
-no in-game currency to compulsively accumulate. (or make it useless)
+no in-game currency to purchase.
 
 **Does not use addiction mechanics**
+no in-game currency to compulsively accumulate. (or possibly make it useless)
 no achievements to leave you feeling underachieved.
 no trophies. your ego is big enough already.
 
 **Not too complex. you have a life**
 no tedious narrative to ignore (dialogue and presentation, but no narrative)
 no complicated technology/skill tree
+
+Does not have much UI shit on screen.
 
 # Influences
 * Mega Man X (1993) dash, walljump, wallside, charged shot.
@@ -77,7 +80,7 @@ level generation
 
 # Cycles
 combat cycle. aware of enemy, visual contact, observe, attack, evade => death or success
-death cycle. transformation; respawn; instant replay.
+death cycle. possibly: transformation, or respawn, or instant replay.
 stage cycle. HQ to generated level. boss, weapon.
 system upgrades: sensory (blobs on perif), targeting (projectile path, highlight enemies), weakness scan (show weak spots on large enemies)
 
@@ -139,3 +142,76 @@ build weapons onto biped arm slots
 find body upgrades: run speed, jump height, etc
 
 #### pickle rick / tiny when damaged
+
+
+# Titles
+Not a Mega Man Clone
+Captain Commerce Will Sue
+YAMMX Clone
+Ninja Sex Robot
+Ninja Robot Sex City
+Machine Sex Profit City
+Ninja Robot Sex Profit City
+Corporate Future Robot City Sex Profit
+Robot Ninja Sex Battle Profit
+
+
+NOUNS:
+A
+Boss
+City
+D
+Energy
+Force
+Graphook
+Hornet
+I
+J
+K
+Lift
+Mech
+Ninja
+O
+Pickup
+Q
+Rain
+Shield
+Turret
+U
+V
+Weapon
+X
+Y
+Z
+
+
+VERBS:
+Ask
+B
+Crash
+Dash / Dodge
+Explode / Explore
+Fly / Fall
+G
+Hit
+I
+Jump
+Kill
+L
+M
+N
+O
+Protect
+Q
+R
+Slide
+Trigger
+U
+V
+W
+X
+Y
+Z
+
+
+

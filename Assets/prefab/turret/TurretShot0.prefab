@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 58790195297255388}
   - component: {fileID: 4025981189729564986}
   - component: {fileID: 9191745444400861375}
+  - component: {fileID: 1278657341014108834}
   m_Layer: 11
   m_Name: TurretShot0
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1227316525270448}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.613, y: -1.668, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -52,7 +53,7 @@ MonoBehaviour:
   weapon: {fileID: 0}
   instigator: {fileID: 0}
   ContactDamage: {fileID: 11400000, guid: 601397d903e4744ad818ea898f162fff, type: 2}
-  speed: 5
+  speed: 6
   raycastDistance: 0.2
   timeout: 3
   velocity: {x: 0, y: 0}
@@ -62,7 +63,9 @@ MonoBehaviour:
   light: {fileID: 9191745444400861375}
   DieAfterHitCount: 1
   AlignRotationToVelocity: 1
-  hitPrefab: {fileID: 1227316525270448, guid: 501808a31aa284cf4a2ffd0c05c1e0c9, type: 3}
+  hitPrefab: {fileID: 1227316525270448, guid: c82148e06b5614c7e831282672ae8fcd, type: 3}
+  colors:
+  - {r: 0.99215686, g: 0.122686066, b: 0, a: 1}
 --- !u!212 &212190135428314220
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -81,7 +84,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d905710c44976415991cc7aff39cfb39, type: 2}
+  - {fileID: 2100000, guid: 674f2e642f9fa4a3ca96946e0b15865a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -102,7 +105,7 @@ SpriteRenderer:
   m_SortingLayerID: 1445702261
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4289353735146823145, guid: 64314a0420c93471b9990c7b9f080a39,
+  m_Sprite: {fileID: -2198144230452443905, guid: 33a847c124d464bafb821e4587715f78,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -138,7 +141,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1227316525270448}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: f5c757d042c22456ca369dd98990b1ea, type: 2}
   m_CullingMode: 0
@@ -164,7 +167,7 @@ MonoBehaviour:
   m_LightType: 0
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
-  m_Color: {r: 0.99264705, g: 0.35336626, b: 0.26275954, a: 1}
+  m_Color: {r: 0.99215686, g: 0.122686066, b: 0, a: 1}
   m_Intensity: 3
   m_LightVolumeOpacity: 0
   m_ApplyToSortingLayers: 00000000ab08fa61d1f7da467f62816c75aa2b56155d55e2
@@ -190,3 +193,19 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!114 &1278657341014108834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227316525270448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb40fc0c4299b48a293c1443c4695abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  srs:
+  - {fileID: 212190135428314220}
+  colors:
+  - {r: 0.99215686, g: 0.122686066, b: 0, a: 1}

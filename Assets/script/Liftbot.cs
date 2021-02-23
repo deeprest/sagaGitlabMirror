@@ -116,16 +116,18 @@ public class Liftbot : Entity, IWorldSelectable
         
         // Smooth arrival
         velocity = delta * Time.smoothDeltaTime * slowSpeed;
-        if( !IsTriggeredByPlayer )
+        if( IsTriggeredByPlayer && (pathIndex == 0 || pathIndex == path.Length - 1) ) 
         {
-          if( UseWaitDuration )
+          // do nothing
+        }
+        else if( UseWaitDuration )
           {
             if( !timeout.IsActive )
               timeout.Start( waitDuration, null, NextWaypoint );
           }
           else 
             NextWaypoint();
-        }
+        
       }
       else
       {

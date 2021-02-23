@@ -84,6 +84,14 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "DEV-Gizmos",
+                    "type": "Button",
+                    "id": "f455d5c1-5fdd-4798-bf90-41f5ec1745f5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -104,7 +112,7 @@
                     "path": "<Keyboard>/p",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Mouse+Keyboard",
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -115,7 +123,7 @@
                     "path": "<Keyboard>/f1",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Mouse+Keyboard",
                     "action": "DEV-Respawn",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -126,7 +134,7 @@
                     "path": "<Gamepad>/select",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "DEV-Respawn",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -291,7 +299,7 @@
                     "path": "<Keyboard>/f2",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Mouse+Keyboard",
                     "action": "DEV-Clone",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -302,7 +310,7 @@
                     "path": "<Keyboard>/f5",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Mouse+Keyboard",
                     "action": "Screenshot",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -326,6 +334,17 @@
                     "processors": "",
                     "groups": "Mouse+Keyboard",
                     "action": "Minimap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fe84533e-b61f-431e-aad9-bf035bc75e76",
+                    "path": "<Keyboard>/f3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse+Keyboard",
+                    "action": "DEV-Gizmos",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -73,10 +73,10 @@ public class Entity : MonoBehaviour, IDamage
 
 
   // collision flags
-  protected bool collideRight = false;
-  protected bool collideLeft = false;
-  protected bool collideTop = false;
-  protected bool collideBottom = false;
+  public bool collideRight = false;
+  public bool collideLeft = false;
+  public bool collideTop = false;
+  public bool collideBottom = false;
   const float corner = 0.707106769f;
   // cached for optimization - to avoid allocating every frame
   protected RaycastHit2D[] RaycastHits = new RaycastHit2D[4];
@@ -105,7 +105,6 @@ public class Entity : MonoBehaviour, IDamage
   public GameObject explosion;
   public AudioClip soundHit;
   public GameObject[] SpawnWhenDead;
-  public int spawnChance = 1;
   // FLASH
   protected Timer flashTimer = new Timer();
   public float flashInterval = 0.05f;
@@ -328,14 +327,10 @@ public class Entity : MonoBehaviour, IDamage
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
         {
-#if DEBUG_CHECKS
           if( cha.GetInstanceID() == GetInstanceID() )
-          {
-            Debug.LogError( "character set itself as carry character", gameObject );
-            Debug.Break();
-          }
-#endif
-          carryCharacter = cha;
+            Debug.LogError( "character tried to set itself as carry character", gameObject );
+          else
+            carryCharacter = cha;
         }
       }
 
@@ -374,9 +369,14 @@ public class Entity : MonoBehaviour, IDamage
 
   protected virtual void Die()
   {
-    Instantiate( explosion, transform.position, Quaternion.identity );
+    if( explosion != null )
+      Instantiate( explosion, transform.position, Quaternion.identity );
     if( SpawnWhenDead.Length > 0 )
-      Instantiate( SpawnWhenDead[Random.Range( 0, SpawnWhenDead.Length )], transform.position, Quaternion.identity );
+    {
+      GameObject prefab = SpawnWhenDead[Random.Range( 0, SpawnWhenDead.Length )];
+      if( prefab != null )
+        Instantiate( prefab, transform.position, Quaternion.identity );
+    }
     Destroy( gameObject );
     EventDestroyed?.Invoke();
   }

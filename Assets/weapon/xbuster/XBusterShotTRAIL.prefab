@@ -91,9 +91,9 @@ SpriteRenderer:
   m_SortingLayerID: 1445702261
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4289353735146823145, guid: 64314a0420c93471b9990c7b9f080a39,
+  m_Sprite: {fileID: 2055768182168175453, guid: 64314a0420c93471b9990c7b9f080a39,
     type: 3}
-  m_Color: {r: 0, g: 1, b: 0.5680003, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -145,10 +145,13 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   ignore: []
   hitCount: 0
+  Scale: 0
   light: {fileID: 9191745444400861375}
   DieAfterHitCount: 1
   AlignRotationToVelocity: 1
-  hitPrefab: {fileID: 1227316525270448, guid: 501808a31aa284cf4a2ffd0c05c1e0c9, type: 3}
+  hitPrefab: {fileID: 1227316525270448, guid: c82148e06b5614c7e831282672ae8fcd, type: 3}
+  colors:
+  - {r: 0, g: 1, b: 0.5680003, a: 1}
 --- !u!114 &9191745444400861375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,7 +204,7 @@ GameObject:
   - component: {fileID: 7183407910088588975}
   - component: {fileID: 3971015266766252287}
   m_Layer: 11
-  m_Name: GameObject
+  m_Name: trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

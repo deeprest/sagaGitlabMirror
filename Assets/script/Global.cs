@@ -1,5 +1,6 @@
 // #pragma warning disable 414
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +17,7 @@ using UnityEngine.Profiling;
 
 using deeprest;
 using UnityEngine.Serialization;
+using Gizmos = Popcron.Gizmos;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -98,8 +100,8 @@ public class Global : MonoBehaviour
   public static int FlameProjectileCollideLayers;
   public static int DamageCollideLayers;
   public static int StickyBombCollideLayers;
-  public static int TurretSightLayers;
-  public static int EnemySightLayers;
+  public static int EnemyInterestLayers;
+  public static int SightObstructionLayers;
 
   [Header( "Settings" )]
   public GameObject ToggleTemplate;
@@ -129,7 +131,7 @@ public class Global : MonoBehaviour
 
   [Header( "Transient (Assigned at runtime)" )]
   public bool Updating = false;
-  SceneScript sceneScript;
+  public SceneScript sceneScript;
   public Pawn CurrentPlayer;
   public PlayerController PlayerController;
   public Dictionary<string, int> AgentType = new Dictionary<string, int>();
@@ -275,8 +277,8 @@ public class Global : MonoBehaviour
     FlameProjectileCollideLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "destructible", "bouncyGrenade"} );
     DamageCollideLayers = LayerMask.GetMask( new string[] {"character", "triggerAndCollision", "projectile", "destructible"} );
     StickyBombCollideLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "projectile", "destructible"} );
-    TurretSightLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "destructible"} );
-    EnemySightLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "destructible"} );
+    EnemyInterestLayers = LayerMask.GetMask( new string[] { "character" } );
+    SightObstructionLayers = LayerMask.GetMask( new string[] {"Default", "triggerAndCollision", "destructible"} );
 
     CanvasScaler = UI.GetComponent<CanvasScaler>();
     InitializeSettings();
@@ -332,7 +334,18 @@ public class Global : MonoBehaviour
     SpeechBubble.SetActive( false );
     // musicSource1 is used as the loop source
     activeMusicSource = musicSource1;
+    Gizmos.Enabled = false;
+  }
 
+  void Start()
+  {
+#if UNITY_EDITOR
+    // workaround for Unity Editor bug where AudioMixer.SetFloat() does not work in Awake()
+    mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( FloatSetting["MasterVolume"].Value ) );
+    mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value ) );
+    mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
+#endif
+    
     if( Application.isEditor && !SimulatePlayer )
     {
       LoadingScreen.SetActive( false );
@@ -352,16 +365,7 @@ public class Global : MonoBehaviour
     {
       LoadScene( InitialScene, true, true, true, false, null );
     }
-  }
-
-  void Start()
-  {
-#if UNITY_EDITOR
-    // workaround for Unity Editor bug where AudioMixer.SetFloat() does not work in Awake()
-    mixer.SetFloat( "MasterVolume", Util.DbFromNormalizedVolume( FloatSetting["MasterVolume"].Value ) );
-    mixer.SetFloat( "MusicVolume", Util.DbFromNormalizedVolume( FloatSetting["MusicVolume"].Value ) );
-    mixer.SetFloat( "SFXVolume", Util.DbFromNormalizedVolume( FloatSetting["SFXVolume"].Value ) );
-#endif
+    
   }
 
   public string ReplaceWithControlNames( string source, bool colorize = true )
@@ -492,7 +496,7 @@ public class Global : MonoBehaviour
 
     Controls.GlobalActions.RecordPlayback.performed += ( obj ) =>
     {
-      PlayerController.RecordPlayback();
+      PlayerController.PlaybackToggle();
       RecordingIndicator.gameObject.SetActive( PlayerController.IsRecording() );
     };
 
@@ -519,6 +523,8 @@ public class Global : MonoBehaviour
     };
 
     // DEVELOPMENT
+
+    Controls.GlobalActions.DEVGizmos.performed += ( obj ) => { Gizmos.Enabled = !Gizmos.Enabled; };
     // Controls.BipedActions.DEVZoom.started += ( obj ) => { zoomDelta += obj.ReadValue<float>(); };
     Controls.GlobalActions.Minimap.performed += ( obj ) => { ToggleMinimap(); };
     // Controls.BipedActions.DEVBig.performed += context => ((PlayerBiped) PlayerController.pawn).ScaleChange( 2 );
@@ -657,7 +663,7 @@ public class Global : MonoBehaviour
         mesh.BuildNavMesh();
       Destroy( generatedMeshCollider );
       
-      Global.instance.MinimapRender( meshSurfaces[0].center );
+      //Global.instance.MinimapRender( meshSurfaces[0].center );
     }
     else
     {
@@ -973,6 +979,8 @@ public class Global : MonoBehaviour
   
   public void MinimapRender( Vector2 position )
   {
+    MinimapCamera.targetTexture.DiscardContents( true, true );
+    
     MinimapCamera.transform.position = position;
     Shader cached = bigsheetMaterial.shader;
     Shader cached2 = backgroundMaterial.shader;

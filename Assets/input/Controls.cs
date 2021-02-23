@@ -97,6 +97,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""DEV-Gizmos"",
+                    ""type"": ""Button"",
+                    ""id"": ""f455d5c1-5fdd-4798-bf90-41f5ec1745f5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -117,7 +125,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/p"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse+Keyboard"",
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -128,7 +136,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/f1"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse+Keyboard"",
                     ""action"": ""DEV-Respawn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -139,7 +147,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Gamepad>/select"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""DEV-Respawn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -304,7 +312,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/f2"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse+Keyboard"",
                     ""action"": ""DEV-Clone"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -315,7 +323,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/f5"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse+Keyboard"",
                     ""action"": ""Screenshot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -339,6 +347,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Mouse+Keyboard"",
                     ""action"": ""Minimap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fe84533e-b61f-431e-aad9-bf035bc75e76"",
+                    ""path"": ""<Keyboard>/f3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse+Keyboard"",
+                    ""action"": ""DEV-Gizmos"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1124,6 +1143,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_GlobalActions_RecordPlayback = m_GlobalActions.FindAction("RecordPlayback", throwIfNotFound: true);
         m_GlobalActions_DevSlowmo = m_GlobalActions.FindAction("Dev-Slowmo", throwIfNotFound: true);
         m_GlobalActions_Minimap = m_GlobalActions.FindAction("Minimap", throwIfNotFound: true);
+        m_GlobalActions_DEVGizmos = m_GlobalActions.FindAction("DEV-Gizmos", throwIfNotFound: true);
         // MenuActions
         m_MenuActions = asset.FindActionMap("MenuActions", throwIfNotFound: true);
         m_MenuActions_Move = m_MenuActions.FindAction("Move", throwIfNotFound: true);
@@ -1205,6 +1225,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_GlobalActions_RecordPlayback;
     private readonly InputAction m_GlobalActions_DevSlowmo;
     private readonly InputAction m_GlobalActions_Minimap;
+    private readonly InputAction m_GlobalActions_DEVGizmos;
     public struct GlobalActionsActions
     {
         private @Controls m_Wrapper;
@@ -1219,6 +1240,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @RecordPlayback => m_Wrapper.m_GlobalActions_RecordPlayback;
         public InputAction @DevSlowmo => m_Wrapper.m_GlobalActions_DevSlowmo;
         public InputAction @Minimap => m_Wrapper.m_GlobalActions_Minimap;
+        public InputAction @DEVGizmos => m_Wrapper.m_GlobalActions_DEVGizmos;
         public InputActionMap Get() { return m_Wrapper.m_GlobalActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1258,6 +1280,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Minimap.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMinimap;
                 @Minimap.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMinimap;
                 @Minimap.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnMinimap;
+                @DEVGizmos.started -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVGizmos;
+                @DEVGizmos.performed -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVGizmos;
+                @DEVGizmos.canceled -= m_Wrapper.m_GlobalActionsActionsCallbackInterface.OnDEVGizmos;
             }
             m_Wrapper.m_GlobalActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -1292,6 +1317,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Minimap.started += instance.OnMinimap;
                 @Minimap.performed += instance.OnMinimap;
                 @Minimap.canceled += instance.OnMinimap;
+                @DEVGizmos.started += instance.OnDEVGizmos;
+                @DEVGizmos.performed += instance.OnDEVGizmos;
+                @DEVGizmos.canceled += instance.OnDEVGizmos;
             }
         }
     }
@@ -1520,6 +1548,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnRecordPlayback(InputAction.CallbackContext context);
         void OnDevSlowmo(InputAction.CallbackContext context);
         void OnMinimap(InputAction.CallbackContext context);
+        void OnDEVGizmos(InputAction.CallbackContext context);
     }
     public interface IMenuActionsActions
     {

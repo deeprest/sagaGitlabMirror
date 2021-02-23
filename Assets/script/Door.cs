@@ -10,14 +10,16 @@ public class Door : MonoBehaviour, ITrigger
   [SerializeField] Collider2D cd;
   [SerializeField] AudioSource audio;
   [SerializeField] NavMeshObstacle obstacle;
-  public bool isOpen = false;
-  bool transitioning = false;
+  public bool isOpen;
+  bool transitioning;
+  bool deniedDelay;
   [SerializeField] float animationRate = 16;
   public int openFrame = 19;
   public int closeFrame = 3;
   Timer timer = new Timer();
   public AudioClip soundOpen;
   public AudioClip soundClose;
+  public AudioClip soundDenied;
 
   public Transform inside;
   Transform instigator;
@@ -48,7 +50,7 @@ public class Door : MonoBehaviour, ITrigger
 
   public void Trigger( Transform instigator )
   {
-    if( transitioning )
+    if( transitioning || deniedDelay )
       return;
 
     Entity check = instigator.GetComponent<Entity>();
@@ -64,10 +66,17 @@ public class Door : MonoBehaviour, ITrigger
         }
       }
       if( !OpenForThisCharacter )
+      {
+        Global.instance.AudioOneShot( soundDenied, transform.position );
+        deniedDelay = true;
+        timer.Start(3,null, delegate { deniedDelay = false; });
+        animator.Play( "denied" );
         return;
+      }
     }
     this.instigator = instigator;
 
+    SceneScript sceneScript = Global.instance.sceneScript;
     PlayerBiped player = instigator.GetComponentInParent<PlayerBiped>();
     if( player == null )
     {
@@ -82,7 +91,7 @@ public class Door : MonoBehaviour, ITrigger
         animator.updateMode = AnimatorUpdateMode.UnscaledTime;
         Global.Pause();
         Global.instance.Controls.BipedActions.Disable();
-        SceneScript sceneScript = FindObjectOfType<SceneScript>();
+        
 
         OpenAndClose( openDuration, delegate
         {
@@ -140,7 +149,6 @@ public class Door : MonoBehaviour, ITrigger
             }
             else
             {
-              SceneScript sceneScript = FindObjectOfType<SceneScript>();
               if( sceneScript != null )
                 Global.instance.OverrideCameraZone( null );
             }
@@ -163,7 +171,6 @@ public class Door : MonoBehaviour, ITrigger
             }
             else
             {
-              SceneScript sceneScript = FindObjectOfType<SceneScript>();
               if( sceneScript != null )
                 Global.instance.OverrideCameraZone( null );
             }

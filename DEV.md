@@ -10,76 +10,79 @@
 
 # Decide
 walljumping while auto-wallsliding
+START A DEVLOG ON ITCH.
+NEW shield on back? press down to use shield?
 
 
 # New Things
-+ NEW crush damage
-NEW START A DEVLOG ON ITCH.
+
 NEW airbot propellar ability. propellar on back? dash in air to use prop
 NEW health pickups dropped by enemies
-NEW Big wrecking ball bot.
-NEW Agile boss bot.
+NEW cursor stops at edge of screen
 NEW player death effect/anim
-NEW music selection on pause menu
-NEW cheats menu
-NEW shield on back? press down to use shield?
+NEW align shot with surface when aiming into floor/wall
 NEW stickybomb exploding interaction with shield:
   1) do raycast to each IDamage within range
   2) if raycast hits something else, do a projection of the collider onto a perpendicular vector of the normal
   3) use the projected endpoints to do two more raycasts
   4) if the raycast hits an IDamage collider, proceed
-NEW hide arm while not shooting
-NEW align shot with surface when aiming into floor/wall
+
+NEW Big wrecking ball bot.
+NEW Agile boss bot.
+
+NEW music selection on pause menu
+NEW cheats menu
+
 
 CODE remove global references to CurrentPlayer where possible
 CODE change cursorOuter based on control device
 CODE Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
 
-
-# Issues
-VERIFY confirm that Teams are set for all relevent entities.
-VERIFY when entities land, want a crisp landing like playerbiped. find out how they're different. 
-
-### Needs Fix
-FIX gamepad: when not aiming, default aim direction.
-FIX gamepad: graphook-trigger behaviour
-FIX wheelbot jitter
-FIX airbot attack, use attack speed until at last known target position
-FIX grap when using gamepad (double)
-FIX grap going through boxes
-FIX stickybomb going through vents
-FIX slowmo: pushTimer
-FIX airbot pickup fall through vent covers?
-FIX stickybomb stick to each other in midair
-FIX mech punch should break boxes
-FIX trigger release shoots graphook
-
-### Needs Improvement
-- Menu: design a better menu
-- Input: better display names
-
-#### Janky
-- landing snaps. possible anim frame adjustment will fix
-- adjust jump anim frame. it pops at the jump arc apex
-- VERIFY jumping and sliding up and over a ledge only **sometimes** snaps to ground
-mech scaling when flip... looks bad. no flipping.
-
-#### Easy / Cosmetic
-- city camera bounds
-- DrCain minimum speech threshold
-- light reflects too much on background layer 1 with buster
-- door sprite layer should be behind characters
-- control name text for right stick says "RS"
-- door should indicate when it refuses to open because of team affiliation.
-
 #### Hornet
-FIX hornet gets stuck
 - hornet friendly fire
 - hornet avoid friendlies
 - hornet proximity raycast
 - hornet particles should not rotate, and should disappear
 
-#### Minimap
+
+# Issues
+
+## Verify These Issues Exist
+VERIFY particle weirdness rain / smoke in chamber
+VERIFY confirm that Teams are set for all relevent entities.
+VERIFY when entities land, want a crisp landing like playerbiped. find out how they're different. 
+VERIFY jumping and sliding up and over a ledge only **sometimes** snaps to ground
+
+### Needs Fix
+FIX graphook sticks
+FIX stickybomb sticks to other stickybombs in midair
+FIX gamepad: when not aiming, default aim direction.
+FIX gamepad: graphook-trigger behaviour
+FIX wheelbot jitter; wheelbot falls through floor sometimes
+FIX grap when using gamepad (double)
+FIX grap going through boxes
+FIX stickybomb going through vents
+FIX slowmo: pushTimer
+FIX airbot pickup fall through vent covers?
+
+
+### Needs Improvement
+- Menu: design a better menu
+- Input: better display names
+
+
+#### Polish
+POLISH walljump spark effect is on wron
+POLISH landing snaps. possible anim frame adjustment will fix
+POLISH adjust jump anim frame. it pops at the jump arc apex
+POLISH city camera bounds
+POLISH DrCain minimum speech threshold
+POLISH light reflects too much on background layer 1 with buster
+POLISH door sprite layer should be behind characters
+POLISH control name text for right stick says "RS"
+POLISH door should indicate when it refuses to open because of team affiliation.
+POLISH trishot hit anim color
+POLISH hide arm while not shooting
 
 
 

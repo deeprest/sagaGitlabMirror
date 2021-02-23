@@ -1,30 +1,5 @@
 ﻿using UnityEngine;
 
-[System.Serializable]
-public struct InputState
-{
-  // 1 byte
-  public bool MoveLeft;
-  public bool MoveRight;
-  public bool MoveUp;
-  public bool MoveDown;
-  public bool Jump;
-  public bool Dash;
-  public bool Fire;
-  public bool Charge;
-  // 1 byte
-  public bool Ability;
-  public bool Interact;
-  public bool NextWeapon;
-  public bool NextAbility;
-  public bool NOTUSED0;
-  public bool NOTUSED1;
-  public bool NOTUSED2;
-  public bool NOTUSED3;
-  // 8 byte
-  public Vector2 Aim;
-}
-
 public class Pawn : Entity
 {
   public Controller controller;
