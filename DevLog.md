@@ -1,4 +1,5 @@
 
+NEW airbot propellar ability. propellar on back? dash in air to use prop
 FIXED hornet gets stuck
 FIXED mech punch should break boxes
 FIXED trigger release shoots graphook

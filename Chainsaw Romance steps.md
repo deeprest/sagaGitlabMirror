@@ -2,7 +2,10 @@
 
 Saga city 
 
-Destination vs exploration type of player. Top of each large tower hss a “Boss”. The basement has humble robot workers that are sometimes helpful. You are kind of like a robot batman and robin hood. 
+Destination vs exploration type of player. 
+Top of each large tower hss a “Boss”. 
+The basement has humble robot workers that are sometimes helpful. 
+You are kind of like a robot batman and robin hood. 
 
 Times square
 Chinatown

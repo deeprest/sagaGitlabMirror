@@ -14,9 +14,11 @@ START A DEVLOG ON ITCH.
 NEW shield on back? press down to use shield?
 
 
+punchy mech needs anticipation anim before punch
+fly ability rotation when only holding up key
+
 # New Things
 
-NEW airbot propellar ability. propellar on back? dash in air to use prop
 NEW health pickups dropped by enemies
 NEW cursor stops at edge of screen
 NEW player death effect/anim
@@ -27,22 +29,21 @@ NEW stickybomb exploding interaction with shield:
   3) use the projected endpoints to do two more raycasts
   4) if the raycast hits an IDamage collider, proceed
 
+NEW enemy that uses and drops the graphook. mech?
 NEW Big wrecking ball bot.
 NEW Agile boss bot.
 
 NEW music selection on pause menu
 NEW cheats menu
 
+NEW Hornet friendly fire
+NEW Hornet avoid friendlies
+NEW Hornet proximity raycast
+NEW Hornet particles should not rotate, and should disappear
 
 CODE remove global references to CurrentPlayer where possible
 CODE change cursorOuter based on control device
 CODE Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
-
-#### Hornet
-- hornet friendly fire
-- hornet avoid friendlies
-- hornet proximity raycast
-- hornet particles should not rotate, and should disappear
 
 
 # Issues
@@ -52,6 +53,7 @@ VERIFY particle weirdness rain / smoke in chamber
 VERIFY confirm that Teams are set for all relevent entities.
 VERIFY when entities land, want a crisp landing like playerbiped. find out how they're different. 
 VERIFY jumping and sliding up and over a ledge only **sometimes** snaps to ground
+VERIFY airbot pickup fall through vent covers?
 
 ### Needs Fix
 FIX graphook sticks
@@ -60,15 +62,15 @@ FIX gamepad: when not aiming, default aim direction.
 FIX gamepad: graphook-trigger behaviour
 FIX wheelbot jitter; wheelbot falls through floor sometimes
 FIX grap when using gamepad (double)
-FIX grap going through boxes
 FIX stickybomb going through vents
-FIX slowmo: pushTimer
-FIX airbot pickup fall through vent covers?
+FIX slowmo, override velocity incorrect
+FIX highway song intro steps on loop
+FIX airbot ability when using minimap
 
 
 ### Needs Improvement
-- Menu: design a better menu
-- Input: better display names
+Menu: design a better menu
+Input: better display names
 
 
 #### Polish
@@ -83,10 +85,6 @@ POLISH control name text for right stick says "RS"
 POLISH door should indicate when it refuses to open because of team affiliation.
 POLISH trishot hit anim color
 POLISH hide arm while not shooting
-
-
-
-### Linux Issues
 
 
 ## Unity Bugs

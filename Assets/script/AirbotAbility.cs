@@ -10,6 +10,7 @@ public class AirbotAbility : Ability
   public float dec = 4; //10
   PlayerBiped biped;
   Animator animator;
+  Vector2 vel = Vector2.zero;
 
   public override void Equip( Transform parentTransform )
   {
@@ -19,8 +20,6 @@ public class AirbotAbility : Ability
     animator.Play( "idle" );
   }
 
-  Vector2 vel = Vector2.zero;
-  
   public override void UpdateAbility()
   {
     if( !biped.onGround && biped.dashStart )
@@ -40,8 +39,10 @@ public class AirbotAbility : Ability
       if( !pawn.collideRight && pawn.input.MoveRight ) vel += Vector2.right * accSpeed * Time.deltaTime;
       if( !pawn.collideLeft && pawn.input.MoveLeft ) vel += Vector2.left * accSpeed * Time.deltaTime;
       if( !pawn.collideBottom && pawn.input.MoveDown ) vel += Vector2.down * accSpeed * Time.deltaTime;
-      if( !(pawn.input.MoveUp || pawn.input.MoveDown || pawn.input.MoveRight || pawn.input.MoveLeft) )
-        vel = Vector2.MoveTowards( vel, Vector2.zero, dec * Time.deltaTime );
+      if( !(pawn.input.MoveUp || pawn.input.MoveDown))
+        vel.y = Mathf.MoveTowards( vel.y, 0, dec * Time.deltaTime );
+      if( !(pawn.input.MoveRight || pawn.input.MoveLeft) )
+        vel.x = Mathf.MoveTowards( vel.x, 0, dec * Time.deltaTime );
       vel.x = Mathf.Clamp( vel.x, -maxAcc, maxAcc );
       vel.y = Mathf.Clamp( vel.y, -maxAcc, maxAcc );
       pawn.velocity = vel;
@@ -61,11 +62,5 @@ public class AirbotAbility : Ability
   public override void Deactivate()
   {
     IsActive = false;
-  }
-
-  public override void Unequip()
-  {
-    base.Unequip();
-    //playerBiped.backMount.localRotation = Quaternion.identity; 
   }
 }

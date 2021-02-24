@@ -25,7 +25,7 @@ public class Entity : MonoBehaviour, IDamage
   public Rigidbody2D body;
   public BoxCollider2D box;
   public CircleCollider2D circle;
-  public SpriteRenderer renderer;
+  public Renderer renderer;
   public Animator animator;
 
   public List<Collider2D> IgnoreCollideObjects;
