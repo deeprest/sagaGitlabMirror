@@ -71,7 +71,7 @@ public class Hornet : Entity
     SightPulseTimer.Stop( false );
   }
 
-  protected override void Die()
+  protected override void Die( Damage damage )
   {
     dying = true;
     foreach( var c in IgnoreCollideObjects )

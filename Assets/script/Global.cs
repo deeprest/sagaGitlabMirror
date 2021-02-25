@@ -63,6 +63,7 @@ public class Global : MonoBehaviour
 
   [Header( "Global Settings" )]
   [SerializeField] SceneReference[] sceneRefs;
+
   public bool RandomSeedOnStart = false;
   [Tooltip( "Pretend this is a build we're running" )]
   public bool SimulatePlayer = false;

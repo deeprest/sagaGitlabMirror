@@ -14,6 +14,30 @@
 10. [Development plan]
 
 
+# what makes it fun
+
+movement:
+	dash
+	wallslide
+	walljump
+	graphook
+	airbot ability
+	
+weapons:
+	xbuster/trishot
+	grenades
+	stickybomb
+	flame/laser
+		
+interactive environmental objects:
+	boxes
+	doors
+	breakables
+	talkers
+
+music
+
+
 # Project Goals
 
 **Accessibility**
@@ -147,71 +171,11 @@ find body upgrades: run speed, jump height, etc
 # Titles
 Not a Mega Man Clone
 Captain Commerce Will Sue
-YAMMX Clone
 Ninja Sex Robot
 Ninja Robot Sex City
 Machine Sex Profit City
 Ninja Robot Sex Profit City
 Corporate Future Robot City Sex Profit
 Robot Ninja Sex Battle Profit
-
-
-NOUNS:
-A
-Boss
-City
-D
-Energy
-Force
-Graphook
-Hornet
-I
-J
-K
-Lift
-Mech
-Ninja
-O
-Pickup
-Q
-Rain
-Shield
-Turret
-U
-V
-Weapon
-X
-Y
-Z
-
-
-VERBS:
-Ask
-B
-Crash
-Dash / Dodge
-Explode / Explore
-Fly / Fall
-G
-Hit
-I
-Jump
-Kill
-L
-M
-N
-O
-Protect
-Q
-R
-Slide
-Trigger
-U
-V
-W
-X
-Y
-Z
-
 
 

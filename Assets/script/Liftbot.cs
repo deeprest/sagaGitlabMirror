@@ -142,9 +142,9 @@ public class Liftbot : Entity, IWorldSelectable
     return true;
   }
 
-  protected override void Die()
+  protected override void Die( Damage damage )
   {
-    base.Die();
+    base.Die(damage);
   }
 
   public void Highlight()

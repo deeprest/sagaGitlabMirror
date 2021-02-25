@@ -7,13 +7,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: mmx
-  m_Shader: {fileID: 4800000, guid: d8f100999d85148828af6e0276597dca, type: 3}
+  m_Name: mmx UI
+  m_Shader: {fileID: 10770, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA _ALPHAPREMULTIPLY_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -24,11 +24,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissiveTex:
-        m_Texture: {fileID: 2800000, guid: ec47491e152394417a572ad98a051772, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 80ed475ef54fa4ee5a3c397bc5691d9f, type: 3}
+        m_Texture: {fileID: 2800000, guid: abf1c85880cc04df791227a38a50fd25, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicTex:
@@ -36,10 +36,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: 5220c1dfddeaa44b4a566690d7de47bc, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _ColorMask: 15
     - _Cutoff: 0.5
     - _EmissiveAmount: 0
     - _FadeAmount: 0
@@ -47,14 +48,18 @@ Material:
     - _FlipX: 0
     - _Glossiness: 0
     - _Metallic: 0
-    - _Minimap: 0
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
     - _TintAmount: 0
+    - _UseUIAlphaClip: 0
     m_Colors:
-    - _Color: {r: 0, g: 0.7666669, b: 1, a: 1}
-    - _Color2: {r: 0.582, g: 0.9721333, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color2: {r: 1, g: 0, b: 0, a: 1}
     - _FadeColor: {r: 1, g: 1, b: 1, a: 1}
     - _FlashColor: {r: 1, g: 1, b: 1, a: 1}
     - _IndexColor: {r: 1, g: 0, b: 0, a: 1}
     - _IndexColor2: {r: 1, g: 0, b: 0, a: 1}
-    - _MinimapColor: {r: 1, g: 0, b: 0, a: 1}
     - _Tint: {r: 1, g: 1, b: 1, a: 1}

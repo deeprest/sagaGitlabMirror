@@ -105,7 +105,7 @@ public class BossPrototype : Entity
     hitPauseTimer.Start( hitPause, null, delegate { animator.Play( "idle" ); } );
   }
   
-  protected override void Die()
+  protected override void Die( Damage damage )
   {
     velocity = Vector2.zero;
     

@@ -1,8 +1,10 @@
 ﻿#define DEBUG_CHECKS
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 //using Random = UnityEngine.Random;
 
@@ -104,7 +106,11 @@ public class Entity : MonoBehaviour, IDamage
   public int MaxHealth = 5;
   public GameObject explosion;
   public AudioClip soundHit;
+  public AudioClip soundDeath;
   public GameObject[] SpawnWhenDead;
+  [SerializeField] bool ContributeToHits = true;
+  public UnityEvent EventDestroyed;
+  
   // FLASH
   protected Timer flashTimer = new Timer();
   public float flashInterval = 0.05f;
@@ -113,7 +119,7 @@ public class Entity : MonoBehaviour, IDamage
   protected readonly float flashOn = 1f;
   // deal this damage on collision
   public Damage ContactDamage;
-  public UnityEvent EventDestroyed;
+  
 
   // "collision" impedes *this* object's movement
   // Only things that move need collision.
@@ -367,19 +373,40 @@ public class Entity : MonoBehaviour, IDamage
     transform.position = adjust - boxOffset;
   }
 
-  protected virtual void Die()
+  protected virtual void Die( Damage damage ) 
   {
+    if( soundDeath != null )
+      Global.instance.AudioOneShot( soundDeath, transform.position );
     if( explosion != null )
       Instantiate( explosion, transform.position, Quaternion.identity );
     if( SpawnWhenDead.Length > 0 )
     {
       GameObject prefab = SpawnWhenDead[Random.Range( 0, SpawnWhenDead.Length )];
       if( prefab != null )
-        Instantiate( prefab, transform.position, Quaternion.identity );
+      {
+        GameObject go = Instantiate( prefab, transform.position, Quaternion.identity );
+        ParticleSystem ps = go.GetComponent<ParticleSystem>();
+        if( ps != null )
+        {
+          ParticleSystem.VelocityOverLifetimeModule volm = ps.velocityOverLifetime;
+          Vector2 vel = (Vector2)transform.position - damage.point;
+          volm.x = vel.normalized.x * junkSpeed;
+          volm.y = vel.normalized.y * junkSpeed;
+          
+          if( junkSprite != null ) 
+          { 
+            ParticleSystem.TextureSheetAnimationModule tsam = ps.textureSheetAnimation;
+            tsam.SetSprite( 0, junkSprite );
+          }
+        }
+      }
     }
     Destroy( gameObject );
     EventDestroyed?.Invoke();
   }
+
+  public float junkSpeed = 10;
+  public Sprite junkSprite;
 
   public virtual void AddHealth( int amount )
   {
@@ -397,7 +424,7 @@ public class Entity : MonoBehaviour, IDamage
     if( Health <= 0 )
     {
       flashTimer.Stop( false );
-      Die();
+      Die( damage );
     }
     else
     {
@@ -419,7 +446,7 @@ public class Entity : MonoBehaviour, IDamage
           sr.material.SetFloat( "_FlashAmount", 0 );
       } );
     }
-    return true;
+    return ContributeToHits;
   }
 
   // Composite characters

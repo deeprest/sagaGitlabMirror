@@ -173,7 +173,6 @@ public class PlayerBiped : Pawn
   public AudioClip soundJump;
   public AudioClip soundDash;
   public AudioClip soundDamage;
-  public AudioClip soundDeath;
   public AudioClip soundPickup;
   public AudioClip soundDenied;
   public AudioClip soundWeaponFail;
@@ -1465,7 +1464,7 @@ public class PlayerBiped : Pawn
 #endif
   }
   
-  protected override void Die()
+  protected override void Die( Damage damage )
   {
     if( SpawnWhenDead.Length > 0 )
       Instantiate( SpawnWhenDead[Random.Range( 0, SpawnWhenDead.Length )], transform.position, Quaternion.identity );
@@ -1534,7 +1533,7 @@ public class PlayerBiped : Pawn
     if( Health <= 0 )
     {
       flashTimer.Stop( false );
-      Die();
+      Die(damage);
       return true;
     }
     
