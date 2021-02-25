@@ -63,7 +63,6 @@ public class Global : MonoBehaviour
 
   [Header( "Global Settings" )]
   [SerializeField] SceneReference[] sceneRefs;
-
   public bool RandomSeedOnStart = false;
   [Tooltip( "Pretend this is a build we're running" )]
   public bool SimulatePlayer = false;
@@ -144,6 +143,8 @@ public class Global : MonoBehaviour
   public UIScreen PauseMenu;
   [SerializeField] UIScreen SceneList;
   public GameObject SceneListElementTemplate;
+  [SerializeField] UIScreen MusicList;
+  public GameObject MusicListElementTemplate;
   [SerializeField] GameObject HUD;
   DiegeticUI ActiveDiegetic;
 
@@ -207,7 +208,8 @@ public class Global : MonoBehaviour
 
   public Dictionary<string, GameObject> ResourceLookup = new Dictionary<string, GameObject>();
 
-  [Header( "Audio" )]
+  [FormerlySerializedAs( "music" ),Header( "Audio" )]
+  [SerializeField] AudioLoop[] Music;
   public UnityEngine.Audio.AudioMixer mixer;
   public UnityEngine.Audio.AudioMixerSnapshot snapSlowmo;
   public UnityEngine.Audio.AudioMixerSnapshot snapNormal;
@@ -217,7 +219,7 @@ public class Global : MonoBehaviour
   [SerializeField] AudioSource musicSource0;
   [SerializeField] AudioSource musicSource1;
   AudioSource activeMusicSource;
-  [SerializeField] AudioLoop[] MusicLoops;
+
 
   [Header( "Speech" )]
   public GameObject SpeechBubble;
@@ -1284,6 +1286,23 @@ public class Global : MonoBehaviour
         SceneList.InitiallySelected = go;
     }
     Destroy( SceneListElementTemplate );
+    
+    foreach( var audioLoop in Music )
+    {
+      GameObject go = Instantiate( MusicListElementTemplate, MusicListElementTemplate.transform.parent );
+      go.GetComponentInChildren<Text>().text = audioLoop.name;
+      go.GetComponentInChildren<Button>().onClick.AddListener( () =>
+      {
+        PlayMusic( audioLoop );
+        /*if( audioLoop.intro!=null )
+          PlayMusic( audioLoop );
+        else
+          CrossFadeTo( audioLoop );*/
+      } );
+      if( MusicList.InitiallySelected == null )
+        MusicList.InitiallySelected = go;
+    }
+    Destroy( MusicListElementTemplate );
   }
 
   // explicit UI navigation
@@ -1490,7 +1509,7 @@ public class Global : MonoBehaviour
     activeMusicSource = musicSource1;
   }
 
-  public void MusicTransition( AudioLoop loop )
+  /*public void MusicTransition( AudioLoop loop )
   {
     // This will fade out entirely before fading into the given intro loop
     Timer t = new Timer();
@@ -1508,7 +1527,7 @@ public class Global : MonoBehaviour
         musicSource1.volume = obj.ProgressNormalized;
       }, null );
     } );
-  }
+  }*/
 
   
   public void CrossFadeTo( AudioLoop loop )

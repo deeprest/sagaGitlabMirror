@@ -41,6 +41,8 @@ public class Door : MonoBehaviour, ITrigger
   void OnDestroy()
   {
     timer.Stop( false );
+    doorTimer.Stop( false );
+    runTimer.Stop( true );
   }
 
   void OnTriggerEnter2D( Collider2D collider )
