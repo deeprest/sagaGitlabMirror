@@ -10,6 +10,7 @@ public class BlasterProjectile : Projectile, IDamage
   public int DieAfterHitCount;
   public bool AlignRotationToVelocity = true;
   [SerializeField] GameObject hitPrefab;
+  [SerializeField] Color[] colors = new Color[1];
 
   void OnDestroy()
   {
@@ -45,16 +46,14 @@ public class BlasterProjectile : Projectile, IDamage
     }
   }
 
-  [SerializeField] Color[] colors = new Color[1];
-
-  void FixedUpdate()
+  void Update()
   {
     if( AlignRotationToVelocity )
       transform.rotation = Quaternion.Euler( new Vector3( 0, 0, Mathf.Rad2Deg * Mathf.Atan2( velocity.normalized.y, velocity.normalized.x ) ) );
 
     if( instigator != null )
     {
-      hitCount = Physics2D.CircleCastNonAlloc( transform.position, circle.radius, velocity, RaycastHits, raycastDistance, Global.DefaultProjectileCollideLayers );
+      hitCount = Physics2D.CircleCastNonAlloc( transform.position, circle.radius, velocity, RaycastHits, velocity.magnitude*Time.deltaTime, Global.DefaultProjectileCollideLayers );
       for( int i = 0; i < hitCount; i++ )
       {
         hit = RaycastHits[i];
@@ -87,7 +86,7 @@ public class BlasterProjectile : Projectile, IDamage
       }
     }
 
-    transform.position += (Vector3)velocity * Time.fixedDeltaTime;
+    transform.position += (Vector3)velocity * Time.deltaTime;
 
     /*SpriteRenderer sr = GetComponent<SpriteRenderer>();
     sr.color = Global.instance.shiftyColor;

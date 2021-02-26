@@ -50,7 +50,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0.15, y: 0}
   serializedVersion: 2
-  m_Radius: 0.05
+  m_Radius: 0.1
 --- !u!212 &212190135428314220
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -143,10 +143,14 @@ MonoBehaviour:
   timeout: 2
   velocity: {x: 0, y: 0}
   ignore: []
+  hitCount: 0
+  Scale: 0
   light: {fileID: 6489362656358118920}
   DieAfterHitCount: 3
   AlignRotationToVelocity: 1
   hitPrefab: {fileID: 1227316525270448, guid: 8502be2ec83e7477f9e68cc42950b764, type: 3}
+  colors:
+  - {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &1694659970105638
 GameObject:
   m_ObjectHideFlags: 0
