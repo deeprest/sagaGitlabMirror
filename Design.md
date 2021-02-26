@@ -14,8 +14,7 @@
 10. [Development plan]
 
 
-# what makes it fun
-
+# what makes it fun/enjoyable
 movement:
 	dash
 	wallslide
@@ -30,12 +29,13 @@ weapons:
 	flame/laser
 		
 interactive environmental objects:
-	boxes
-	doors
 	breakables
 	talkers
 
 music
+exploration of the city's districts
+secrets
+
 
 
 # Project Goals
@@ -59,7 +59,7 @@ no trophies. your ego is big enough already.
 no tedious narrative to ignore (dialogue and presentation, but no narrative)
 no complicated technology/skill tree
 
-Does not have much UI shit on screen.
+Do not have much UI crap on screen.
 
 # Influences
 * Mega Man X (1993) dash, walljump, wallside, charged shot.
@@ -178,4 +178,5 @@ Ninja Robot Sex Profit City
 Corporate Future Robot City Sex Profit
 Robot Ninja Sex Battle Profit
 
+https://en.wikipedia.org/wiki/Frog_battery
 

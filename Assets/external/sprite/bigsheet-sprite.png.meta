@@ -704,6 +704,18 @@ TextureImporter:
   - first:
       213: -8877534703394770853
     second: arrow_L
+  - first:
+      213: 1532983288602086293
+    second: border0
+  - first:
+      213: -442602434298282889
+    second: border1
+  - first:
+      213: -124955751350969075
+    second: border2
+  - first:
+      213: 6558787288687546897
+    second: border3
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -2012,8 +2024,8 @@ TextureImporter:
       name: icon-bg
       rect:
         serializedVersion: 2
-        x: 3
-        y: 22
+        x: 7
+        y: 7
         width: 9
         height: 9
       alignment: 0
@@ -2075,8 +2087,8 @@ TextureImporter:
       name: level-1-charge-0
       rect:
         serializedVersion: 2
-        x: 6
-        y: 69
+        x: 13
+        y: 30
         width: 1
         height: 1
       alignment: 0
@@ -2096,8 +2108,8 @@ TextureImporter:
       name: level-1-charge-1
       rect:
         serializedVersion: 2
-        x: 11
-        y: 69
+        x: 10
+        y: 29
         width: 2
         height: 2
       alignment: 0
@@ -2117,8 +2129,8 @@ TextureImporter:
       name: level-1-charge-2
       rect:
         serializedVersion: 2
-        x: 17
-        y: 69
+        x: 6
+        y: 28
         width: 3
         height: 3
       alignment: 0
@@ -2138,8 +2150,8 @@ TextureImporter:
       name: level-1-charge-3
       rect:
         serializedVersion: 2
-        x: 24
-        y: 69
+        x: 1
+        y: 27
         width: 4
         height: 4
       alignment: 0
@@ -5381,7 +5393,7 @@ TextureImporter:
         width: 12
         height: 15
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 8, y: 7, z: 3, w: 7}
       outline: []
       physicsShape: []
@@ -5389,6 +5401,69 @@ TextureImporter:
       bones: []
       spriteID: b50b3f2f839acc480800000000000000
       internalID: -8877534703394770853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: border0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 9
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 3, y: 3, z: 3, w: 3}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 59bccbbcd20464510800000000000000
+      internalID: 1532983288602086293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: border2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 3, y: 3, z: 3, w: 3}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d0d551cf761144ef0800000000000000
+      internalID: -124955751350969075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: border3
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 0
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 3, y: 3, z: 3, w: 3}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 11291930a4e750b50800000000000000
+      internalID: 6558787288687546897
       vertices: []
       indices: 
       edges: []

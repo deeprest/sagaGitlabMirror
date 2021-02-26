@@ -66,6 +66,7 @@ FIX stickybomb going through vents
 FIX slowmo, override velocity incorrect
 FIX highway song intro steps on loop
 FIX airbot ability when using minimap
+FIX walljumpdash with airbit ability equipped
 
 
 ### Needs Improvement
