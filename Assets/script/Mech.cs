@@ -132,12 +132,24 @@ public class Mech : Entity
             velocity.x = Mathf.Sign( delta.x ) * moveSpeed;
             if( weapon != null && !shootRepeatTimer.IsActive )
             {
+              Shoot( targetpos - shotOrigin.position + Vector3.up * shootUp );
+              /*
               // todo check line of site to target
               // todo have a "ready to fire" animation play to warn player
               //hit = Physics2D.LinecastAll( shotOrigin.position, player );
               hit = Physics2D.Linecast( shotOrigin.position, targetpos, LayerMask.GetMask( new string[] { "Default", "character" } ) );
               if( hit.transform == Target.transform )
                 Shoot( targetpos - shotOrigin.position + Vector3.up * shootUp );
+              
+              
+              Entity visibleTarget = null;
+              // check line of sight to potential target
+              hitCount = Physics2D.LinecastNonAlloc( shotOrigin.position, targetpos, RaycastHits, Global.CharacterCollideLayers );
+              if( hitCount == 0 ) 
+              {
+                
+              }
+              */
             }
           }
         }

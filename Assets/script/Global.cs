@@ -266,17 +266,17 @@ public class Global : MonoBehaviour
     instance = this;
     DontDestroyOnLoad( gameObject );
 
-    // todo see if this does anything useful
+    // todo see what this does
     //Application.targetFrameRate = 60;
 
-    // note: allowing characters to collide introduces risk of being forced into a corner
+    // note: allowing characters to collide with each other introduces the risk of being forced into a corner.
     CharacterCollideLayers = LayerMask.GetMask( new string[] {"Default", "destructible", "triggerAndCollision"} );
     CharacterSidestepLayers = LayerMask.GetMask( new string[] {"character"} );
     CharacterDamageLayers = LayerMask.GetMask( new string[] {"character", "destructible"} );
     TriggerLayers = LayerMask.GetMask( new string[] {"trigger", "triggerAndCollision"} );
     WorldSelectableLayers = LayerMask.GetMask( new string[] {"worldselect"} );
     ProjectileNoShootLayers = LayerMask.GetMask( new string[] {"Default"} );
-    DefaultProjectileCollideLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "destructible", "bouncyGrenade"} );
+    DefaultProjectileCollideLayers = LayerMask.GetMask( new string[] {"Default", "character", "projectileCollisionOnly", "triggerAndCollision", "destructible", "bouncyGrenade"} );
     FlameProjectileCollideLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "destructible", "bouncyGrenade"} );
     DamageCollideLayers = LayerMask.GetMask( new string[] {"character", "triggerAndCollision", "projectile", "destructible"} );
     StickyBombCollideLayers = LayerMask.GetMask( new string[] {"Default", "character", "triggerAndCollision", "projectile", "destructible"} );
