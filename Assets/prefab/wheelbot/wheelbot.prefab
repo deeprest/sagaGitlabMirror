@@ -116,6 +116,10 @@ MonoBehaviour:
   raylength: 0.2
   contactSeparation: 0.08
   DownOffset: 0
+  collideRight: 0
+  collideLeft: 0
+  collideTop: 0
+  collideBottom: 0
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
@@ -123,14 +127,19 @@ MonoBehaviour:
   MaxHealth: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
-  SpawnWhenDead: []
-  spawnChance: 1
-  flashInterval: 0.05
-  flashCount: 1
-  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  soundDeath: {fileID: 0}
+  SpawnWhenDead:
+  - {fileID: 0}
+  - {fileID: 7508246088768755821, guid: 26a3443420e1042b29cca514cf2004c4, type: 3}
+  ContributeToHits: 1
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []
+  flashInterval: 0.05
+  flashCount: 1
+  ContactDamage: {fileID: 11400000, guid: 12aab37bec3c44c7abc2c83f5fd9913c, type: 2}
+  junkSpeed: 10
+  junkSprite: {fileID: 0}
   CharacterLayer: 0
   CharacterParts: []
   rotator: {fileID: 110268027408849183}

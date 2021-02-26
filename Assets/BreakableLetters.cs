@@ -19,8 +19,9 @@ public class BreakableLettersEditor : Editor
 
 public class BreakableLetters : MonoBehaviour
 {
+  [Tooltip("Prefab requires a BreakableJunk component")]
   public GameObject prefab;
-  public GameObject prefabJunk;
+  //public GameObject prefabJunk;
   public string text = "asdf";
   string cachedText;
   public float x;
@@ -56,7 +57,6 @@ GameObject go = Instantiate( prefab, transform, false );
         go.transform.GetComponent<SpriteRenderer>().sprite = font.spritesBackground[index];
         // glyph in front is first child
         go.transform.GetChild( 0 ).GetComponent<SpriteRenderer>().sprite = font.sprites[index];
-        go.transform.GetChild( 0 ).GetComponent<Entity>().junkSprite = font.sprites[index];
       }
       x += width;
     }

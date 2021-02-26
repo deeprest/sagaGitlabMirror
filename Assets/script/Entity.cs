@@ -106,9 +106,19 @@ public class Entity : MonoBehaviour, IDamage
   public int MaxHealth = 5;
   public GameObject explosion;
   public AudioClip soundHit;
-  public AudioClip soundDeath;
-  public GameObject[] SpawnWhenDead;
   [SerializeField] bool ContributeToHits = true;
+
+  [Header("Death")]
+  public AudioClip soundDeath;
+  [Serializable]
+  public class SpawnChance
+  {
+    public int weight = 1;
+    public GameObject prefab;
+  }
+  [Obsolete("Use SpawnOnDeath instead.")]
+  public GameObject[] SpawnWhenDead;
+  public SpawnChance[] SpawnOnDeath;
   public UnityEvent EventDestroyed;
   
   // FLASH
@@ -372,41 +382,40 @@ public class Entity : MonoBehaviour, IDamage
     }
     transform.position = adjust - boxOffset;
   }
-
+  
   protected virtual void Die( Damage damage ) 
   {
     if( soundDeath != null )
       Global.instance.AudioOneShot( soundDeath, transform.position );
     if( explosion != null )
       Instantiate( explosion, transform.position, Quaternion.identity );
-    if( SpawnWhenDead.Length > 0 )
-    {
-      GameObject prefab = SpawnWhenDead[Random.Range( 0, SpawnWhenDead.Length )];
-      if( prefab != null )
-      {
-        GameObject go = Instantiate( prefab, transform.position, Quaternion.identity );
-        ParticleSystem ps = go.GetComponent<ParticleSystem>();
-        if( ps != null )
-        {
-          ParticleSystem.VelocityOverLifetimeModule volm = ps.velocityOverLifetime;
-          Vector2 vel = (Vector2)transform.position - damage.point;
-          volm.x = vel.normalized.x * junkSpeed;
-          volm.y = vel.normalized.y * junkSpeed;
-          
-          if( junkSprite != null ) 
-          { 
-            ParticleSystem.TextureSheetAnimationModule tsam = ps.textureSheetAnimation;
-            tsam.SetSprite( 0, junkSprite );
-          }
-        }
-      }
-    }
+    GameObject prefab = GetDeathSpawnObject();
+    if( prefab != null )
+      Instantiate( prefab, transform.position, Quaternion.identity );
     Destroy( gameObject );
     EventDestroyed?.Invoke();
   }
 
-  public float junkSpeed = 10;
-  public Sprite junkSprite;
+  public GameObject GetDeathSpawnObject() 
+  {
+    if( SpawnOnDeath.Length > 0 )
+    {
+      int spawnChanceWeightTotal = 0;
+      for( int i = 0; i < SpawnOnDeath.Length; i++ )
+        spawnChanceWeightTotal += SpawnOnDeath[i].weight;
+      int index = 0;
+      int randy = Random.Range( 0, spawnChanceWeightTotal );
+      int runningTotal = 0;
+      for( index = 0; index < SpawnOnDeath.Length; index++ )
+      {
+        runningTotal += SpawnOnDeath[index].weight;
+        if( runningTotal >= randy )
+          break;
+      }
+      return SpawnOnDeath[index].prefab;
+    }
+    return null;
+  }
 
   public virtual void AddHealth( int amount )
   {

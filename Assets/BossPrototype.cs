@@ -122,8 +122,9 @@ public class BossPrototype : Entity
       delegate
       {
         Destroy( gameObject );
-        foreach( var obj in SpawnWhenDead )
-          Instantiate( obj, transform.position, Quaternion.identity );
+        GameObject prefab = GetDeathSpawnObject();
+        if( prefab != null )
+          Instantiate( prefab, transform.position, Quaternion.identity );
         
       } );
   }

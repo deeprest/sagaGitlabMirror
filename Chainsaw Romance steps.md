@@ -28,7 +28,7 @@ Anim background like street fighter
 tl;dr read it or don’t. There are no shortcuts.
 Too mich of a good thing.
 Boogie Knights
-Bruce Sprucegoose
+Bruce Sprucegoose 
 Cous Cous McSpruceGoose
 David Duchovany’s Dramatic Depth
 

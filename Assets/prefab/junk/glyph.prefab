@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3924249429087017986}
   - component: {fileID: 136082698227566851}
-  m_Layer: 10
-  m_Name: sign letter base
+  m_Layer: 8
+  m_Name: glyph
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92,11 +92,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3266539251359749398}
-  - component: {fileID: 4301813059285424600}
   - component: {fileID: 7175203395040943552}
+  - component: {fileID: 2317916685251896948}
   - component: {fileID: 7880197855557124833}
   m_Layer: 10
-  m_Name: letter front
+  m_Name: breakable glyph
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -116,61 +116,6 @@ Transform:
   m_Father: {fileID: 3924249429087017986}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4301813059285424600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2836430045509965856}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ff685e897f414e28bdc49f953d2ec85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Team: 0
-  body: {fileID: 0}
-  box: {fileID: 7175203395040943552}
-  circle: {fileID: 0}
-  renderer: {fileID: 0}
-  animator: {fileID: 0}
-  IgnoreCollideObjects: []
-  spriteRenderers: []
-  UseGravity: 0
-  IsStatic: 0
-  velocity: {x: 0, y: 0}
-  inertia: {x: 0, y: 0}
-  overrideVelocity: {x: 0, y: 0}
-  carryCharacter: {fileID: 0}
-  friction: 0.05
-  raylength: 0.01
-  contactSeparation: 0.01
-  DownOffset: 0
-  collideRight: 0
-  collideLeft: 0
-  collideTop: 0
-  collideBottom: 0
-  EnablePathing: 0
-  AgentTypeName: Small
-  CanTakeDamage: 1
-  Health: 1
-  MaxHealth: 1
-  explosion: {fileID: 0}
-  soundHit: {fileID: 0}
-  soundDeath: {fileID: 8300000, guid: 79a5072a603bc458bb745b9e3d11146e, type: 3}
-  SpawnWhenDead:
-  - {fileID: 68871263600982522, guid: 47d756e5cd052449c950eb5041e97734, type: 3}
-  ContributeToHits: 0
-  EventDestroyed:
-    m_PersistentCalls:
-      m_Calls: []
-  flashInterval: 0.05
-  flashCount: 5
-  ContactDamage: {fileID: 0}
-  junkSpeed: 2
-  junkSprite: {fileID: 0}
-  CharacterLayer: 0
-  CharacterParts: []
 --- !u!61 &7175203395040943552
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -197,6 +142,63 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.1, y: 0.1}
   m_EdgeRadius: 0
+--- !u!114 &2317916685251896948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2836430045509965856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcd803420457401c93b324aa4592c3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Team: 0
+  body: {fileID: 0}
+  box: {fileID: 7175203395040943552}
+  circle: {fileID: 0}
+  renderer: {fileID: 7880197855557124833}
+  animator: {fileID: 0}
+  IgnoreCollideObjects: []
+  spriteRenderers: []
+  UseGravity: 0
+  IsStatic: 0
+  velocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
+  overrideVelocity: {x: 0, y: 0}
+  carryCharacter: {fileID: 0}
+  friction: 0.05
+  raylength: 0.01
+  contactSeparation: 0.01
+  DownOffset: 0
+  collideRight: 0
+  collideLeft: 0
+  collideTop: 0
+  collideBottom: 0
+  EnablePathing: 0
+  AgentTypeName: Small
+  CanTakeDamage: 1
+  Health: 1
+  MaxHealth: 1
+  explosion: {fileID: 0}
+  soundHit: {fileID: 0}
+  ContributeToHits: 0
+  soundDeath: {fileID: 8300000, guid: fd18f5c1f9d9e496994172848e257308, type: 3}
+  SpawnWhenDead: []
+  SpawnOnDeath:
+  - weight: 0
+    prefab: {fileID: 68871263600982522, guid: 47d756e5cd052449c950eb5041e97734, type: 3}
+  EventDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  flashInterval: 0.05
+  flashCount: 5
+  ContactDamage: {fileID: 0}
+  CharacterLayer: 0
+  CharacterParts: []
+  junkSpeed: 10
+  junkSprite: {fileID: 0}
 --- !u!212 &7880197855557124833
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -1466,8 +1466,9 @@ public class PlayerBiped : Pawn
   
   protected override void Die( Damage damage )
   {
-    if( SpawnWhenDead.Length > 0 )
-      Instantiate( SpawnWhenDead[Random.Range( 0, SpawnWhenDead.Length )], transform.position, Quaternion.identity );
+    GameObject prefab = GetDeathSpawnObject();
+    if( prefab != null )
+      Instantiate( prefab, transform.position, Quaternion.identity );
     
     audio.PlayOneShot( soundDeath );
     

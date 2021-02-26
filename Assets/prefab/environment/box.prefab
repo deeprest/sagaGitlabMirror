@@ -64,6 +64,10 @@ MonoBehaviour:
   raylength: 0.01
   contactSeparation: 0.01
   DownOffset: 0
+  collideRight: 0
+  collideLeft: 0
+  collideTop: 0
+  collideBottom: 0
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
@@ -71,15 +75,24 @@ MonoBehaviour:
   MaxHealth: 5
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
+  ContributeToHits: 1
+  soundDeath: {fileID: 0}
   SpawnWhenDead:
   - {fileID: 1678155047526447402, guid: 0b441ca38fb9146debe1d70a64193693, type: 3}
   - {fileID: 7508246088768755821, guid: 26a3443420e1042b29cca514cf2004c4, type: 3}
-  flashInterval: 0.05
-  flashCount: 5
-  ContactDamage: {fileID: 0}
+  SpawnOnDeath:
+  - weight: 1
+    prefab: {fileID: 1678155047526447402, guid: 0b441ca38fb9146debe1d70a64193693,
+      type: 3}
+  - weight: 1
+    prefab: {fileID: 7508246088768755821, guid: 26a3443420e1042b29cca514cf2004c4,
+      type: 3}
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []
+  flashInterval: 0.05
+  flashCount: 5
+  ContactDamage: {fileID: 0}
   CharacterLayer: 0
   CharacterParts: []
 --- !u!61 &4076200707986567607
