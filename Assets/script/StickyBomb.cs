@@ -55,6 +55,8 @@ public class StickyBomb : Projectile, IDamage
       if( clds[i] != null )
       {
         IDamage dam = clds[i].GetComponent<IDamage>();
+        if( dam == null )
+          dam = clds[i].transform.GetComponentInParent<IDamage>();
         if( dam != null )
         {
           Damage dmg = Instantiate( ContactDamage );

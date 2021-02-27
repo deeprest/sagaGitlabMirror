@@ -6,6 +6,8 @@ public class CameraZone : MonoBehaviour
 {
   public static List<CameraZone> All = new List<CameraZone>();
   
+  [Tooltip("Higher priority zones will take precedence over lesser priorities.")]
+  public int priority;
   [Tooltip("The camera will increase its size to view all colliders. Useful for rooms.")]
   public bool EncompassBounds;
   [Tooltip("Ignore setting to set active camera zone when player enters zone.")]
@@ -18,6 +20,7 @@ public class CameraZone : MonoBehaviour
   public Collider2D[] colliders;
 
   public Bounds CameraBounds;
+  
 
   private void Awake()
   {
@@ -51,18 +54,20 @@ public class CameraZone : MonoBehaviour
 
   public static bool DoesOverlapAnyZone( Vector2 point, ref CameraZone active )
   {
+    CameraZone zone = null;
     for( int z = 0; z < All.Count; z++ )
     {
       for( int i = 0; i < All[z].colliders.Length; i++ )
       {
-        if( All[z].colliders[i].OverlapPoint( point ) && !All[z].IgnoreAutoSwitch )
+        if( All[z].colliders[i].OverlapPoint( point ) 
+          && !All[z].IgnoreAutoSwitch 
+          && (zone==null || All[z].priority > zone.priority) )
         {
-          active = All[z];
-          return true;
+          zone = All[z];
         }
       }
     }
-    active = null;
+    active = zone;
     return false;
   }
 }

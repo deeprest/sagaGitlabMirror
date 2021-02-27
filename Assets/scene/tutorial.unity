@@ -251,7 +251,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 16947602}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.8280864, y: 0, z: -0}
+  m_LocalPosition: {x: 2.9276433, y: -0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 343982784}
@@ -2118,6 +2118,7 @@ GameObject:
   m_Component:
   - component: {fileID: 338713199}
   - component: {fileID: 338713200}
+  - component: {fileID: 338713202}
   - component: {fileID: 338713201}
   m_Layer: 2
   m_Name: Camera Zone (2)
@@ -2184,9 +2185,37 @@ MonoBehaviour:
   orthoTarget: 2
   colliders:
   - {fileID: 338713200}
+  - {fileID: 338713202}
   CameraBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
+  priority: 0
+--- !u!61 &338713202
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 338713198}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.32, y: 1.47}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 10.39, y: 6.43}
+  m_EdgeRadius: 0
 --- !u!1001 &343982783
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8593,7 +8622,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 960938063}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.4140432, y: 0, z: -0}
+  m_LocalPosition: {x: 1.4638216, y: -0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 546582915}
@@ -10778,6 +10807,7 @@ MonoBehaviour:
   CameraBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
+  priority: 0
 --- !u!1001 &1175883435
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20385,6 +20415,7 @@ MonoBehaviour:
   CameraBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
+  priority: 1
 --- !u!4 &3011999904924927063
 Transform:
   m_ObjectHideFlags: 0
