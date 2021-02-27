@@ -21,6 +21,9 @@ public class BreakableJunk : Entity
         ParticleSystem ps = go.GetComponent<ParticleSystem>();
         if( ps != null )
         {
+          ParticleSystem.MainModule mainModule = ps.main;
+          mainModule.startSize = 0.25f * transform.lossyScale.x;
+          
           ParticleSystem.VelocityOverLifetimeModule volm = ps.velocityOverLifetime;
           Vector2 vel = (Vector2)transform.position - damage.point;
           volm.x = vel.normalized.x * junkSpeed;

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7016146688320637665}
   - component: {fileID: 7227423612218096348}
   m_Layer: 0
-  m_Name: junk letter base
+  m_Name: junk letter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,7 +51,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9699952054db9432e9da4849d76b227f, type: 2}
+  - {fileID: 2100000, guid: 1643d2fd69f09488a91f475408af2746, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -348,7 +348,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.3
+      scalar: 0.5
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -401,7 +401,7 @@ ParticleSystem:
     startSizeY:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0.5
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -3618,6 +3618,15 @@ ParticleSystem:
           inWeight: 0.33333334
           outWeight: 0.33333334
         - serializedVersion: 3
+          time: 0.14757171
+          value: -0.009735882
+          inSlope: -0.0374722
+          outSlope: -0.0374722
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.27290818
+        - serializedVersion: 3
           time: 1
           value: -1
           inSlope: 0
@@ -3641,6 +3650,15 @@ ParticleSystem:
           weightedMode: 0
           inWeight: 0.33333334
           outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 0.107529506
+          value: -0.0020734966
+          inSlope: -0.08000316
+          outSlope: -0.08000316
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.38300905
         - serializedVersion: 3
           time: 0.80399436
           value: 0.8992052
@@ -3906,7 +3924,7 @@ ParticleSystem:
         m_RotationOrder: 4
     minKillSpeed: 0
     maxKillSpeed: 10000
-    radiusScale: 0.5
+    radiusScale: 0.4
     collidesWith:
       serializedVersion: 2
       m_Bits: 139265

@@ -21,24 +21,20 @@ public class BreakableText : MonoBehaviour
 {
   [Tooltip("Prefab requires a BreakableJunk component")]
   public GameObject prefab;
-  //public GameObject prefabJunk;
   public string text = "asdf";
   string cachedText;
   public float x;
   public float width = .1f;
+  float cachedWidth;
   public FontSpriteReference font;
-
-  void Start()
-  {
-    //ExplicitUpdate();
-  }
-
+  
   public void ExplicitUpdate()
   {
-    if( font == null || cachedText == text )
+    if( font == null || (cachedText == text && Mathf.Approximately(cachedWidth,width) ) )
       return;
     x = 0;
     cachedText = text;
+    cachedWidth = width;
     for( int i = transform.childCount - 1; i >= 0; i-- )
       Util.Destroy( transform.GetChild( i ).gameObject );
     for( int i = 0; i < text.Length; i++ )
@@ -46,13 +42,12 @@ public class BreakableText : MonoBehaviour
       int index = FontSpriteReference.map.IndexOf( text[i] );
       if( index > 0 )
       {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         GameObject go = (GameObject)PrefabUtility.InstantiatePrefab( prefab, transform );
-        
-        #else
-GameObject go = Instantiate( prefab, transform, false );
+#else
+        GameObject go = Instantiate( prefab, transform, false );
 #endif
-        go.transform.localPosition = Vector3.right * ((width*text.Length) * -0.5f + x);
+        go.transform.localPosition = Vector3.right * (width * (text.Length-1) * -0.5f + x);
         // background, optional
         go.transform.GetComponent<SpriteRenderer>().sprite = font.spritesBackground[index];
         // glyph in front is first child
