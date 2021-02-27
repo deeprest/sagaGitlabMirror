@@ -2,14 +2,14 @@
 #if UNITY_EDITOR
 using UnityEditor;
 
-[CustomEditor( (typeof(BreakableLetters)) )]
+[CustomEditor( (typeof(BreakableText)) )]
 public class BreakableLettersEditor : Editor
 {
   public override void OnInspectorGUI()
   {
     if( !Application.isPlaying )
     {
-      var ics = target as BreakableLetters;
+      var ics = target as BreakableText;
       ics.ExplicitUpdate();
     }
     DrawDefaultInspector();
@@ -17,7 +17,7 @@ public class BreakableLettersEditor : Editor
 }
 #endif
 
-public class BreakableLetters : MonoBehaviour
+public class BreakableText : MonoBehaviour
 {
   [Tooltip("Prefab requires a BreakableJunk component")]
   public GameObject prefab;

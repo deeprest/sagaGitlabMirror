@@ -37,6 +37,11 @@ exploration of the city's districts
 secrets
 
 
+Boss
+level gen
+gameplay layers
+
+
 
 # Project Goals
 

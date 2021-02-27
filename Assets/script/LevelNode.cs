@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -8,6 +6,7 @@ using UnityEditor;
 public class LevelNode : MonoBehaviour
 {
   [SerializeField] TextMesh label;
+  [SerializeField] BreakableText btext;
 
   void Awake()
   {
@@ -19,6 +18,11 @@ public class LevelNode : MonoBehaviour
   {
     if( label != null )
       label.text = name;
+    if( btext != null )
+    {
+      btext.text = name;
+      //btext.ExplicitUpdate();
+    }
   }
 #endif
 } 

@@ -25,11 +25,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7196822611639542047}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.5, y: 4.5, z: -15.279781}
+  m_LocalPosition: {x: 3.5, y: 4.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3746729600950047927}
-  m_RootOrder: 30
+  m_RootOrder: 33
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8730937325786690086
 SpriteRenderer:
@@ -1081,6 +1081,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RootOrder
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6379974361363133168, guid: d1864b87248b74381b59748b50dbd186,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6379974361363133169, guid: d1864b87248b74381b59748b50dbd186,
+        type: 3}
+      propertyPath: text
+      value: cityunderground-2-2
       objectReference: {fileID: 0}
     - target: {fileID: 6738133698015849464, guid: d1864b87248b74381b59748b50dbd186,
         type: 3}

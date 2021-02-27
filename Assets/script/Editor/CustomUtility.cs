@@ -499,6 +499,7 @@ public class CustomUtility : EditorWindow
           case OperationContext.SCENE:
             if( prefabStage != null )
             {
+              ProcessSubObjects = true;
               gos = new List<GameObject>();
               gos.Add( prefabStage.prefabContentsRoot );
               assetPaths = new List<string>();
