@@ -1,0 +1,25 @@
+#Changelog
+
+
+## Unreleased
+NEW increased health pickups dropped by enemies
+
+
+## 0.1.0-alpha 2021-02-27
+Using Unity version 2019.4.18f1
+NEW breakable glyph scale
+NEW airbot propellar ability. propellar on back? dash in air to use prop
+FIX hornet gets stuck
+FIX mech punch should break boxes
+FIX trigger release shoots graphook
+NEW crush damage
+NEW Minimap shows static parts of environment.
+NEW Minimap renders once. Player position is shown with an icon.
+FIX airbot attack, use attack speed until at last known target position
+FIX camera zone soft lock when using door on dr cain chamber
+FIX [use gen safe zone] generation does not destroy entities spawned at runtime. Should it? Showing off generation in a build is nice, but if it means implementing features never seen in the game, is it worth it?
+FIX mushy on lift. consider the velocity of the object being collided-with. [CarryObject]
+NOFIX: high offset off angled floor. This is a known cosmetic problem, addressed with the "multi_sample" code in UpdateCollision(), not in use.
+FIX long slide clipping. collision should reduce velocity, not only position.
+FIX minimum shoot vector, otherwise shots have no velocity (gamepad)
+FIX control binding says "bad control index" for minimap (gamepad)

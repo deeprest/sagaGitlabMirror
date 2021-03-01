@@ -113,6 +113,7 @@ public class Entity : MonoBehaviour, IDamage
   [Serializable]
   public class SpawnChance
   {
+    public bool alwaysSpawn;
     public int weight = 1;
     public GameObject prefab;
   }
@@ -324,6 +325,7 @@ public class Entity : MonoBehaviour, IDamage
     Debug.DrawLine( new Vector3( bounds.max.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.min.y ), Color.red );
     Debug.DrawLine( new Vector3( bounds.max.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.min.y ), Color.red );
 
+    float prefer = float.MinValue;
     hitCount = Physics2D.BoxCastNonAlloc( debugOrigin, debugBox, 0 /*transform.rotation.eulerAngles.z*/, Vector2.down, RaycastHits, Mathf.Max( Raydown, -velocity.y * dT ), Global.CharacterCollideLayers );
     for( int i = 0; i < hitCount; i++ )
     {
@@ -331,9 +333,10 @@ public class Entity : MonoBehaviour, IDamage
       if( IgnoreCollideObjects.Contains( hit.collider ) )
         continue;
 
-      if( hit.normal.y > 0 && hit.normal.y > corner )
+      if( hit.normal.y > 0 && hit.normal.y > corner && hit.point.y > prefer )
       {
         collideBottom = true;
+        prefer = hit.point.y;
         bottomHits[bottomHitCount++] = hit;
         velocity.y = Mathf.Max( velocity.y, 0 );
         inertia.x = 0;
@@ -389,15 +392,16 @@ public class Entity : MonoBehaviour, IDamage
       Global.instance.AudioOneShot( soundDeath, transform.position );
     if( explosion != null )
       Instantiate( explosion, transform.position, Quaternion.identity );
-    GameObject prefab = GetDeathSpawnObject();
-    if( prefab != null )
-      Instantiate( prefab, transform.position, Quaternion.identity );
+    GameObject[] prefab = GetDeathSpawnObjects();
+    for( int i = 0; i < prefab.Length; i++ )
+      Instantiate( prefab[i], transform.position, Quaternion.identity );
     Destroy( gameObject );
     EventDestroyed?.Invoke();
   }
 
-  public GameObject GetDeathSpawnObject() 
+  public GameObject[] GetDeathSpawnObjects()
   {
+    List<GameObject> gos = new List<GameObject>();
     if( SpawnOnDeath.Length > 0 )
     {
       int spawnChanceWeightTotal = 0;
@@ -408,13 +412,20 @@ public class Entity : MonoBehaviour, IDamage
       int runningTotal = 0;
       for( index = 0; index < SpawnOnDeath.Length; index++ )
       {
+        if( SpawnOnDeath[index].alwaysSpawn ) 
+        { 
+          gos.Add(SpawnOnDeath[index].prefab);
+          continue;
+        }
         runningTotal += SpawnOnDeath[index].weight;
         if( runningTotal >= randy )
+        {
+          gos.Add(SpawnOnDeath[index].prefab);
           break;
+        }
       }
-      return SpawnOnDeath[index].prefab;
     }
-    return null;
+    return gos.ToArray();
   }
 
   public virtual void AddHealth( int amount )

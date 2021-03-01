@@ -1,3 +1,4 @@
+START A DEVLOG ON ITCH
 
 # Remember
 * script execution order is the reason liftbots are updated first in the entites list, because they are added to the list on Awake().
@@ -8,43 +9,50 @@
 * 2d skeleton rigs, avatars, and IK can not be used with composites. Skeletons use rotations, and these anims are not rotation-based.
 
 
-# Decide
+# Decide (Design)
 walljumping while auto-wallsliding
-START A DEVLOG ON ITCH.
 NEW shield on back? press down to use shield?
+gameplay layers, doors
+one-way platforms
 
-
-punchy mech needs anticipation anim before punch
-fly ability rotation when only holding up key
 
 # New Things
 
-NEW health pickups dropped by enemies
-NEW cursor stops at edge of screen
 NEW player death effect/anim
+NEW xbuster big charged shot
+
+NEW cursor stops at edge of screen
+
 NEW align shot with surface when aiming into floor/wall
+
 NEW stickybomb exploding interaction with shield:
   1) do raycast to each IDamage within range
   2) if raycast hits something else, do a projection of the collider onto a perpendicular vector of the normal
   3) use the projected endpoints to do two more raycasts
   4) if the raycast hits an IDamage collider, proceed
 
-NEW enemy that uses and drops the graphook. mech?
-NEW Big wrecking ball bot.
-NEW Agile boss bot.
+NEW enemy that uses and drops the graphook
+NEW graphook: show valid raycast targets
 
 NEW music selection on pause menu
 NEW cheats menu
 
+NEW punchy mech needs anticipation anim before punch
+
+NEW hornet turnaround sprites
 NEW Hornet friendly fire
 NEW Hornet avoid friendlies
 NEW Hornet proximity raycast
 NEW Hornet particles should not rotate, and should disappear
 
+
 CODE remove global references to CurrentPlayer where possible
 CODE change cursorOuter based on control device
 CODE Character agentType: remove need for Global.instance.AgentType lookup. Just use ints.
+CODE Teams. Use ScriptableObject for Teams instead of enum. Have colors that modify projectiles.
 
+NEW Big wrecking ball bot.
+NEW Agile boss bot.
 
 # Issues
 
@@ -56,6 +64,10 @@ VERIFY jumping and sliding up and over a ledge only **sometimes** snaps to groun
 VERIFY airbot pickup fall through vent covers?
 
 ### Needs Fix
+FIX smirk smoke particle vertex glitch
+FIX cancelling graphook gives ava velocity
+FIX stickybomb does not sticky to breakable text
+FIX music and scene list need center column alignment
 FIX graphook sticks
 FIX stickybomb sticks to other stickybombs in midair
 FIX gamepad: when not aiming, default aim direction.
@@ -67,6 +79,7 @@ FIX slowmo, override velocity incorrect
 FIX highway song intro steps on loop
 FIX airbot ability when using minimap
 FIX walljumpdash with airbit ability equipped
+FIX fly ability rotation when only holding up key
 
 
 ### Needs Improvement
@@ -75,7 +88,7 @@ Input: better display names
 
 
 #### Polish
-POLISH walljump spark effect is on wron
+POLISH walljump spark effect is on wrong side
 POLISH landing snaps. possible anim frame adjustment will fix
 POLISH adjust jump anim frame. it pops at the jump arc apex
 POLISH city camera bounds
@@ -86,6 +99,7 @@ POLISH control name text for right stick says "RS"
 POLISH door should indicate when it refuses to open because of team affiliation.
 POLISH trishot hit anim color
 POLISH hide arm while not shooting
+POLISH ava low health breathing anim
 
 
 ## Unity Bugs

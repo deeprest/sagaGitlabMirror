@@ -88,7 +88,12 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  SpawnOnDeath: []
+  SpawnOnDeath:
+  - weight: 5
+    prefab: {fileID: 0}
+  - weight: 1
+    prefab: {fileID: 7811567057660064751, guid: 24e917afab41844c4aecb42d78844d12,
+      type: 3}
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []

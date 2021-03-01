@@ -51,7 +51,7 @@ PlayerSettings:
   m_StereoRenderingPath: 0
   m_ActiveColorSpace: 0
   m_MTRendering: 1
-  m_StackTraceTypes: 010000000100000001000000010000000100000001000000
+  m_StackTraceTypes: 020000000200000001000000000000000200000001000000
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
   iosUseCustomAppBackgroundBehavior: 0
@@ -70,7 +70,7 @@ PlayerSettings:
   androidBlitType: 1
   defaultIsNativeResolution: 0
   macRetinaSupport: 0
-  runInBackground: 0
+  runInBackground: 1
   captureSingleScreen: 0
   muteOtherAudioSources: 0
   Prepare IOS For Recording: 0
@@ -78,11 +78,11 @@ PlayerSettings:
   deferSystemGesturesMode: 0
   hideHomeButton: 0
   submitAnalytics: 0
-  usePlayerLog: 1
-  bakeCollisionMeshes: 0
+  usePlayerLog: 0
+  bakeCollisionMeshes: 1
   forceSingleInstance: 1
   useFlipModelSwapchain: 1
-  resizableWindow: 0
+  resizableWindow: 1
   useMacAppStoreValidation: 0
   macAppStoreCategory: public.app-category.games
   gpuSkinning: 0
@@ -125,7 +125,7 @@ PlayerSettings:
     5:4: 0
     16:10: 1
     16:9: 1
-    Others: 0
+    Others: 1
   bundleVersion: 0.2.1
   preloadedAssets:
   - {fileID: 11400000, guid: e70a8c91cd2cc49a7b3e88a4c3dc5a52, type: 2}
@@ -185,8 +185,8 @@ PlayerSettings:
   ForceSDCardPermission: 0
   CreateWallpaper: 0
   APKExpansionFiles: 0
-  keepLoadedShadersAlive: 0
-  StripUnusedMeshComponents: 0
+  keepLoadedShadersAlive: 1
+  StripUnusedMeshComponents: 1
   VertexChannelCompressionMask: 0
   iPhoneSdkVersion: 988
   iOSTargetOSVersionString: 10.0
@@ -285,7 +285,7 @@ PlayerSettings:
     m_DynamicBatching: 1
   m_BuildTargetGraphicsJobs:
   - m_BuildTarget: MacStandaloneSupport
-    m_GraphicsJobs: 0
+    m_GraphicsJobs: 1
   - m_BuildTarget: Switch
     m_GraphicsJobs: 0
   - m_BuildTarget: MetroSupport
@@ -343,13 +343,13 @@ PlayerSettings:
     tvOS: 1
   m_BuildTargetGroupLightmapEncodingQuality:
   - m_BuildTarget: Standalone
-    m_EncodingQuality: 0
+    m_EncodingQuality: 1
   m_BuildTargetGroupLightmapSettings:
   - m_BuildTarget: WebGL
     m_TextureStreamingEnabled: 0
     m_TextureStreamingPriority: 0
   - m_BuildTarget: Standalone
-    m_TextureStreamingEnabled: 0
+    m_TextureStreamingEnabled: 1
     m_TextureStreamingPriority: 0
   playModeTestRunnerEnabled: 0
   runPlayModeTestAsEditModeTest: 0
@@ -599,12 +599,12 @@ PlayerSettings:
     29: UNITY_POST_PROCESSING_STACK_V2
   platformArchitecture: {}
   scriptingBackend:
-    Standalone: 0
+    Standalone: 1
   il2cppCompilerConfiguration:
     Standalone: 1
     WebGL: 1
   managedStrippingLevel:
-    Standalone: 1
+    Standalone: 2
   incrementalIl2cppBuild: {}
   allowUnsafeCode: 0
   additionalIl2CppArgs: 

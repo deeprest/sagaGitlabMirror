@@ -15,7 +15,7 @@ A game prototype. This is mostly a Mega Man X gameplay clone with many improveme
 
 ## Requirements
 
-**Unity version: 2019.4.12f1**
+**Unity version: 2019.4.18f1**
 
 [Install Git LFS](https://help.github.com/en/github/managing-large-files/installing-git-large-file-storage)
 After checkout, you must run the following to get all of the assets:

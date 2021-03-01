@@ -1,7 +1,7 @@
 
 
 # DESIGN pillars (from gdu.io)
-1. Mantra:  "You are a robotic ninja, fighting large robots and pirating their parts."
+1. Mantra:  "You are a robotic ninja, destroying robots and pirating their parts."
 1. Design pillars, describing *feel* (three phrases):  Nimbly pimbly. Upgrade! Irreverent Distractions.
 2. Summary. Destroy bad robots and use their parts to improve yourself to save the city.
 3. Features: aiming, generated city
@@ -12,35 +12,6 @@
 8. Artstyle: cyberpunk pixelart hq4x. Composite sprites with lighting, normal+emissive maps.
 9. Sound / Music: rock soundtrack + instrument foley
 10. [Development plan]
-
-
-# what makes it fun/enjoyable
-movement:
-	dash
-	wallslide
-	walljump
-	graphook
-	airbot ability
-	
-weapons:
-	xbuster/trishot
-	grenades
-	stickybomb
-	flame/laser
-		
-interactive environmental objects:
-	breakables
-	talkers
-
-music
-exploration of the city's districts
-secrets
-
-
-Boss
-level gen
-gameplay layers
-
 
 
 # Project Goals
@@ -173,7 +144,42 @@ find body upgrades: run speed, jump height, etc
 #### pickle rick / tiny when damaged
 
 
-# Titles
+
+# Random
+https://en.wikipedia.org/wiki/Frog_battery
+
+Destination vs exploration type of player. 
+Top of each large tower hss a “Boss”. 
+The basement has humble robot workers that are sometimes helpful. 
+You are kind of like a robot batman and robin hood. 
+
+Times square
+Chinatown
+Industrial area
+Port or docks
+Highway runs through some areas
+Subway goes to downtown areas
+
+
+Energy for robots named LiFe. Lithium Iron.
+Music changes for bosses and special rooms, but also districts
+Procedural gen levels: districts.
+
+Story like shotgun ninja
+Dialogue like monkey island 
+Anim background like street fighter 
+
+tl;dr read it or do not. There are no shortcuts.
+
+Boogie Knights
+Bruce Sprucegoose 
+Cous Cous McSpruceGoose
+David Duchovany’s Dramatic Depth
+
+Intro stage. 
+Viles ship breaks through ground forcing x into a chamber. 
+
+Titles:
 Not a Mega Man Clone
 Captain Commerce Will Sue
 Ninja Sex Robot
@@ -182,6 +188,24 @@ Machine Sex Profit City
 Ninja Robot Sex Profit City
 Corporate Future Robot City Sex Profit
 Robot Ninja Sex Battle Profit
+TWERTS
 
-https://en.wikipedia.org/wiki/Frog_battery
+# Next Project
+Chainsaw Romance:
+Dr cain talking about city under attack
+Break through window jump on chopper, while riding shoot airbots with weapon A
+Fall from chopper, slide down tower
+Demonstrate weapon B while running
+China town: acquire weapon
+After chinatown, craziness then
+Flying on jet propelled craft then
+Flung into air and
+Slide down a crazy long wall and
+Promptly land and start tearing shit apart then
+Rampage through a factory and
+Watch boss intro.
+Fight boss
+Final strike, many explosions 
+Crowd gathers like end of race, strike mmx pose. Show title.
+
 

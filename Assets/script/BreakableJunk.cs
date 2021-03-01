@@ -14,10 +14,10 @@ public class BreakableJunk : Entity
       if( explosion != null )
         Instantiate( explosion, transform.position, Quaternion.identity );
       
-      GameObject prefab = GetDeathSpawnObject();
-      if( prefab != null )
+      GameObject[] prefab = GetDeathSpawnObjects();
+      for( int i = 0; i < prefab.Length; i++ )
       {
-        GameObject go = Instantiate( prefab, transform.position, Quaternion.identity );
+        GameObject go = Instantiate( prefab[i], transform.position, Quaternion.identity );
         ParticleSystem ps = go.GetComponent<ParticleSystem>();
         if( ps != null )
         {

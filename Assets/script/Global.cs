@@ -1200,7 +1200,7 @@ public class Global : MonoBehaviour
 
 #region Settings
 
-  string[] resolutions = {"640x360", "640x400", "1024x512", "1280x720", "1280x800", "1920x1080"};
+  string[] resolutions = {"640x360", "640x400", "1024x512", "1024x1024", "1280x640", "1280x720", "1280x800" };
   int ResolutionWidth;
   int ResolutionHeight;
 

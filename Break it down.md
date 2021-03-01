@@ -17,6 +17,15 @@ Intro level teaches everything you need to know:
     Megaman X1-X3 suffers from the same problems: small viewing area, can only shoot forward, enemies respawn immediately out of sight, levels are static.
     Megaman X4 is so bad that I never played another MMX game again. I've watched gameplay videos to keep up to date with the MMX games, but it seems the series never improved.
 
+
+MMX 4:3 screen ratio
+Chamber = 10.5 player widths X 6.5 player heights
+
+16:10 screen ratio
+Chamber = 12.5 player widths X 6.5 player heights
+
+
+
 ## Super Metroid
 - ducking
 - diagonal aiming
