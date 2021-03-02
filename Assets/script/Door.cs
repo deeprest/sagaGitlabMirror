@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Serialization;
@@ -10,6 +9,7 @@ public class Door : MonoBehaviour, ITrigger
   [SerializeField] Collider2D cd;
   [SerializeField] AudioSource audio;
   [SerializeField] NavMeshObstacle obstacle;
+  public bool isLocked;
   public bool isOpen;
   bool transitioning;
   bool deniedDelay;
@@ -35,8 +35,33 @@ public class Door : MonoBehaviour, ITrigger
   [SerializeField] float doorRunDistance = 1;
   [SerializeField] float runDuration = 0.5f;
 
-  [FormerlySerializedAs( "OpenForTeams" )]
+  [Obsolete]
   public Team[] OpenOnlyForTeams;
+
+  // TEMPORARY
+  public bool UseMask;
+
+  [EnumFlag]
+  public Team OpenForTeams;
+
+  void Start()
+  {
+    if( isOpen )
+    {
+      animator.Play( "opened" );
+      isOpen = true;
+      cd.enabled = false;
+      obstacle.enabled = false;
+    }
+    else
+    {
+      animator.Play( "closed" );
+      isOpen = false;
+      cd.enabled = true;
+      obstacle.enabled = true;
+    }
+  }
+
 
   void OnDestroy()
   {
@@ -56,22 +81,31 @@ public class Door : MonoBehaviour, ITrigger
       return;
 
     Entity check = instigator.GetComponent<Entity>();
-    if( check != null && OpenOnlyForTeams.Length > 0 )
+    if( check != null )
     {
       bool OpenForThisCharacter = false;
-      for( int i = 0; i < OpenOnlyForTeams.Length; i++ )
+      if( UseMask )
+        OpenForThisCharacter = (OpenForTeams & check.Team) > 0;
+
+      // REMOVE THIS EVENTUALLY when the OpenOnlyForTeams array is discontinued
+      if( OpenOnlyForTeams.Length > 0 )
       {
-        if( OpenOnlyForTeams[i] == check.Team )
+        for( int i = 0; i < OpenOnlyForTeams.Length; i++ )
         {
-          OpenForThisCharacter = true;
-          break;
+          if( OpenOnlyForTeams[i] == check.Team )
+          {
+            OpenForThisCharacter = true;
+            break;
+          }
         }
       }
-      if( !OpenForThisCharacter )
+      //
+
+      if( isLocked || !OpenForThisCharacter )
       {
         Global.instance.AudioOneShot( soundDenied, transform.position );
         deniedDelay = true;
-        timer.Start(3,null, delegate { deniedDelay = false; });
+        timer.Start( 3, null, delegate { deniedDelay = false; } );
         animator.Play( "denied" );
         return;
       }
@@ -93,7 +127,6 @@ public class Door : MonoBehaviour, ITrigger
         animator.updateMode = AnimatorUpdateMode.UnscaledTime;
         Global.Pause();
         Global.instance.Controls.BipedActions.Disable();
-        
 
         OpenAndClose( openDuration, delegate
         {
@@ -102,25 +135,24 @@ public class Door : MonoBehaviour, ITrigger
           {
             if( Entering )
             {
-              if( CameraIn != null ) 
+              if( CameraIn != null )
                 Global.instance.OverrideCameraZone( CameraIn );
-              else 
+              else
                 Global.instance.OverrideCameraZone( null );
               Global.instance.CrossFadeTo( Music );
             }
             else
             {
-              if( CameraOut != null ) 
+              if( CameraOut != null )
                 Global.instance.OverrideCameraZone( CameraOut );
-              else 
+              else
                 Global.instance.OverrideCameraZone( null );
               Global.instance.CrossFadeTo( sceneScript.music );
             }
           }
           // todo make door less awful
           player.DoorTransition( right, openDuration, doorRunDistance );
-        },
-        delegate
+        }, delegate
         {
           // door is now closed
           Global.instance.Controls.BipedActions.Enable();
@@ -141,13 +173,10 @@ public class Door : MonoBehaviour, ITrigger
               runTimer.Start( runDuration, delegate
               {
                 if( right )
-                  player.ApplyInput( new InputState { MoveRight = true } );
+                  player.ApplyInput( new InputState {MoveRight = true} );
                 else
-                  player.ApplyInput( new InputState { MoveLeft = true } );
-              }, delegate
-              {
-                Global.instance.Controls.BipedActions.Enable();
-              } );
+                  player.ApplyInput( new InputState {MoveLeft = true} );
+              }, delegate { Global.instance.Controls.BipedActions.Enable(); } );
             }
             else
             {
@@ -163,13 +192,10 @@ public class Door : MonoBehaviour, ITrigger
               runTimer.Start( runDuration, delegate
               {
                 if( right )
-                  player.ApplyInput( new InputState { MoveRight = true } );
+                  player.ApplyInput( new InputState {MoveRight = true} );
                 else
-                  player.ApplyInput( new InputState { MoveLeft = true } );
-              }, delegate
-              {
-                Global.instance.Controls.BipedActions.Enable();
-              } );
+                  player.ApplyInput( new InputState {MoveLeft = true} );
+              }, delegate { Global.instance.Controls.BipedActions.Enable(); } );
             }
             else
             {
@@ -201,7 +227,6 @@ public class Door : MonoBehaviour, ITrigger
         }
       };
       doorTimer.Start( tp );
-
     } );
   }
 
@@ -229,6 +254,12 @@ public class Door : MonoBehaviour, ITrigger
       }
     };
     timer.Start( timerParams );
+  }
+
+  // for acces from UnityEvent
+  public void Close()
+  {
+    Close( null );
   }
 
   public void Close( System.Action onClosed = null )

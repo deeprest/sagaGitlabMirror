@@ -8,12 +8,12 @@ using Random = UnityEngine.Random;
 
 //using Random = UnityEngine.Random;
 
-public enum Team
+public enum Team : int
 {
-  None,
-  GoodGuys,
-  BadDudes,
-  Hostile
+  None = 0,
+  GoodGuys = 1 << 0,
+  BadDudes = 1 << 1,
+  Hostile = 1 << 2
 }
 
 [SelectionBase]
@@ -414,13 +414,15 @@ public class Entity : MonoBehaviour, IDamage
       {
         if( SpawnOnDeath[index].alwaysSpawn ) 
         { 
-          gos.Add(SpawnOnDeath[index].prefab);
+          if( SpawnOnDeath[index].prefab != null )
+            gos.Add(SpawnOnDeath[index].prefab);
           continue;
         }
         runningTotal += SpawnOnDeath[index].weight;
         if( runningTotal >= randy )
         {
-          gos.Add(SpawnOnDeath[index].prefab);
+          if( SpawnOnDeath[index].prefab != null )
+            gos.Add(SpawnOnDeath[index].prefab);
           break;
         }
       }

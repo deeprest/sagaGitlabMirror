@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraZone : MonoBehaviour
@@ -10,8 +9,9 @@ public class CameraZone : MonoBehaviour
   public int priority;
   [Tooltip("The camera will increase its size to view all colliders. Useful for rooms.")]
   public bool EncompassBounds;
-  [Tooltip("Ignore setting to set active camera zone when player enters zone.")]
+  [Tooltip("Ignore setting to set active camera zone to this when player enters zone.")]
   public bool IgnoreAutoSwitch;
+  public bool ConfineToZone;
   [Tooltip("Set the camera zoom when this zone is the active zone.")]
   public bool SetOrtho;
   [Tooltip("If SetOrtho is true, this is the camera zoom value.")]

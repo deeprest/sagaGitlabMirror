@@ -18,33 +18,15 @@ public class CameraController : MonoBehaviour
 
   public float orthoTarget = 1;
   public float orthoSpeed = 1;
-  /*
-  public bool snapToPixel = true;
-  public float snapDivide = 1;
-  public float pixelSnap;
-  public float presnap;
-  public float snapped;
-  */
+
   [SerializeField] CameraZone ActiveCameraZone;
-  bool CameraZoneOverride;
+  public bool CameraZoneOverride;
 
   public void AssignOverrideCameraZone(CameraZone zone)
   {
     ActiveCameraZone = zone;
     CameraZoneOverride = zone!=null;
   }
-  
-#if CLIP_POINT_ATTEMPT
-  public class ClipPoint
-  {
-    public Collider2D collider;
-    public Vector2 vector;
-    public bool clip = false;
-    public bool adjust = true;
-    public System.Action<Vector2> adjustFunction;
-  }
-  [SerializeField] float project = 0.1f;
-#endif
 
   public void CameraLateUpdate()
   {
@@ -105,109 +87,58 @@ public class CameraController : MonoBehaviour
         Vector2 debug = pos;
         Vector2 origin = LookTarget.pawn.transform.position;
 
-#if CLIP_POINT_ATTEMPT
-        /*
-        ClipPoint[] clip = new ClipPoint[4];
-        // UL
-        clip[0] = new ClipPoint
+        if( CameraZoneOverride ) //ActiveCameraZone.ConfineToZone )
         {
-          vector = (Vector2)pos + Vector2.left * hw + Vector2.up * hh, adjustFunction = ( point ) => {
-            if( pos.x < point.x + hw ) pos.x = point.x + hw;
-            if( pos.y > point.y - hh ) pos.y = point.y - hh;
-          }
-        };
-        // UR
-        clip[1] = new ClipPoint
-        {
-          vector = (Vector2)pos + Vector2.right * hw + Vector2.up * hh, adjustFunction = ( point ) => {
-            if( pos.x > point.x - hw ) pos.x = point.x - hw;
-            if( pos.y > point.y - hh ) pos.y = point.y - hh;
-          }
-        };
-        // LR
-        clip[2] = new ClipPoint
-        {
-          vector = (Vector2)pos + Vector2.right * hw + Vector2.down * hh, adjustFunction = ( point ) => {
-            if( pos.x > point.x - hw ) pos.x = point.x - hw;
-            if( pos.y < point.y + hh ) pos.y = point.y + hh;
-          }
-        };
-        // LL
-        clip[3] = new ClipPoint
-        {
-          vector = (Vector2)pos + Vector2.left * hw + Vector2.down * hh, adjustFunction = ( point ) => {
-            if( pos.x < point.x + hw ) pos.x = point.x + hw;
-            if( pos.y < point.y + hh ) pos.y = point.y + hh;
-          }
-        };
-
-
-        for( int i = 0; i < ActiveCameraZone.colliders.Length; i++ )
-        {
-          for( int a = 0; a < clip.Length; a++ )
+          // if the origin(lookTarget) is outside of all the colliders, then clip to inside.
+          Collider2D overlap = null;
+          List<Vector2> points = new List<Vector2>();
+          foreach( var cld in ActiveCameraZone.colliders )
           {
-            clip[a].clip = false;
-            if( ClipToInsideCollider2D( ActiveCameraZone.colliders[i], ref clip[a].vector, origin ) )
+            if( cld.OverlapPoint( origin ) )
             {
-              clip[a].collider = ActiveCameraZone.colliders[i];
-              clip[a].clip = true;
+              overlap = cld;
+              break;
+            }
+            else
+            {
+              points.Add( cld.ClosestPoint( origin ) );
             }
           }
-        }
-
-        for( int a = 0; a < clip.Length; a++ )
-        {
-          if( clip[a].clip )
+          if( overlap == null )
           {
-            clip[a].adjust = true;
-            for( int b = 0; b < ActiveCameraZone.colliders.Length; b++ )
-            {
-              if( clip[a].collider != ActiveCameraZone.colliders[b] && ActiveCameraZone.colliders[b].OverlapPoint( clip[a].vector ) )
-              {
-                clip[a].adjust = false;
-                break;
-              }
-            }
+            Vector2 neworigin = Util.FindClosest( origin, points.ToArray() );
+            origin = neworigin + (neworigin - origin).normalized;
           }
         }
 
-        for( int a = 0; a < clip.Length; a++ )
-        {
-          if( clip[a].adjust )
-          {
-            clip[a].adjustFunction( clip[a].vector );
-          }
-        }
-        */
-#endif
-
+        // TODO prevent multiple colliders within same zone from overriding clip points of one another.
         foreach( var cld in ActiveCameraZone.colliders )
         {
-          if( !cld.OverlapPoint( origin ) )
+          if( !CameraZoneOverride && !cld.OverlapPoint( origin ) )
             continue;
           Vector2 UL = (Vector2)pos + Vector2.left * hw + Vector2.up * hh;
-          if( ClipToInsideCollider2D( cld, ref UL, LookTarget.pawn.transform.position ) )
+          if( ClipToInsideCollider2D( cld, ref UL, origin ) )
           {
             if( pos.y > UL.y - hh ) pos.y = UL.y - hh;
             if( pos.x < UL.x + hw ) pos.x = UL.x + hw;
           }
 
           Vector2 UR = (Vector2)pos + Vector2.right * hw + Vector2.up * hh;
-          if( ClipToInsideCollider2D( cld, ref UR, LookTarget.pawn.transform.position ) )
+          if( ClipToInsideCollider2D( cld, ref UR, origin ) )
           {
             if( pos.y > UR.y - hh ) pos.y = UR.y - hh;
             if( pos.x > UR.x - hw ) pos.x = UR.x - hw;
           }
 
           Vector2 LL = (Vector2)pos + Vector2.left * hw + Vector2.down * hh;
-          if( ClipToInsideCollider2D( cld, ref LL, LookTarget.pawn.transform.position ) )
+          if( ClipToInsideCollider2D( cld, ref LL, origin ) )
           {
             if( pos.y < LL.y + hh ) pos.y = LL.y + hh;
             if( pos.x < LL.x + hw ) pos.x = LL.x + hw;
           }
 
           Vector2 LR = (Vector2)pos + Vector2.right * hw + Vector2.down * hh;
-          if( ClipToInsideCollider2D( cld, ref LR, LookTarget.pawn.transform.position ) )
+          if( ClipToInsideCollider2D( cld, ref LR, origin ) )
           {
             if( pos.y < LR.y + hh ) pos.y = LR.y + hh;
             if( pos.x > LR.x - hw ) pos.x = LR.x - hw;
@@ -216,10 +147,6 @@ public class CameraController : MonoBehaviour
 
 #if UNITY_EDITOR
         Vector3 cp3 = transform.position;
-        //Debug.DrawLine( new Vector3( -hw, -hh, 0 ) + cp3, new Vector3( -hw, hh, 0 ) + cp3, Color.blue );
-        //Debug.DrawLine( new Vector3( -hw, hh, 0 ) + cp3, new Vector3( hw, hh, 0 ) + cp3, Color.blue );
-        //Debug.DrawLine( new Vector3( hw, hh, 0 ) + cp3, new Vector3( hw, -hh, 0 ) + cp3, Color.blue );
-        //Debug.DrawLine( new Vector3( hw, -hh, 0 ) + cp3, new Vector3( -hw, -hh, 0 ) + cp3, Color.blue );
         cp3 = pos;
         Debug.DrawLine( new Vector3( -hw, -hh, 0 ) + cp3, new Vector3( -hw, hh, 0 ) + cp3, Color.green );
         Debug.DrawLine( new Vector3( -hw, hh, 0 ) + cp3, new Vector3( hw, hh, 0 ) + cp3, Color.green );

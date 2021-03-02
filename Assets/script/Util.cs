@@ -365,6 +365,22 @@ public static class Util
     }
     return closest;
   }
+  
+  public static Vector2 FindClosest( Vector2 position, Vector2[] points )
+  {
+    float distance = Mathf.Infinity;
+    Vector2 closest = points[0];
+    foreach( var point in points )
+    {
+      float dist = Vector3.Distance( point, position );
+      if( dist < distance )
+      {
+        closest = point;
+        distance = dist;
+      }
+    }
+    return closest;
+  }
 
   public static Component FindSmallestAngle( Vector3 position, Vector3 direction, Component[] cmps )
   {
@@ -417,3 +433,44 @@ public struct LineSegment
   public Vector3 a;
   public Vector3 b;
 }
+
+
+
+
+// ENUM / BITMASK FLAGS IN THE UNITY INSPECTOR
+public class EnumFlagAttribute : PropertyAttribute
+{
+  public string name;
+
+  public EnumFlagAttribute() { }
+
+  public EnumFlagAttribute(string name)
+  {
+    this.name = name;
+  }
+}
+  
+#if UNITY_EDITOR
+
+[CustomPropertyDrawer(typeof(EnumFlagAttribute))]
+public class EnumFlagDrawer : PropertyDrawer
+{
+  public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+  {
+    EnumFlagAttribute flagSettings = (EnumFlagAttribute)attribute;
+    System.Enum targetEnum = (System.Enum)fieldInfo.GetValue(property.serializedObject.targetObject);
+
+    string propName = flagSettings.name;
+    if (string.IsNullOrEmpty(propName))
+      propName = ObjectNames.NicifyVariableName(property.name);
+
+    EditorGUI.BeginProperty(position, label, property);
+    //System.Enum enumNew = EditorGUI.EnumMaskPopup(position, propName, targetEnum);
+    // EnumFlagsField is crappy
+    System.Enum enumNew = EditorGUI.EnumFlagsField(position, propName, targetEnum);
+    property.intValue = (int)System.Convert.ChangeType(enumNew, targetEnum.GetType());
+    EditorGUI.EndProperty();
+  }
+}
+
+#endif

@@ -35,4 +35,13 @@ public class TriggerEvent : MonoBehaviour, ITrigger
 
   public void DebugLog( string str ) { Debug.Log(str  );}
 
+  public void AssignOverrideCameraZone( CameraZone zone )
+  {
+    Global.instance.CameraController.AssignOverrideCameraZone( zone );
+  }
+  
+  public void CameraOverride( bool on )
+  {
+    Global.instance.CameraController.CameraZoneOverride = on;
+  }
 }

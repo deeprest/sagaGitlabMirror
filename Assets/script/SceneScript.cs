@@ -1,14 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
 using Unity.Collections;
-using UnityEditor;
 using UnityEngine.Experimental.Rendering.Universal;
-
 
 public class SceneScript : MonoBehaviour
 {
   public AudioLoop music;
-  //public CameraZone CameraZone;
+  public CameraZone ForceCameraZone;
   public BoxCollider NavmeshBox;
   public Light2D ambientLight;
   [Header( "Optional" )]
@@ -23,7 +20,7 @@ public class SceneScript : MonoBehaviour
     if( rain != null )
       rain.Initialize( bounds );
   }
-  
+
   public void StartSceneCommon()
   {
     if( Application.isEditor && !Global.instance.SimulatePlayer )
@@ -37,7 +34,8 @@ public class SceneScript : MonoBehaviour
       }
     }
     // CameraController auto-switch should make this unnecessary
-    //Global.instance.AssignCameraZone( CameraZone );
+    if( ForceCameraZone != null )
+      Global.instance.OverrideCameraZone( ForceCameraZone );
 
     if( music != null )
       Global.instance.PlayMusic( music );
@@ -47,7 +45,6 @@ public class SceneScript : MonoBehaviour
       float targetIntensity = ambientLight.intensity;
       new Timer( 3, delegate( Timer timer ) { ambientLight.intensity = timer.ProgressNormalized * targetIntensity; }, null );
     }
-    
   }
 
   public void PlayerInputOff()
@@ -60,7 +57,7 @@ public class SceneScript : MonoBehaviour
     Global.instance.CameraController.orthoTarget = value;
   }
 
-  public void AssignCameraZone( CameraZone  zone )
+  public void AssignCameraZone( CameraZone zone )
   {
     Global.instance.OverrideCameraZone( zone );
   }
@@ -105,7 +102,4 @@ public class SceneScript : MonoBehaviour
     };
     runTimer.Start( tp );
   }*/
-
-  
-
 }

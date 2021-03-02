@@ -207,8 +207,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfd9464466caf4d77b8895f56a509aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   EncompassBounds: 1
   IgnoreAutoSwitch: 1
+  ConfineToZone: 0
   SetOrtho: 0
   orthoTarget: 0
   colliders:
@@ -937,6 +939,16 @@ PrefabInstance:
         type: 3}
       propertyPath: MMXStyleDoorTransition
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1682622180781752946, guid: 9d910a7bcbf8f458fbb579daa4c82c63,
+        type: 3}
+      propertyPath: OpenOnlyForTeams.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1682622180781752946, guid: 9d910a7bcbf8f458fbb579daa4c82c63,
+        type: 3}
+      propertyPath: OpenOnlyForTeams.Array.data[1]
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3459341678221646357, guid: 9d910a7bcbf8f458fbb579daa4c82c63,
         type: 3}

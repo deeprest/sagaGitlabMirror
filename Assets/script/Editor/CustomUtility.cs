@@ -9,7 +9,9 @@ using UnityEditor.Experimental.SceneManagement;
 using UnityEngine.AI;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
+using Object = UnityEngine.Object;
 using Debug = UnityEngine.Debug;
+using Enum = System.Enum;
 
 public static class StaticUtility
 {
@@ -25,7 +27,35 @@ public static class StaticUtility
     for( int i = 0; i < Selection.objects.Length; i++ )
       Debug.Log( Selection.objects[i].GetType().ToString() + " " + Selection.objects[i].name + " " + Selection.assetGUIDs[i] );
   }
+  /* Util.cs
+  public static string GetCurrentAssetDirectory()
+  {
+    foreach( var obj in UnityEditor.Selection.GetFiltered<Object>( UnityEditor.SelectionMode.Assets ) )
+    {
+      var path = UnityEditor.AssetDatabase.GetAssetPath( obj );
+      if( string.IsNullOrEmpty( path ) )
+        continue;
+
+      if( System.IO.Directory.Exists( path ) )
+        return path;
+      else if( System.IO.File.Exists( path ) )
+        return System.IO.Path.GetDirectoryName( path );
+    }
+
+    return "Assets";
+  }
+
+  public static Object[] GetAssetsFromSelectedFolder( string search = "t:prefab" )
+  {
+    List<Object> objects = new List<Object>();
+    string[] guids = AssetDatabase.FindAssets( search, new string[] { GetCurrentAssetDirectory() } );
+    foreach( string guid in guids )
+      objects.Add( AssetDatabase.LoadAssetAtPath<Object>( AssetDatabase.GUIDToAssetPath( guid ) ) );
+    return objects.ToArray();
+  }
+  */
 }
+
 
 public class CustomUtility : EditorWindow
 {
