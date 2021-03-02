@@ -138,12 +138,13 @@ MonoBehaviour:
   weapon: {fileID: 0}
   instigator: {fileID: 0}
   ContactDamage: {fileID: 11400000, guid: 9ee6504c4d3a34696b22db80eccab972, type: 2}
-  speed: 10
+  speed: 14
   raycastDistance: 0.1
   timeout: 4
   velocity: {x: 0, y: 0}
   ignore: []
   hitCount: 0
+  Scale: 0
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   pulseInterval: 0.2
   light: {fileID: 5490247515193554071}
@@ -165,7 +166,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0

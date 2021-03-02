@@ -29,9 +29,10 @@ public class Rain : MonoBehaviour
     if( rainDropSplashMesh != null )
     {
       const float horOffset = 40;
+      rainDropSplashMesh.transform.parent = null;
       rainDropSplashMesh.transform.position = new Vector2( bounds.center.x, bounds.size.y );
       rainDropSplashMesh.width = bounds.size.x + horOffset;
-      rainDropSplashMesh.maxDistance = bounds.size.y;
+      //rainDropSplashMesh.maxDistance = bounds.size.y;
       //rainMaker.direction = Vector2.down;
       rainDropSplashMesh.Generate();
       // Generate() before setting to active, so the mesh exists beforehand.

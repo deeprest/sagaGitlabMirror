@@ -11,7 +11,6 @@ public class CameraZone : MonoBehaviour
   public bool EncompassBounds;
   [Tooltip("Ignore setting to set active camera zone to this when player enters zone.")]
   public bool IgnoreAutoSwitch;
-  public bool ConfineToZone;
   [Tooltip("Set the camera zoom when this zone is the active zone.")]
   public bool SetOrtho;
   [Tooltip("If SetOrtho is true, this is the camera zoom value.")]
@@ -20,7 +19,6 @@ public class CameraZone : MonoBehaviour
   public Collider2D[] colliders;
 
   public Bounds CameraBounds;
-  
 
   private void Awake()
   {

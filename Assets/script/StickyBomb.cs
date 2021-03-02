@@ -33,7 +33,7 @@ public class StickyBomb : Projectile, IDamage
   }
 
 
-  void FixedUpdate()
+  void Update()
   {
     // +X = forward
     if( AlignRotationToVelocity )
