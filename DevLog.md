@@ -1,17 +1,18 @@
-# WRITE ABOUT
+START A DEVLOG ON ITCH
 
 + sprite animations: using state machine.
 + replace old sprite anims with unity animators;
++ replace unity animators with sprite library/resolver
 
 + composite sprite characters.
 
 + normal maps, so cannot use sprite atlas.
 
-+ Limited use of 2d rigidbodies (bouncygrenade, pickups).
++ Limited use of 2d rigidbodies (bouncygrenade, pickups, stickybomb).
 
 + 2D lighting
 
-+ new input system. gamepad, linux. Keys: O, P
++ new input system. gamepad, linux.
 
 + customutility: build, multitool, font generator
 

@@ -60,6 +60,9 @@ public class Global : MonoBehaviour
   public static bool Paused = false;
   public static bool Slowed = false;
   public static bool IsQuiting = false;
+  
+  public static RaycastHit2D[] RaycastHits = new RaycastHit2D[100];
+  public static Collider2D[] ColliderResults = new Collider2D[100];
 
   [Header( "Global Settings" )]
   [SerializeField] SceneReference[] sceneRefs;
@@ -89,19 +92,6 @@ public class Global : MonoBehaviour
     "characters.json",
     "events.json"*/
   };
-
-  public static int CharacterCollideLayers;
-  public static int CharacterSidestepLayers;
-  public static int CharacterDamageLayers;
-  public static int TriggerLayers;
-  public static int WorldSelectableLayers;
-  public static int ProjectileNoShootLayers;
-  public static int DefaultProjectileCollideLayers;
-  public static int FlameProjectileCollideLayers;
-  public static int DamageCollideLayers;
-  public static int StickyBombCollideLayers;
-  public static int EnemyInterestLayers;
-  public static int SightObstructionLayers;
 
   [Header( "Settings" )]
   public GameObject ToggleTemplate;
@@ -256,6 +246,20 @@ public class Global : MonoBehaviour
     return true;
   }
 
+  // moved these to be closer to their definitions
+  public static int CharacterCollideLayers;
+  public static int CharacterSidestepLayers;
+  public static int CharacterDamageLayers;
+  public static int TriggerLayers;
+  public static int WorldSelectableLayers;
+  public static int ProjectileNoShootLayers;
+  public static int DefaultProjectileCollideLayers;
+  public static int FlameProjectileCollideLayers;
+  public static int DamageCollideLayers;
+  public static int StickyBombCollideLayers;
+  public static int EnemyInterestLayers;
+  public static int SightObstructionLayers;
+  
   void Awake()
   {
     if( instance != null )
@@ -265,9 +269,6 @@ public class Global : MonoBehaviour
     }
     instance = this;
     DontDestroyOnLoad( gameObject );
-
-    // todo see what this does
-    //Application.targetFrameRate = 60;
 
     // note: allowing characters to collide with each other introduces the risk of being forced into a corner.
     CharacterCollideLayers = LayerMask.GetMask( new string[] {"Default", "destructible", "triggerAndCollision"} );
@@ -470,12 +471,12 @@ public class Global : MonoBehaviour
 
     Controls.GlobalActions.Screenshot.performed += ( obj ) => Util.Screenshot();
 
-    /*Controls.GlobalActions.DEVClone.performed += ( obj ) => {
+    Controls.GlobalActions.DEVClone.performed += ( obj ) => {
       GameObject go = Spawn( AvatarPrefab, (Vector2)PlayerController.GetPawn().transform.position + Vector2.right, Quaternion.identity, null, false );
       PlayerBiped pawn = go.GetComponent<PlayerBiped>();
-      pawn.SpeedFactorNormalized = ((PlayerBiped)PlayerController.GetPawn()).SpeedFactorNormalized;
+      pawn.speedFactorNormalized = ((PlayerBiped)PlayerController.GetPawn()).speedFactorNormalized;
       PlayerController.AddMinion( pawn );
-    };*/
+    };
 
     Controls.GlobalActions.DEVRespawn.performed += ( obj ) =>
     {

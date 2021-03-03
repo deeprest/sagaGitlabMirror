@@ -354,12 +354,12 @@ public static class Util
   {
     float distance = Mathf.Infinity;
     Component closest = null;
-    foreach( var cmp in cmps )
+    for( int i = 0; i < cmps.Length; i++ )
     {
-      float dist = Vector3.Distance( cmp.transform.position, position );
+      float dist = Vector3.Distance( cmps[i].transform.position, position );
       if( dist < distance )
       {
-        closest = cmp;
+        closest = cmps[i];
         distance = dist;
       }
     }
@@ -370,12 +370,12 @@ public static class Util
   {
     float distance = Mathf.Infinity;
     Vector2 closest = points[0];
-    foreach( var point in points )
+    for( int i = 0; i < points.Length; i++ )
     {
-      float dist = Vector3.Distance( point, position );
+      float dist = Vector3.Distance( points[i], position );
       if( dist < distance )
       {
-        closest = point;
+        closest = points[i];
         distance = dist;
       }
     }

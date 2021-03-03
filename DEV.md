@@ -1,5 +1,3 @@
-START A DEVLOG ON ITCH
-
 # Remember
 * script execution order is the reason liftbots are updated first in the entites list, because they are added to the list on Awake().
 * FIXED Linux: glitchy/wrong sprite shader for entities. This is because of texture compression settings on each individual texture.
@@ -64,15 +62,15 @@ VERIFY jumping and sliding up and over a ledge only **sometimes** snaps to groun
 VERIFY airbot pickup fall through vent covers?
 
 ### Needs Fix
-FIX smirk smoke particle vertex glitch
+FIX(ED?) smirk smoke particle vertex glitch
 FIX cancelling graphook gives ava velocity
-FIX stickybomb does not sticky to breakable text
+FIX stickybomb should not stick to breakable text
 FIX music and scene list need center column alignment
 FIX graphook sticks
 FIX stickybomb sticks to other stickybombs in midair
 FIX gamepad: when not aiming, default aim direction.
 FIX gamepad: graphook-trigger behaviour
-FIX wheelbot jitter; wheelbot falls through floor sometimes
+FIX(ED?) wheelbot jitter; wheelbot falls through floor sometimes
 FIX grap when using gamepad (double)
 FIX stickybomb going through vents
 FIX slowmo, override velocity incorrect

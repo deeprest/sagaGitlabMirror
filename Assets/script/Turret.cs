@@ -44,7 +44,7 @@ public class Turret : Entity
     UpdateLogic = UpdateTurret;
     UpdateCollision = null;
     
-    SightPulseTimer.Start( int.MaxValue, 3, ( x ) => {
+    SightPulseTimer.Start( int.MaxValue, 2, ( x ) => {
       // reaffirm target
       PotentialTarget = null;
       int count = Physics2D.OverlapCircleNonAlloc( transform.position, sightRange, results, Global.EnemyInterestLayers );

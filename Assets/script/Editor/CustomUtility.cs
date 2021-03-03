@@ -676,7 +676,7 @@ public class CustomUtility : EditorWindow
         spr.sprite = replacementSprite;
       if( replacementMaterial && replacementMaterial != null )
         spr.material = replacementMaterial;
-      if( AutoFixSprite && spr.sprite != null )
+      if( AutoFixSprite && spr.sprite != null && !spr.gameObject.name.Contains( "glyph" ) )
       {
         BoxCollider2D BoxCollider2D = spr.GetComponent<BoxCollider2D>();
         NavMeshObstacle NavMeshObstacle = spr.GetComponent<NavMeshObstacle>();

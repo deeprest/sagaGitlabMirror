@@ -8,6 +8,8 @@ public class PlayerBiped : Pawn
 {
   [Header( "PlayerBiped" )]
 
+  public Controller assignedController;
+  
   /*public float slidingOffset = 1;
   public float slidingOffsetTarget = 1;
   public float slidingOffsetRate = 4;*/
@@ -244,6 +246,12 @@ public class PlayerBiped : Pawn
     topHits = new RaycastHit2D[RaycastHits.Length];
     leftHits = new RaycastHit2D[RaycastHits.Length];
     rightHits = new RaycastHit2D[RaycastHits.Length];
+
+    if( controller == null )
+    {
+      controller = ScriptableObject.Instantiate( assignedController );
+      controller.AssignPawn( this );
+    }
   }
 
   public override void OnControllerAssigned()
@@ -1135,39 +1143,42 @@ public class PlayerBiped : Pawn
 
     if( hanging )
       velocity = Vector3.zero;
-    
-    // WEAPONS / ABILITIES
-    if( weapon != null )
-    {
-      if( input.Fire )
-        Shoot();
 
-      if( weapon.HasChargeVariant )
+    if( !takingDamage )
+    {
+      // WEAPONS / ABILITIES
+      if( weapon != null )
       {
-        if( chargeStart )
-          StartCharge();
-        if( chargeStop )
-          ShootCharged();
+        if( input.Fire )
+          Shoot();
+
+        if( weapon.HasChargeVariant )
+        {
+          if( chargeStart )
+            StartCharge();
+          if( chargeStop )
+            ShootCharged();
+        }
       }
+
+      if( ability != null )
+      {
+        if( abilityStart )
+          ability.Activate( GetShotOriginPosition(), shoot );
+
+        ability.UpdateAbility();
+
+        if( abilityEnd )
+          ability.Deactivate();
+      }
+
+      if( input.NextWeapon )
+        NextWeapon();
+
+      if( input.NextAbility )
+        NextAbility();
+
     }
-
-    if( ability != null )
-    {
-      if( abilityStart )
-        ability.Activate( GetShotOriginPosition(), shoot );
-      
-      ability.UpdateAbility();
-      
-      if( abilityEnd )
-        ability.Deactivate();
-    }
-
-    if( input.NextWeapon )
-      NextWeapon();
-
-    if( input.NextAbility )
-      NextAbility();
-    
 
     // limit velocity before adding to position
     if( collideRight )
@@ -1369,7 +1380,9 @@ public class PlayerBiped : Pawn
     {
       chargeStartDelay.Start( chargeDelay, null, delegate
       {
-        audio.PlayOneShot( weapon.soundCharge );
+        audio.clip = weapon.soundCharge;
+        audio.loop = false;
+        audio.Play();
         audio2.clip = weapon.soundChargeLoop;
         audio2.loop = true;
         audio2.PlayScheduled( AudioSettings.dspTime + weapon.soundCharge.length );
@@ -1390,6 +1403,7 @@ public class PlayerBiped : Pawn
   {
     if( chargeEffect != null )
     {
+      audio.Stop();
       audio2.Stop();
       Destroy( chargeEffectGO );
     }
@@ -1547,12 +1561,15 @@ public class PlayerBiped : Pawn
     StopCharge();
     //partHead.transform.localScale = Vector3.one * (1 + (Health / MaxHealth) * 10);
     audio.PlayOneShot( soundDamage );
-    CameraShake shaker = Global.instance.CameraController.GetComponent<CameraShake>();
-    shaker.amplitude = 0.3f;
-    shaker.duration = 0.5f;
-    shaker.rate = 100;
-    shaker.intensityCurve = damageShakeCurve;
-    shaker.enabled = true;
+    if( controller == Global.instance.PlayerController )
+    {
+      CameraShake shaker = Global.instance.CameraController.GetComponent<CameraShake>();
+      shaker.amplitude = 0.3f;
+      shaker.duration = 0.5f;
+      shaker.rate = 100;
+      shaker.intensityCurve = damageShakeCurve;
+      shaker.enabled = true;
+    }
     Play( "damage" );
     float sign = 0;
     if( damage.damageSource != null )

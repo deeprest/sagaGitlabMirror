@@ -91,7 +91,7 @@ public class Airbot : Entity
       {
         Entity visibleTarget = null;
         // check line of sight to potential target
-        hitCount = Physics2D.LinecastNonAlloc( sightOrigin.position, playerpos, RaycastHits, Global.CharacterCollideLayers );
+        hitCount = Physics2D.LinecastNonAlloc( sightOrigin.position, playerpos, RaycastHits, Global.SightObstructionLayers );
         if( hitCount == 0 ) 
         {
           visibleTarget = NearbyTarget;

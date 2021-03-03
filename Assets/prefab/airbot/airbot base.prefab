@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 7121936434992237690}
   - component: {fileID: 5214964017334642413}
   m_Layer: 10
-  m_Name: airbot
+  m_Name: airbot base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -76,8 +76,8 @@ MonoBehaviour:
   EnablePathing: 1
   AgentTypeName: Small
   CanTakeDamage: 1
-  Health: 3
-  MaxHealth: 5
+  Health: 1
+  MaxHealth: 1
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 8096f0fea5d1c47d699cf45e25a4d951, type: 3}
   ContributeToHits: 1
@@ -115,7 +115,7 @@ MonoBehaviour:
   WanderInterval: 1
   WanderAngleChange: 45
   sightOrigin: {fileID: 4739618571392748}
-  sightRange: 6
+  sightRange: 8
   SearchSpeed: 2
   SearchRadius: 2
   anglerange: 20

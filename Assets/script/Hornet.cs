@@ -155,7 +155,7 @@ public class Hornet : Entity
         if( targetpos.x < transform.position.x && targetpos.y < transform.position.y )
         {
           if( !shootRepeatTimer.IsActive )
-            Shoot( new Vector3( -1, -1, 0 ) );
+            Shoot( new Vector3( -transform.localScale.x, -1, 0 ) );
         }
       }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

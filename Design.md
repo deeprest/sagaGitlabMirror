@@ -35,15 +35,14 @@ no trophies. your ego is big enough already.
 no tedious narrative to ignore (dialogue and presentation, but no narrative)
 no complicated technology/skill tree
 
-Do not have much UI crap on screen.
+Do not have much (or any, if possible) UI crap on screen.
+
+
 
 # Influences
 * Mega Man X (1993) dash, walljump, wallside, charged shot.
 * Super Metroid (1994) open map / explore.
 * Abuse (1995) cursor aiming any direction while running.
-* *wall cling from Ninja Gaiden?*
-* *Contra style powerups?*
-
 
 ## Major changes to the Mega Man X formula
 1. Player can aim in any direction instead of only shooting forward.
@@ -82,7 +81,16 @@ level generation
 combat cycle. aware of enemy, visual contact, observe, attack, evade => death or success
 death cycle. possibly: transformation, or respawn, or instant replay.
 stage cycle. HQ to generated level. boss, weapon.
-system upgrades: sensory (blobs on perif), targeting (projectile path, highlight enemies), weakness scan (show weak spots on large enemies)
+
+
+
+
+# Analysis
+strafe-shooting = removes need for very precise aiming
+swarming enemies with high health = requires escape or wide-radius weapons
+bouncy grenade spread shot = spammy mess, hope for the best
+well-projected enemy shots at long intervals, low health = higher rewards for skill
+
 
 
 ## player perspective (what does the player need to remember)
