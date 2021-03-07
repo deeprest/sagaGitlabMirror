@@ -45,7 +45,10 @@ public class BlasterProjectile : Projectile, IDamage
       {
         IndexedColors ic = go.GetComponent<IndexedColors>();
         if( ic != null )
+        {
           indexedColors.colors.CopyTo( ic.colors, 0 );
+          ic.ExplicitUpdate();
+        }
       }
     }
   }

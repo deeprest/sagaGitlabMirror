@@ -64,8 +64,7 @@ MonoBehaviour:
   DieAfterHitCount: 1
   AlignRotationToVelocity: 1
   hitPrefab: {fileID: 1227316525270448, guid: c82148e06b5614c7e831282672ae8fcd, type: 3}
-  colors:
-  - {r: 0.99215686, g: 0.122686066, b: 0, a: 1}
+  indexedColors: {fileID: 1278657341014108834}
 --- !u!212 &212190135428314220
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -170,7 +169,7 @@ MonoBehaviour:
   m_Color: {r: 0.99215686, g: 0.122686066, b: 0, a: 1}
   m_Intensity: 3
   m_LightVolumeOpacity: 0
-  m_ApplyToSortingLayers: 00000000ab08fa61d1f7da467f62816c75aa2b56
+  m_ApplyToSortingLayers: 00000000ab08fa61d1f7da46
   m_LightCookieSprite: {fileID: 0}
   m_UseNormalMap: 1
   m_LightOrder: 0
@@ -182,7 +181,7 @@ MonoBehaviour:
   m_PointLightInnerRadius: 0
   m_PointLightOuterRadius: 1
   m_PointLightDistance: 0.2
-  m_PointLightQuality: 0
+  m_PointLightQuality: 1
   m_ShapeLightParametricSides: 24
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 0.1
