@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3924249429087017986}
   - component: {fileID: 136082698227566851}
-  m_Layer: 8
+  m_Layer: 2
   m_Name: glyph
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,7 +187,8 @@ MonoBehaviour:
   soundDeath: {fileID: 8300000, guid: fd18f5c1f9d9e496994172848e257308, type: 3}
   SpawnWhenDead: []
   SpawnOnDeath:
-  - weight: 0
+  - alwaysSpawn: 0
+    weight: 0
     prefab: {fileID: 68871263600982522, guid: 47d756e5cd052449c950eb5041e97734, type: 3}
   EventDestroyed:
     m_PersistentCalls:

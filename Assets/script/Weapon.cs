@@ -32,7 +32,7 @@ public class Weapon : ScriptableObject
   public GameObject ChargeEffect;
   public AudioClip soundCharge;
   public AudioClip soundChargeLoop;
-  public AudioClip soundChargeShot;
+  //public AudioClip soundChargeShot;
 
   const int Maxpoints = 1000;
 

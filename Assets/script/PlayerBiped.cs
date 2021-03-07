@@ -825,13 +825,12 @@ public class PlayerBiped : Pawn
       StopCharge();
       return;
     }
-    // hack: chargeEffect is used to indicate charged state
+    // HACK chargeEffect is used to indicate charged state
     if( chargeEffect != null )
     {
       audio.Stop();
       if( (Time.time - chargeStartTime) > chargeMin )
       {
-        audio.PlayOneShot( weapon.soundChargeShot );
         Vector3 pos = GetShotOriginPosition();
         if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
           weapon.ChargeVariant.FireWeapon( this, pos, shoot );

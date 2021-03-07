@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Serialization;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -23,6 +24,9 @@ public class Rain : MonoBehaviour
 
   public Vector2 direction = Vector2.down;
   public float intensity = 1;
+
+  public float velocityMultiplier = 20;
+  public float sizeMultiplier = 1;
 
   public void Initialize( Bounds bounds ) 
   {
@@ -62,11 +66,14 @@ public class Rain : MonoBehaviour
   
   public void UpdateRain()
   {
-    rainDropSplashMesh.direction = direction;
+    Vector2 dir = direction.normalized;
+    
+    rainDropSplashMesh.direction = dir;
+    
     ParticleSystem.VelocityOverLifetimeModule volm = rainFall.velocityOverLifetime;
-    volm.x = direction.x;
-    volm.y = direction.y;
-    volm.speedModifierMultiplier = intensity * 8;
+    volm.x = dir.x;
+    volm.y = dir.y;
+    volm.speedModifierMultiplier = intensity * velocityMultiplier;
 
     ParticleSystem.MainModule fallMain = rainFall.main;
     fallMain.startColor = color;
@@ -76,7 +83,7 @@ public class Rain : MonoBehaviour
     popsMain.startRotation = -Mathf.Atan2( direction.x, -direction.y );
     popsMain.startSize3D = true;
     popsMain.startSizeXMultiplier = 0.016f;
-    popsMain.startSizeYMultiplier = intensity;
+    popsMain.startSizeYMultiplier = intensity * sizeMultiplier;
     popsMain.startSizeZMultiplier = 0;
   }
   

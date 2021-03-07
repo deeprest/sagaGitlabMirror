@@ -50,13 +50,13 @@ shoots flames
 shoots oil slicks onto conveyor belt
 horn switches direction of conveyor belt on floor
 
-## Boomer Kuwanger (Boom Boom)
+## Boomer Kuwanger
 dashes
 throws a boomerang
 teleports
 will grab you and throw you into ceiling
 
-## Spark Mandrill  (Shockey Monkey)
+## Spark Mandrill
 * clingy ceiling
 dash-punch at you
 close range punch
@@ -69,6 +69,7 @@ roll at you, bounce around room
 shoots energy pulse
 arm shields
 absorb energy and shoot in all directions
+reacts to spark mandrill weapon by being electrocuted and losing armor
 
 ## Octopus
 * underwater

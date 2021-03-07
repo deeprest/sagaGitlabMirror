@@ -91,6 +91,11 @@ swarming enemies with high health = requires escape or wide-radius weapons
 bouncy grenade spread shot = spammy mess, hope for the best
 well-projected enemy shots at long intervals, low health = higher rewards for skill
 
+# Decide
+walljumping while auto-wallsliding
+NEW shield on back? press down to use shield?
+gameplay layers, doors
+one-way platforms
 
 
 ## player perspective (what does the player need to remember)

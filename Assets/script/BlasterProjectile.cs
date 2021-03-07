@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Experimental.Rendering.Universal;
+using UnityEngine.Serialization;
 
 public class BlasterProjectile : Projectile, IDamage
 {
@@ -10,7 +11,7 @@ public class BlasterProjectile : Projectile, IDamage
   public int DieAfterHitCount;
   public bool AlignRotationToVelocity = true;
   [SerializeField] GameObject hitPrefab;
-  [SerializeField] Color[] colors = new Color[1];
+  [SerializeField] IndexedColors indexedColors;
 
   void OnDestroy()
   {
@@ -40,9 +41,12 @@ public class BlasterProjectile : Projectile, IDamage
     if( hitPrefab != null )
     {
       GameObject go = Instantiate( hitPrefab, transform.position, transform.rotation );
-      IndexedColors ic = go.GetComponent<IndexedColors>();
-      if( ic != null )
-        colors.CopyTo( ic.colors, 0 );
+      if( indexedColors != null )
+      {
+        IndexedColors ic = go.GetComponent<IndexedColors>();
+        if( ic != null )
+          indexedColors.colors.CopyTo( ic.colors, 0 );
+      }
     }
   }
 

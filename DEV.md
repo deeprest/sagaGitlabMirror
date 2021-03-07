@@ -7,12 +7,6 @@
 * 2d skeleton rigs, avatars, and IK can not be used with composites. Skeletons use rotations, and these anims are not rotation-based.
 
 
-# Decide (Design)
-walljumping while auto-wallsliding
-NEW shield on back? press down to use shield?
-gameplay layers, doors
-one-way platforms
-
 
 # New Things
 
