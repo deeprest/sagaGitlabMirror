@@ -21,11 +21,10 @@ public class Door : MonoBehaviour, ITrigger
   public AudioClip soundClose;
   public AudioClip soundDenied;
 
-  public Transform inside;
+  public bool InsideToTheRight;
   Transform instigator;
 
   [SerializeField] CameraZone CameraIn;
-  [SerializeField] CameraZone CameraOut;
   [SerializeField] AudioLoop Music;
   [SerializeField] IndexedColors indexedColors;
 
@@ -33,24 +32,16 @@ public class Door : MonoBehaviour, ITrigger
   Timer runTimer = new Timer();
   [SerializeField] float openDuration = 3;
   [SerializeField] bool MMXStyleDoorTransition = true;
-  [SerializeField] float doorRunDistance = 1;
-  [SerializeField] float runDuration = 0.5f;
-
-  [Obsolete]
-  public TeamFlags[] OpenOnlyForTeams;
-  // TEMPORARY
-  public bool UseMask;
 
   [EnumFlag]
   public TeamFlags OpenForTeams;
   Color doorColor;
-  
+
   void Start()
   {
     if( isLocked )
       doorColor = Color.red;
-    else 
-    if( UseMask )
+    else
     {
       Team team = Global.instance.GetTeam( OpenForTeams );
       if( team != null )
@@ -61,7 +52,7 @@ public class Door : MonoBehaviour, ITrigger
 
     indexedColors.colors[0] = doorColor;
     indexedColors.ExplicitUpdate();
-    
+
     if( isOpen )
     {
       animator.Play( "opened" );
@@ -99,137 +90,131 @@ public class Door : MonoBehaviour, ITrigger
     Entity check = instigator.GetComponent<Entity>();
     if( check != null )
     {
-      bool OpenForThisCharacter = false;
-      if( UseMask )
-        OpenForThisCharacter = (OpenForTeams & check.TeamFlags) > 0;
-
-      // REMOVE THIS EVENTUALLY when the OpenOnlyForTeams array is discontinued
-      if( OpenOnlyForTeams.Length > 0 )
-      {
-        for( int i = 0; i < OpenOnlyForTeams.Length; i++ )
-        {
-          if( OpenOnlyForTeams[i] == check.TeamFlags )
-          {
-            OpenForThisCharacter = true;
-            break;
-          }
-        }
-      }
-      //
-
+      bool OpenForThisCharacter = (OpenForTeams & check.TeamFlags) > 0;
       if( isLocked || !OpenForThisCharacter )
       {
         Global.instance.AudioOneShot( soundDenied, transform.position );
         deniedDelay = true;
-        timer.Start( 3, null, delegate { deniedDelay = false; } );
+        timer.Start( 2, null, delegate { deniedDelay = false; } );
         indexedColors.colors[0] = Color.red;
         indexedColors.ExplicitUpdate();
         animator.Play( "denied" );
-        // indexedColors.colors[0] = doorColor;
-        // indexedColors.ExplicitUpdate();
         return;
       }
     }
-    
+
     indexedColors.colors[0] = doorColor;
     indexedColors.ExplicitUpdate();
-    
-    this.instigator = instigator;
 
+    this.instigator = instigator;
     SceneScript sceneScript = Global.instance.sceneScript;
-    PlayerBiped player = instigator.GetComponentInParent<PlayerBiped>();
-    if( player == null )
+
+    bool Entering;
+    Vector2 targetPosition;
+    Vector2 instigatorDelta = instigator.position - transform.position;
+    float yOffset = Mathf.Abs( instigatorDelta.y ) < 0.2f ? instigatorDelta.y : 0;
+    if( Vector3.Dot( transform.right, transform.position - instigator.position ) > 0 )
     {
-      OpenAndClose( openDuration, null, null );
+      targetPosition = transform.position + transform.right * 0.5f + Vector3.up * yOffset;
+      Entering = InsideToTheRight;
     }
     else
     {
-      bool right = Vector3.Dot( (transform.position - instigator.position).normalized, inside.right ) > 0;
-      bool Entering = Vector3.Dot( (inside.position - transform.position).normalized, (instigator.position - transform.position) ) < 0;
-      if( MMXStyleDoorTransition )
-      {
-        animator.updateMode = AnimatorUpdateMode.UnscaledTime;
-        Global.Pause();
-        Global.instance.Controls.BipedActions.Disable();
+      targetPosition = transform.position - transform.right * 0.5f + Vector3.up * yOffset;
+      Entering = !InsideToTheRight;
+    }
 
-        OpenAndClose( openDuration, delegate
-        {
-          // door is now open
-          if( sceneScript != null )
-          {
-            if( Entering )
-            {
-              if( CameraIn != null )
-                Global.instance.OverrideCameraZone( CameraIn );
-              else
-                Global.instance.OverrideCameraZone( null );
-              Global.instance.CrossFadeTo( Music );
-            }
-            else
-            {
-              if( CameraOut != null )
-                Global.instance.OverrideCameraZone( CameraOut );
-              else
-                Global.instance.OverrideCameraZone( null );
-              Global.instance.CrossFadeTo( sceneScript.music );
-            }
-          }
-          // todo make door less awful
-          player.DoorTransition( right, openDuration, doorRunDistance );
-        }, delegate
-        {
-          // door is now closed
-          Global.instance.Controls.BipedActions.Enable();
-          Global.Unpause();
-        } );
-      }
-      else
+    if( MMXStyleDoorTransition )
+    {
+      animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+      Global.Pause();
+      Global.instance.Controls.BipedActions.Disable();
+
+      OpenAndClose( openDuration, delegate
       {
-        if( ((Entering && CameraIn != null) || (!Entering && CameraOut)) )
-          Global.instance.Controls.BipedActions.Disable();
-        OpenAndClose( openDuration, delegate
+        // door is now open
+        if( sceneScript != null )
         {
           if( Entering )
           {
             if( CameraIn != null )
             {
               Global.instance.OverrideCameraZone( CameraIn );
-              runTimer.Start( runDuration, delegate
-              {
-                if( right )
-                  player.ApplyInput( new InputState {MoveRight = true} );
-                else
-                  player.ApplyInput( new InputState {MoveLeft = true} );
-              }, delegate { Global.instance.Controls.BipedActions.Enable(); } );
+              Global.instance.CameraController.Lerp( CameraIn.CameraBounds.center, CameraIn.CameraBounds.extents.y, openDuration );
             }
-            else
-            {
-              if( sceneScript != null )
-                Global.instance.OverrideCameraZone( null );
-            }
+            Global.instance.CrossFadeTo( Music );
           }
           else
           {
-            if( CameraOut != null )
+            if( CameraIn != null )
             {
-              Global.instance.OverrideCameraZone( CameraOut );
-              runTimer.Start( runDuration, delegate
-              {
-                if( right )
-                  player.ApplyInput( new InputState {MoveRight = true} );
-                else
-                  player.ApplyInput( new InputState {MoveLeft = true} );
-              }, delegate { Global.instance.Controls.BipedActions.Enable(); } );
+              Global.instance.OverrideCameraZone( null );
+              Global.instance.CameraController.Lerp( targetPosition, Global.instance.FloatSetting["Zoom"].Value, openDuration );
             }
-            else
-            {
-              if( sceneScript != null )
-                Global.instance.OverrideCameraZone( null );
-            }
+
+            Global.instance.CrossFadeTo( sceneScript.music );
           }
-        }, null );
-      }
+        }
+        PlayerBiped player = instigator.GetComponentInParent<PlayerBiped>();
+        if( player != null )
+          player.DoorTransition( targetPosition, openDuration );
+      }, delegate
+      {
+        // door is now closed
+        Global.instance.Controls.BipedActions.Enable();
+        Global.Unpause();
+      } );
     }
+    else
+    {
+      OpenAndClose( openDuration, null, null );
+    }
+    /*else
+    {
+      if( ((Entering && CameraIn != null) || (!Entering && CameraOut)) )
+        Global.instance.Controls.BipedActions.Disable();
+      OpenAndClose( openDuration, delegate
+      {
+        if( Entering )
+        {
+          if( CameraIn != null )
+          {
+            Global.instance.OverrideCameraZone( CameraIn );
+            runTimer.Start( runDuration, delegate
+            {
+              if( right )
+                player.ApplyInput( new InputState {MoveRight = true} );
+              else
+                player.ApplyInput( new InputState {MoveLeft = true} );
+            }, delegate { Global.instance.Controls.BipedActions.Enable(); } );
+          }
+          else
+          {
+            if( sceneScript != null )
+              Global.instance.OverrideCameraZone( null );
+          }
+        }
+        else
+        {
+          if( CameraOut != null )
+          {
+            Global.instance.OverrideCameraZone( CameraOut );
+            runTimer.Start( runDuration, delegate
+            {
+              if( right )
+                player.ApplyInput( new InputState {MoveRight = true} );
+              else
+                player.ApplyInput( new InputState {MoveLeft = true} );
+            }, delegate { Global.instance.Controls.BipedActions.Enable(); } );
+          }
+          else
+          {
+            if( sceneScript != null )
+              Global.instance.OverrideCameraZone( null );
+          }
+        }
+      }, null );
+    }*/
   }
 
   public void OpenAndClose( float duration, System.Action onOpen, System.Action onClose )

@@ -5,7 +5,7 @@ public class CameraController : MonoBehaviour
 {
   [SerializeField] Camera cam;
   public Controller LookTarget;
-  public LerpToTarget lerp;
+
   public bool UseVerticalRange = true;
   public bool CursorInfluence;
   public float cursorAlpha = 0.5f;
@@ -13,198 +13,238 @@ public class CameraController : MonoBehaviour
   public float SmoothSpeed = 1;
   public float zOffset;
   public float yHalfWidth = 2;
-  // lerp target position
-  Vector3 pos;
-
   public float orthoTarget = 1;
   public float orthoSpeed = 1;
-
   [SerializeField] CameraZone ActiveCameraZone;
   public bool CameraZoneOverride;
+  
+  // lerp target position
+  Vector3 pos;
+  float ortho;
+  float orthoAlpha;
+  float posAlpha;
+  bool lerping;
+  Timer lerpTimer = new Timer();
 
-  public void AssignOverrideCameraZone(CameraZone zone)
+  public void AssignOverrideCameraZone( CameraZone zone )
   {
     ActiveCameraZone = zone;
-    CameraZoneOverride = zone!=null;
+    CameraZoneOverride = zone != null;
   }
-
+  
+  public void Lerp( Vector3 targetPosition, float orthoTarget, float duration )
+  {
+    float startOrtho = cam.orthographicSize;
+    Vector2 startPos = transform.position;
+    ortho = orthoTarget;
+    pos = targetPosition;
+    // set the target values and advance the position and ortho values explicitly
+    GetCameraTargetValues( ref pos, ref ortho, pos, ortho );
+    TimerParams tp = new TimerParams()
+    {
+      unscaledTime = true,
+      duration = duration,
+      CompleteDelegate = () => lerping = false,
+      UpdateDelegate = ( Timer t ) =>
+      {
+        posAlpha = t.ProgressNormalized;
+        orthoAlpha = t.ProgressNormalized;
+        
+        cam.orthographicSize = Mathf.Lerp( startOrtho, ortho, orthoAlpha );
+        transform.position = Vector3.Lerp( startPos, pos, posAlpha );
+      }
+    };
+    lerping = true;
+    lerpTimer.Start( tp );
+  }
+  
   public void CameraLateUpdate()
   {
-    float ortho = orthoTarget;
-    pos.z = zOffset;
-
-    if( !lerp.enabled && LookTarget != null && LookTarget.pawn != null )
+    if( !lerping )
     {
-      Vector3 lookTarget = LookTarget.pawn.transform.position;
-      
-      if( CursorInfluence )
+      ortho = orthoTarget;
+      pos.z = zOffset;
+      if( LookTarget != null && LookTarget.pawn != null )
       {
-        lookTarget = Vector3.Lerp( LookTarget.pawn.transform.position, LookTarget.pawn.CursorWorldPosition, cursorAlpha );
-        lookTarget.z = zOffset;
-      }
-      pos.x = lookTarget.x;
+        Vector3 lookTarget = LookTarget.pawn.transform.position;
 
-      if( UseVerticalRange )
+        if( CursorInfluence )
+        {
+          lookTarget = Vector3.Lerp( LookTarget.pawn.transform.position, LookTarget.pawn.CursorWorldPosition, cursorAlpha );
+          lookTarget.z = zOffset;
+        }
+        pos.x = lookTarget.x;
+
+        if( UseVerticalRange )
+        {
+          if( lookTarget.y > pos.y + yHalfWidth )
+            pos.y = lookTarget.y - yHalfWidth;
+          if( lookTarget.y < pos.y - yHalfWidth )
+            pos.y = lookTarget.y + yHalfWidth;
+        }
+        else
+        {
+          pos.y = lookTarget.y;
+        }
+        GetCameraTargetValues( ref pos, ref ortho, LookTarget.pawn.transform.position, cam.orthographicSize );
+      }
+      orthoAlpha = Mathf.Clamp01( orthoSpeed * Time.unscaledDeltaTime );
+      posAlpha = Mathf.Clamp01( lerpAlpha * Time.unscaledDeltaTime );
+      
+      if( cam.orthographic )
       {
-        if( lookTarget.y > pos.y + yHalfWidth )
-          pos.y = lookTarget.y - yHalfWidth;
-        if( lookTarget.y < pos.y - yHalfWidth )
-          pos.y = lookTarget.y + yHalfWidth;
+        //cam.orthographicSize = Mathf.MoveTowards( cam.orthographicSize, ortho, orthoSpeed * Time.deltaTime );
+        cam.orthographicSize = Mathf.Lerp( cam.orthographicSize, ortho, orthoAlpha );
+      }
+
+      if( posAlpha > 0 )
+      {
+        transform.position = Vector3.Lerp( transform.position, pos, posAlpha );
+        //transform.position = Vector3.MoveTowards( transform.position, pos, SmoothSpeed * Time.deltaTime );
+      }
+      else
+        transform.position = pos;
+    }
+  }
+  
+  
+  void GetCameraTargetValues( ref Vector3 pos, ref float ortho, Vector2 origin, float camOrthoSize )
+  {
+    // auto-switch to zone the player enters (respects the ignore flag on the zone)
+    if( !CameraZoneOverride )
+    {
+      CameraZone zone = null;
+      CameraZone.DoesOverlapAnyZone( origin, ref zone );
+      ActiveCameraZone = zone;
+    }
+
+    if( ActiveCameraZone != null )
+    {
+      if( ActiveCameraZone.SetOrtho )
+        ortho = ActiveCameraZone.orthoTarget;
+
+      float hh, hw, xangle = 0, yangle = 0;
+      hh = camOrthoSize;
+      hw = camOrthoSize * cam.aspect;
+      /*if( cam.orthographic )
+      {
+        hh = cam.orthographicSize;
+        hw = cam.orthographicSize * cam.aspect;
       }
       else
       {
-        pos.y = lookTarget.y;
-      }
+        // draw gray lines showing camera rectangle
+        yangle = Mathf.Deg2Rad * cam.fieldOfView * 0.5f;
+        hh = Mathf.Tan( yangle ) * -transform.position.z;
+        xangle = yangle * ((float) cam.pixelWidth / (float) cam.pixelHeight);
+        hw = Mathf.Tan( xangle ) * -transform.position.z;
+      }*/
 
-      // auto-switch to zone the player enters (respects the ignore flag on the zone)
-      if( !CameraZoneOverride )
+      Vector2 debug = pos;
+
+      if( ActiveCameraZone.EncompassBounds )
       {
-        CameraZone zone = null;
-        CameraZone.DoesOverlapAnyZone( LookTarget.pawn.transform.position, ref zone );
-        ActiveCameraZone = zone;
-      }
+        Bounds bounds = new Bounds();
+        Vector2 center = Vector2.zero;
+        for( int i = 0; i < ActiveCameraZone.colliders.Length; i++ )
+          center += (Vector2) ActiveCameraZone.colliders[i].transform.position + ActiveCameraZone.colliders[i].offset;
+        center /= ActiveCameraZone.colliders.Length;
+        bounds.center = center;
+        for( int i = 0; i < ActiveCameraZone.colliders.Length; i++ )
+          bounds.Encapsulate( ActiveCameraZone.colliders[i].bounds );
 
-      if( ActiveCameraZone != null )
-      {
-        if( ActiveCameraZone.SetOrtho )
-          ortho = ActiveCameraZone.orthoTarget;
-        
-        float hh, hw, xangle = 0, yangle = 0;
-        if( Camera.main.orthographic )
+        pos.x = bounds.center.x;
+        pos.y = bounds.center.y;
+
+        if( cam.orthographic )
         {
-          hh = Camera.main.orthographicSize;
-          hw = Camera.main.orthographicSize * Camera.main.aspect;
-        }
-        else
-        {
-          // draw gray lines showing camera rectangle
-          yangle = Mathf.Deg2Rad * Camera.main.fieldOfView * 0.5f;
-          hh = Mathf.Tan( yangle ) * -transform.position.z;
-          xangle = yangle * ((float)Camera.main.pixelWidth / (float)Camera.main.pixelHeight);
-          hw = Mathf.Tan( xangle ) * -transform.position.z;
-        }
-
-        Vector2 debug = pos;
-        Vector2 origin = LookTarget.pawn.transform.position;
-
-        if( ActiveCameraZone.EncompassBounds )
-        {
-          Bounds bounds = new Bounds();
-          Vector2 center = Vector2.zero;
-          for( int i = 0; i < ActiveCameraZone.colliders.Length; i++ )
-            center += (Vector2)ActiveCameraZone.colliders[i].transform.position + ActiveCameraZone.colliders[i].offset;
-          center /= ActiveCameraZone.colliders.Length;
-          bounds.center = center;
-          for( int i = 0; i < ActiveCameraZone.colliders.Length; i++ )
-            bounds.Encapsulate( ActiveCameraZone.colliders[i].bounds );
-
-          pos.x = bounds.center.x;
-          pos.y = bounds.center.y;
-
-          if( Camera.main.orthographic )
-          {
-            if( bounds.extents.y > bounds.extents.x )
-              ortho = bounds.extents.y;
-            else
-              ortho = bounds.extents.x / Camera.main.aspect;
-          }
+          if( bounds.extents.y > bounds.extents.x )
+            ortho = bounds.extents.y;
           else
-            pos.z = -Mathf.Max( bounds.extents.x / Mathf.Sin( xangle ), bounds.extents.y / Mathf.Sin( yangle ) );
-          Debug.DrawLine( new Vector3( bounds.min.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.max.y ), Color.yellow );
-          Debug.DrawLine( new Vector3( bounds.min.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.max.y ), Color.yellow );
-          Debug.DrawLine( new Vector3( bounds.max.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.min.y ), Color.yellow );
-          Debug.DrawLine( new Vector3( bounds.max.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.min.y ), Color.yellow );
+            ortho = bounds.extents.x / cam.aspect;
         }
         else
+          pos.z = -Mathf.Max( bounds.extents.x / Mathf.Sin( xangle ), bounds.extents.y / Mathf.Sin( yangle ) );
+        Debug.DrawLine( new Vector3( bounds.min.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.max.y ), Color.yellow );
+        Debug.DrawLine( new Vector3( bounds.min.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.max.y ), Color.yellow );
+        Debug.DrawLine( new Vector3( bounds.max.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.min.y ), Color.yellow );
+        Debug.DrawLine( new Vector3( bounds.max.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.min.y ), Color.yellow );
+      }
+      else
+      {
+        if( CameraZoneOverride )
         {
-          if( CameraZoneOverride )
-          {
-            // if the origin(lookTarget) is outside of all the colliders, then clip to inside.
-            Collider2D overlap = null;
-            List<Vector2> points = new List<Vector2>();
-            foreach( var cld in ActiveCameraZone.colliders )
-            {
-              if( cld.OverlapPoint( origin ) )
-              {
-                overlap = cld;
-                break;
-              }
-              else
-              {
-                points.Add( cld.ClosestPoint( origin ) );
-              }
-            }
-            if( overlap == null )
-            {
-              Vector2 neworigin = Util.FindClosest( origin, points.ToArray() );
-              origin = neworigin + (neworigin - origin).normalized;
-            }
-          }
-
-          // TODO prevent multiple colliders within same zone from overriding clip points of one another.
+          // if the origin(lookTarget) is outside of all the colliders, then clip to inside.
+          Collider2D overlap = null;
+          List<Vector2> points = new List<Vector2>();
           foreach( var cld in ActiveCameraZone.colliders )
           {
-            if( !CameraZoneOverride && !cld.OverlapPoint( origin ) )
-              continue;
-            Vector2 UL = (Vector2) pos + Vector2.left * hw + Vector2.up * hh;
-            if( ClipToInsideCollider2D( cld, ref UL, origin ) )
+            if( cld.OverlapPoint( origin ) )
             {
-              if( pos.y > UL.y - hh ) pos.y = UL.y - hh;
-              if( pos.x < UL.x + hw ) pos.x = UL.x + hw;
+              overlap = cld;
+              break;
             }
-
-            Vector2 UR = (Vector2) pos + Vector2.right * hw + Vector2.up * hh;
-            if( ClipToInsideCollider2D( cld, ref UR, origin ) )
+            else
             {
-              if( pos.y > UR.y - hh ) pos.y = UR.y - hh;
-              if( pos.x > UR.x - hw ) pos.x = UR.x - hw;
-            }
-
-            Vector2 LL = (Vector2) pos + Vector2.left * hw + Vector2.down * hh;
-            if( ClipToInsideCollider2D( cld, ref LL, origin ) )
-            {
-              if( pos.y < LL.y + hh ) pos.y = LL.y + hh;
-              if( pos.x < LL.x + hw ) pos.x = LL.x + hw;
-            }
-
-            Vector2 LR = (Vector2) pos + Vector2.right * hw + Vector2.down * hh;
-            if( ClipToInsideCollider2D( cld, ref LR, origin ) )
-            {
-              if( pos.y < LR.y + hh ) pos.y = LR.y + hh;
-              if( pos.x > LR.x - hw ) pos.x = LR.x - hw;
+              points.Add( cld.ClosestPoint( origin ) );
             }
           }
+          if( overlap == null )
+          {
+            Vector2 neworigin = Util.FindClosest( origin, points.ToArray() );
+            origin = neworigin + (neworigin - origin).normalized;
+          }
+        }
+        
+        // TODO prevent multiple colliders within same zone from overriding clip points of one another.
+        foreach( var cld in ActiveCameraZone.colliders )
+        {
+          if( !CameraZoneOverride && !cld.OverlapPoint( origin ) )
+            continue;
+          Vector2 UL = (Vector2) pos + Vector2.left * hw + Vector2.up * hh;
+          if( ClipToInsideCollider2D( cld, ref UL, origin ) )
+          {
+            if( pos.y > UL.y - hh ) pos.y = UL.y - hh;
+            if( pos.x < UL.x + hw ) pos.x = UL.x + hw;
+          }
+
+          Vector2 UR = (Vector2) pos + Vector2.right * hw + Vector2.up * hh;
+          if( ClipToInsideCollider2D( cld, ref UR, origin ) )
+          {
+            if( pos.y > UR.y - hh ) pos.y = UR.y - hh;
+            if( pos.x > UR.x - hw ) pos.x = UR.x - hw;
+          }
+
+          Vector2 LL = (Vector2) pos + Vector2.left * hw + Vector2.down * hh;
+          if( ClipToInsideCollider2D( cld, ref LL, origin ) )
+          {
+            if( pos.y < LL.y + hh ) pos.y = LL.y + hh;
+            if( pos.x < LL.x + hw ) pos.x = LL.x + hw;
+          }
+
+          Vector2 LR = (Vector2) pos + Vector2.right * hw + Vector2.down * hh;
+          if( ClipToInsideCollider2D( cld, ref LR, origin ) )
+          {
+            if( pos.y < LR.y + hh ) pos.y = LR.y + hh;
+            if( pos.x > LR.x - hw ) pos.x = LR.x - hw;
+          }
+        }
 
 #if UNITY_EDITOR
-          Vector3 cp3 = transform.position;
-          cp3 = pos;
-          Debug.DrawLine( new Vector3( -hw, -hh, 0 ) + cp3, new Vector3( -hw, hh, 0 ) + cp3, Color.green );
-          Debug.DrawLine( new Vector3( -hw, hh, 0 ) + cp3, new Vector3( hw, hh, 0 ) + cp3, Color.green );
-          Debug.DrawLine( new Vector3( hw, hh, 0 ) + cp3, new Vector3( hw, -hh, 0 ) + cp3, Color.green );
-          Debug.DrawLine( new Vector3( hw, -hh, 0 ) + cp3, new Vector3( -hw, -hh, 0 ) + cp3, Color.green );
-          cp3 = debug;
-          Debug.DrawLine( new Vector3( -hw, -hh, 0 ) + cp3, new Vector3( -hw, hh, 0 ) + cp3, Color.blue );
-          Debug.DrawLine( new Vector3( -hw, hh, 0 ) + cp3, new Vector3( hw, hh, 0 ) + cp3, Color.blue );
-          Debug.DrawLine( new Vector3( hw, hh, 0 ) + cp3, new Vector3( hw, -hh, 0 ) + cp3, Color.blue );
-          Debug.DrawLine( new Vector3( hw, -hh, 0 ) + cp3, new Vector3( -hw, -hh, 0 ) + cp3, Color.blue );
+        Vector3 cp3 = transform.position;
+        cp3 = pos;
+        Debug.DrawLine( new Vector3( -hw, -hh, 0 ) + cp3, new Vector3( -hw, hh, 0 ) + cp3, Color.green );
+        Debug.DrawLine( new Vector3( -hw, hh, 0 ) + cp3, new Vector3( hw, hh, 0 ) + cp3, Color.green );
+        Debug.DrawLine( new Vector3( hw, hh, 0 ) + cp3, new Vector3( hw, -hh, 0 ) + cp3, Color.green );
+        Debug.DrawLine( new Vector3( hw, -hh, 0 ) + cp3, new Vector3( -hw, -hh, 0 ) + cp3, Color.green );
+        cp3 = debug;
+        Debug.DrawLine( new Vector3( -hw, -hh, 0 ) + cp3, new Vector3( -hw, hh, 0 ) + cp3, Color.blue );
+        Debug.DrawLine( new Vector3( -hw, hh, 0 ) + cp3, new Vector3( hw, hh, 0 ) + cp3, Color.blue );
+        Debug.DrawLine( new Vector3( hw, hh, 0 ) + cp3, new Vector3( hw, -hh, 0 ) + cp3, Color.blue );
+        Debug.DrawLine( new Vector3( hw, -hh, 0 ) + cp3, new Vector3( -hw, -hh, 0 ) + cp3, Color.blue );
 #endif
-        }
       }
     }
-
-    if( Camera.main.orthographic )
-    {
-      //Camera.main.orthographicSize = Mathf.MoveTowards( Camera.main.orthographicSize, ortho, orthoSpeed * Time.deltaTime );
-      Camera.main.orthographicSize = Mathf.Lerp( Camera.main.orthographicSize, ortho, Mathf.Clamp01( orthoSpeed * Time.unscaledDeltaTime ) );
-    }
-
-    if( lerpAlpha > 0 )
-    {
-      transform.position = Vector3.Lerp( transform.position, pos, Mathf.Clamp01( lerpAlpha * Time.unscaledDeltaTime ) );
-      //transform.position = Vector3.MoveTowards( transform.position, pos, SmoothSpeed * Time.deltaTime );
-    }
-    else
-      transform.position = pos;
   }
 
   bool ClipToInsideCollider2D( Collider2D cld, ref Vector2 cp, Vector2 origin )
@@ -226,7 +266,7 @@ public class CameraController : MonoBehaviour
       List<Vector2> pots = new List<Vector2>();
       // add transform position for world space
       for( int i = 0; i < points.Length; i++ )
-        points[i] += (Vector2)cld.transform.position;
+        points[i] += (Vector2) cld.transform.position;
       for( int i = 0; i < points.Length; i++ )
       {
         int next = (i + 1) % points.Length;

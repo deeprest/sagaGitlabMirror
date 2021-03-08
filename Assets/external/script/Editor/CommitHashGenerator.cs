@@ -85,7 +85,9 @@ public static class Commit
         private static void ForceGenerate()
         {
             EditorUserSettings.SetConfigValue(KeyCommitHash, null);
+#pragma warning disable 4014
             CheckAndGenerateAsync();
+#pragma warning restore 4014 
         }
 
         #endregion

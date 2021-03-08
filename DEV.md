@@ -8,6 +8,12 @@
 
 
 
+show onboarding in tutorial scene
+shorten tutorial scene by half
+fix door bug in menu scene; can graphook through door on ceiling
+
+
+
 # New Things
 
 NEW player death effect/anim

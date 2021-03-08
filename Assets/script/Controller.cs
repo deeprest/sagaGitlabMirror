@@ -9,7 +9,6 @@ public class Controller : ScriptableObject
   // input state is modified and passed to pawn
   protected InputState input = new InputState();
   public Pawn pawn;
-  public List<Pawn> minions = new List<Pawn>();
 
   public virtual void Awake()
   {
@@ -45,11 +44,6 @@ public class Controller : ScriptableObject
   }
 
   public virtual void RemovePawn() { }
-
-  public void AddMinion( Pawn pawn )
-  {
-    minions.Add( pawn );
-  }
 
   // For temporary things like running a short distance.
   // Otherwise, write a different controller for the pawn and assign that instead.

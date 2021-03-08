@@ -481,13 +481,6 @@ public class Global : MonoBehaviour
 
     Controls.GlobalActions.Screenshot.performed += ( obj ) => Util.Screenshot();
 
-    Controls.GlobalActions.DEVClone.performed += ( obj ) => {
-      GameObject go = Spawn( AvatarPrefab, (Vector2)PlayerController.GetPawn().transform.position + Vector2.right, Quaternion.identity, null, false );
-      PlayerBiped pawn = go.GetComponent<PlayerBiped>();
-      pawn.speedFactorNormalized = ((PlayerBiped)PlayerController.GetPawn()).speedFactorNormalized;
-      PlayerController.AddMinion( pawn );
-    };
-
     Controls.GlobalActions.DEVRespawn.performed += ( obj ) =>
     {
       /*Chopper chopper = FindObjectOfType<Chopper>();
@@ -707,17 +700,20 @@ public class Global : MonoBehaviour
 
     if( !Updating )
       return;
-    
-    for( int i = 0; i < Entity.Limit.All.Count; i++ )
-      Entity.Limit.All[ i ].EntityUpdate();
 
-    for( int i = 0; i < Controller.All.Count; i++ )
-      Controller.All[i].Update();
-    
-    // pawns are not added to Limit
-    for( int i = 0; i < Controller.All.Count; i++ )
-      if( Controller.All[i].pawn != null )
-        Controller.All[i].pawn.EntityUpdate();
+    if( !Paused )
+    {
+      for( int i = 0; i < Entity.Limit.All.Count; i++ )
+        Entity.Limit.All[i].EntityUpdate();
+
+      for( int i = 0; i < Controller.All.Count; i++ )
+        Controller.All[i].Update();
+
+      // pawns are not added to Limit
+      for( int i = 0; i < Controller.All.Count; i++ )
+        if( Controller.All[i].pawn != null )
+          Controller.All[i].pawn.EntityUpdate();
+    }
 
     if( loadingScene )
     {
@@ -776,13 +772,16 @@ public class Global : MonoBehaviour
     if( !Updating )
       return;
 
-    Profiler.BeginSample( "EntityLateUpdate" );
-    for( int i = 0; i < Entity.Limit.All.Count; i++ )
+    if( !Paused )
     {
-      Entity.Limit.All[ i ].EntityLateUpdate();
+      Profiler.BeginSample( "EntityLateUpdate" );
+      for( int i = 0; i < Entity.Limit.All.Count; i++ )
+      {
+        Entity.Limit.All[i].EntityLateUpdate();
+      }
+      Profiler.EndSample();
     }
-    Profiler.EndSample();
-    
+
     CameraController.CameraLateUpdate();
   }
 

@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -251,7 +251,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 16947602}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 42.802906, y: -0, z: -0}
+  m_LocalPosition: {x: 2.4788694, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 343982784}
@@ -2181,7 +2181,6 @@ MonoBehaviour:
   priority: 0
   EncompassBounds: 0
   IgnoreAutoSwitch: 0
-  ConfineToZone: 0
   SetOrtho: 1
   orthoTarget: 2
   colliders:
@@ -5184,7 +5183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30a191d5ab0fb4f5f80b6714a53984f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  music: {fileID: 0}
+  music: {fileID: 11400000, guid: ddd6a64fcc0074f85a35c26606704fff, type: 2}
   ForceCameraZone: {fileID: 338713201}
   NavmeshBox: {fileID: 923511227}
   ambientLight: {fileID: 590970610}
@@ -8396,7 +8395,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 960938063}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21.401453, y: -0, z: -0}
+  m_LocalPosition: {x: 1.2394347, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 546582915}
@@ -10575,7 +10574,6 @@ MonoBehaviour:
   priority: 0
   EncompassBounds: 0
   IgnoreAutoSwitch: 0
-  ConfineToZone: 0
   SetOrtho: 1
   orthoTarget: 3
   colliders:
@@ -20817,7 +20815,6 @@ MonoBehaviour:
   priority: 1
   EncompassBounds: 1
   IgnoreAutoSwitch: 0
-  ConfineToZone: 0
   SetOrtho: 0
   orthoTarget: 0
   colliders:
@@ -21336,7 +21333,7 @@ GameObject:
   m_Layer: 12
   m_Name: FORCE CAMERA OVERRIDE = FALSE
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -1412012063857583412, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1

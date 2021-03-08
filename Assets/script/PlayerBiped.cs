@@ -1618,22 +1618,26 @@ public class PlayerBiped : Pawn
     return true;
   }
 
-  public void DoorTransition( bool right, float duration, float distance )
+  public void DoorTransition( Vector2 targetPosition, float duration )
   {
     enabled = false;
     damageTimer.Stop( true );
-    facingRight = right;
+    Vector2 delta = targetPosition - (Vector2)transform.position;
+    facingRight = delta.x > 0;
     transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     renderer.material.SetInt( "_FlipX", facingRight ? 0 : 1 );
     arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     SetAnimatorUpdateMode( AnimatorUpdateMode.UnscaledTime );
-    Play( "run" );
+    if( onGround && !dashing && Mathf.Abs(delta.y) < 0.1f )
+      Play( "run" );
+    else if( Mathf.Abs( delta.y ) > 0.5f && !jumping )
+      Play( "fall" );
     LerpToTarget lerp = gameObject.GetComponent<LerpToTarget>();
     if( lerp == null )
       lerp = gameObject.AddComponent<LerpToTarget>();
     lerp.moveTransform = transform;
     lerp.WorldTarget = true;
-    lerp.targetPositionWorld = transform.position + ((right ? Vector3.right : Vector3.left) * distance);
+    lerp.targetPositionWorld = targetPosition;
     lerp.duration = duration;
     lerp.unscaledTime = true;
     lerp.enabled = true;
