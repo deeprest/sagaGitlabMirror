@@ -6,7 +6,7 @@ using UnityEditor;
 public class LevelNode : MonoBehaviour
 {
   [SerializeField] TextMesh label;
-  [SerializeField] BreakableText btext;
+  [SerializeField] WorldText btext;
 
   void Awake()
   {

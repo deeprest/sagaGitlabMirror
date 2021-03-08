@@ -301,7 +301,7 @@ public static class Util
     start.UseShellExecute = shell;
     start.RedirectStandardOutput = !shell;
     start.RedirectStandardError = !shell;
-    start.FileName = c.cmd; //"/usr/bin/python";
+    start.FileName = c.cmd;
     start.Arguments = c.args;
     start.WorkingDirectory = c.dir;
 

@@ -35,7 +35,6 @@ NEW hornet turnaround sprites
 NEW Hornet friendly fire
 NEW Hornet avoid friendlies
 NEW Hornet proximity raycast
-NEW Hornet particles should not rotate, and should disappear
 
 
 CODE remove global references to CurrentPlayer where possible
@@ -45,6 +44,21 @@ CODE Teams. Use ScriptableObject for Teams instead of enum. Have colors that mod
 
 NEW Big wrecking ball bot.
 NEW Agile boss bot.
+
+NEW Boss destruction sequence:
+	player input off
+	fade out music
+	fade boss to black
+	fade everything else to white (except player)
+	series of explosions
+	fade back to normal
+	play victory music
+	player "thumbs up" gesture
+	exit somehow...
+		Mario enters door.
+		MMX teleports.
+		get picked up by chopper.
+		Some run of screen.
 
 # Issues
 
@@ -92,6 +106,7 @@ POLISH door should indicate when it refuses to open because of team affiliation.
 POLISH trishot hit anim color
 POLISH hide arm while not shooting
 POLISH ava low health breathing anim
+POLISH Hornet particles should not rotate, and should disappear
 
 
 ## Unity Bugs
