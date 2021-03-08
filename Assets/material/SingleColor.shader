@@ -1,9 +1,9 @@
-﻿Shader "Unlit/Grey 2"
+﻿Shader "Custom/SingleColor"
 {
     Properties
     {
 //        _MainTex ("Texture", 2D) = "white" {}
-        _Color("Color",Color) = (0.2,0.2,0.2,1)
+        _Color("Color",Color) = (1,1,1,1)
     }
     SubShader
     {
@@ -48,7 +48,7 @@
 
             fixed4 frag (v2f i) : SV_Target
             {
-                return fixed4(0.2,0.2,0.2,1);
+                return _Color;
                 
                 // sample the texture
                 //fixed4 col = tex2D(_MainTex, i.uv);

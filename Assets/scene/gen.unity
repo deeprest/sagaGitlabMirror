@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   music: {fileID: 0}
+  ForceCameraZone: {fileID: 0}
   NavmeshBox: {fileID: 1383487179}
   ambientLight: {fileID: 1481186929}
   bounds:
@@ -2101,6 +2102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfd9464466caf4d77b8895f56a509aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
   EncompassBounds: 1
   IgnoreAutoSwitch: 1
   SetOrtho: 0

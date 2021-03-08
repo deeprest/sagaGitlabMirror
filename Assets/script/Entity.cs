@@ -1,20 +1,10 @@
 ﻿#define DEBUG_CHECKS
 
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
-
-//using Random = UnityEngine.Random;
-
-public enum Team : int
-{
-  None = 0,
-  GoodGuys = 1 << 0,
-  BadDudes = 1 << 1,
-  Hostile = 1 << 2
-}
 
 [SelectionBase]
 public class Entity : MonoBehaviour, IDamage
@@ -23,7 +13,11 @@ public class Entity : MonoBehaviour, IDamage
 
   public PathAgent pathAgent;
 
+  [FormerlySerializedAs( "Team" )]
+  [EnumFlag]
+  public TeamFlags TeamFlags;
   public Team Team;
+  
   public Rigidbody2D body;
   public BoxCollider2D box;
   public CircleCollider2D circle;
@@ -110,14 +104,14 @@ public class Entity : MonoBehaviour, IDamage
 
   [Header("Death")]
   public AudioClip soundDeath;
-  [Serializable]
+  [System.Serializable]
   public class SpawnChance
   {
     public bool alwaysSpawn;
     public int weight = 1;
     public GameObject prefab;
   }
-  [Obsolete("Use SpawnOnDeath instead.")]
+  [System.Obsolete("Use SpawnOnDeath instead.")]
   public GameObject[] SpawnWhenDead;
   public SpawnChance[] SpawnOnDeath;
   public UnityEvent EventDestroyed;
@@ -440,7 +434,7 @@ public class Entity : MonoBehaviour, IDamage
     // dead characters will not absorb projectiles
     if( !CanTakeDamage || Health <= 0 )
       return false;
-    if( damage.instigator != null && damage.instigator.Team == Team )
+    if( damage.instigator != null && damage.instigator.TeamFlags == TeamFlags )
       return false;
     AddHealth( -damage.amount );
     if( Health <= 0 )
@@ -504,9 +498,9 @@ public class Entity : MonoBehaviour, IDamage
     Destroy( go );
   }
 
-  public virtual bool IsEnemyTeam( Team other )
+  public virtual bool IsEnemyTeam( TeamFlags other )
   {
-    return Team != Team.None && other != Team.None && other != Team;
+    return TeamFlags != TeamFlags.None && other != TeamFlags.None && other != TeamFlags;
   }
 
 

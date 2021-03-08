@@ -34,7 +34,7 @@ public class BossPrototype : Entity
     for( int i = 0; i < count; i++ )
     {
       Entity potentialTarget = Global.ColliderResults[i].GetComponent<Entity>();
-      if( potentialTarget != null && IsEnemyTeam( potentialTarget.Team ) )
+      if( potentialTarget != null && IsEnemyTeam( potentialTarget.TeamFlags ) )
       {
         NearbyTarget = potentialTarget;
         break;

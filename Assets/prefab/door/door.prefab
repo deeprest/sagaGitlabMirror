@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3417974223621832778}
   - component: {fileID: 4974051015843839127}
   - component: {fileID: 5549836153273382509}
+  - component: {fileID: 36166134340445269}
   m_Layer: 13
   m_Name: door
   m_TagString: Untagged
@@ -65,11 +66,14 @@ MonoBehaviour:
   CameraIn: {fileID: 0}
   CameraOut: {fileID: 0}
   Music: {fileID: 0}
+  indexedColors: {fileID: 36166134340445269}
   openDuration: 2
   MMXStyleDoorTransition: 0
   doorRunDistance: 0.5
   runDuration: 0.5
   OpenOnlyForTeams: 01000000
+  UseMask: 1
+  OpenForTeams: -1
 --- !u!212 &212568518827231576
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -260,6 +264,23 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!114 &36166134340445269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1807283359499242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb40fc0c4299b48a293c1443c4695abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  srs:
+  - {fileID: 8869257502344017848}
+  light: {fileID: 0}
+  colors:
+  - {r: 0, g: 0.42514968, b: 1, a: 1}
 --- !u!1 &3028176558743808646
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,7 +361,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d905710c44976415991cc7aff39cfb39, type: 2}
+  - {fileID: 2100000, guid: 674f2e642f9fa4a3ca96946e0b15865a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

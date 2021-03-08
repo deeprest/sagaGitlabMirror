@@ -47,7 +47,7 @@ public class DangerBallAndChain : Entity
         Collider2D cld = results[i];
         //Character character = results[i].transform.root.GetComponentInChildren<Character>();
         Entity character = results[i].GetComponent<Entity>();
-        if( character != null && IsEnemyTeam( character.Team ) )
+        if( character != null && IsEnemyTeam( character.TeamFlags ) )
         {
           Target = character;
           break;

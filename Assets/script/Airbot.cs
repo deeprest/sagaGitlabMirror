@@ -50,7 +50,7 @@ public class Airbot : Entity
       Collider2D cld = results[i];
       //Character character = results[i].transform.root.GetComponentInChildren<Character>();
       Entity potentialTarget = results[i].GetComponent<Entity>();
-      if( potentialTarget != null && IsEnemyTeam( potentialTarget.Team ) )
+      if( potentialTarget != null && IsEnemyTeam( potentialTarget.TeamFlags ) )
       {
         NearbyTarget = potentialTarget;
         break;

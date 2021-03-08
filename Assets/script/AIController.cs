@@ -42,7 +42,7 @@ public class AIController : Controller
       {
         Collider2D cld = Global.ColliderResults[i];
         Entity character = cld.GetComponent<Entity>();
-        if( character != null && pawn.IsEnemyTeam( character.Team ) )
+        if( character != null && pawn.IsEnemyTeam( character.TeamFlags ) )
           entities.Add( character  );
       }
       PotentialTarget = (Entity)Util.FindClosest( pawn.transform.position, entities.ToArray() );

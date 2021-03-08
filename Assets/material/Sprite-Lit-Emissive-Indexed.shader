@@ -105,18 +105,29 @@ half _FlashAmount;
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/CombinedShapeLightShared.hlsl"
 
+
+            void GetIndexColor( inout half4 index )
+            {
+                int r = (int)(index.r * 255.0);
+                if( r==1 ) index.rgb = lerp( _IndexColors[0].rgb * min(1.0,index.g*2.0), float3(1,1,1), (index.g-0.5)*2.0 );
+                if( r==2 ) index.rgb = lerp( _IndexColors[1].rgb * min(1.0,index.g*2.0), float3(1,1,1), (index.g-0.5)*2.0 );
+            }
+
             half4 CombinedShapeLightFragment(Varyings i) : SV_Target
             {
                 half4 c = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
-                int r = (int)(c.r * 255.0);
-                if( r==1 ) c.rgb = lerp( _IndexColors[0].rgb * min(1.0,c.g*2.0), float3(1,1,1), (c.g-0.5)*2.0 );
-                if( r==2 ) c.rgb = lerp( _IndexColors[1].rgb * min(1.0,c.g*2.0), float3(1,1,1), (c.g-0.5)*2.0 );
-                    
+                GetIndexColor( c );
+                //int r = (int)(c.r * 255.0);
+                //if( r==1 ) c.rgb = lerp( _IndexColors[0].rgb * min(1.0,c.g*2.0), float3(1,1,1), (c.g-0.5)*2.0 );
+                //if( r==2 ) c.rgb = lerp( _IndexColors[1].rgb * min(1.0,c.g*2.0), float3(1,1,1), (c.g-0.5)*2.0 );
+                     
                     
                 half4 etex = SAMPLE_TEXTURE2D(_EmissiveTex, sampler_EmissiveTex, i.uv);
-                int e = (int)(etex.r * 255.0);
-                if( e==1 ) etex.rgb = lerp( _IndexColors[0].rgb * min(1.0,etex.g*2.0), float3(1,1,1), (etex.g-0.5)*2.0 );
-                if( e==2 ) etex.rgb = lerp( _IndexColors[1].rgb * min(1.0,etex.g*2.0), float3(1,1,1), (etex.g-0.5)*2.0 );
+                GetIndexColor( etex );
+                
+                //int e = (int)(etex.r * 255.0);
+                //if( e==1 ) etex.rgb = lerp( _IndexColors[0].rgb * min(1.0,etex.g*2.0), float3(1,1,1), (etex.g-0.5)*2.0 );
+                //if( e==2 ) etex.rgb = lerp( _IndexColors[1].rgb * min(1.0,etex.g*2.0), float3(1,1,1), (etex.g-0.5)*2.0 );
                 
                 half4 flash = (c + _FlashColor * 0.7) * _FlashAmount; //lerp(light, light+_FlashColor*0.7, _FlashAmount);
                 half4 emissive = flash + etex  * _EmissiveAmount;

@@ -1541,7 +1541,7 @@ public class PlayerBiped : Pawn
   {
     if( !CanTakeDamage || damageGracePeriod || Health <= 0 )
       return false;
-    if( damage.instigator != null && !IsEnemyTeam( damage.instigator.Team ) )
+    if( damage.instigator != null && !IsEnemyTeam( damage.instigator.TeamFlags ) )
       return false;
     AddHealth( -damage.amount );
     if( Health <= 0 )

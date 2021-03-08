@@ -27,6 +27,7 @@ public class Door : MonoBehaviour, ITrigger
   [SerializeField] CameraZone CameraIn;
   [SerializeField] CameraZone CameraOut;
   [SerializeField] AudioLoop Music;
+  [SerializeField] IndexedColors indexedColors;
 
   Timer doorTimer = new Timer();
   Timer runTimer = new Timer();
@@ -36,16 +37,31 @@ public class Door : MonoBehaviour, ITrigger
   [SerializeField] float runDuration = 0.5f;
 
   [Obsolete]
-  public Team[] OpenOnlyForTeams;
-
+  public TeamFlags[] OpenOnlyForTeams;
   // TEMPORARY
   public bool UseMask;
 
   [EnumFlag]
-  public Team OpenForTeams;
-
+  public TeamFlags OpenForTeams;
+  Color doorColor;
+  
   void Start()
   {
+    if( isLocked )
+      doorColor = Color.red;
+    else 
+    if( UseMask )
+    {
+      Team team = Global.instance.GetTeam( OpenForTeams );
+      if( team != null )
+        doorColor = team.color[0];
+      else
+        doorColor = Color.grey;
+    }
+
+    indexedColors.colors[0] = doorColor;
+    indexedColors.ExplicitUpdate();
+    
     if( isOpen )
     {
       animator.Play( "opened" );
@@ -85,14 +101,14 @@ public class Door : MonoBehaviour, ITrigger
     {
       bool OpenForThisCharacter = false;
       if( UseMask )
-        OpenForThisCharacter = (OpenForTeams & check.Team) > 0;
+        OpenForThisCharacter = (OpenForTeams & check.TeamFlags) > 0;
 
       // REMOVE THIS EVENTUALLY when the OpenOnlyForTeams array is discontinued
       if( OpenOnlyForTeams.Length > 0 )
       {
         for( int i = 0; i < OpenOnlyForTeams.Length; i++ )
         {
-          if( OpenOnlyForTeams[i] == check.Team )
+          if( OpenOnlyForTeams[i] == check.TeamFlags )
           {
             OpenForThisCharacter = true;
             break;
@@ -106,10 +122,18 @@ public class Door : MonoBehaviour, ITrigger
         Global.instance.AudioOneShot( soundDenied, transform.position );
         deniedDelay = true;
         timer.Start( 3, null, delegate { deniedDelay = false; } );
+        indexedColors.colors[0] = Color.red;
+        indexedColors.ExplicitUpdate();
         animator.Play( "denied" );
+        // indexedColors.colors[0] = doorColor;
+        // indexedColors.ExplicitUpdate();
         return;
       }
     }
+    
+    indexedColors.colors[0] = doorColor;
+    indexedColors.ExplicitUpdate();
+    
     this.instigator = instigator;
 
     SceneScript sceneScript = Global.instance.sceneScript;

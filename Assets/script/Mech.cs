@@ -60,13 +60,12 @@ public class Mech : Entity
     SightPulseTimer.Start( int.MaxValue, 3, ( x ) => {
       // reaffirm target
       Target = null;
-      int count = Physics2D.OverlapCircleNonAlloc( transform.position, sightRange, results, LayerMaskCharacter );
+      int count = Physics2D.OverlapCircleNonAlloc( transform.position, sightRange, Global.ColliderResults, LayerMaskCharacter );
       for( int i = 0; i < count; i++ )
       {
-        Collider2D cld = results[i];
-        //Character character = results[i].transform.root.GetComponentInChildren<Character>();
-        Entity character = results[i].GetComponent<Entity>();
-        if( character != null && IsEnemyTeam( character.Team ) )
+        Collider2D cld = Global.ColliderResults[i];
+        Entity character = cld.transform.root.GetComponent<Entity>();
+        if( character != null && IsEnemyTeam( character.TeamFlags ) )
         {
           Target = character;
           break;
@@ -266,7 +265,7 @@ public class Mech : Entity
 
   public override bool TakeDamage( Damage damage )
   {
-    if( damage.instigator != null && !IsEnemyTeam( damage.instigator.Team ) )
+    if( damage.instigator != null && !IsEnemyTeam( damage.instigator.TeamFlags ) )
       return false;
     if( damage.amount < DamageThreshold )
     {

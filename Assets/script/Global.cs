@@ -182,10 +182,12 @@ public class Global : MonoBehaviour
   [SerializeField] Image progress;
   [SerializeField] float progressSpeed = 0.5f;
 
-  [Header( "Misc" )]
+  
   Timer fpsTimer;
   int frames;
   float zoomDelta = 0;
+  
+  [Header( "Misc" )]
   // color shift
   public Color shiftyColor = Color.red;
   [SerializeField] float colorShiftSpeed = 1;
@@ -195,6 +197,14 @@ public class Global : MonoBehaviour
   [SerializeField] GameObject spinner;
   [SerializeField] float spinnerMoveSpeed = 1;
   int spawnCycleIndex = 0;
+  [SerializeField] Team[] Teams;
+  public Team GetTeam( TeamFlags flags ) 
+  {
+    for( int i = 0; i < Teams.Length; i++ )
+      if( Teams[i].flags == flags )
+        return Teams[i];
+    return null;
+  }
 
   public Dictionary<string, GameObject> ResourceLookup = new Dictionary<string, GameObject>();
 
@@ -974,20 +984,41 @@ public class Global : MonoBehaviour
     Controls.MenuActions.Disable();
   }
 
-  [SerializeField] Shader grey;
-  [SerializeField] Shader grey2;
+  [SerializeField] Shader mmShader;
+  [SerializeField] Color[] mmColor;
   [SerializeField] RectTransform mmPlayer;
+  [SerializeField] RenderTexture mmrt0;
+  [SerializeField] RenderTexture mmrt1;
   
   public void MinimapRender( Vector2 position )
   {
     MinimapCamera.targetTexture.DiscardContents( true, true );
     
     MinimapCamera.transform.position = position;
+    
     Shader cached = bigsheetMaterial.shader;
     Shader cached2 = backgroundMaterial.shader;
-    bigsheetMaterial.shader = grey;
-    backgroundMaterial.shader = grey2;
+    bigsheetMaterial.shader = mmShader;
+    backgroundMaterial.shader = mmShader;
+    
+    int cachedCullingMask = MinimapCamera.cullingMask;
+
+    bigsheetMaterial.color = mmColor[0];
+    backgroundMaterial.color = mmColor[1];
+    MinimapCamera.targetTexture = mmrt0;
+    MinimapCamera.clearFlags = CameraClearFlags.SolidColor;
+    MinimapCamera.backgroundColor = Color.black;
     MinimapCamera.Render();
+    
+    
+    bigsheetMaterial.color = mmColor[2];
+    MinimapCamera.cullingMask = LayerMask.GetMask( new string[] { "character" } );
+    MinimapCamera.targetTexture = mmrt1;
+    MinimapCamera.clearFlags = CameraClearFlags.Color;
+    MinimapCamera.backgroundColor = Color.clear;
+    MinimapCamera.Render();  
+
+    MinimapCamera.cullingMask = cachedCullingMask;
     bigsheetMaterial.shader = cached;
     backgroundMaterial.shader = cached2;
   }
@@ -1154,6 +1185,7 @@ public class Global : MonoBehaviour
     //SpeechText.rectTransform.localScale = Vector3.one * (1f - 0.5f * Mathf.Clamp( Mathf.Sqrt( DistanceSqr ) / SpeechRange, 0, 1 ));
 
     SpeechTimer.Stop( false );
+    SpeechIconCamera.enabled = true;
     SpeechTimer.Start( timeout, delegate( Timer timer )
     {
       SpeechIconCamera.transform.position = headTransform.GetComponent<SpriteRenderer>().bounds.center;
@@ -1161,6 +1193,7 @@ public class Global : MonoBehaviour
     {
       SpeechBubble.SetActive( false );
       SpeechCharacter = null;
+      SpeechIconCamera.enabled = false;
     } );
 
     SpeechAnimator.runtimeAnimatorController = character.animationController;

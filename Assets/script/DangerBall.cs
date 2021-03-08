@@ -101,7 +101,7 @@ public class DangerBall : Entity
 
   public override bool TakeDamage( Damage damage )
   {
-    if( damage.instigator != null && !IsEnemyTeam( damage.instigator.Team ) )
+    if( damage.instigator != null && !IsEnemyTeam( damage.instigator.TeamFlags ) )
       return false;
     if( damage.amount < DamageThreshold )
     {
