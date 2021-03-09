@@ -4989,7 +4989,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b7dea512de4f446d8c2325d6a19e493, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Team: 1
+  TeamFlags: 1
+  Team: {fileID: 0}
   body: {fileID: 2111217764532811413}
   box: {fileID: 61999569739760366}
   circle: {fileID: 0}
@@ -5588,6 +5589,7 @@ MonoBehaviour:
   - {fileID: 212829855198719112}
   - {fileID: 91856526698937445}
   - {fileID: 353093624}
+  light: {fileID: 0}
   colors:
   - {r: 0, g: 0.42514968, b: 1, a: 1}
   - {r: 0, g: 0.7166667, b: 1, a: 1}
