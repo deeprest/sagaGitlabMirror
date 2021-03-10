@@ -39,18 +39,13 @@ public class Switch : WorldSelectable
 
   void Start()
   {
+    animator.Play( on? "on":"off" );
     if( InvokeOnStart )
     {
       if( on )
-      {
-        animator.Play( "on" );
         onActivate.Invoke();
-      }
       else
-      {
-        animator.Play( "off" );
         onDeactivate.Invoke();
-      }
     }
   }
 

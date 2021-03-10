@@ -17,7 +17,7 @@ public class BreakableJunk : Entity
       GameObject[] prefab = GetDeathSpawnObjects();
       for( int i = 0; i < prefab.Length; i++ )
       {
-        GameObject go = Instantiate( prefab[i], transform.position, Quaternion.identity );
+        GameObject go = Instantiate( prefab[i], transform.position, Quaternion.identity, null );
         ParticleSystem ps = go.GetComponent<ParticleSystem>();
         if( ps != null )
         {

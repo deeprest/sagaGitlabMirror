@@ -42,11 +42,12 @@ public class WorldText : MonoBehaviour
       int index = FontSpriteReference.map.IndexOf( text[i] );
       if( index > 0 )
       {
-#if UNITY_EDITOR
-        GameObject go = (GameObject) PrefabUtility.InstantiatePrefab( prefab, transform );
-#else
-        GameObject go = Instantiate( prefab, transform, false );
-#endif
+        GameObject go;
+        if( Application.isEditor && !Application.isPlaying )
+          go = (GameObject) PrefabUtility.InstantiatePrefab( prefab, transform );
+        else
+          go = Instantiate( prefab, transform, false );
+
         go.transform.localPosition = Vector3.right * (width * (text.Length - 1) * -0.5f + x);
 
         if( IsBreakable )

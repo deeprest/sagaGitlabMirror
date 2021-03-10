@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class InputResponse : MonoBehaviour, Controls.IBipedActionsActions
 {
+  [SerializeField] WorldText nameTxt;
   [SerializeField] Animator[] anim;
   Dictionary<string, int> lookup = new Dictionary<string, int>();
+
 
   void Start()
   {
@@ -31,81 +34,67 @@ public class InputResponse : MonoBehaviour, Controls.IBipedActionsActions
     Global.instance.Controls.BipedActions.SetCallbacks( null );
   }
 
-  public void OnMoveRight( InputAction.CallbackContext context )
+  void DoTheThing( InputAction.CallbackContext context )
   {
     if( context.started ) anim[lookup[context.action.name]].Play( "on" );
     if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
+    nameTxt.text = context.action.name;
+    nameTxt.ExplicitUpdate();
+  }
+
+  public void OnMoveRight( InputAction.CallbackContext context )
+  {
+    DoTheThing( context );
   }
 
   public void OnMoveLeft( InputAction.CallbackContext context )
   {
-    if( context.started ) anim[lookup[context.action.name]].Play( "on" );
-    if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
+    DoTheThing( context );
   }
 
-  public void OnMove( InputAction.CallbackContext context )
-  {
-    // if( context.started ) anim[lookup[context.action.name]].Play( "on" );
-    // if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
-  }
+  public void OnMove( InputAction.CallbackContext context ) { }
 
   public void OnJump( InputAction.CallbackContext context )
   {
-    if( context.started ) anim[lookup[context.action.name]].Play( "on" );
-    if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
+    DoTheThing( context );
   }
 
   public void OnDash( InputAction.CallbackContext context )
   {
-    if( context.started ) anim[lookup[context.action.name]].Play( "on" );
-    if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
+    DoTheThing( context );
   }
 
-  public void OnAim( InputAction.CallbackContext context )
-  {
-    if( context.started ) anim[lookup[context.action.name]].Play( "on" );
-    if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
-  }
+  public void OnAim( InputAction.CallbackContext context ) { }
 
   public void OnFire( InputAction.CallbackContext context )
   {
-    if( context.started ) anim[lookup[context.action.name]].Play( "on" );
-    if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
+    DoTheThing( context );
   }
 
   public void OnAbility( InputAction.CallbackContext context )
   {
-    if( context.started ) anim[lookup[context.action.name]].Play( "on" );
-    if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
+    DoTheThing( context );
   }
 
   public void OnInteract( InputAction.CallbackContext context )
   {
-    if( context.started ) anim[lookup[context.action.name]].Play( "on" );
-    if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
+    DoTheThing( context );
   }
 
   public void OnNextWeapon( InputAction.CallbackContext context )
   {
-    if( context.started ) anim[lookup[context.action.name]].Play( "on" );
-    if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
+    DoTheThing( context );
   }
 
   public void OnNextAbility( InputAction.CallbackContext context )
   {
-    if( context.started ) anim[lookup[context.action.name]].Play( "on" );
-    if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
+    DoTheThing( context );
   }
 
-  public void OnCharge( InputAction.CallbackContext context )
-  {
-    // if( context.started ) anim[lookup[context.action.name]].Play( "on" );
-    // if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
-  }
+  public void OnCharge( InputAction.CallbackContext context ) { }
 
   public void OnDown( InputAction.CallbackContext context )
   {
-    if( context.started ) anim[lookup[context.action.name]].Play( "on" );
-    if( context.canceled ) anim[lookup[context.action.name]].Play( "off" );
+    DoTheThing( context );
   }
 }

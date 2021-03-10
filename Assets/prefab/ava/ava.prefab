@@ -5021,9 +5021,12 @@ MonoBehaviour:
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
   ContributeToHits: 1
   soundDeath: {fileID: 8300000, guid: c5964d5bb5873436991454117aee7806, type: 3}
-  SpawnWhenDead:
-  - {fileID: 1678155047526447402, guid: 0b441ca38fb9146debe1d70a64193693, type: 3}
-  SpawnOnDeath: []
+  SpawnWhenDead: []
+  SpawnOnDeath:
+  - alwaysSpawn: 1
+    weight: 0
+    prefab: {fileID: 1678155047526447402, guid: 0b441ca38fb9146debe1d70a64193693,
+      type: 3}
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []
@@ -5152,13 +5155,10 @@ MonoBehaviour:
   AutoAimDistance: 5
   DirectionalMinimum: 0.25
   lineRenderer: {fileID: 2130140940285502981}
-  weapon: {fileID: 11400000, guid: fd374035a3d2a4dfab5b20e9cd75ba10, type: 2}
+  weapon: {fileID: 0}
   CurrentWeaponIndex: 0
   weapons:
   - {fileID: 11400000, guid: fd374035a3d2a4dfab5b20e9cd75ba10, type: 2}
-  - {fileID: 11400000, guid: bc79bc153feb64c929fcc47e5ae33a26, type: 2}
-  - {fileID: 11400000, guid: dbe095114a0ca4f31a9261e470d0f682, type: 2}
-  - {fileID: 11400000, guid: f7a4d55516a7f4949b391abce0aa1692, type: 2}
   chargeMin: 0.5
   armRadius: 0.3
   chargeDelay: 0.4
@@ -5169,8 +5169,7 @@ MonoBehaviour:
   armMount: {fileID: 605154778494882277}
   armMountFront: {fileID: 6946927801136081339}
   backMount: {fileID: 8148481681694830411}
-  abilities:
-  - {fileID: 11400000, guid: 39bf040ed32b341949b26dc763e52b74, type: 2}
+  abilities: []
   CurrentAbilityIndex: 0
   audio: {fileID: 82117261715149456}
   audio2: {fileID: 82627251547920718}
