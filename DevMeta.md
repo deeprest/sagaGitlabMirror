@@ -26,6 +26,7 @@ https://seansleblanc.itch.io/better-minimal-webgl-template for webgl template
 When you have a good build, tell these folks:
 https://nathanielhoover.weebly.com/  (Flashman85; made the list [here](https://sprites-inc.co.uk/thread-1505-page-8.html))
 https://dennisengelhard.com/
+look for somecallmejonny sp? on youtube
 gamejolt
 sprites.co.uk forums
 pixeljoint or tigsource (to find artist for full project)

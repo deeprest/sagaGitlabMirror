@@ -43,10 +43,14 @@ public class WorldText : MonoBehaviour
       if( index > 0 )
       {
         GameObject go;
+#if UNITY_EDITOR
         if( Application.isEditor && !Application.isPlaying )
           go = (GameObject) PrefabUtility.InstantiatePrefab( prefab, transform );
         else
           go = Instantiate( prefab, transform, false );
+#else
+          go = Instantiate( prefab, transform, false );
+#endif
 
         go.transform.localPosition = Vector3.right * (width * (text.Length - 1) * -0.5f + x);
 

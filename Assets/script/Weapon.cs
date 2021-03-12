@@ -8,7 +8,8 @@ public class Weapon : ScriptableObject
   public enum WeaponType
   {
     Projectile,
-    Laser
+    Laser,
+    Melee
   }
   public WeaponType weaponType;
   public Sprite icon;
@@ -35,6 +36,9 @@ public class Weapon : ScriptableObject
   //public AudioClip soundChargeShot;
 
   const int Maxpoints = 1000;
+
+
+  //public override void Activate( Vector2 origin, Vector2 aim ) { }
 
   Vector2 GetInitialVelocity( Projectile projectile, Vector2 shoot )
   {
@@ -138,6 +142,10 @@ public class Weapon : ScriptableObject
         projectileInstance.velocity = shoot;
         projectileInstance.transform.position = pos;
       }
+    }
+    else if( weaponType == WeaponType.Melee )
+    {
+      return true;
     }
     return false;
   }

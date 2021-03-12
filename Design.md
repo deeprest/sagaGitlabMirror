@@ -77,6 +77,23 @@ AI, navigation mesh
 level generation
 
 
+# Shovel Knight
+## Keeps from older games:
+1. Strict focus on a single mechanic, and imaginative level design that explores the idea in many ways.
+2. Precision and consistency of chunky characters and grid-like levels.
+3. Secrets and Bosses
+4. Teach mechanics with level design instead of tutorials.
+5. Quickstart. Get right into the action!
+## Removes:
+1. Punitive Death System. (holdover from arcade game design)
+
+Nostalgia:
+Take from multiple sources.
+Emulate what works.
+Modernize what doesn't.
+Similar but upgraded graphics.
+
+
 # Cycles
 combat cycle. aware of enemy, visual contact, observe, attack, evade => death or success
 death cycle. possibly: transformation, or respawn, or instant replay.
