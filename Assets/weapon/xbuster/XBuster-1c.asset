@@ -12,9 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04394a018bd0446538c88f8afb7a48be, type: 3}
   m_Name: XBuster-1c
   m_EditorClassIdentifier: 
-  weaponType: 0
+  pawn: {fileID: 0}
+  IsActive: 0
   icon: {fileID: 5567256653479224138, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   cursor: {fileID: 709582824438758730, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
+  prefab: {fileID: 0}
+  mountType: 1
+  go: {fileID: 0}
+  weaponType: 0
   Color0: {r: 0, g: 0.42514968, b: 1, a: 1}
   Color1: {r: 0, g: 0.7166667, b: 1, a: 1}
   ProjectilePrefab: {fileID: 4831291083865458239, guid: 45580d8375fe04b5e95e71c4c3a90978,

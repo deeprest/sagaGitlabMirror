@@ -12,6 +12,7 @@ public class Ability : ScriptableObject
   }
   
   public Pawn pawn;
+  public PlayerBiped biped;
   public bool IsActive;
   public Sprite icon;
   public Sprite cursor;
@@ -25,11 +26,12 @@ public class Ability : ScriptableObject
   public virtual void OnAcquire( Pawn pawn )
   {
     this.pawn = pawn;
+    if( pawn is PlayerBiped )
+      biped = pawn as PlayerBiped;
   }
   
   public virtual void Equip( Transform parentTransform )
   {
-    //Ability
     if( prefab != null )
     {
       go = Instantiate( prefab, parentTransform.position, Quaternion.identity, parentTransform );
@@ -49,15 +51,18 @@ public class Ability : ScriptableObject
   
   public virtual void Unequip()
   {
-    for( int i = 0; i < clds.Length; i++ )
+    if( prefab != null )
     {
-      pawn.IgnoreCollideObjects.Remove( clds[i] );
-      if( pawn.circle != null )
-        Physics2D.IgnoreCollision( pawn.circle, clds[i], false );
-      if( pawn.box != null )
-        Physics2D.IgnoreCollision( pawn.box, clds[i], false );
+      for( int i = 0; i < clds.Length; i++ )
+      {
+        pawn.IgnoreCollideObjects.Remove( clds[i] );
+        if( pawn.circle != null )
+          Physics2D.IgnoreCollision( pawn.circle, clds[i], false );
+        if( pawn.box != null )
+          Physics2D.IgnoreCollision( pawn.box, clds[i], false );
+      }
+      Destroy( go );
     }
-    Destroy( go );
   }
 
   public virtual void Activate( Vector2 origin, Vector2 aim ) { }

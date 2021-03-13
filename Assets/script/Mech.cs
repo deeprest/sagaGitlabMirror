@@ -261,8 +261,7 @@ public class Mech : Entity
       }
     }
   }
-
-
+  
   public override bool TakeDamage( Damage damage )
   {
     if( damage.instigator != null && !IsEnemyTeam( damage.instigator.TeamFlags ) )

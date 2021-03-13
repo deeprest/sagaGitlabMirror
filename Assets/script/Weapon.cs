@@ -32,11 +32,9 @@ public class Weapon : Ability
   public GameObject ChargeEffect;
   public AudioClip soundCharge;
   public AudioClip soundChargeLoop;
-  //public AudioClip soundChargeShot;
 
   const int Maxpoints = 1000;
-
-
+  
   public override void Activate( Vector2 origin, Vector2 aim )
   {
     FireWeapon( pawn, origin, aim );
@@ -71,9 +69,8 @@ public class Weapon : Ability
     }
     return points.ToArray();
   }
-
-  // PICKLE arg scale
-  public void FireWeapon( Entity instigator, Vector2 pos, Vector2 shoot)
+  
+  public void FireWeapon( Entity instigator, Vector2 pos, Vector2 shoot )
   {
     if( projectileCount == 1 )
     {
@@ -95,8 +92,7 @@ public class Weapon : Ability
         Global.instance.AudioOneShot( StartSound, pos );
     }
   }
-
-  // PICKLE arg scale
+  
   bool FireWeaponProjectile( Entity instigator, Projectile projectilePrefab, Vector2 pos, Vector2 shoot, bool playSound = true )
   {
     if( weaponType == WeaponType.Projectile )

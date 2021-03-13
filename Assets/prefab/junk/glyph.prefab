@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 857544556734785415}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.04900001, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3266539251359749398}
@@ -154,7 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dcd803420457401c93b324aa4592c3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Team: 0
+  TeamFlags: 0
+  Team: {fileID: 0}
   body: {fileID: 0}
   box: {fileID: 7175203395040943552}
   circle: {fileID: 0}
@@ -187,7 +188,7 @@ MonoBehaviour:
   soundDeath: {fileID: 8300000, guid: fd18f5c1f9d9e496994172848e257308, type: 3}
   SpawnWhenDead: []
   SpawnOnDeath:
-  - alwaysSpawn: 0
+  - alwaysSpawn: 1
     weight: 0
     prefab: {fileID: 68871263600982522, guid: 47d756e5cd052449c950eb5041e97734, type: 3}
   EventDestroyed:

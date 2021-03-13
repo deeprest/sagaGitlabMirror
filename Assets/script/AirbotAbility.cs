@@ -8,7 +8,6 @@ public class AirbotAbility : Ability
   public float rotateTarget = 50;
   public float rotSpeed = 180f; //360
   public float dec = 4; //10
-  PlayerBiped biped;
   Animator animator;
   Vector2 vel = Vector2.zero;
 

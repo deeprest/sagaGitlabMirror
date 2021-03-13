@@ -228,8 +228,7 @@ public class PlayerBiped : Pawn
     HitLayers = Global.TriggerLayers | Global.CharacterDamageLayers;
     IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
     spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
-    if( weapons.Count > 0 )
-      weapon = weapons[CurrentWeaponIndex % weapons.Count];
+    
     // unpack
     InteractIndicator.SetActive( false );
     InteractIndicator.transform.SetParent( null );
@@ -238,12 +237,11 @@ public class PlayerBiped : Pawn
       abilities[i].OnAcquire( this );
     for( int i = 0; i < weapons.Count; i++ )
       weapons[i].OnAcquire( this );
-    if( weapons.Count > 0 )
-      Global.instance.weaponIcon.sprite = weapon.icon;
-    else
-      Global.instance.weaponIcon.sprite = null;
-    Global.instance.abilityIcon.sprite = null;
-    
+    if( weapons.Count > 0 && CurrentWeaponIndex < weapons.Count )
+      AssignWeapon( weapons[CurrentWeaponIndex] );
+    if( abilities.Count > 0 && CurrentAbilityIndex < abilities.Count )
+      AssignAbility( abilities[CurrentAbilityIndex] );
+
     bottomHits = new RaycastHit2D[RaycastHits.Length];
     topHits = new RaycastHit2D[RaycastHits.Length];
     leftHits = new RaycastHit2D[RaycastHits.Length];

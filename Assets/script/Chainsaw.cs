@@ -59,9 +59,12 @@ public class Chainsaw : Weapon
       offset += Time.deltaTime * speed;
       offset = Mathf.Repeat( offset, 1 );
       ChainMaterial.mainTextureOffset = new Vector2( offset, 0 );
-
+      
       bool AtLeastOneHit = false;
-      int hitCount = Physics2D.CircleCastNonAlloc( go.transform.position, Radius, go.transform.up, Global.RaycastHits, Distance, Global.DefaultProjectileCollideLayers );
+      Vector2 origin = go.transform.position;
+      if( biped != null )
+        origin = biped.GetShotOriginPosition();
+      int hitCount = Physics2D.CircleCastNonAlloc( origin, Radius, go.transform.up, Global.RaycastHits, Distance, Global.DefaultProjectileCollideLayers );
       for( int i = 0; i < hitCount; i++ )
       {
         RaycastHit2D hit = Global.RaycastHits[i];

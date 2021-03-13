@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a1bcd8e4c470e44748c8981cefbfbf44, type: 3}
-  m_Name: Chainsaw Ability
+  m_Name: chainsaw
   m_EditorClassIdentifier: 
   pawn: {fileID: 0}
+  biped: {fileID: 0}
   IsActive: 0
   icon: {fileID: -2325439092209692468, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   cursor: {fileID: 2330203045032020808, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
@@ -38,8 +39,8 @@ MonoBehaviour:
   chainRenderer: {fileID: 0}
   sparks: {fileID: 0}
   Speed: 1
-  Radius: 0.2
-  Distance: 0.3
+  Radius: 0.13
+  Distance: 0.35
   soundActive: {fileID: 8300000, guid: cfdff6d6473334d0386fd333918ec2c6, type: 3}
   soundGrind: {fileID: 8300000, guid: 8c06cea9fff3b4367bf0c1545a4a0d0b, type: 3}
   ContactDamage: {fileID: 11400000, guid: e5a544477ccde429197277dbb880b03c, type: 2}
