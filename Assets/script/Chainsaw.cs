@@ -23,7 +23,10 @@ public class Chainsaw : Weapon
 
     chainRenderer = go.transform.GetChild( 0 ).GetComponent<SpriteShapeRenderer>();
 #if UNITY_EDITOR
-    ChainMaterial = chainRenderer.sharedMaterials[1];
+    if( !Application.isPlaying )
+      ChainMaterial = chainRenderer.sharedMaterials[1];
+    else
+      ChainMaterial = chainRenderer.materials[1];
 #else
     ChainMaterial = chainRenderer.materials[1];
 #endif

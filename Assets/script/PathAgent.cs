@@ -98,7 +98,7 @@ public class PathAgent
       // no path
       MoveDirection = Vector2.zero;
     }
-
+/*
     if( Global.instance.GlobalSidestepping && SidestepAvoidance )
     {
       if( Time.time - SidestepLast > Global.instance.SidestepInterval )
@@ -111,7 +111,7 @@ public class PathAgent
           if( distanceToWaypoint > Global.instance.SidestepIgnoreWithinDistanceToGoal )
           {
             float raycastDistance = Mathf.Min( distanceToWaypoint, Global.instance.SidestepRaycastDistance );
-            int count = Physics2D.CircleCastNonAlloc( transform.position, 0.5f/*box.edgeRadius*/, MoveDirection.normalized, RaycastHits, raycastDistance, Global.CharacterSidestepLayers );
+            int count = Physics2D.CircleCastNonAlloc( transform.position, 0.5f, MoveDirection.normalized, RaycastHits, raycastDistance, Global.CharacterSidestepLayers );
             for( int i = 0; i < count; i++ )
             {
               Entity other = RaycastHits[i].transform.root.GetComponent<Entity>();
@@ -127,6 +127,7 @@ public class PathAgent
       }
       MoveDirection += Sidestep;
     }
+*/
 
 #if UNITY_EDITOR
     Debug.DrawLine( transform.position, (Vector2)transform.position + MoveDirection.normalized * 0.5f, Color.magenta );

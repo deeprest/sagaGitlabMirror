@@ -1554,14 +1554,13 @@ public class PlayerBiped : Pawn
       Die(damage);
       return true;
     }
-    
-    // damageSmoke.Play();
-    // ParticleSystem.EmissionModule damageSmokeEmission = damageSmoke.emission;
-    // ParticleSystem.MinMaxCurve rateCurve = damageSmokeEmission.rateOverTime;
-    // rateCurve.constant = 20.0f - 20.0f * ((float)Health / (float)MaxHealth);
-    // damageSmokeEmission.rateOverTime = rateCurve;
-    
+
     StopCharge();
+    if( weapon!=null )
+      weapon.Deactivate();
+    if( ability != null )
+      ability.Deactivate();
+    
     //partHead.transform.localScale = Vector3.one * (1 + (Health / MaxHealth) * 10);
     audio.PlayOneShot( soundDamage );
     if( controller == Global.instance.PlayerController )
@@ -1598,6 +1597,7 @@ public class PlayerBiped : Pawn
         damagePulseTimer.Stop( false );
       } );
     } );
+    
     /*
     // color pulse
     flip = false;

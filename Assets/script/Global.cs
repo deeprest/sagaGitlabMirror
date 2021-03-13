@@ -80,11 +80,11 @@ public class Global : MonoBehaviour
   Timer fadeTimer = new Timer();
   public float RepathInterval = 1;
   // sidestep
-  public bool GlobalSidestepping = true;
+  /*public bool GlobalSidestepping = true;
   public float SidestepDistance = 1f;
   public float SidestepRaycastDistance = 1f;
   public float SidestepInterval = 1f;
-  public float SidestepIgnoreWithinDistanceToGoal = 0.5f;
+  public float SidestepIgnoreWithinDistanceToGoal = 0.5f;*/
 
   public static string[] persistentFilenames = new string[]
   {
@@ -302,7 +302,7 @@ public class Global : MonoBehaviour
 
     PlayerController = ScriptableObject.CreateInstance<PlayerController>();
     
-    // SCRIPT EXECUTION ORDER Global.cs is first priority so that Awake() called from scene load in editor respects the code below.
+    // SCRIPT EXECUTION ORDER Global.cs is first priority so that Awake called from scene load in editor respects the code below.
     //Entity.Limit.UpperLimit = 1000;
     Entity.Limit.EnforceUpper = false;
 

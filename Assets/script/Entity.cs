@@ -402,7 +402,7 @@ public class Entity : MonoBehaviour, IDamage
       for( int i = 0; i < SpawnOnDeath.Length; i++ )
         spawnChanceWeightTotal += SpawnOnDeath[i].weight;
       int index = 0;
-      int randy = Random.Range( 0, spawnChanceWeightTotal );
+      int randy = Random.Range( 0, spawnChanceWeightTotal+1 );
       int runningTotal = 0;
       for( index = 0; index < SpawnOnDeath.Length; index++ )
       {
@@ -413,7 +413,7 @@ public class Entity : MonoBehaviour, IDamage
           continue;
         }
         runningTotal += SpawnOnDeath[index].weight;
-        if( runningTotal >= randy )
+        if( runningTotal > randy )
         {
           if( SpawnOnDeath[index].prefab != null )
             gos.Add(SpawnOnDeath[index].prefab);
