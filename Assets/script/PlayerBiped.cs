@@ -236,6 +236,8 @@ public class PlayerBiped : Pawn
     // acquire abilities serialized into the prefab
     for( int i = 0; i < abilities.Count; i++ )
       abilities[i].OnAcquire( this );
+    for( int i = 0; i < weapons.Count; i++ )
+      weapons[i].OnAcquire( this );
     if( weapons.Count > 0 )
       Global.instance.weaponIcon.sprite = weapon.icon;
     else
@@ -306,6 +308,7 @@ public class PlayerBiped : Pawn
       return false;
     }
     weapons.Add( wpn );
+    wpn.OnAcquire( this );
     CurrentWeaponIndex = weapons.Count - 1;
     AssignWeapon( weapons[ CurrentWeaponIndex ] );
     return true;
@@ -313,7 +316,13 @@ public class PlayerBiped : Pawn
   
   void AssignWeapon( Weapon wpn )
   {
+    if( weapon != null )
+      weapon.Unequip();
     weapon = wpn;
+    if( weapon.mountType == Ability.MountType.ARM_BACK) weapon.Equip( armMount );
+    if( weapon.mountType == Ability.MountType.ARM_FRONT) weapon.Equip( armMountFront );
+    if( weapon.mountType == Ability.MountType.BACK ) weapon.Equip( backMount );
+    
     Global.instance.weaponIcon.sprite = weapon.icon;
     Cursor.GetComponent<SpriteRenderer>().sprite = weapon.cursor;
     StopCharge();
@@ -797,27 +806,7 @@ public class PlayerBiped : Pawn
   {
     return shoot;
   }
-
-  void Shoot()
-  {
-    if( weapon == null ||
-      !weapon.fullAuto && pinput.Fire ||
-      shootRepeatTimer.IsActive ) 
-      return;
-    if( weapon.shootInterval > 0 )
-      shootRepeatTimer.Start( weapon.shootInterval, null, null );
-    Vector2 pos = GetShotOriginPosition();
-    // PICKLE
-    if( !Physics2D.Linecast( transform.position, pos, Global.ProjectileNoShootLayers ) )
-      weapon.FireWeapon( this, pos, shoot
-#if PICKLE
-, Scale
-#endif
-      );
-    else
-      audio.PlayOneShot( soundWeaponFail );
-  }
-
+  
   void ShootCharged()
   {
     if( weapon == null || weapon.ChargeVariant == null )
@@ -1148,8 +1137,23 @@ public class PlayerBiped : Pawn
       // WEAPONS / ABILITIES
       if( weapon != null )
       {
-        if( input.Fire )
-          Shoot();
+        if( input.Fire && weapon != null && !shootRepeatTimer.IsActive && (weapon.fullAuto || !pinput.Fire) )
+        {
+          if( weapon.shootInterval > 0 )
+            shootRepeatTimer.Start( weapon.shootInterval, null, null );
+          Vector2 origin = GetShotOriginPosition();
+          if( !Physics2D.Linecast( transform.position, origin, Global.ProjectileNoShootLayers ) )
+            weapon.Activate( origin, shoot );
+          else
+          {
+            audio.PlayOneShot( soundWeaponFail );
+            weapon.Deactivate();
+          }
+        }
+        else if( pinput.Fire && !input.Fire )
+          weapon.Deactivate();
+        
+        weapon.UpdateAbility();
 
         if( weapon.HasChargeVariant )
         {
@@ -1657,7 +1661,7 @@ public class PlayerBiped : Pawn
   public CharacterPart partArmFront;
   public CharacterPart partSpider;
 
-  // Call from Awake()
+  // Call from Awake
   public override void InitializeParts()
   {
     CharacterParts = new List<CharacterPart> {partLegs, partHead, partArmBack, partArmFront, partSpider};

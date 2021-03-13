@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
-public class Weapon : ScriptableObject
+public class Weapon : Ability
 {
   public enum WeaponType
   {
@@ -11,9 +11,8 @@ public class Weapon : ScriptableObject
     Laser,
     Melee
   }
+
   public WeaponType weaponType;
-  public Sprite icon;
-  public Sprite cursor;
   public Color Color0;
   public Color Color1;
 
@@ -38,7 +37,10 @@ public class Weapon : ScriptableObject
   const int Maxpoints = 1000;
 
 
-  //public override void Activate( Vector2 origin, Vector2 aim ) { }
+  public override void Activate( Vector2 origin, Vector2 aim )
+  {
+    FireWeapon( pawn, origin, aim );
+  }
 
   Vector2 GetInitialVelocity( Projectile projectile, Vector2 shoot )
   {
@@ -69,12 +71,13 @@ public class Weapon : ScriptableObject
     }
     return points.ToArray();
   }
+
   // PICKLE arg scale
-  public void FireWeapon( Entity instigator, Vector2 pos, Vector2 shoot, float scale = 1 )
+  public void FireWeapon( Entity instigator, Vector2 pos, Vector2 shoot)
   {
     if( projectileCount == 1 )
     {
-      FireWeaponProjectile( instigator, ProjectilePrefab, pos, shoot, true, scale );
+      FireWeaponProjectile( instigator, ProjectilePrefab, pos, shoot, true );
     }
     else if( projectileCount > 1 )
     {
@@ -84,7 +87,7 @@ public class Weapon : ScriptableObject
       bool anyFired = false;
       for( int i = 0; i < projectileCount; i++ )
       {
-        if( FireWeaponProjectile( instigator, ProjectilePrefab, pos, Quaternion.Euler( 0, 0, val ) * shoot, false, scale ) )
+        if( FireWeaponProjectile( instigator, ProjectilePrefab, pos, Quaternion.Euler( 0, 0, val ) * shoot, false ) )
           anyFired = true;
         val += inc;
       }
@@ -92,21 +95,21 @@ public class Weapon : ScriptableObject
         Global.instance.AudioOneShot( StartSound, pos );
     }
   }
+
   // PICKLE arg scale
-  bool FireWeaponProjectile( Entity instigator, Projectile projectilePrefab, Vector2 pos, Vector2 shoot, bool playSound = true, float scale = 1 )
+  bool FireWeaponProjectile( Entity instigator, Projectile projectilePrefab, Vector2 pos, Vector2 shoot, bool playSound = true )
   {
     if( weaponType == WeaponType.Projectile )
     {
-      Collider2D col = Physics2D.OverlapCircle( pos, projectilePrefab.circle.radius * scale, Global.ProjectileNoShootLayers );
+      Collider2D col = Physics2D.OverlapCircle( pos, projectilePrefab.circle.radius, Global.ProjectileNoShootLayers );
       if( col == null )
       {
         GameObject go = Instantiate( projectilePrefab.gameObject, pos, Quaternion.identity );
-        go.transform.localScale = Vector3.one * scale;
+        go.transform.localScale = Vector3.one;
         Projectile projectile = go.GetComponent<Projectile>();
         projectile.weapon = this;
         projectile.instigator = instigator;
         projectile.velocity = GetInitialVelocity( projectile, shoot );
-        projectile.Scale = scale;
 
         foreach( var c in instigator.IgnoreCollideObjects )
           Physics2D.IgnoreCollision( projectile.circle, c, true );
@@ -127,7 +130,7 @@ public class Weapon : ScriptableObject
       if( projectileInstance == null )
       {
         GameObject go = Instantiate( projectilePrefab.gameObject, pos, Quaternion.identity );
-        go.transform.localScale = Vector3.one * scale;
+        go.transform.localScale = Vector3.one;
         projectileInstance = go.GetComponent<Projectile>();
         projectileInstance.weapon = this;
         projectileInstance.instigator = instigator;
@@ -150,4 +153,3 @@ public class Weapon : ScriptableObject
     return false;
   }
 }
-

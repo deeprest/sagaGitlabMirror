@@ -19,4 +19,27 @@ MonoBehaviour:
   prefab: {fileID: 4577226089518538706, guid: 2b87a41300d28455a9f7b6ca5f2db56f, type: 3}
   mountType: 1
   go: {fileID: 0}
-  Speed: 10
+  weaponType: 2
+  Color0: {r: 0.5441177, g: 0.5441177, b: 0.5441177, a: 1}
+  Color1: {r: 0.99264705, g: 0.35336626, b: 0.26275954, a: 1}
+  ProjectilePrefab: {fileID: 0}
+  StartSound: {fileID: 0}
+  fullAuto: 1
+  shootInterval: 0.1
+  speedIncrease: 0
+  projectileCount: 1
+  spread: 0.5
+  AimDistanceMax: 2
+  HasChargeVariant: 0
+  ChargeVariant: {fileID: 0}
+  ChargeEffect: {fileID: 0}
+  soundCharge: {fileID: 0}
+  soundChargeLoop: {fileID: 0}
+  chainRenderer: {fileID: 0}
+  sparks: {fileID: 0}
+  Speed: 1
+  Radius: 0.2
+  Distance: 0.3
+  soundActive: {fileID: 8300000, guid: cfdff6d6473334d0386fd333918ec2c6, type: 3}
+  soundGrind: {fileID: 8300000, guid: 8c06cea9fff3b4367bf0c1545a4a0d0b, type: 3}
+  ContactDamage: {fileID: 11400000, guid: e5a544477ccde429197277dbb880b03c, type: 2}

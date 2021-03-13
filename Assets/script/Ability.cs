@@ -30,17 +30,20 @@ public class Ability : ScriptableObject
   public virtual void Equip( Transform parentTransform )
   {
     //Ability
-    go = Instantiate( prefab, parentTransform.position, Quaternion.identity, parentTransform );
-    go.transform.localRotation = Quaternion.identity;
-
-    clds = go.GetComponentsInChildren<Collider2D>();
-    for( int i = 0; i < clds.Length; i++ )
+    if( prefab != null )
     {
-      pawn.IgnoreCollideObjects.Add( clds[i] );
-      if( pawn.circle != null )
-        Physics2D.IgnoreCollision( pawn.circle, clds[i], true );
-      if( pawn.box != null )
-        Physics2D.IgnoreCollision( pawn.box, clds[i], true );
+      go = Instantiate( prefab, parentTransform.position, Quaternion.identity, parentTransform );
+      go.transform.localRotation = Quaternion.identity;
+
+      clds = go.GetComponentsInChildren<Collider2D>();
+      for( int i = 0; i < clds.Length; i++ )
+      {
+        pawn.IgnoreCollideObjects.Add( clds[i] );
+        if( pawn.circle != null )
+          Physics2D.IgnoreCollision( pawn.circle, clds[i], true );
+        if( pawn.box != null )
+          Physics2D.IgnoreCollision( pawn.box, clds[i], true );
+      }
     }
   }
   

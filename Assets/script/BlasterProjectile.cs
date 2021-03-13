@@ -70,7 +70,7 @@ public class BlasterProjectile : Projectile, IDamage
           if( dam != null )
           {
             Damage dmg = Instantiate( ContactDamage );
-            dmg.amount = Mathf.FloorToInt( Scale * ContactDamage.amount );
+            dmg.amount = Mathf.FloorToInt( ContactDamage.amount );
             dmg.instigator = instigator;
             dmg.damageSource = transform;
             dmg.point = hit.point;
