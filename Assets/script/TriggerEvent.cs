@@ -44,4 +44,11 @@ public class TriggerEvent : MonoBehaviour, ITrigger
   {
     Global.instance.CameraController.CameraZoneOverride = on;
   }
+  
+  public void CameraOverrideOff( float delay )
+  {
+    (new Timer()).Start( delay, null, delegate {  
+      Global.instance.CameraController.CameraZoneOverride = false;} );
+    
+  }
 }

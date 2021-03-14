@@ -77,8 +77,6 @@ public class PlayerController : Controller
     base.AssignPawn( pwn );
     // I'm Mr. Meseeks, look at me!
     Global.instance.CameraController.LookTarget = this;
-    Global.instance.CameraController.transform.position = pawn.transform.position;
-
     if( pawn is PlayerBiped )
       EnableBipedControls();
   }
@@ -93,6 +91,8 @@ public class PlayerController : Controller
   public void EnableBipedControls()
   {
     Global.instance.Controls.BipedActions.Enable();
+    // reset the aim vector to avoid jumps
+    aimPosition = Vector2.zero;
   }
 
   private void BindControls()

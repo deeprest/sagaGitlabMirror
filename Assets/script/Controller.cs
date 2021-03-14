@@ -51,4 +51,6 @@ public class Controller : ScriptableObject
   {
     return ref input;
   }
+
+  // public virtual void OnPawnDestroy() { }
 }

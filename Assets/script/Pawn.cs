@@ -8,7 +8,13 @@ public class Pawn : Entity
 
   public Vector2 CursorWorldPosition;
   public GameObject InteractIndicator;
-  
+
+  // protected override void OnDestroy()
+  // {
+  //   base.OnDestroy();
+  //   controller.OnPawnDestroy();
+  // }
+
   protected override void Awake()
   {
     // do not call base.Awake() to avoid being added to Limit

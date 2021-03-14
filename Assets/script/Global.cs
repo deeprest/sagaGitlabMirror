@@ -617,6 +617,7 @@ public class Global : MonoBehaviour
       CurrentPlayer.PreSceneTransition();
       SceneManager.MoveGameObjectToScene( CurrentPlayer.gameObject, gameObject.scene );
     }
+    CameraController.PreSceneTransition();
     loadingScene = true;
     //progress.fillAmount = 0;
     //prog = 0;
@@ -660,7 +661,7 @@ public class Global : MonoBehaviour
         CurrentPlayer.transform.position = FindSpawnPosition();
         CurrentPlayer.PostSceneTransition();
       }
-      
+
       sceneScript = FindObjectOfType<SceneScript>();
       if( sceneScript != null )
         sceneScript.StartScene();
@@ -769,10 +770,7 @@ public class Global : MonoBehaviour
 
   void LateUpdate()
   {
-    if( !Updating )
-      return;
-
-    if( !Paused )
+    if( Updating && !Paused )
     {
       Profiler.BeginSample( "EntityLateUpdate" );
       for( int i = 0; i < Entity.Limit.All.Count; i++ )
@@ -780,9 +778,9 @@ public class Global : MonoBehaviour
         Entity.Limit.All[i].EntityLateUpdate();
       }
       Profiler.EndSample();
+      
+      CameraController.CameraLateUpdate();
     }
-
-    CameraController.CameraLateUpdate();
   }
 
   public void SpawnPlayer()
@@ -791,7 +789,6 @@ public class Global : MonoBehaviour
     Pawn pawn = go.GetComponent<Pawn>();
     CurrentPlayer = pawn;
     PlayerController.AssignPawn( pawn );
-    //Global.instance.CameraController.orthoTarget = 3;
   }
 
   public Vector3 FindSpawnPosition()
@@ -1004,6 +1001,7 @@ public class Global : MonoBehaviour
 
     bigsheetMaterial.color = mmColor[0];
     backgroundMaterial.color = mmColor[1];
+    //MinimapCamera.cullingMask = LayerMask.GetMask( new string[] { "Default", "character", "triggerAndCollision", "" } );
     MinimapCamera.targetTexture = mmrt0;
     MinimapCamera.clearFlags = CameraClearFlags.SolidColor;
     MinimapCamera.backgroundColor = Color.black;

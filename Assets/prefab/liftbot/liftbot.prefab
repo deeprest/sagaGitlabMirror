@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4739618571392748}
+  - component: {fileID: 3047422316451110554}
   - component: {fileID: 61733048714469916}
   - component: {fileID: 212979940915122146}
   - component: {fileID: 4874249801477483448}
   - component: {fileID: 9109282300699132467}
-  - component: {fileID: 3047422316451110554}
   m_Layer: 0
   m_Name: liftbot
   m_TagString: Untagged
@@ -36,6 +36,69 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3047422316451110554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268720782321642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0152ea8135784e69bf581078873611b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TeamFlags: 0
+  Team: {fileID: 0}
+  body: {fileID: 9109282300699132467}
+  box: {fileID: 61733048714469916}
+  circle: {fileID: 0}
+  renderer: {fileID: 212979940915122146}
+  animator: {fileID: 4874249801477483448}
+  IgnoreCollideObjects: []
+  spriteRenderers: []
+  UseGravity: 0
+  IsStatic: 0
+  velocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
+  overrideVelocity: {x: 0, y: 0}
+  carryCharacter: {fileID: 0}
+  friction: 0.05
+  raylength: 0.01
+  contactSeparation: 0.01
+  DownOffset: 0
+  collideRight: 0
+  collideLeft: 0
+  collideTop: 0
+  collideBottom: 0
+  EnablePathing: 0
+  AgentTypeName: Small
+  CanTakeDamage: 0
+  Health: 3
+  MaxHealth: 5
+  explosion: {fileID: 0}
+  soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
+  ContributeToHits: 1
+  soundDeath: {fileID: 0}
+  SpawnWhenDead: []
+  SpawnOnDeath: []
+  EventDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  flashInterval: 0.05
+  flashCount: 5
+  ContactDamage: {fileID: 0}
+  CharacterLayer: 0
+  CharacterParts: []
+  UseWaitDuration: 1
+  IsTriggeredByPlayer: 0
+  flySpeed: 3
+  waitDuration: 2
+  origin: {x: 0, y: 0}
+  path:
+  - {x: 0, y: 0}
+  - {x: 0, y: 3}
+  pingpong: 0
 --- !u!61 &61733048714469916
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -152,62 +215,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &3047422316451110554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1268720782321642}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0152ea8135784e69bf581078873611b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Team: 0
-  body: {fileID: 9109282300699132467}
-  box: {fileID: 61733048714469916}
-  circle: {fileID: 0}
-  renderer: {fileID: 212979940915122146}
-  animator: {fileID: 4874249801477483448}
-  IgnoreCollideObjects: []
-  spriteRenderers: []
-  UseGravity: 0
-  IsStatic: 0
-  velocity: {x: 0, y: 0}
-  inertia: {x: 0, y: 0}
-  overrideVelocity: {x: 0, y: 0}
-  carryCharacter: {fileID: 0}
-  friction: 0.05
-  raylength: 0.01
-  contactSeparation: 0.01
-  DownOffset: 0
-  EnablePathing: 0
-  AgentTypeName: Small
-  CanTakeDamage: 0
-  Health: 3
-  MaxHealth: 5
-  explosion: {fileID: 0}
-  soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
-  SpawnWhenDead: []
-  spawnChance: 1
-  flashInterval: 0.05
-  flashCount: 5
-  ContactDamage: {fileID: 0}
-  EventDestroyed:
-    m_PersistentCalls:
-      m_Calls: []
-  CharacterLayer: 0
-  CharacterParts: []
-  UseWaitDuration: 1
-  IsTriggeredByPlayer: 0
-  flySpeed: 3
-  waitDuration: 2
-  origin: {x: 0, y: 0}
-  path:
-  - {x: 0, y: 0}
-  - {x: 0, y: 3}
-  pingpong: 0
 --- !u!1 &9209941920657911778
 GameObject:
   m_ObjectHideFlags: 0

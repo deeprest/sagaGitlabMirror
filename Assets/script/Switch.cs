@@ -3,11 +3,14 @@ using UnityEngine.Events;
 
 public class Switch : WorldSelectable
 {
+  [SerializeField] bool IsToggle;
   [SerializeField] bool InvokeOnStart;
   [SerializeField] bool on;
   [SerializeField] Animator animator;
   public UnityEvent onActivate;
   public UnityEvent onDeactivate;
+  public Switch[] syncSwitches;
+
 #if false
   public override void Highlight()
   {
@@ -19,11 +22,11 @@ public class Switch : WorldSelectable
     //animator.Play( "idle" );
   }
 #endif
-  public override void Select()
+
+  public void AssignState( bool ison )
   {
-    // toggle
-    on = !on;
-    if( on ) 
+    on = ison;
+    if( ison )
     {
       animator.Play( "on" );
       onActivate.Invoke();
@@ -33,20 +36,25 @@ public class Switch : WorldSelectable
       animator.Play( "off" );
       onDeactivate.Invoke();
     }
+    for( int i = 0; i < syncSwitches.Length; i++ )
+      syncSwitches[i].AssignState( IsToggle? on : false );
   }
-  public override void Unselect()
-  { }
+
+  public override void Select()
+  {
+    if( IsToggle )
+      AssignState( !on );
+    else
+      AssignState( true );
+  }
+
+  public override void Unselect() { }
 
   void Start()
   {
-    animator.Play( on? "on":"off" );
     if( InvokeOnStart )
-    {
-      if( on )
-        onActivate.Invoke();
-      else
-        onDeactivate.Invoke();
-    }
+      AssignState( on );
+    else
+      animator.Play( on ? "on" : "off" );
   }
-
 }

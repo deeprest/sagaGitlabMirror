@@ -33,9 +33,12 @@ public class SceneScript : MonoBehaviour
         Global.instance.CurrentPlayer.velocity = Vector2.zero;
       }
     }
-    // CameraController auto-switch should make this unnecessary
+    
     if( ForceCameraZone != null )
       Global.instance.OverrideCameraZone( ForceCameraZone );
+    
+    // set the LookTarget before calling this
+    Global.instance.CameraController.Teleport();
 
     if( music != null )
       Global.instance.PlayMusic( music );

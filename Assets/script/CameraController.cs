@@ -26,6 +26,11 @@ public class CameraController : MonoBehaviour
   bool lerping;
   Timer lerpTimer = new Timer();
 
+  public void PreSceneTransition() { }
+  public void PostSceneTransition() {
+    
+  }
+
   public void AssignOverrideCameraZone( CameraZone zone )
   {
     ActiveCameraZone = zone;
@@ -57,7 +62,19 @@ public class CameraController : MonoBehaviour
     lerping = true;
     lerpTimer.Start( tp );
   }
-  
+
+  public void Teleport()
+  {
+    ortho = orthoTarget;
+    pos = LookTarget.pawn.transform.position;
+    GetCameraTargetValues( ref pos, ref ortho, pos, ortho );
+    cam.orthographicSize = ortho;
+    transform.position = new Vector3(pos.x,pos.y,zOffset);
+    orthoTarget = ortho;
+    posAlpha = 1;
+    orthoAlpha = 1; 
+  }
+
   public void CameraLateUpdate()
   {
     if( !lerping )

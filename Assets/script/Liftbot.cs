@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
-
 #if UNITY_EDITOR
 using UnityEditor;
-[CustomEditor( typeof( Liftbot ) )]
+
+[CustomEditor( typeof(Liftbot) )]
 [CanEditMultipleObjects]
 public class LiftbotEdtitor : Editor
 {
@@ -31,6 +31,15 @@ public class LiftbotEdtitor : Editor
       float duration = (length / bot.flySpeed) + (bot.pingpong ? bot.path.Length * 2 - 2 : bot.path.Length) * bot.waitDuration;
       EditorGUILayout.LabelField( "return time", duration.ToString() );
     }
+
+    if( bot.switches != null )
+      for( int i = 0; i < bot.switches.Length; i++ )
+      {
+        ArrayUtility.Clear( ref bot.switches[i].syncSwitches );
+        for( int j = 0; j < bot.switches.Length; j++ )
+          if( bot.switches[j] != bot.switches[i] )
+            ArrayUtility.Add( ref bot.switches[i].syncSwitches, bot.switches[j] );
+      }
   }
 
   void OnSceneGUI()
@@ -57,13 +66,17 @@ public class LiftbotEdtitor : Editor
 
 public class Liftbot : Entity, IWorldSelectable
 {
+  [Header( "Liftbot" )]
   public bool UseWaitDuration = true;
   public bool IsTriggeredByPlayer;
   public float flySpeed = 2;
   const float slowSpeed = 200;
   public float waitDuration = 1;
   const float closeEnough = 0.25f;
-  int pathIndex = 0;
+  
+  public Switch[] switches;
+  
+  int pathIndex;
   public Vector2 origin;
   public Vector2[] path;
   Timer timeout = new Timer();
@@ -98,36 +111,35 @@ public class Liftbot : Entity, IWorldSelectable
     // Might need a timeout if the liftbot collides with anything.
     //  timeout.Start( DistanceToWaypoint() / flySpeed, null, NextWaypoint );
   }
-  
+
   void UpdateLiftbot()
   {
     /*Vector2 line = path[pathIndex] - path[(pathIndex-1+path.Length) % path.Length];
     Debug.DrawLine( origin+path[pathIndex], origin +path[(pathIndex-1+path.Length) % path.Length], Color.green );*/
-    
+
     if( path.Length > 0 )
     {
-      Vector2 delta = origin + path[pathIndex] - (Vector2)transform.position;
-      if( delta.sqrMagnitude < closeEnough*closeEnough )
+      Vector2 delta = origin + path[pathIndex] - (Vector2) transform.position;
+      if( delta.sqrMagnitude < closeEnough * closeEnough )
       {
         // WARNING
         // This does not update player position, which creates an immediate an noticeable offset
         // between the player's feet and the liftbot when reaching a waypoint. 
         /*transform.position = origin + path[pathIndex];*/
-        
+
         // Smooth arrival
         velocity = delta * Time.smoothDeltaTime * slowSpeed;
-        if( IsTriggeredByPlayer && (pathIndex == 0 || pathIndex == path.Length - 1) ) 
+        if( IsTriggeredByPlayer && (pathIndex == 0 || pathIndex == path.Length - 1) )
         {
           // do nothing
         }
         else if( UseWaitDuration )
-          {
-            if( !timeout.IsActive )
-              timeout.Start( waitDuration, null, NextWaypoint );
-          }
-          else 
-            NextWaypoint();
-        
+        {
+          if( !timeout.IsActive )
+            timeout.Start( waitDuration, null, NextWaypoint );
+        }
+        else
+          NextWaypoint();
       }
       else
       {
@@ -142,11 +154,6 @@ public class Liftbot : Entity, IWorldSelectable
     return true;
   }
 
-  protected override void Die( Damage damage )
-  {
-    base.Die(damage);
-  }
-
   public void Highlight()
   {
     if( Global.instance.CurrentPlayer != null )
@@ -155,17 +162,20 @@ public class Liftbot : Entity, IWorldSelectable
       Global.instance.CurrentPlayer.InteractIndicator.transform.position = transform.position;
     }
   }
+
   public void Unhighlight()
   {
     if( Global.instance.CurrentPlayer != null )
       Global.instance.CurrentPlayer.InteractIndicator.SetActive( false );
   }
+
   public void Select()
   {
     UseWaitDuration = true;
-    if( IsTriggeredByPlayer && (origin + path[pathIndex] - (Vector2)transform.position).sqrMagnitude < closeEnough*closeEnough )
+    if( IsTriggeredByPlayer && (origin + path[pathIndex] - (Vector2) transform.position).sqrMagnitude < closeEnough * closeEnough )
       NextWaypoint();
   }
+
   public void Unselect()
   {
     UseWaitDuration = false;

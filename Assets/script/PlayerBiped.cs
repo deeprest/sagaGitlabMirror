@@ -7,9 +7,8 @@ using UnityEngine.Serialization;
 public class PlayerBiped : Pawn
 {
   [Header( "PlayerBiped" )]
-
   public Controller assignedController;
-  
+
   /*public float slidingOffset = 1;
   public float slidingOffsetTarget = 1;
   public float slidingOffsetRate = 4;*/
@@ -30,7 +29,7 @@ public class PlayerBiped : Pawn
   const float collisionCornerTop = -0.658504546f;
   const float collisionCornerBottom = 0.658504546f;
   const float collisionCornerSide = 0.752576649f;
-  
+
   Vector2 shoot;
 
   [Header( "State" )]
@@ -46,7 +45,7 @@ public class PlayerBiped : Pawn
   public bool rotating;
   public float rotateTarget;
   public float rotateSpeed;
-  
+
   Vector2 wallSlideNormal;
   Vector2 wallSlideTargetNormal;
   Timer dashTimer = new Timer();
@@ -61,7 +60,7 @@ public class PlayerBiped : Pawn
   public float MoveScale = 0.5f;
   public float JumpScale = 0.5f;
   public AnimationCurve OrthoScale;
-  
+
   [Header( "Setting" )]
   public float spiderMoveSpeed = 5;
   public float speedFactorNormalized = 1;
@@ -69,43 +68,20 @@ public class PlayerBiped : Pawn
   // movement
   public float moveVelMin = 1.5f;
   public float moveVelMax = 3;
-  // PICKLE
-  public float moveSpeed
-  {
-    get
-    {
-      return (moveVelMin + (moveVelMax - moveVelMin) * speedFactorNormalized)
-#if PICKLE
-      * 1f + (Scale - 1f) * MoveScale; 
-#endif
-      ; }
-  }
+
+  public float moveSpeed { get { return (moveVelMin + (moveVelMax - moveVelMin) * speedFactorNormalized); } }
 
   public float jumpVelMin = 5;
   public float jumpVelMax = 10;
-  // PICKLE
-  public float jumpSpeed
-  {
-    get { return (jumpVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized) 
-#if PICKLE 
-        * 1f + (Scale - 1f) * JumpScale;
-#endif
-      ; }
-  }
+
+  public float jumpSpeed { get { return (jumpVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized); } }
 
   public float jumpDuration = 0.4f;
   public float jumpRepeatInterval = 0.1f;
   public float dashVelMin = 3;
   public float dashVelMax = 10;
-  // PICKLE
-  public float dashSpeed
-  {
-    get { return (dashVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized) 
-#if PICKLE 
-* 1f + (Scale - 1f) * JumpScale; 
-#endif
-      ; }
-  }
+
+  public float dashSpeed { get { return (dashVelMin + (jumpVelMax - jumpVelMin) * speedFactorNormalized); } }
 
   public float dashDuration = 1;
   public float wallJumpPushVelocity = 1.5f;
@@ -123,7 +99,7 @@ public class PlayerBiped : Pawn
   public GameObject walljumpEffect;
   [SerializeField] Transform WallkickPosition;
   public Transform arm;
-  
+
 
   [Header( "Cursor" )]
   [SerializeField] Transform Cursor;
@@ -208,11 +184,9 @@ public class PlayerBiped : Pawn
   IWorldSelectable WorldSelection;
   List<Component> pups = new List<Component>();
 
-  public bool IsBiped { get { return partLegs.enabled;  } }
-  public bool grapPulling
-  {
-    get { return ability != null && ability is GraphookAbility && ability.IsActive;  }
-  }
+  public bool IsBiped { get { return partLegs.enabled; } }
+
+  public bool grapPulling { get { return ability != null && ability is GraphookAbility && ability.IsActive; } }
 
   protected override void Awake()
   {
@@ -222,13 +196,13 @@ public class PlayerBiped : Pawn
 
   protected override void Start()
   {
-#if BODY_PART_HUNT    
+#if BODY_PART_HUNT
     DownOffset = BipedDownOffset;
 #endif
     HitLayers = Global.TriggerLayers | Global.CharacterDamageLayers;
     IgnoreCollideObjects.AddRange( GetComponentsInChildren<Collider2D>() );
     spriteRenderers.AddRange( GetComponentsInChildren<SpriteRenderer>() );
-    
+
     // unpack
     InteractIndicator.SetActive( false );
     InteractIndicator.transform.SetParent( null );
@@ -277,6 +251,7 @@ public class PlayerBiped : Pawn
     InteractIndicator.transform.SetParent( null );
     if( ability != null )
       ability.PostSceneTransition();
+    CursorWorldPosition = transform.position;
   }
 
   protected override void OnDestroy()
@@ -308,23 +283,23 @@ public class PlayerBiped : Pawn
     weapons.Add( wpn );
     wpn.OnAcquire( this );
     CurrentWeaponIndex = weapons.Count - 1;
-    AssignWeapon( weapons[ CurrentWeaponIndex ] );
+    AssignWeapon( weapons[CurrentWeaponIndex] );
     return true;
   }
-  
+
   void AssignWeapon( Weapon wpn )
   {
     if( weapon != null )
       weapon.Unequip();
     weapon = wpn;
-    if( weapon.mountType == Ability.MountType.ARM_BACK) weapon.Equip( armMount );
-    if( weapon.mountType == Ability.MountType.ARM_FRONT) weapon.Equip( armMountFront );
+    if( weapon.mountType == Ability.MountType.ARM_BACK ) weapon.Equip( armMount );
+    if( weapon.mountType == Ability.MountType.ARM_FRONT ) weapon.Equip( armMountFront );
     if( weapon.mountType == Ability.MountType.BACK ) weapon.Equip( backMount );
-    
+
     Global.instance.weaponIcon.sprite = weapon.icon;
     Cursor.GetComponent<SpriteRenderer>().sprite = weapon.cursor;
     StopCharge();
-    
+
     indexedColors.colors[0] = weapon.Color0;
     indexedColors.colors[1] = weapon.Color1;
     indexedColors.ExplicitUpdate();
@@ -348,17 +323,17 @@ public class PlayerBiped : Pawn
     abilities.Add( alt );
     alt.OnAcquire( this );
     CurrentAbilityIndex = abilities.Count - 1;
-    AssignAbility( abilities[ CurrentAbilityIndex ] );
+    AssignAbility( abilities[CurrentAbilityIndex] );
     return true;
   }
-  
+
   void AssignAbility( Ability alt )
   {
     if( ability != null )
       ability.Unequip();
     ability = alt;
-    if( ability.mountType == Ability.MountType.ARM_BACK) ability.Equip( armMount );
-    if( ability.mountType == Ability.MountType.ARM_FRONT) ability.Equip( armMountFront );
+    if( ability.mountType == Ability.MountType.ARM_BACK ) ability.Equip( armMount );
+    if( ability.mountType == Ability.MountType.ARM_FRONT ) ability.Equip( armMountFront );
     if( ability.mountType == Ability.MountType.BACK ) ability.Equip( backMount );
     Global.instance.abilityIcon.sprite = ability.icon;
     if( ability.cursor != null )
@@ -387,7 +362,7 @@ public class PlayerBiped : Pawn
   new void UpdateHit( float dT )
   {
     pups.Clear();
-    hitCount = Physics2D.BoxCastNonAlloc( pos, box.size + Vector2.up * DownOffset*2 + Vector2.right*0.1f, 0, velocity, RaycastHits, Mathf.Max( raylength, velocity.magnitude * dT ), HitLayers );
+    hitCount = Physics2D.BoxCastNonAlloc( pos, box.size + Vector2.up * DownOffset * 2 + Vector2.right * 0.1f, 0, velocity, RaycastHits, Mathf.Max( raylength, velocity.magnitude * dT ), HitLayers );
     for( int i = 0; i < hitCount; i++ )
     {
       hit = RaycastHits[i];
@@ -418,11 +393,11 @@ public class PlayerBiped : Pawn
         {
           switch( pickup.unique )
           {
-            case UniquePickupType.Health: 
-              AddHealth( pickup.uniqueInt0 ); 
+            case UniquePickupType.Health:
+              AddHealth( pickup.uniqueInt0 );
               break;
-            case UniquePickupType.SpeedFactorNormalized:  
-              speedFactorNormalized += pickup.uniqueFloat0; 
+            case UniquePickupType.SpeedFactorNormalized:
+              speedFactorNormalized += pickup.uniqueFloat0;
               break;
           }
         }
@@ -491,10 +466,9 @@ public class PlayerBiped : Pawn
       highlightedPickups.Remove( pup );
     */
   }
-  
+
 
 #if optimized_collision
-
   new void UpdateCollision( float dT )
   {
     // HACK
@@ -508,10 +482,10 @@ public class PlayerBiped : Pawn
     collideBottom = false;
     adjust = pos;
     string temp = "";
-    bottomHitCount=0;
-    topHitCount=0;
-    rightHitCount=0;
-    leftHitCount=0;
+    bottomHitCount = 0;
+    topHitCount = 0;
+    rightHitCount = 0;
+    leftHitCount = 0;
     
     float preferBottom = float.MinValue;
     float preferLeft = 2;
@@ -608,9 +582,9 @@ public class PlayerBiped : Pawn
     
     pos = adjust;
   }
-  
+
 #else
-  
+
   new void UpdateCollision( float dT )
   {
     collideRight = false;
@@ -619,13 +593,12 @@ public class PlayerBiped : Pawn
     collideBottom = false;
     adjust = pos;
 
-    bottomHitCount=0;
-    topHitCount=0;
-    rightHitCount=0;
-    leftHitCount=0;
-    
-#if multisample
+    bottomHitCount = 0;
+    topHitCount = 0;
+    rightHitCount = 0;
+    leftHitCount = 0;
 
+#if multisample
     Vector2 rightFoot;
     Vector2 leftFoot;
     // Avoid the (box-to-box) standing-on-a-corner-and-moving-means-momentarily-not-on-ground issue by 'sampling' the ground at multiple points
@@ -662,22 +635,22 @@ public class PlayerBiped : Pawn
       Debug.DrawLine( adjust + Vector2.right * box.size.x, rightFoot, Color.grey );
 
 #endif
-    
+
     // slidingOffsetTarget = 1;
     string temp = "";
     float down = jumping ? raydown - DownOffset : raydown;
     float prefer;
-   
+
     Bounds bounds = new Bounds( adjust + Vector2.down * Mathf.Max( down, -velocity.y * dT ) * 0.5f, box.size + Vector2.up * Mathf.Max( down, -velocity.y * dT ) );
     Debug.DrawLine( new Vector3( bounds.min.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.max.y ), Color.red );
     Debug.DrawLine( new Vector3( bounds.min.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.max.y ), Color.red );
     Debug.DrawLine( new Vector3( bounds.max.x, bounds.max.y ), new Vector3( bounds.max.x, bounds.min.y ), Color.red );
     Debug.DrawLine( new Vector3( bounds.max.x, bounds.min.y ), new Vector3( bounds.min.x, bounds.min.y ), Color.red );
-    
+
     // BOTTOM
     prefer = float.MinValue;
     // todo fix exception that occurs after death
-    bottomHitCount = Physics2D.BoxCastNonAlloc( adjust, box.size * Scale, transform.rotation.eulerAngles.z, -(Vector2)transform.up, bottomHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
+    bottomHitCount = Physics2D.BoxCastNonAlloc( adjust, box.size * Scale, transform.rotation.eulerAngles.z, -(Vector2) transform.up, bottomHits, Mathf.Max( down, -velocity.y * dT ), Global.CharacterCollideLayers );
     temp += "down: " + bottomHitCount + " ";
     for( int i = 0; i < bottomHitCount; i++ )
     {
@@ -706,7 +679,7 @@ public class PlayerBiped : Pawn
         adjust.y = hit.point.y + box.size.y * 0.5f + slidingOffset * downOffset;
 #endif
         adjust.y = hit.point.y + box.size.y * 0.5f * Scale + DownOffset;
-        
+
         // moving platforms
         Entity cha = hit.transform.GetComponent<Entity>();
         if( cha != null )
@@ -755,7 +728,7 @@ public class PlayerBiped : Pawn
         prefer = hit.normal.x;
         collideLeft = true;
         hitLeft = hit;
-        
+
         velocity.x = Mathf.Max( velocity.x, 0 );
 
         adjust.x = hit.point.x + box.size.x * 0.5f + contactSeparation;
@@ -779,7 +752,7 @@ public class PlayerBiped : Pawn
         prefer = hit.normal.x;
         collideRight = true;
         hitRight = hit;
-        
+
         velocity.x = Mathf.Min( velocity.x, 0 );
 
         adjust.x = hit.point.x - box.size.x * 0.5f - contactSeparation;
@@ -792,8 +765,8 @@ public class PlayerBiped : Pawn
     //Debug.Log( temp );
     pos = adjust;
   }
-  #endif
-  
+#endif
+
 
   public override Vector2 GetShotOriginPosition()
   {
@@ -804,7 +777,7 @@ public class PlayerBiped : Pawn
   {
     return shoot;
   }
-  
+
   void ShootCharged()
   {
     if( weapon == null || weapon.ChargeVariant == null )
@@ -903,29 +876,36 @@ public class PlayerBiped : Pawn
   private bool previousWallsliding;
   Vector2 previousWallSlideTargetNormal;
 
-  public bool jumpStart { get { return input.Jump && !pinput.Jump;  } }
-  public bool jumpStop { get { return !input.Jump && pinput.Jump;  } }
+  public bool jumpStart { get { return input.Jump && !pinput.Jump; } }
+
+  public bool jumpStop { get { return !input.Jump && pinput.Jump; } }
+
   public bool dashStart { get { return (input.Dash && !pinput.Dash); } }
+
   public bool dashStop { get { return (!input.Dash && pinput.Dash); } }
-  public bool chargeStart { get { return input.Charge && !pinput.Charge;  } }
-  public bool chargeStop { get { return !input.Charge && pinput.Charge;  } }
+
+  public bool chargeStart { get { return input.Charge && !pinput.Charge; } }
+
+  public bool chargeStop { get { return !input.Charge && pinput.Charge; } }
+
   public bool abilityStart { get { return input.Ability && !pinput.Ability; } }
+
   public bool abilityEnd { get { return !input.Ability && pinput.Ability; } }
 
-  public override void EntityUpdate( )
+  public override void EntityUpdate()
   {
     if( Global.Paused || Health <= 0 )
       return;
 
     string anim = "idle";
     bool previousGround = onGround;
-    onGround = collideBottom || (collideLeft && hitLeft.normal.y > 0 && collideRight && hitRight.normal.y > 0 );
+    onGround = collideBottom || (collideLeft && hitLeft.normal.y > 0 && collideRight && hitRight.normal.y > 0);
     if( onGround && !previousGround )
     {
       landing = true;
       landTimer.Start( landDuration, null, delegate { landing = false; } );
     }
-    
+
     if( wallsliding )
     {
       float angle = Vector2.Angle( previousWallSlideTargetNormal, wallSlideTargetNormal );
@@ -935,7 +915,7 @@ public class PlayerBiped : Pawn
         wallSlideNormal = wallSlideTargetNormal;
     }
     previousWallsliding = wallsliding;
-    previousWallSlideTargetNormal = wallSlideTargetNormal; 
+    previousWallSlideTargetNormal = wallSlideTargetNormal;
     wallsliding = false;
 
     if( input.MoveDown )
@@ -1068,7 +1048,7 @@ public class PlayerBiped : Pawn
           {
             walljumping = true;
             //velocity.y = jumpSpeed;
-            OverrideVelocity( new Vector2(-(input.Dash ? dashSpeed : wallJumpPushVelocity), jumpSpeed), wallJumpPushDuration );
+            OverrideVelocity( new Vector2( -(input.Dash ? dashSpeed : wallJumpPushVelocity), jumpSpeed ), wallJumpPushDuration );
             jumpRepeatTimer.Start( jumpRepeatInterval );
             walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
             audio.PlayOneShot( soundJump );
@@ -1086,7 +1066,7 @@ public class PlayerBiped : Pawn
           {
             walljumping = true;
             // velocity.y = jumpSpeed;
-            OverrideVelocity( new Vector2( (input.Dash ? dashSpeed : wallJumpPushVelocity), jumpSpeed), wallJumpPushDuration );
+            OverrideVelocity( new Vector2( (input.Dash ? dashSpeed : wallJumpPushVelocity), jumpSpeed ), wallJumpPushDuration );
             jumpRepeatTimer.Start( jumpRepeatInterval );
             walljumpTimer.Start( wallJumpPushDuration, null, delegate { walljumping = false; } );
             audio.PlayOneShot( soundJump );
@@ -1103,8 +1083,7 @@ public class PlayerBiped : Pawn
       if( wallsliding && input.MoveDown )
       {
         Vector2 wsvel;
-        wsvel = Util.Project2D( -(Vector2) transform.up, wallSlideNormal.x > 0 ? Vector2.right : Vector2.left) * wallSlideDownX +
-          Vector2.down * wallSlideDownY;
+        wsvel = Util.Project2D( -(Vector2) transform.up, wallSlideNormal.x > 0 ? Vector2.right : Vector2.left ) * wallSlideDownX + Vector2.down * wallSlideDownY;
         Debug.DrawLine( (Vector2) transform.position, (Vector2) transform.position + wsvel, Color.yellow );
         velocity += wsvel;
       }
@@ -1119,7 +1098,7 @@ public class PlayerBiped : Pawn
       if( !((onGround && dashing) || wallsliding) )
         dashSmoke.Stop();
     }
-    
+
     // add gravity before velocity limits
     if( UseGravity )
       velocity.y -= Global.Gravity * Time.deltaTime;
@@ -1150,7 +1129,7 @@ public class PlayerBiped : Pawn
         }
         else if( pinput.Fire && !input.Fire )
           weapon.Deactivate();
-        
+
         weapon.UpdateAbility();
 
         if( weapon.HasChargeVariant )
@@ -1178,7 +1157,6 @@ public class PlayerBiped : Pawn
 
       if( input.NextAbility )
         NextAbility();
-
     }
 
     // limit velocity before adding to position
@@ -1214,13 +1192,13 @@ public class PlayerBiped : Pawn
     UpdateHit( Time.deltaTime );
     // update collision flags, and adjust position
     UpdateCollision( Time.deltaTime );
-    
+
     transform.position = pos;
 
     // preserve inertia when jumping from moving platforms
     if( previousCarry != null && carryCharacter == null )
       inertia = previousCarry.Velocity;
-    
+
     bool crushed = false;
     const float crushMinSpeed = 0.005f;
     if( collideRight && hitRight.normal.y <= 0 && collideLeft && hitLeft.normal.y <= 0 )
@@ -1239,13 +1217,12 @@ public class PlayerBiped : Pawn
       for( int i = 0; i < topHitCount; i++ )
         if( topHits[i].transform.TryGetComponent( out entity ) && entity.Velocity.y < -crushMinSpeed )
           crushed = true;
-      for( int i =0; i < bottomHitCount; i++ )
+      for( int i = 0; i < bottomHitCount; i++ )
         if( bottomHits[i].transform.TryGetComponent( out entity ) && entity.Velocity.y > crushMinSpeed )
           crushed = true;
     }
     if( crushed )
     {
-      //Die();
       if( !takingDamage )
         TakeDamage( CrushDamage );
     }
@@ -1264,7 +1241,7 @@ public class PlayerBiped : Pawn
     {
       if( dashing )
         anim = "dash";
-      else if( (input.MoveRight || input.MoveLeft) && Mathf.Abs(velocity.x)>0 )
+      else if( (input.MoveRight || input.MoveLeft) && Mathf.Abs( velocity.x ) > 0 )
         anim = "run";
       else if( landing )
         anim = "land";
@@ -1289,14 +1266,14 @@ public class PlayerBiped : Pawn
     else if( wallsliding && wallSlideNormal.x > 0 )
       transform.rotation = Quaternion.LookRotation( Vector3.forward, new Vector3( -wallSlideNormal.y, wallSlideNormal.x ) );
     else if( rotating )
-      transform.rotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle(transform.rotation.eulerAngles.z, rotateTarget, rotateSpeed * Time.deltaTime) );
+      transform.rotation = Quaternion.Euler( 0, 0, Mathf.MoveTowardsAngle( transform.rotation.eulerAngles.z, rotateTarget, rotateSpeed * Time.deltaTime ) );
     else
       transform.rotation = Quaternion.Euler( 0, 0, 0 );
 
     ResetInput();
-    
+
 #if debugdraw || true
-    Debug.DrawLine( (Vector2)transform.position, (Vector2)transform.position + velocity, Color.magenta );
+    Debug.DrawLine( (Vector2) transform.position, (Vector2) transform.position + velocity, Color.magenta );
 #endif
   }
 
@@ -1321,7 +1298,7 @@ public class PlayerBiped : Pawn
       lineRenderer.enabled = false;
     }
   }
-  
+
   void Wallslide()
   {
     wallsliding = true;
@@ -1445,12 +1422,10 @@ public class PlayerBiped : Pawn
       DamagePulseFlip();
     } );
   }
-  
 
-
+#if false
   public void ScaleChange( float scale )
   {
-#if PICKLE    
     Scale *= scale;
     
     DownOffset = 0.1f * Scale;
@@ -1471,14 +1446,13 @@ public class PlayerBiped : Pawn
     rateCurve.constant = 0.5f * Scale;
     damageSmokeMain.startSpeed = rateCurve;
     
-    // todo 
     // dash effect
     // no jump
     // scale debris
     // projectile speed
-#endif
   }
-  
+#endif
+
   protected override void Die( Damage damage )
   {
     GameObject[] prefab = GetDeathSpawnObjects();
@@ -1486,18 +1460,18 @@ public class PlayerBiped : Pawn
       Instantiate( prefab[i], transform.position, Quaternion.identity );
 
     audio.PlayOneShot( soundDeath );
-    
-    /*
+
+#if SPIDER
     if( spider == null )
     {
       GameObject go = Instantiate( SpiderbotPrefab, transform.position, Quaternion.identity );
       spider = go.GetComponent<SpiderPawn>();
     }
     controller.AssignPawn( spider );
-    */
+#endif
 
-    // BODY PART HUNT EXPERIMENT
 #if BODY_PART_HUNT
+    // BODY PART HUNT EXPERIMENT
     StopCharge();
     damageSmoke.Stop();
     dashSmoke.Stop();
@@ -1506,26 +1480,18 @@ public class PlayerBiped : Pawn
     DisablePart( partArmBack );
     DisablePart( partArmFront );
 #endif
-    
-#if PICKLE
-    // PICKLE RICK EXPERIMENT
-    ScaleChange( 0.5f );
-#else
-    
+
     // RESPAWN
     controller.RemovePawn();
     Destroy( gameObject );
     new Timer( 5, null, Global.instance.SpawnPlayer );
-    
-#endif
-
   }
 
   public override void AddHealth( int amount )
   {
     Health = Mathf.Clamp( Health + amount, 0, MaxHealth );
-    
-    if( Health >= MaxHealth ) 
+
+    if( Health >= MaxHealth )
     {
       damageSmoke.Stop();
     }
@@ -1534,11 +1500,11 @@ public class PlayerBiped : Pawn
       damageSmoke.Play();
       ParticleSystem.EmissionModule damageSmokeEmission = damageSmoke.emission;
       ParticleSystem.MinMaxCurve rateCurve = damageSmokeEmission.rateOverTime;
-      rateCurve.constant = 20.0f - 20.0f * ((float)Health / (float)MaxHealth);
+      rateCurve.constant = 20.0f - 20.0f * ((float) Health / (float) MaxHealth);
       damageSmokeEmission.rateOverTime = rateCurve;
     }
   }
-  
+
   public override bool TakeDamage( Damage damage )
   {
     if( !CanTakeDamage || damageGracePeriod || Health <= 0 )
@@ -1549,16 +1515,16 @@ public class PlayerBiped : Pawn
     if( Health <= 0 )
     {
       flashTimer.Stop( false );
-      Die(damage);
+      Die( damage );
       return true;
     }
 
     StopCharge();
-    if( weapon!=null )
+    if( weapon != null )
       weapon.Deactivate();
     if( ability != null )
       ability.Deactivate();
-    
+
     //partHead.transform.localScale = Vector3.one * (1 + (Health / MaxHealth) * 10);
     audio.PlayOneShot( soundDamage );
     if( controller == Global.instance.PlayerController )
@@ -1595,7 +1561,7 @@ public class PlayerBiped : Pawn
         damagePulseTimer.Stop( false );
       } );
     } );
-    
+
     /*
     // color pulse
     flip = false;
@@ -1624,13 +1590,13 @@ public class PlayerBiped : Pawn
   {
     enabled = false;
     damageTimer.Stop( true );
-    Vector2 delta = targetPosition - (Vector2)transform.position;
+    Vector2 delta = targetPosition - (Vector2) transform.position;
     facingRight = delta.x > 0;
     transform.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     renderer.material.SetInt( "_FlipX", facingRight ? 0 : 1 );
     arm.localScale = new Vector3( facingRight ? 1 : -1, 1, 1 );
     SetAnimatorUpdateMode( AnimatorUpdateMode.UnscaledTime );
-    if( onGround && !dashing && Mathf.Abs(delta.y) < 0.1f )
+    if( onGround && !dashing && Mathf.Abs( delta.y ) < 0.1f )
       Play( "run" );
     else if( Mathf.Abs( delta.y ) > 0.5f && !jumping )
       Play( "fall" );
@@ -1649,7 +1615,7 @@ public class PlayerBiped : Pawn
       SetAnimatorUpdateMode( AnimatorUpdateMode.Normal );
     };
   }
-  
+
   [FormerlySerializedAs( "partBody" )]
   [Header( "Character Parts player biped" )]
   public CharacterPart partLegs;
@@ -1744,7 +1710,7 @@ public class PlayerBiped : Pawn
     if( part.transform == partLegs.transform )
     {
       // GO INTO SPIDER MODE!!!
-#if BODY_PART_HUNT      
+#if BODY_PART_HUNT
       DownOffset = SpiderDownOffset;
 #endif
       part.transform.GetComponent<BoxCollider2D>().size = new Vector2( 0.15f, 0.15f );

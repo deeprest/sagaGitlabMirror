@@ -22,6 +22,11 @@ public class AIController : Controller
   Transform targetPrev;
   Timer SightPulseTimer = new Timer();
 
+  // public virtual void OnPawnDestroy()
+  // {
+  //   Destroy( this );
+  // }
+  
   void OnDestroy()
   {
     if( Global.IsQuiting )
