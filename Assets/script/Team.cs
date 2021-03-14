@@ -15,5 +15,6 @@ public class Team : ScriptableObject
     [EnumFlag]
     public TeamFlags flags;
     public Color[] color;
+    
 }
 

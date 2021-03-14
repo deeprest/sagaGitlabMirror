@@ -16,8 +16,7 @@ public class Entity : MonoBehaviour, IDamage
   [FormerlySerializedAs( "Team" )]
   [EnumFlag]
   public TeamFlags TeamFlags;
-  public Team Team;
-  
+
   public Rigidbody2D body;
   public BoxCollider2D box;
   public CircleCollider2D circle;

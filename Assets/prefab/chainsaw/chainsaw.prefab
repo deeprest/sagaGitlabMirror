@@ -180,7 +180,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 3
       scalar: 0.8
-      minScalar: 0.2
+      minScalar: 0.1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -232,7 +232,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 20
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -670,7 +670,7 @@ ParticleSystem:
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 1
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -1605,7 +1605,7 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -2132,7 +2132,7 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    inWorldSpace: 0
+    inWorldSpace: 1
   InheritVelocityModule:
     enabled: 0
     m_Mode: 0
@@ -5111,14 +5111,6 @@ SpriteShapeRenderer:
   m_ShapeTexture: {fileID: 2800000, guid: 9e2dc500ac0464634ba5ce667086cc7b, type: 3}
   m_Sprites:
   - {fileID: 21300000, guid: 1c45d33a1498b4191908f476f9755256, type: 3}
-  - {fileID: 6825659192612115017, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
-  - {fileID: 6825659192612115017, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
-  - {fileID: 21300052, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
-  - {fileID: 21300052, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
-  - {fileID: 21300050, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
-  - {fileID: 21300050, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
-  - {fileID: 21300054, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
-  - {fileID: 21300050, guid: 64314a0420c93471b9990c7b9f080a39, type: 3}
   m_LocalAABB:
     m_Center: {x: 0.012866564, y: 0.25691232, z: -0.0001}
     m_Extent: {x: 0.12539856, y: 0.2766863, z: 0.0001}

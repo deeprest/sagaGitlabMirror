@@ -2,6 +2,7 @@
 
 public class BossPrototype : Entity
 {
+  [SerializeField] float MoveSpeed = 2;
   // sight, target
   [SerializeField] Entity NearbyTarget;
   [SerializeField] Transform SightOrigin;
@@ -69,7 +70,7 @@ public class BossPrototype : Entity
       {
         if( delta.y < 2 )
         {
-          velocity = (delta.x > 0 ? Vector2.right : Vector2.left) * 3;
+          velocity = (delta.x > 0 ? Vector2.right : Vector2.left) * MoveSpeed;
         }
       }
     }

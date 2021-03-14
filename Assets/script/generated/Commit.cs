@@ -1,5 +1,5 @@
 
 public static class Commit
 {
-    public const string Hash = "ae0f80c";
+    public const string Hash = "0f8f757";
 }

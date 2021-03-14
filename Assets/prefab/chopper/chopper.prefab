@@ -39,9 +39,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4252371820229170}
+  - component: {fileID: 114844931330827930}
   - component: {fileID: 61107250239624328}
   - component: {fileID: 212343005596785154}
-  - component: {fileID: 114844931330827930}
   - component: {fileID: 1263690815390439729}
   m_Layer: 0
   m_Name: chopper
@@ -65,6 +65,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -14.648001}
+--- !u!114 &114844931330827930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918067062961258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2845862401264fa1ba92b26c549b522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hangPoint: {fileID: 4066940549659038}
+  chopperStartPoint: {fileID: 0}
+  speed: 8
+  timeUntilDrop: 1
 --- !u!61 &61107250239624328
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -141,22 +157,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &114844931330827930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1918067062961258}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2845862401264fa1ba92b26c549b522, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hangPoint: {fileID: 4066940549659038}
-  chopperStartPoint: {fileID: 0}
-  speed: 8
-  timeUntilDrop: 1
 --- !u!95 &1263690815390439729
 Animator:
   serializedVersion: 3

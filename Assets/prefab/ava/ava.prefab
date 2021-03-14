@@ -4990,7 +4990,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TeamFlags: 1
-  Team: {fileID: 0}
   body: {fileID: 2111217764532811413}
   box: {fileID: 61999569739760366}
   circle: {fileID: 0}
@@ -5015,8 +5014,8 @@ MonoBehaviour:
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  Health: 50
-  MaxHealth: 50
+  Health: 10
+  MaxHealth: 10
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: c56a0a004771144e4b4d61f17ebb15d2, type: 3}
   ContributeToHits: 1
@@ -5159,6 +5158,7 @@ MonoBehaviour:
   CurrentWeaponIndex: 0
   weapons:
   - {fileID: 11400000, guid: fd374035a3d2a4dfab5b20e9cd75ba10, type: 2}
+  - {fileID: 11400000, guid: 6302be227b6444871864f8b0f7d509bf, type: 2}
   chargeMin: 0.5
   armRadius: 0.3
   chargeDelay: 0.4

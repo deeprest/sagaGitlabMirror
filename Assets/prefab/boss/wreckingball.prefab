@@ -225,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1ac58a19f68d4e4fa78cea1abfcd40d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Team: 3
+  TeamFlags: 0
   body: {fileID: 0}
   box: {fileID: 3487476055067418648}
   circle: {fileID: 0}
@@ -236,28 +236,35 @@ MonoBehaviour:
   spriteRenderers: []
   UseGravity: 0
   IsStatic: 0
-  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
-  pushVelocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
+  overrideVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 1
   raylength: 0.1
   contactSeparation: 0.1
+  DownOffset: 0
+  collideRight: 0
+  collideLeft: 0
+  collideTop: 0
+  collideBottom: 0
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 0
-  health: 5
+  Health: 3
   MaxHealth: 5
   explosion: {fileID: 0}
   soundHit: {fileID: 0}
-  spawnWhenDead: {fileID: 0}
-  spawnChance: 1
-  flashInterval: 0.05
-  flashCount: 5
-  ContactDamage: {fileID: 11400000, guid: 06e6ddc204b29466cbcde418462b742f, type: 2}
+  ContributeToHits: 1
+  soundDeath: {fileID: 0}
+  SpawnWhenDead: []
+  SpawnOnDeath: []
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []
+  flashInterval: 0.05
+  flashCount: 5
+  ContactDamage: {fileID: 11400000, guid: 06e6ddc204b29466cbcde418462b742f, type: 2}
   CharacterLayer: 0
   CharacterParts: []
   MinVelDamageThreshold: 0.1
@@ -459,7 +466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ca453ad31c04286b9b7be2c4750e81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Team: 2
+  TeamFlags: 2
   body: {fileID: 0}
   box: {fileID: 0}
   circle: {fileID: 1040200706280075669}
@@ -469,28 +476,35 @@ MonoBehaviour:
   spriteRenderers: []
   UseGravity: 0
   IsStatic: 1
-  BoxCollisionOne: 0
   velocity: {x: 0, y: 0}
-  pushVelocity: {x: 0, y: 0}
+  inertia: {x: 0, y: 0}
+  overrideVelocity: {x: 0, y: 0}
   carryCharacter: {fileID: 0}
   friction: 1
   raylength: 0.01
   contactSeparation: 0.01
+  DownOffset: 0
+  collideRight: 0
+  collideLeft: 0
+  collideTop: 0
+  collideBottom: 0
   EnablePathing: 0
   AgentTypeName: Small
   CanTakeDamage: 1
-  health: 10
+  Health: 3
   MaxHealth: 10
   explosion: {fileID: 1814662161405744, guid: 4c598efde03ec412c82bf8b74b0fdad0, type: 3}
   soundHit: {fileID: 8300000, guid: 4990cba7bb0c641658496f255902ef3c, type: 3}
-  spawnWhenDead: {fileID: 0}
-  spawnChance: 1
-  flashInterval: 0.05
-  flashCount: 5
-  ContactDamage: {fileID: 0}
+  ContributeToHits: 1
+  soundDeath: {fileID: 0}
+  SpawnWhenDead: []
+  SpawnOnDeath: []
   EventDestroyed:
     m_PersistentCalls:
       m_Calls: []
+  flashInterval: 0.05
+  flashCount: 5
+  ContactDamage: {fileID: 0}
   CharacterLayer: 0
   CharacterParts: []
   fist: {fileID: 1191369004}
