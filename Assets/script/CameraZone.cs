@@ -1,5 +1,20 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+
+[CustomEditor( typeof(CameraZone) )]
+public class CameraZoneEditor : Editor
+{
+  public override void OnInspectorGUI()
+  {
+    CameraZone cz = target as CameraZone;
+    for( int i = 0; i < cz.colliders.Length; i++ )
+      cz.colliders[i].isTrigger = true;
+    DrawDefaultInspector();
+  }
+}
+#endif
 
 public class CameraZone : MonoBehaviour
 {
@@ -35,6 +50,12 @@ public class CameraZone : MonoBehaviour
   {
     foreach( var cld in colliders )
     {
+      #if UNITY_EDITOR || DEVELOPMENT_BUILD
+      if( cld.isTrigger == false )
+        Debug.LogWarning( cld.gameObject.name+" should be a trigger"  );
+      cld.isTrigger = true;
+      #endif
+      
       if( cld is PolygonCollider2D )
       {
         PolygonCollider2D poly = cld as PolygonCollider2D;

@@ -129,6 +129,9 @@ public class Global : MonoBehaviour
 
   [Header( "UI" )]
   public GameObject UI;
+  [SerializeField] Text BuildVersion;
+  [SerializeField] Text BuildTimestamp;
+  [SerializeField] Text CommitHash;
   CanvasScaler CanvasScaler;
   public UIScreen PauseMenu;
   [SerializeField] UIScreen SceneList;
@@ -295,6 +298,10 @@ public class Global : MonoBehaviour
     SightObstructionLayers = LayerMask.GetMask( new string[] {"Default", "triggerAndCollision", "destructible"} );
 
     CanvasScaler = UI.GetComponent<CanvasScaler>();
+    BuildVersion.text = GeneratedBuildInfo.BuildVersion;
+    BuildTimestamp.text = GeneratedBuildInfo.BuildTimestamp;
+    CommitHash.text = GeneratedBuildInfo.CommitHash;
+    
     InitializeSettings();
     ReadSettings();
     ApplyScreenSettings();
