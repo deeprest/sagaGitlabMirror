@@ -175,10 +175,11 @@ public class Global : MonoBehaviour
 
   [Header( "Debug" )]
   [SerializeField] Text debugFPS;
-  [SerializeField] Text debugText;
+  [FormerlySerializedAs( "debugText" ),SerializeField] Text debugText1;
   [SerializeField] Text debugText2;
   [SerializeField] Text debugText3;
   [SerializeField] Text debugText4;
+  [SerializeField] Text debugText5;
   // loading screen
   bool loadingScene;
   float prog = 0;
@@ -331,16 +332,21 @@ public class Global : MonoBehaviour
     foreach( var mesh in meshSurfaces )
       AgentType[NavMesh.GetSettingsNameFromID( mesh.agentTypeID )] = mesh.agentTypeID;
 
-    fpsTimer = new Timer( int.MaxValue, 1, delegate( Timer tmr )
+    TimerParams fpsTimerParams = new TimerParams();
+    fpsTimerParams.unscaledTime = true;
+    fpsTimerParams.loops = int.MaxValue;
+    fpsTimerParams.interval = 1;
+    fpsTimerParams.UpdateDelegate = delegate( Timer tmr )
     {
       debugFPS.text = frames.ToString();
       frames = 0;
-    }, null );
+    };
+    fpsTimer.Start( fpsTimerParams );
 
     if( Camera.main.orthographic )
-      debugText.text = Camera.main.orthographicSize.ToString( "##.#" );
+      debugText1.text = Camera.main.orthographicSize.ToString( "##.#" );
     else
-      debugText.text = CameraController.zOffset.ToString( "##.#" );
+      debugText1.text = CameraController.zOffset.ToString( "##.#" );
 
     if( Camera.main.orthographic )
       Camera.main.orthographicSize = 2;
@@ -699,10 +705,15 @@ public class Global : MonoBehaviour
     Updating = true;
   }
 
+  public float UpdateCullDistance = 10;
+  public int MaxUpdateCount = 100;
+  
+
   void Update()
   {
     frames++;
     Timer.UpdateTimers();
+    debugText1.text = Camera.main.orthographicSize.ToString( "##.#" );
     debugText2.text = "Active Timers: " + Timer.ActiveTimers.Count;
     debugText3.text = "Remove Timers: " + Timer.RemoveTimers.Count;
     debugText4.text = "New Timers: " + Timer.NewTimers.Count;
@@ -712,8 +723,29 @@ public class Global : MonoBehaviour
 
     if( !Paused )
     {
+      Vector3 ppos = CurrentPlayer.transform.position;
+      Entity reference;
+      int count=0;
       for( int i = 0; i < Entity.Limit.All.Count; i++ )
-        Entity.Limit.All[i].EntityUpdate();
+      {
+        reference = Entity.Limit.All[i];
+        reference.culled = Vector3.SqrMagnitude( reference.transform.position - ppos ) > UpdateCullDistance * UpdateCullDistance;
+        if( reference.IgnoreCull || !reference.culled )
+        {
+          reference.EntityUpdate();
+          count++;
+        }
+      }
+      for( int i = 0; i < Entity.Limit.All.Count && count < MaxUpdateCount; i++ )
+      {
+        reference = Entity.Limit.All[i];
+        if( reference.culled )
+        {
+          reference.EntityUpdate();
+          count++;
+        }
+      }
+      debugText5.text = count.ToString();
 
       for( int i = 0; i < Controller.All.Count; i++ )
         Controller.All[i].Update();
@@ -737,29 +769,7 @@ public class Global : MonoBehaviour
     H += colorShiftSpeed * Time.unscaledDeltaTime;
     shiftyColor = Color.HSVToRGB( H, 1, 1 );
     shifty.color = shiftyColor;
-
-    // DEBUG ZOOM WITH MOUSE
-    /*
-    if( Camera.main.orthographic )
-    {
-      if( Mathf.Abs( zoomDelta ) > 0 )
-      {
-        CameraController.orthoTarget += zoomDelta * Time.deltaTime;
-        CameraController.orthoTarget = Mathf.Clamp( CameraController.orthoTarget, 1, 10 );
-        FloatSetting["Zoom"].Value = CameraController.orthoTarget;
-      }
-      */
-      debugText.text = Camera.main.orthographicSize.ToString( "##.#" ); 
-      /*
-    }
-    else
-    {
-      CameraController.zOffset += zoomDelta * Time.deltaTime;
-      debugText.text = CameraController.zOffset.ToString( "##.#" );
-    }
-    zoomDelta = 0;
-    */
-
+    
     if( Minimap.activeInHierarchy )
     {
       MinimapScroller.transform.position += (Vector3) (-Controls.MenuActions.Move.ReadValue<Vector2>() * mmScrollSpeed * Time.unscaledDeltaTime);
@@ -1310,6 +1320,8 @@ public class Global : MonoBehaviour
       if( PlayerController != null ) PlayerController.HACKSetSpeed( value );
     } );
     CreateFloatSetting( "Seed", 0, 0, 20, 20, delegate( float value ) { } );
+    CreateFloatSetting( "UpdateCullDistance", 10, 0, 100, 50, delegate( float value ) { UpdateCullDistance = value; } );
+    CreateFloatSetting( "MaxUpdateCount", 100, 0, 1000, 100, delegate( float value ) { MaxUpdateCount = (int)value; } );
 
     foreach( var scene in sceneRefs )
     {

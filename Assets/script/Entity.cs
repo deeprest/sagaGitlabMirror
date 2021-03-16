@@ -11,6 +11,9 @@ public class Entity : MonoBehaviour, IDamage
 {
   public static Limit<Entity> Limit = new Limit<Entity>();
 
+  public bool IgnoreCull;
+  public bool culled;
+  
   public PathAgent pathAgent;
 
   [FormerlySerializedAs( "Team" )]
@@ -110,8 +113,7 @@ public class Entity : MonoBehaviour, IDamage
     public int weight = 1;
     public GameObject prefab;
   }
-  [System.Obsolete("Use SpawnOnDeath instead.")]
-  public GameObject[] SpawnWhenDead;
+
   public SpawnChance[] SpawnOnDeath;
   public UnityEvent EventDestroyed;
   
