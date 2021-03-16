@@ -307,6 +307,7 @@ public class Global : MonoBehaviour
     ApplyScreenSettings();
     InitializeInput();
 
+    FloatSetting["Seed"].Value = (Mathf.RoundToInt( FloatSetting["Seed"].Value ) + 1) % 20;
     PlayerController = ScriptableObject.CreateInstance<PlayerController>();
     
     // SCRIPT EXECUTION ORDER Global.cs is first priority so that Awake called from scene load in editor respects the code below.
@@ -1308,6 +1309,7 @@ public class Global : MonoBehaviour
     {
       if( PlayerController != null ) PlayerController.HACKSetSpeed( value );
     } );
+    CreateFloatSetting( "Seed", 0, 0, 20, 20, delegate( float value ) { } );
 
     foreach( var scene in sceneRefs )
     {
@@ -1502,7 +1504,7 @@ public class Global : MonoBehaviour
     public float UIScale;
   }
 
-  ScreenSettings CachedScreenSettings = new ScreenSettings();
+  ScreenSettings CachedScreenSettings;
 
   public void ScreenChangePrompt()
   {

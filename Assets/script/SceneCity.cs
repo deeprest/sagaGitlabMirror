@@ -177,9 +177,9 @@ public class SceneCity : SceneScript
 
   public void GenerateNext()
   {
-    seed++;
+    Global.instance.FloatSetting["Seed"].Value += 1;
     if( inputSeed != null )
-      inputSeed.text = seed.ToString();
+      inputSeed.text = Mathf.RoundToInt( Global.instance.FloatSetting["Seed"].Value).ToString();
     Generate();
   }
 
@@ -187,16 +187,21 @@ public class SceneCity : SceneScript
   {
     int value;
     if( int.TryParse( input, out value ) )
-      seed = value;
+      Global.instance.FloatSetting["Seed"].Value = value;
   }
 
   public void Generate()
   {
     Profiler.BeginSample( "Level Generation" );
-
     DestroyAll();
-    if( !Application.isEditor && RandomSeedOnStart )
-      seed = System.DateTime.Now.Second;
+
+    if( !Application.isEditor )
+    {
+      if( RandomSeedOnStart )
+        seed = System.DateTime.Now.Second;
+      else
+        seed = Mathf.RoundToInt( Global.instance.FloatSetting["Seed"].Value );
+    }
     Random.InitState( seed );
     bounds = new Bounds();
     bounds.Encapsulate( Vector3.right * dimension.x * cellsize.x );
